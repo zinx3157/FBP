@@ -1,0 +1,38 @@
+{
+  "release": "GitHub Pages package 1.0",
+  "date": "2026-08-12",
+  "applications": [
+    "SHIPDESK",
+    "LabelOnZeWay"
+  ],
+  "placeholder_pages_url": "https://USERNAME.github.io/REPOSITORY/",
+  "files_sha256": {
+    ".github/workflows/deploy-pages.yml": "8d7116beac139cc8d29812c919473363cc0ba577e9d2839a15d261ee13ded3cf",
+    ".gitignore": "d790a0943f733ff5e084bf8575d416d1ae7f798e5f54108bcb52ab350dfbd1ff",
+    "DEPLOYMENT_CHECKLIST.md": "635ba78cbab32410b04f95eaef9c5ee5494eb6d17127e644295aa757cc79cf41",
+    "README.md": "ff1b27bb81294cd689aee9283cfaffcb5da21c5b8f6de15b08388770d4dd4697",
+    "RELEASE_NOTES.md": "c78a973344ed844fa95e2154e012714e95fd19d603c567ec1fc89fbfcdb0937e",
+    "docs/.nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/404.html": "4d4518c1dcd055340924e72fdac8ce8dc917cfd9e7e308889b998c8720ed4df4",
+    "docs/downloads/POS80C_Hosted_Print_Gateway.zip": "4f86ceba3d8e73a80ecb8129e0f0da4089789e82ea5c15207589bac67279ffed",
+    "docs/downloads/Start_Hosted_POS80C_Gateway.bat": "e48013544a35a4cd4ae6305f9d470151bd459fb9227fc524c7a0e7fd29580930",
+    "docs/downloads/Start_Hosted_POS80C_Gateway.command": "ab29c88a37d9823eb889197fe206e31690ef4b7fbe9512885c2790a28e4f4aeb",
+    "docs/downloads/configure_gateway.py": "caf686a94b38d1afd089fb50459dc8077b0e49fb80fa6394dc116c05088aaf46",
+    "docs/downloads/gateway-config.json": "7eb4cc17002561b3b4fb64f5d76cd8147cf700b1060ba29afb25f4ed0aeb0c38",
+    "docs/downloads/hosted_pos80c_gateway.py": "fbfb4cabae64b8dfaeaab757df666e459a4afd5127fcc7d30ad16dfc0467cda4",
+    "docs/index.html": "3c6eaa7edd5bea411158ab776f3a372501c1c0567c8ca3f3bc27db28e8bfb07a",
+    "docs/install.html": "10e8c4a7f9f5345d95d5bc5f98e8bb00f0e509cb811caaa6ac6317bd18eed415",
+    "docs/labelonzeway/icons/icon-192.png": "4299b3d62281870010b9d0e2959be903249efd46e13ee3cb7fb3cd5c4cf5b245",
+    "docs/labelonzeway/icons/icon-512.png": "d0fe25fb229723aeb8324f0df02edc59af1d286f645551f2e99224b76a15e77b",
+    "docs/labelonzeway/icons/icon-maskable-192.png": "7a5eeaad1c83478993da52d60844c0da031ef06075238dbceaf8cc18cb474b76",
+    "docs/labelonzeway/icons/icon-maskable-512.png": "cb4d1bc0f5e82298d1dabea47af851ab1faa30a765c530ca1d1ecdf19a17328c",
+    "docs/labelonzeway/index.html": "89977f998c4cd3115d8ad496dd00acf208d6cbb96d517768f5637a747921e4fe",
+    "docs/labelonzeway/manifest.webmanifest": "61b7f39c0d76e797b73d3f0b2c9b415643f9f628d120b397c0f62cfa09ac9ffb",
+    "docs/labelonzeway/service-worker.js": "4b1e71b9a261eb7f8d6da94fb89a95131e328d8cbafff7d0ac23d684c26a40ab",
+    "docs/printing.html": "8c9be9f0a06b61071178cf6e9e24fd94f9e507d8a79ffc4e5ff14bd53e2ab1e1",
+    "docs/privacy.html": "daf62cd4a7ab3e077f54e79b94eb96d4df30aa591d31479bdd75c34e8855e769",
+    "docs/shipdesk/index.html": "7ffdc020a2e289f0bb06b07cea750fc41bec68bf86c50ab6c5580021e6ecd5c4",
+    "tests/README.md": "277d3da9c5484cce232416670cd38984ea00ad628bae1c00b47fcc5a703133bd",
+    "tests/test_gateway.py": "31a21f75de1353a3db38257149b85b1ff86cd9c25d2c54a6bcd554c3bbec65d5"
+  }
+}
