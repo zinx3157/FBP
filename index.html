@@ -2,24 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LabelOnZeWay — Mobile Sales & Label Printing</title>
-<meta name="description" content="Mobile parcel labels, customer manifest, payments, reports, and POS80C printing for Android and iPhone.">
-<meta name="theme-color" content="#141a21">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="LabelOnZeWay">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHIPDESK — FB Sales Dispatch</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23ff5c1c'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial'>▣</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#141a21;--paper:#e9ebee;--card:#fff;--orange:#ff5c1c;--blue:#1f4e8c;--green:#188a4c;--red:#c2372c;--line:#c9ced4;--mono:'IBM Plex Mono',monospace;--disp:'Archivo Black',sans-serif;--body:'Barlow',sans-serif;--lblh:210mm}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--body);color:var(--ink);min-height:100vh;background:radial-gradient(rgba(20,26,33,.07) 1px,transparent 1.4px) 0 0/22px 22px,linear-gradient(180deg,#f0f2f4,var(--paper) 300px);padding-bottom:env(safe-area-inset-bottom)}
-#fatal{position:fixed;top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;z-index:999;background:var(--red);color:#fff;padding:10px;border-radius:8px;font:600 12px var(--mono);display:none}
-#top{background:var(--ink);color:#fff;display:flex;align-items:center;gap:14px;padding:calc(12px + env(safe-area-inset-top)) 26px 12px;flex-wrap:wrap}
+body{font-family:var(--body);color:var(--ink);min-height:100vh;background:radial-gradient(rgba(20,26,33,.07) 1px,transparent 1.4px) 0 0/22px 22px,linear-gradient(180deg,#f0f2f4,var(--paper) 300px)}
+#fatal{position:fixed;top:8px;left:8px;right:8px;z-index:999;background:var(--red);color:#fff;padding:10px;border-radius:8px;font:600 12px var(--mono);display:none}
+#top{background:var(--ink);color:#fff;display:flex;align-items:center;gap:14px;padding:12px 26px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:12px}
 .brand .logo{width:42px;height:42px;background:var(--orange);border-radius:8px;display:grid;place-items:center;font:26px var(--disp);color:#fff}
 .brand h1{font:22px var(--disp)}.brand h1 em{color:var(--orange);font-style:normal}
@@ -135,6 +127,14 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 .modal.open{display:grid}
 .modal-box{background:#fff;border:2px solid var(--ink);border-radius:12px;width:min(560px,100%);max-height:90vh;overflow:auto;padding:22px}
 #m-preview .modal-box,#m-recon .modal-box{width:min(820px,100%)}
+#m-label-vault .modal-box{width:min(960px,100%)}
+.vault-note{font:600 11px/1.55 var(--mono);color:#4c5864;background:#fff8f3;border:1.5px solid #ffb28a;border-radius:8px;padding:9px 11px;margin:8px 0 12px}
+.vault-item{display:grid;grid-template-columns:minmax(200px,1.2fr) minmax(220px,1.6fr) auto;gap:12px;align-items:center;border:1.5px solid var(--line);border-left:5px solid var(--orange);border-radius:8px;padding:11px 12px;margin-top:8px;background:#fdfdfc}
+.vault-order{font:800 13px var(--mono);color:var(--blue)}
+.vault-meta{font:600 10.5px/1.55 var(--mono);color:#66727e;margin-top:3px;word-break:break-word}
+.vault-name{font:800 14px var(--body)}
+.vault-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:680px){.vault-item{grid-template-columns:1fr}.vault-actions{justify-content:flex-start}}
 .modal-box h3{font:17px var(--disp);margin-bottom:8px}
 .modal-x{float:right;border:none;background:none;font-size:20px;cursor:pointer;color:#66727e}
 .printer-box{border:1.5px solid var(--blue);border-radius:9px;background:#f4f7fc;margin-top:14px;padding:12px}
@@ -167,46 +167,45 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 .lbl-val{text-align:right;font:700 11px var(--mono);line-height:1.45}
 .lbl-foot{font:700 10px var(--body);text-align:center;border-top:1.4px dashed #000;margin-top:1.4mm;padding-top:1.4mm}
 .lbl-compact .lbl-name{font-size:14px}.lbl-compact .lbl-addr{font-size:9px}.lbl-compact .lbl-amt{font-size:18px}
-.man-sheet{width:72mm;padding:3.5mm;background:#fff;color:#000;font-family:var(--body);box-sizing:border-box}
-.man-head{background:#000;color:#fff;padding:2.5mm 3mm}
-.man-title{font:15px var(--disp)}.man-sub{font:600 9px var(--mono);color:#ccc;margin-top:1px}
-.mtbl{width:100%;border-collapse:collapse;margin-top:2.5mm;table-layout:fixed}
-.mtbl th{background:#000;color:#fff;font:700 7.5px var(--mono);padding:1.4mm 1mm;border:1px solid #000;text-align:left}
-.mtbl td{border:1px solid #000;padding:1.4mm 1.2mm;vertical-align:top;font:500 8.5px/1.35 var(--body);word-break:break-word}
-.mtbl .cn{width:8mm;text-align:center;font:700 8.5px var(--mono)}
-.mtbl .ca{width:14mm;text-align:right;font:800 9px var(--mono)}
-.mtbl .cr{width:14mm;font:600 7.5px var(--mono)}
-.mtbl .cs{width:12mm;text-align:center;font:700 9px var(--mono)}
-.mtbl .cs small{display:block;font:600 5.8px var(--mono)}
-.mtbl .cname{font:700 9.5px var(--body)}.mtbl .cmeta{font:600 7.5px var(--mono);margin-top:.5mm}
-.msum{border:2px solid #000;margin-top:2.5mm;padding:2mm 3mm;font:700 10px var(--mono);line-height:1.8}
-.msig{display:flex;gap:6mm;margin-top:5mm}.msig div{flex:1;border-top:1.5px solid #000;padding-top:1mm;font:600 8px var(--mono);text-align:center}
-.mfoot{font:600 7.5px var(--mono);text-align:center;margin-top:3mm;color:#333}
+.man-sheet{width:80mm;padding:2.2mm 3mm;background:#fff;color:#000;font-family:var(--body);box-sizing:border-box}
+.man-head{border-bottom:1.2px solid #000;padding:0 0 1.5mm}
+.man-title{font:800 12px var(--body);text-transform:uppercase}.man-sub{font:600 7px/1.35 var(--mono);color:#222;margin-top:.4mm}
+.m80-list{margin-top:.5mm}
+.m80-row{padding:1.6mm 0 1.4mm;border-bottom:.8px solid #777;break-inside:avoid;page-break-inside:avoid}
+.m80-top{display:grid;grid-template-columns:10mm minmax(0,1fr) auto;gap:1.4mm;align-items:start}
+.m80-order{font:700 7px/1.15 var(--mono)}.m80-order b{display:block;font-size:10px}.m80-name{font:800 10px/1.15 var(--body);word-break:break-word}
+.m80-total{font:800 10px var(--mono);white-space:nowrap;text-align:right}
+.m80-contact{font:500 8px/1.28 var(--body);margin:1mm 0 .6mm;word-break:break-word}
+.m80-meta{display:flex;gap:.7mm 2.2mm;align-items:center;flex-wrap:wrap;font:600 6.8px/1.3 var(--mono);color:#111}
+.m80-meta span{white-space:normal}.m80-status{margin-left:auto;font-weight:800;white-space:nowrap!important}
+.msum{border-top:1.2px solid #000;border-bottom:1.2px solid #000;margin-top:1.8mm;padding:1.2mm 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6mm 2mm;font:700 7.5px/1.35 var(--mono)}
+.msum .wide{grid-column:1/-1;font-size:9px}.msig{display:flex;gap:6mm;margin-top:5mm}.msig div{flex:1;border-top:1px solid #000;padding-top:.8mm;font:600 6.8px var(--mono);text-align:center}
+.mfoot{font:500 6px var(--mono);text-align:center;margin-top:2mm;color:#444}
 .a4sheet{width:100%;background:#fff;color:#000;font-family:var(--body)}
-.a4head{display:flex;justify-content:space-between;border-bottom:3px solid #000;padding-bottom:3mm;margin-bottom:4mm}
-.a4shop{font:800 20px var(--body);text-transform:uppercase}
-.a4tag{font:600 10px var(--mono);color:#333;margin-top:1mm}
-.a4title{font:16px var(--disp);text-align:right}.a4date{font:600 10px var(--mono);color:#333;margin-top:1mm}
-.a4tbl{width:100%;border-collapse:collapse;font-size:10px}
-.a4tbl th{background:#000;color:#fff;font:700 8.5px var(--mono);padding:2.2mm 1.6mm;border:1px solid #000;text-align:left}
-.a4tbl td{border:1px solid #000;padding:1.8mm 1.6mm;vertical-align:top;font:500 10px/1.4 var(--body)}
-.a4tbl tbody tr:nth-child(even) td{background:#f4f4f2}
-.a4tbl .num{text-align:center;font:700 10px var(--mono)}.a4tbl .money{text-align:right;font:700 10px var(--mono)}
-.a4tbl .mono{font:600 9px var(--mono)}.a4tbl .stat{text-align:center;font:700 9px var(--mono)}
-.a4totals{margin-top:4mm;display:flex;gap:4mm;justify-content:flex-end;flex-wrap:wrap}
-.a4totals div{border:2px solid #000;padding:2mm 4mm;font:700 11px var(--mono);min-width:34mm}
-.a4totals small{display:block;font:700 7.5px var(--mono);color:#333}
-.a4sig{display:flex;gap:10mm;margin-top:14mm}.a4sig div{flex:1;border-top:1.5px solid #000;padding-top:1.5mm;font:600 9px var(--mono);text-align:center}
-.a4foot{font:600 8px var(--mono);text-align:center;margin-top:5mm;color:#555}
+.a4head{display:flex;justify-content:space-between;border-bottom:1.2px solid #000;padding-bottom:1.8mm;margin-bottom:2.2mm}
+.a4shop{font:800 15px var(--body);text-transform:uppercase}
+.a4tag{font:600 7px var(--mono);color:#333;margin-top:.5mm}
+.a4title{font:800 12px var(--body);text-align:right}.a4date{font:600 7px var(--mono);color:#333;margin-top:.5mm}
+.a4tbl{width:100%;min-width:0;border-collapse:collapse;font-size:8px}
+.a4tbl th{background:#f2f3f4;color:#000;font:700 6.5px/1.15 var(--mono);padding:1.1mm .8mm;border:.7px solid #777;text-align:left;vertical-align:bottom}
+.a4tbl td{border:.7px solid #999;padding:1mm .8mm;vertical-align:top;font:500 7.2px/1.23 var(--body);word-break:break-word}
+.a4tbl tbody tr:nth-child(even) td{background:#fafafa}
+.a4tbl .num{text-align:center;font:700 7px var(--mono)}.a4tbl .money{text-align:right;font:700 6.8px var(--mono);white-space:nowrap}
+.a4tbl .mono{font:600 6.5px/1.22 var(--mono)}.a4tbl .stat{text-align:left;font:700 6.4px/1.25 var(--mono)}
+.a4manifest .a4tbl,.exception-report .a4tbl{table-layout:fixed}
+.a4tbl thead{display:table-header-group}.a4tbl tr{break-inside:avoid;page-break-inside:avoid}
+.exception-note{border:.8px solid #777;background:#f7f7f7;margin:0 0 2mm;padding:1.3mm 1.8mm;font:600 7px/1.35 var(--mono)}
+.exception-report .issue{font:700 6.4px/1.3 var(--mono)}
+.a4totals{margin-top:2.2mm;display:flex;gap:1.4mm;justify-content:flex-end;flex-wrap:wrap}
+.a4totals div{border:.8px solid #777;padding:1.1mm 2mm;font:700 7.5px var(--mono);min-width:24mm}
+.a4totals small{display:block;font:600 5.8px var(--mono);color:#333}
+.a4sig{display:flex;gap:10mm;margin-top:8mm}.a4sig div{flex:1;border-top:1px solid #000;padding-top:1mm;font:600 7px var(--mono);text-align:center}
+.a4foot{font:500 6px var(--mono);text-align:center;margin-top:2.5mm;color:#555}
 .rpt-sec{font:800 12px var(--body);margin:4mm 0 2mm;border-bottom:2px solid #000}
 .rpt-big{font:800 22px var(--mono);margin:2mm 0}
-#mobile-nav{display:none}
-#mobile-nav button{border:0;background:transparent;color:#dfe6ec;font:700 9px var(--mono);min-width:0;flex:1;padding:7px 2px;cursor:pointer}
-#mobile-nav button span{display:block;color:#ff8a55;font:800 20px/1 var(--body);margin-bottom:3px}
-#install-app-btn{border-color:var(--orange);color:#ffd0bb}
 #print-root{display:none}
 @media print{
-  #top,.hzd,#app,#toasts,.modal,#fatal,#mobile-nav{display:none!important}
+  #top,.hzd,#app,#toasts,.modal,#fatal{display:none!important}
   #print-root{display:block!important}
   html,body{background:#fff!important;margin:0!important;padding:0!important}
   #print-root.label-print-job{width:72mm!important;margin:0!important;padding:0!important}
@@ -215,31 +214,17 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   #print-root.label-print-job .lbl{width:72mm;height:auto!important;min-height:0!important;margin:0!important;border-bottom:0!important;break-inside:avoid;page-break-inside:avoid;break-after:auto!important;page-break-after:auto!important}
 }
 @media (max-width:1120px){#app{grid-template-columns:1fr 1fr}#card-preview{grid-column:1/-1}}
-@media (max-width:780px){
-  body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
-  #top{padding:calc(9px + env(safe-area-inset-top)) 10px 9px;gap:8px;position:sticky;top:0;z-index:40}
-  .brand{width:100%;justify-content:center}.brand .logo{width:34px;height:34px;font-size:16px}.brand h1{font-size:17px}.brand small{font-size:8px;letter-spacing:1px}
-  .chips{width:100%;margin-left:0;gap:5px;justify-content:center}.chip{padding:5px 8px;font-size:10px}.chip.clock{display:none}
-  select.profile{width:auto;max-width:130px;padding:6px;font-size:10px}.btn-ghost{padding:7px 8px;font-size:10px}
-  #app{grid-template-columns:1fr;padding:10px;gap:12px}.card{padding:13px;border-radius:9px;box-shadow:3px 3px 0 rgba(20,26,33,.14)}
-  .card-head{margin-bottom:10px}.card-head h2{font-size:13px}.row2{grid-template-columns:1fr}
-  .btn{min-height:44px}.btn.sm{min-height:38px}.mini-btn{width:38px;height:38px}.mani-actions{min-width:174px}
-  input[type=text],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{font-size:16px;min-height:44px}
-  .modal{padding:0;align-items:end}.modal-box{width:100%!important;max-height:92dvh;border-radius:14px 14px 0 0;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
-  .batch-bar{align-items:stretch}.batch-bar select{width:100%;min-width:0}.brow{flex-wrap:wrap}.b-grid{grid-template-columns:1fr 1fr}.b-actions{width:100%;flex-direction:row;justify-content:flex-end}
-  #mobile-nav{position:fixed;left:0;right:0;bottom:0;z-index:55;display:flex;background:var(--ink);border-top:3px solid var(--orange);padding:3px 6px calc(3px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px rgba(0,0,0,.22)}
-  #toasts{bottom:calc(72px + env(safe-area-inset-bottom));width:calc(100% - 24px)}.toast{text-align:center}
-}
+@media (max-width:780px){#app{grid-template-columns:1fr}}
 </style>
 <style id="pgLabel" disabled>@page{size:72mm auto;margin:0}</style>
-<style id="pgMan" disabled>@page{size:72mm auto;margin:0}</style>
-<style id="pgA4" disabled>@page{size:A4 portrait;margin:11mm}</style>
+<style id="pgMan" disabled>@page{size:80mm auto;margin:0}</style>
+<style id="pgA4" disabled>@page{size:A4 landscape;margin:8mm}</style>
 </head>
 <body>
 <div id="fatal"></div>
 <header id="top">
-  <div class="brand"><div class="logo">LZ</div>
-    <div><h1>LABEL<em>ONZEWAY</em></h1><small>MOBILE SALES · LABELS · DISPATCH</small></div></div>
+  <div class="brand"><div class="logo">▣</div>
+    <div><h1>SHIP<em>DESK</em></h1><small>FACEBOOK SALES · DISPATCH</small></div></div>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
     <button class="btn-ghost" data-act="addProfile">+ PROFILE</button>
@@ -247,7 +232,6 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <div class="chip">💰 <b id="stat-cod">0</b></div>
     <div class="chip clock">⏱ <b id="clock">--:--</b></div>
     <button class="btn-ghost" data-act="openRecon">🔄 RECON</button>
-    <button class="btn-ghost" id="install-app-btn" data-act="installApp">⬇ INSTALL</button>
     <button class="btn-ghost" data-act="openSettings">⚙ SETTINGS</button>
   </div>
 </header>
@@ -364,11 +348,13 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <div class="card-head"><h2>MANIFEST</h2><span class="hint" id="mani-date"></span>
       <div class="right">
         <button class="btn sm" data-act="exportCSV">⤓ CSV</button>
-        <button class="btn sm dark" data-act="printManifest">🧾 72 MM</button>
-        <button class="btn sm blue" data-act="printA4">⎙ A4 / PDF</button>
+        <button class="btn sm dark" data-act="printManifest">🧾 80 MM COMPACT</button>
+        <button class="btn sm blue" data-act="printA4">⎙ A4 ALL INFO</button>
         <button class="btn sm green" data-act="printReport">📊 SALES REPORT</button>
+        <button class="btn sm" id="exception-report-btn" data-act="openExceptionReport">⚠ 2-DAY REPORT <span id="exception-report-count">0</span></button>
         <button class="btn sm" data-act="closeDay">🌙 Close day</button>
         <button class="btn sm" data-act="openArch">🗄 Archive</button>
+        <button class="btn sm orange" data-act="openLabelVault">🏷 LABEL COPIES <span id="label-vault-count">0</span></button>
         <button class="btn sm" data-act="clearManifest" style="color:var(--red);border-color:var(--red)">✕ Clear</button>
       </div></div>
     <div class="batch-bar" id="mani-select-bar">
@@ -382,13 +368,6 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <div class="totals" id="totals"></div>
   </section>
 </main>
-
-<nav id="mobile-nav" aria-label="Quick navigation">
-  <button data-act="scrollSection" data-arg="card-parcel"><span>＋</span>NEW</button>
-  <button data-act="scrollSection" data-arg="card-batch"><span>▦</span>BATCH</button>
-  <button data-act="scrollSection" data-arg="card-manifest"><span>☷</span>MANIFEST</button>
-  <button data-act="openSettings"><span>⚙</span>SETTINGS</button>
-</nav>
 
 <div id="print-root"></div>
 <div id="toasts"></div>
@@ -421,16 +400,16 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <div><label class="f">Recon time (hour)</label><input type="number" id="s-reconhour" min="0" max="23" value="9"></div></div>
   <label class="f">Thank-you line</label><input type="text" id="s-thanks">
   <div class="printer-box">
-    <div class="printer-title">🖨 MOBILE &amp; POS80C PRINTING</div>
-    <p class="printer-help">System Print uses AirPrint on iPhone/iPad or Android's print service. Direct mode sends compact ESC/POS labels through the LabelOnZeWay Wi-Fi Gateway and cuts after each label.</p>
+    <div class="printer-title">🖨 POS80C · DIRECT ESC/POS</div>
+    <p class="printer-help">Direct mode bypasses the system print dialog, sends each label to the network printer, and cuts it. A small local gateway must remain open while direct printing.</p>
     <label class="f">Print labels using</label>
     <select id="s-print-mode" onchange="updatePrinterSettingsUI()">
-      <option value="browser">Phone system print · AirPrint / Android</option>
-      <option value="direct">Direct Wi-Fi ESC/POS through gateway</option>
+      <option value="browser">System / browser print dialog</option>
+      <option value="direct">Direct ESC/POS through local bridge</option>
     </select>
     <div class="row2"><div><label class="f">Printer IP address</label><input type="text" id="s-printer-ip" placeholder="192.168.1.100"></div>
       <div><label class="f">Raw TCP port</label><input type="number" id="s-printer-port" min="1" max="65535" value="9100"></div></div>
-    <label class="f">Wi-Fi Gateway URL</label><input type="text" id="s-bridge-url" placeholder="auto · desktop loopback or enter computer LAN URL">
+    <label class="f">Local bridge URL</label><input type="text" id="s-bridge-url" placeholder="http://127.0.0.1:8765">
     <div class="row2"><div><label class="f">Print width (dots)</label><input type="number" id="s-printer-dots" min="384" max="640" step="8" value="576"></div>
       <div><label class="f">Feed before cut (dots)</label><input type="number" id="s-printer-feed" min="0" max="255" value="24"></div></div>
     <div class="row2"><div><label class="f">Image threshold</label><input type="number" id="s-printer-threshold" min="1" max="254" value="180"></div>
@@ -440,8 +419,8 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
       <button class="btn sm blue" data-act="testPrinterBridge">TEST CONNECTION</button>
       <button class="btn sm orange" data-act="testPrinterCut">PRINT + CUT TEST</button>
-      <button class="btn sm" data-act="downloadPrinterBridge">DOWNLOAD WI-FI GATEWAY</button></div>
-    <p class="printer-help">Hosted direct printing: run the <b>POS80C Gateway Kit</b> on a Mac/PC. On that same computer, <code>auto</code> uses loopback. On Android, enter the computer LAN URL ending in <code>/api</code>. On iPhone/iPad, use the local LabelOnZeWay URL printed by the gateway for dependable direct printing.</p>
+      <button class="btn sm" data-act="downloadPrinterBridge">DOWNLOAD BRIDGE</button></div>
+    <p class="printer-help">Hosted setup: download the <b>POS80C Gateway Kit</b>, run its macOS or Windows launcher, enter the exact GitHub Pages address once, then keep the gateway window open.</p>
   </div>
   <div style="border-top:2px dashed var(--line);margin-top:14px;padding-top:12px">
     <p style="font:700 11px var(--mono);color:var(--green)">🤖 QWEN BACKEND (optional)</p>
@@ -480,6 +459,18 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   <div id="arch-list"></div>
 </div></div>
 
+<div class="modal" id="m-label-vault"><div class="modal-box">
+  <button class="modal-x" data-close="m-label-vault">✕</button>
+  <h3>🏷 LABEL CLAIMS VAULT</h3>
+  <div class="vault-note">Every label version is retained independently of the manifest and daily archive. Removing, clearing, editing, closing, or deleting an archived day does not remove these copies. Use Backup Data in Settings to keep an external copy too.</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input class="search" id="label-vault-search" placeholder="Search order, recipient, phone, address, date…" oninput="renderLabelVault()" style="flex:1;min-width:240px">
+    <button class="btn sm blue" data-act="downloadBackup">⬇ BACKUP ALL DATA</button>
+  </div>
+  <div id="label-vault-summary" class="muted" style="margin-top:9px"></div>
+  <div id="label-vault-list"></div>
+</div></div>
+
 <div class="modal" id="m-recon"><div class="modal-box">
   <button class="modal-x" data-close="m-recon">✕</button>
   <h3>🔄 RECONCILIATION — POD &amp; PAYMENT</h3>
@@ -508,30 +499,35 @@ function fatal(e){console.error(e);var d=getEl('fatal');if(d){d.style.display='b
 window.addEventListener('error',function(e){console.error('global',e.message)});
 
 var SHIP_RATES=[3000,4000,5000,6000];
-var PROFILES=JSON.parse(localStorage.getItem('lz.profiles')||'null')||[{id:'P1',name:'Company 1'}];
-var PID=localStorage.getItem('lz.profile')||'P1';
-if(!PROFILES.some(function(p){return p.id===PID})){PID=PROFILES[0].id;localStorage.setItem('lz.profile',PID);}
+var PROFILES=JSON.parse(localStorage.getItem('sd.profiles')||'null')||[{id:'P1',name:'Company 1'}];
+var PID=localStorage.getItem('sd.profile')||'P1';
+if(!PROFILES.some(function(p){return p.id===PID})){PID=PROFILES[0].id;localStorage.setItem('sd.profile',PID);}
 function K(k){return PID+'.'+k}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-function switchProfile(id){localStorage.setItem('lz.profile',id);location.reload();}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error('Storage save failed',k,e);return false}}
+function switchProfile(id){localStorage.setItem('sd.profile',id);location.reload();}
 function addProfile(){var name=prompt('Company / profile name:');if(!name)return;
   var id='P'+Date.now();PROFILES.push({id:id,name:name});
-  localStorage.setItem('lz.profiles',JSON.stringify(PROFILES));
-  localStorage.setItem('lz.profile',id);location.reload();}
+  localStorage.setItem('sd.profiles',JSON.stringify(PROFILES));
+  localStorage.setItem('sd.profile',id);location.reload();}
 
 var PAY_MODES=['Espèces','COD','MVola','Orange Money','Airtel Money','PAID (prepaid)','Bank / Other'];
-var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,qwenUrl:'',qwenModel:'qwen2.5-vl:7b',
-  printMode:'browser',printerIp:'',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:24,printerThreshold:180,printerCut:'partial',cutEach:true};
+var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'FACEBOOK SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,qwenUrl:'',qwenModel:'qwen2.5-vl:7b',
+  printMode:'browser',printerIp:'',printerPort:9100,bridgeUrl:'http://127.0.0.1:8765',printerDots:576,printerFeed:24,printerThreshold:180,printerCut:'partial',cutEach:true};
 var state={
   shop:Object.assign({},DEFAULT_SHOP,load(K('shop'),{})),
   addr:load(K('addr'),[]),manifest:load(K('mani'),[]),archive:load(K('arch'),[]),counter:load(K('ctr'),0),
+  labelVault:load(K('labels'),[]),
   img:null,imgOCR:null,imgBig:null,currentFile:null,editingAddr:null,batch:[],addrAssign:null,resumeBatch:false};
-var batchBusy=false,previewMode=null,noprixShown=false,scanActive=false,printChain=[],manifestSelection={};
-function persist(){try{save(K('shop'),state.shop);save(K('addr'),state.addr);save(K('mani'),state.manifest);save(K('ctr'),state.counter);save(K('arch'),state.archive)}catch(e){toast('⚠ Storage full — backup now!','err')}}
+if(!Array.isArray(state.labelVault))state.labelVault=[];
+var batchBusy=false,previewMode=null,previewClaimId=null,noprixShown=false,scanActive=false,printChain=[],manifestSelection={};
+var exceptionRunSessionDate='',EXCEPTION_REPORT_HOUR=9;
+function persist(){var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
+  if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function money(v){var n=Number(v||0),sep=(state.shop.sep==null?' ':state.shop.sep);var p=Math.abs(n).toFixed(2).split('.');
-  return (n<0?'-':'')+(state.shop.currency?state.shop.currency+' ':'')+p[0].replace(/\B(?=(\d{3})+(?!\d))/g,sep)+(p[1]==='00'?'':','+p[1])}
+function moneyFor(v,shop){shop=shop||state.shop;var n=Number(v||0),sep=(shop.sep==null?' ':shop.sep);var p=Math.abs(n).toFixed(2).split('.');
+  return (n<0?'-':'')+(shop.currency?shop.currency+' ':'')+p[0].replace(/\B(?=(\d{3})+(?!\d))/g,sep)+(p[1]==='00'?'':','+p[1])}
+function money(v){return moneyFor(v,state.shop)}
 function fmtDT(iso){var d=new Date(iso);return d.toLocaleDateString(undefined,{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
 function fmtDeliverDate(d,t){if(!d)return'';var dt=new Date(d+'T'+(t||'00:00'));
   if(isNaN(dt))return d;var s=dt.toLocaleDateString(undefined,{day:'2-digit',month:'short'});if(t)s+=' '+t;return s;}
@@ -539,12 +535,68 @@ function nextOid(n){return String(n).padStart(4,'0')}
 function dPlus1Date(){var d=new Date();d.setDate(d.getDate()+1);
   var p=function(n){return String(n).padStart(2,'0')};
   return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
+
+/* Permanent per-profile label claims vault. Snapshots contain label data only, not parcel photos. */
+function cloneLabelRow(r){r=r||{};var rec=r.rec||{};
+  return {id:String(r.id||''),oid:String(r.oid||''),name:String(r.name||''),qty:Number(r.qty||1),price:Number(r.price||0),
+    cod:Number(r.cod||0),ship:Number(r.ship||0),notes:String(r.notes||''),pay:String(r.pay||'COD'),mmRef:String(r.mmRef||''),
+    deliverAt:String(r.deliverAt||''),deliverTime:String(r.deliverTime||''),addedAt:String(r.addedAt||new Date().toISOString()),
+    rec:{id:String(rec.id||''),name:String(rec.name||''),phone:String(rec.phone||''),area:String(rec.area||''),address:String(rec.address||''),note:String(rec.note||'')}};}
+function labelShopSnapshot(s){s=s||state.shop;
+  return {name:String(s.name||''),tagline:String(s.tagline||''),phone:String(s.phone||''),currency:String(s.currency||''),
+    sep:s.sep==null?' ':String(s.sep),codLabel:String(s.codLabel||'COLLECT'),labelLen:Number(s.labelLen)||210,
+    thanks:String(s.thanks||''),printerDots:Number(s.printerDots)||576,printerThreshold:Number(s.printerThreshold)||180};}
+function labelFingerprint(row,shop){return JSON.stringify({row:row,shop:shop});}
+function labelOrderKey(row){return String(row.id||row.oid||'unknown')}
+function storeLabelCopies(rows,source,isPrint){
+  if(!Array.isArray(rows)||!rows.length)return 0;
+  var now=new Date().toISOString(),changed=0;
+  rows.forEach(function(input){
+    if(!input)return;
+    var row=cloneLabelRow(input),shop=labelShopSnapshot(input._labelShop||state.shop),fingerprint=labelFingerprint(row,shop),key=labelOrderKey(row);
+    var existing=state.labelVault.find(function(e){return e&&e.orderKey===key&&e.fingerprint===fingerprint});
+    if(existing){
+      if(isPrint){existing.printCount=Math.max(0,Number(existing.printCount)||0)+1;existing.lastPrintedAt=now;existing.lastSource=source||'printed';changed++;}
+      return;}
+    var version=state.labelVault.filter(function(e){return e&&e.orderKey===key}).length+1;
+    state.labelVault.unshift({id:'lv'+Date.now()+Math.random().toString(36).slice(2,8),orderKey:key,orderId:row.id,oid:row.oid,
+      version:version,row:row,shop:shop,fingerprint:fingerprint,savedAt:now,source:source||'created',
+      printCount:isPrint?1:0,lastPrintedAt:isPrint?now:'',lastSource:source||'created'});changed++;});
+  if(changed){if(!save(K('labels'),state.labelVault))toast('⚠ Label copy is only in this session — storage is full. Download a backup now!','err');updateLabelVaultCount();}
+  return changed;}
+function migrateExistingLabels(){
+  var rows=state.manifest.slice();
+  state.archive.forEach(function(day){if(day&&Array.isArray(day.rows))rows=rows.concat(day.rows)});
+  rows=rows.filter(function(r){var key=labelOrderKey(cloneLabelRow(r));return !state.labelVault.some(function(e){return e&&e.orderKey===key})});
+  if(rows.length)storeLabelCopies(rows,'existing data migration',false);}
+function updateLabelVaultCount(){var el=getEl('label-vault-count');if(el)el.textContent=state.labelVault.length;}
+function claimRow(entry){if(!entry||!entry.row)return null;var row=cloneLabelRow(entry.row);row._labelShop=labelShopSnapshot(entry.shop||state.shop);row._vaultId=entry.id;return row;}
+function openLabelVault(){renderLabelVault();var mo=getEl('m-label-vault');if(mo)mo.classList.add('open')}
+function renderLabelVault(){var box=getEl('label-vault-list'),sum=getEl('label-vault-summary');if(!box)return;
+  var q=val('label-vault-search').trim().toLowerCase();
+  var list=state.labelVault.filter(function(e){if(!e||!e.row)return false;if(!q)return true;
+    var r=e.row,rec=r.rec||{},date='';try{date=new Date(e.savedAt).toLocaleString()}catch(x){}
+    return [e.oid,e.orderId,e.version,rec.name,rec.phone,rec.area,rec.address,rec.note,r.pay,r.deliverAt,date].some(function(v){return String(v||'').toLowerCase().indexOf(q)>=0});});
+  if(sum)sum.textContent=list.length+' of '+state.labelVault.length+' retained label version'+(state.labelVault.length!==1?'s':'')+' · no automatic expiry';
+  if(!list.length){box.innerHTML='<div class="empty" style="padding:22px;font-size:12px"><b>'+(state.labelVault.length?'No matching labels':'No label copies yet')+'</b>'+(state.labelVault.length?'Try a different order number, name, phone, address, or date.':'Copies appear automatically when a parcel is created or a label is printed.')+'</div>';return}
+  box.innerHTML=list.map(function(e){var r=e.row,rec=r.rec||{},total=Number(r.cod||0)+Number(r.ship||0),printed=Math.max(0,Number(e.printCount)||0);
+    return '<div class="vault-item"><div><div class="vault-order">ORDER '+esc(e.oid||'—')+' · VERSION '+esc(e.version||1)+'</div>'+
+      '<div class="vault-meta">Saved '+esc(fmtDT(e.savedAt))+' · '+esc(e.source||'created')+'<br>'+(printed?('Printed / generated '+printed+' time'+(printed!==1?'s':'')+(e.lastPrintedAt?' · last '+esc(fmtDT(e.lastPrintedAt)):'')):'Not printed yet')+'</div></div>'+
+      '<div><div class="vault-name">'+esc(rec.name||'—')+' · '+esc(moneyFor(total,e.shop))+'</div>'+
+      '<div class="vault-meta">'+esc(rec.phone||'No phone')+' · '+esc([rec.address,rec.area].filter(Boolean).join(', ')||'No address')+(r.deliverAt?'<br>Deliver '+esc(fmtDeliverDate(r.deliverAt,r.deliverTime)):'')+'</div></div>'+
+      '<div class="vault-actions"><button class="btn sm" data-act="previewClaimLabel" data-arg="'+esc(e.id)+'">👁 VIEW</button>'+
+      '<button class="btn sm orange" data-act="printClaimLabel" data-arg="'+esc(e.id)+'">🖨 REPRINT</button></div></div>';}).join('');}
+function previewClaimLabel(id){var e=state.labelVault.find(function(x){return x&&x.id===id}),row=claimRow(e);if(!row){toast('Saved label not found','err');return}
+  closeModal('m-label-vault');previewClaimId=id;showPreview('CLAIM COPY — ORDER '+(row.oid||'—')+' · VERSION '+(e.version||1),labelHTML(row),'claim',1.35,72);}
+function printClaimLabel(id){var e=state.labelVault.find(function(x){return x&&x.id===id}),row=claimRow(e);if(!row){toast('Saved label not found','err');return}
+  closeModal('m-preview');previewClaimId=null;printLabel(row);toast('Reprinting preserved claim copy '+(row.oid||''),'ok');}
 function toast(msg,type){var t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;
   var box=getEl('toasts');if(!box)return;box.appendChild(t);setTimeout(function(){t.style.opacity=0;t.style.transition='.4s';setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},400)},3200)}
 function renderStats(){var m=state.manifest;
   var c=getEl('stat-count');if(c)c.textContent=m.length;
   var sc=getEl('stat-cod');if(sc)sc.textContent=money(m.filter(function(r){return !r.done}).reduce(function(sum,r){return sum+Number(r.cod||0)+Number(r.ship||0)},0));
-  var md=getEl('mani-date');if(md)md.textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase();}
+  var md=getEl('mani-date');if(md)md.textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+  updateLabelVaultCount();}
 
 function onShipChange(){var v=val('f-ship','3000');
   var w=getEl('f-ship-manual-wrap');if(w)w.style.display=(v==='manual')?'block':'none';
@@ -1035,7 +1087,7 @@ function commitBatch(){
       rows.push(makeMergedRow(items,state.addr.find(function(a){return a.id===items[0].recId}),nextOid(state.counter)));});
   }
   rows.forEach(function(r){state.manifest.push(r)});
-  if(rows.length){persist();renderManifest();renderStats();}
+  if(rows.length){storeLabelCopies(rows,'created',false);persist();renderManifest();renderStats();}
   state.batch=remaining;
   renderBatch();
   return {rows:rows,skipped:skipped};}
@@ -1054,14 +1106,14 @@ function addSingleBatch(id){var it=state.batch.find(function(x){return x.id===id
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
   state.counter++;
-  state.manifest.push(makeRow(it,rec,nextOid(state.counter)));persist();renderManifest();renderStats();
+  var rowA=makeRow(it,rec,nextOid(state.counter));state.manifest.push(rowA);storeLabelCopies([rowA],'created',false);persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();toast('Added to manifest','ok');}
 function printSingleFromBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
   state.counter++;
   var rowM=makeRow(it,rec,nextOid(state.counter));
-  state.manifest.push(rowM);persist();renderManifest();renderStats();
+  state.manifest.push(rowM);storeLabelCopies([rowM],'created',false);persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();
   toast(rowM.oid+' — printing label…','ok');setTimeout(function(){printLabel(rowM)},250);}
 function removeBatch(id){state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch()}
@@ -1152,8 +1204,8 @@ function addToManifest(printAfter){var qty=Math.max(1,parseInt(val('f-qty'))||1)
   var row={id:'r'+Date.now(),oid:nextOid(state.counter),name:'',qty:qty,price:price,cod:cod,ship:ship,notes:'',
     pay:getEl('f-pay').value||'COD',mmRef:'',img:state.img||null,deliverAt:ddate,deliverTime:dtime,pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};
-  state.manifest.push(row);persist();renderManifest();renderStats();
-  toast(row.oid+' added','ok');
+  state.manifest.push(row);storeLabelCopies([row],'created',false);persist();renderManifest();renderStats();
+  toast(row.oid+' added · label copy retained','ok');
   state.img=null;state.imgOCR=null;state.imgBig=null;state.currentFile=null;paintDrop();hideSuggest();
   ['f-price','f-cod','f-ship-manual'].forEach(function(i){var e=getEl(i);if(e)e.value=''});
   var q=getEl('f-qty');if(q)q.value=1;var p=getEl('f-pay');if(p)p.value='COD';
@@ -1216,7 +1268,7 @@ function printSelectedLabels(){
   doPrint('label',rows.map(labelHTML).join(''),rows);
   toast('Printing '+rows.length+' selected label'+(rows.length!==1?'s':'')+'…','ok');}
 function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=state.manifest;
-  if(!m.length){body.innerHTML='<div class="empty"><b>No parcels yet</b>Add from the form or batch. All cells are editable; 🖨 reprints with amended values.</div>';var tt=getEl('totals');if(tt)tt.innerHTML='';updateManifestSelectionUI();return}
+  if(!m.length){body.innerHTML='<div class="empty"><b>No parcels yet</b>Add from the form or batch. All cells are editable; 🖨 reprints with amended values.</div>';var tt=getEl('totals');if(tt)tt.innerHTML='';updateManifestSelectionUI();updateExceptionReportCount();return}
   body.innerHTML='<div class="tbl-wrap"><table><thead><tr>'+
     '<th style="width:48px;text-align:center">PICK</th><th>#</th><th>NAME</th><th>ADDRESS</th><th>PHONE</th><th>DELIVERY DATE / TIME</th>'+
     '<th>AMOUNT</th><th>DELIVERY</th><th>MM REF</th><th>PAYMENT</th><th>STATUS</th><th>ACTIONS</th>'+
@@ -1251,13 +1303,13 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
     '<div class="tot"><small>DELIVERY</small><b>'+money(totShip)+'</b></div>'+
     '<div class="tot hot"><small>TO COLLECT</small><b>'+money(totOpen)+'</b></div>'+
     '<div class="tot"><small>TOTAL</small><b>'+money(totAll)+'</b></div>';
-  updateManifestSelectionUI();}
+  updateManifestSelectionUI();updateExceptionReportCount();}
 function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});r.done=!r.done;if(r.done)r.pod=true;persist();renderManifest();renderStats();}
 function removeRow(id){if(!confirm('Remove this parcel?'))return;
   state.manifest=state.manifest.filter(function(x){return x.id!==id});persist();renderManifest();renderStats();toast('Removed','ok');}
 function clearManifest(){if(!state.manifest.length){toast('Manifest empty','err');return}
-  if(!confirm('Clear WITHOUT archiving? Use Close day to keep a copy.'))return;
-  state.manifest=[];persist();renderManifest();renderStats();toast('Cleared','ok');}
+  if(!confirm('Clear WITHOUT archiving? Retained label copies will stay in the Label Claims Vault.'))return;
+  state.manifest=[];persist();renderManifest();renderStats();toast('Manifest cleared · label copies retained','ok');}
 function closeDay(){if(!state.manifest.length){toast('Manifest empty','err');return}
   if(!confirm('Close today\'s manifest ('+state.manifest.length+' parcels) and archive it?'))return;
   state.archive.unshift({id:'d'+Date.now(),date:new Date().toISOString(),rows:state.manifest});
@@ -1307,8 +1359,8 @@ function renderArch(){var box=getEl('arch-list');if(!box)return;
       '<button class="mini-btn del" data-arg="'+d.id+'" data-act="delArch">🗑</button></div>';}).join('');}
 function exportArchCSV(id){var d=state.archive.find(function(x){return x.id===id});
   if(d)exportRowsCSV(d.rows,'manifest-'+new Date(d.date).toISOString().slice(0,10)+'-archive.csv');}
-function delArch(id){if(!confirm('Delete this archived day?'))return;
-  state.archive=state.archive.filter(function(x){return x.id!==id});persist();renderArch();toast('Deleted','ok');}
+function delArch(id){if(!confirm('Delete this archived day? Permanent label copies will remain in the Label Claims Vault.'))return;
+  state.archive=state.archive.filter(function(x){return x.id!==id});persist();renderArch();updateExceptionReportCount();toast('Archived day deleted · label copies retained','ok');}
 
 function exportRowsCSV(rows,fname){if(!rows.length){toast('Nothing to export','err');return}
   var q=function(s){return '"'+String(s==null?'':s).replace(/\r?\n/g,' ').replace(/"/g,'""')+'"'};
@@ -1321,7 +1373,7 @@ function exportRowsCSV(rows,fname){if(!rows.length){toast('Nothing to export','e
   a.download=fname;a.click();toast('CSV downloaded','ok');}
 function exportCSV(){exportRowsCSV(state.manifest,'manifest-'+new Date().toISOString().slice(0,10)+'.csv')}
 
-function labelHTML(r){var s=state.shop,rec=r.rec||{};
+function labelHTML(r,shopOverride){var s=shopOverride||r._labelShop||state.shop,rec=r.rec||{};
   var codV=r.cod!==undefined?Number(r.cod||0):(parseFloat(val('f-cod')===''?val('f-price'):val('f-cod'))||0);
   var shipV=Number(r.ship!==undefined?r.ship:currentShip());
   var total=codV+shipV;
@@ -1339,10 +1391,10 @@ function labelHTML(r){var s=state.shop,rec=r.rec||{};
     '<div class="lbl-addr">'+esc([rec.address,rec.area].filter(Boolean).join(', '))+'</div>'+
     (rec.note?'<div class="lbl-note"> '+esc(rec.note)+'</div>':'')+'</div>'+
   '<div class="lbl-pay">'+
-    '<div><div class="lbl-k">'+esc(s.codLabel||'COLLECT')+'</div><div class="lbl-amt">'+money(total)+'</div></div>'+
-    '<div class="lbl-val"><span class="lbl-k">ITEM</span><br>'+money(codV)+'<br>'+
-      '<span class="lbl-k">LIVRAISON</span><br>'+money(shipV)+'<br>'+
-      '<span class="lbl-k">MODE</span><br>'+esc(r.pay||getEl('f-pay').value||'COD')+'</div></div>'+
+    '<div><div class="lbl-k">'+esc(s.codLabel||'COLLECT')+'</div><div class="lbl-amt">'+moneyFor(total,s)+'</div></div>'+
+    '<div class="lbl-val"><span class="lbl-k">ITEM</span><br>'+moneyFor(codV,s)+'<br>'+
+      '<span class="lbl-k">LIVRAISON</span><br>'+moneyFor(shipV,s)+'<br>'+
+      '<span class="lbl-k">MODE</span><br>'+esc(r.pay||getEl('f-pay').value||'COD')+'</div></div>'+ 
   '<div class="lbl-foot">'+esc(s.thanks)+'</div>'+
 '</div>';}
 function liveRow(){return{oid:nextOid(state.counter+1),
@@ -1358,59 +1410,104 @@ function measureLbl(html){var d=document.createElement('div');d.style.cssText='p
   d.innerHTML=html;document.body.appendChild(d);var el=d.querySelector('.lbl');var h=el?el.offsetHeight:0;if(d.parentNode)d.parentNode.removeChild(d);return h}
 
 function manSheetHTML(){var m=state.manifest,s=state.shop,now=new Date();
-  var codAll=m.reduce(function(a,r){return a+Number(r.cod||0)+Number(r.ship||0)},0);
+  var codAll=m.reduce(function(a,r){return a+Number(r.cod||0)},0);
   var shipAll=m.reduce(function(a,r){return a+Number(r.ship||0)},0);
-  var done=m.filter(function(r){return r.done}).length,pending=m.length-done;
+  var totalAll=codAll+shipAll,done=m.filter(function(r){return r.done}).length,pending=m.length-done;
   return '<div class="man-sheet">'+
     '<div class="man-head"><div class="man-title">'+esc(s.name)+'</div>'+
-      '<div class="man-sub">DELIVERY MANIFEST · '+now.toLocaleDateString()+' · '+m.length+' PARCELS ('+pending+' PENDING / '+done+' DELIVERED)</div>'+
-      '<div class="man-sub">☎ '+esc(s.phone)+'</div></div>'+
-    '<table class="mtbl">'+
-      '<thead><tr><th>N°</th><th>NOM / ADRESSE / TÉL</th><th>À PAYER</th><th>RÉF MM</th><th>STATUT</th></tr></thead>'+
-      '<tbody>'+
-      m.map(function(r,i){return '<tr>'+
-        '<td class="cn">'+(i+1)+'<br><span style="font-size:6.5px">'+esc(r.oid)+'</span></td>'+
-        '<td><div class="cname">'+esc(r.rec.name)+'</div>'+
-          '<div>'+esc([r.rec.address,r.rec.area].filter(Boolean).join(', '))+'</div>'+
-          '<div class="cmeta">☎ '+esc(r.rec.phone||'—')+(r.deliverAt?' · ⏱ '+esc(fmtDeliverDate(r.deliverAt,r.deliverTime)):'')+'</div>'+
-          '<div style="font:500 7px var(--mono);margin-top:.4mm">×'+r.qty+' · '+esc(r.pay||'COD')+'</div></td>'+
-        '<td class="ca">'+money(Number(r.cod||0)+Number(r.ship||0))+(Number(r.ship||0)?'<br><span style="font:600 6.5px var(--mono)">dont liv '+money(r.ship)+'</span>':'')+'</td>'+
-        '<td class="cr">'+esc(r.mmRef||'—')+'</td>'+
-        '<td class="cs">'+(r.done?'✓':'☐')+'<small>'+(r.done?'LIVRÉ':'EN ATTENTE')+'</small></td></tr>';}).join('')+
-      '</tbody></table>'+
-    '<div class="msum">TOTAL PARCELS : '+m.length+'<br>EN ATTENTE&nbsp;&nbsp;: '+pending+'<br>LIVRÉS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: '+done+'<br>DONT LIVRAISON: '+money(shipAll)+'<br>TOTAL À PAYER : '+money(codAll)+'</div>'+
-    '<div class="msig"><div>RIDER SIGN.</div><div>DATE / TIME</div></div>'+
-    '<div class="mfoot">GENERATED BY LABELONZEWAY</div></div>';}
+      '<div class="man-sub">80 MM COMPACT DELIVERY MANIFEST · '+now.toLocaleDateString()+' · '+m.length+' PARCELS</div>'+
+      '<div class="man-sub">☎ '+esc(s.phone)+' · '+pending+' PENDING · '+done+' DELIVERED</div></div>'+
+    '<div class="m80-list">'+m.map(function(r,i){var rec=r.rec||{},total=Number(r.cod||0)+Number(r.ship||0);
+      var address=[rec.address,rec.area].filter(Boolean).join(', '),delivery=r.deliverAt?fmtDeliverDate(r.deliverAt,r.deliverTime):'—';
+      var status=r.done?(r.paid?'✓ PAID':'✓ DELIVERED'):'☐ PENDING';
+      return '<div class="m80-row">'+
+        '<div class="m80-top"><div class="m80-order"><b>'+(i+1)+'</b>#'+esc(r.oid||'—')+'</div>'+
+          '<div class="m80-name">'+esc(rec.name||'—')+'</div><div class="m80-total">'+money(total)+'</div></div>'+
+        '<div class="m80-contact">☎ '+esc(rec.phone||'—')+' · '+esc(address||'—')+(rec.note?'<br><b>NOTE:</b> '+esc(rec.note):'')+'</div>'+
+        '<div class="m80-meta"><span>DEL '+esc(delivery)+'</span><span>QTY '+Number(r.qty||1)+'</span><span>PAY '+esc(r.pay||'COD')+'</span><span>FEE '+money(r.ship||0)+'</span></div>'+
+        '<div class="m80-meta"><span>MM '+esc(r.mmRef||'—')+'</span><span class="m80-status">'+status+'</span></div></div>';}).join('')+'</div>'+
+    '<div class="msum"><span>PARCELS '+m.length+'</span><span>PENDING '+pending+' · DELIVERED '+done+'</span>'+
+      '<span>DELIVERY '+money(shipAll)+'</span><span>ITEMS '+money(codAll)+'</span><span class="wide">TOTAL TO COLLECT '+money(totalAll)+'</span></div>'+
+    '<div class="msig"><div>RIDER SIGNATURE</div><div>DATE / TIME</div></div>'+
+    '<div class="mfoot">SHIPDESK · 80 MM LIGHT / COMPACT</div></div>';}
 function a4SheetHTML(){var m=state.manifest,s=state.shop,now=new Date();
-  var totAll=m.reduce(function(a,r){return a+Number(r.cod||0)+Number(r.ship||0)},0);
-  var shipAll=m.reduce(function(a,r){return a+Number(r.ship||0)},0);
+  var itemAll=m.reduce(function(a,r){return a+Number(r.price||0)},0);
+  var codAll=m.reduce(function(a,r){return a+Number(r.cod||0)},0);
+  var shipAll=m.reduce(function(a,r){return a+Number(r.ship||0)},0),totAll=codAll+shipAll;
+  var receivedAll=m.reduce(function(a,r){return a+Number(r.received||0)},0);
   var done=m.filter(function(r){return r.done}).length,pending=m.length-done;
-  return '<div class="a4sheet">'+
+  return '<div class="a4sheet a4manifest">'+
     '<div class="a4head">'+
       '<div><div class="a4shop">'+esc(s.name)+'</div><div class="a4tag">'+esc(s.tagline||'')+' · ☎ '+esc(s.phone)+'</div></div>'+
-      '<div><div class="a4title">DELIVERY MANIFEST</div>'+
-        '<div class="a4date">'+now.toLocaleDateString()+' · '+m.length+' PARCELS ('+pending+' PENDING / '+done+' DELIVERED)</div></div></div>'+
-    '<table class="a4tbl">'+
-      '<thead><tr><th>#</th><th>ORDER</th><th>NAME</th><th>PHONE</th><th>ADDRESS</th><th>DELIVERY</th>'+
-        '<th>AMOUNT</th><th>DELIVERY</th><th>MM REF</th><th>PAYMENT</th><th>STATUS</th></tr></thead>'+
-      '<tbody>'+
-      m.map(function(r,i){return '<tr>'+
-        '<td class="num">'+(i+1)+'</td><td class="mono">'+esc(r.oid)+'</td>'+
-        '<td><b>'+esc(r.rec.name)+'</b></td><td class="mono">'+esc(r.rec.phone||'—')+'</td>'+
-        '<td>'+(esc([r.rec.address,r.rec.area].filter(Boolean).join(', '))||'—')+'</td>'+
-        '<td class="mono">'+(r.deliverAt?esc(fmtDeliverDate(r.deliverAt,r.deliverTime)):'—')+'</td>'+
-        '<td class="money">'+money(r.cod)+'</td><td class="money">'+money(r.ship||0)+'</td>'+
-        '<td class="mono">'+esc(r.mmRef||'—')+'</td><td class="mono">'+esc(r.pay||'COD')+'</td>'+
-        '<td class="stat">'+(r.done?(r.paid?'✓ PAID':'✓ DELIVERED'):'☐ PENDING')+'</td></tr>';}).join('')+
-      '</tbody></table>'+
-    '<div class="a4totals">'+
-      '<div><small>PARCELS</small>'+m.length+'</div>'+
-      '<div><small>PENDING</small>'+pending+'</div>'+
-      '<div><small>DELIVERED</small>'+done+'</div>'+
-      '<div><small>DELIVERY TOTAL</small>'+money(shipAll)+'</div>'+
-      '<div><small>TOTAL TO COLLECT</small>'+money(totAll)+'</div></div>'+
+      '<div><div class="a4title">DELIVERY MANIFEST · ALL INFORMATION</div>'+
+        '<div class="a4date">A4 LANDSCAPE · '+now.toLocaleDateString()+' · '+m.length+' PARCELS · '+pending+' PENDING / '+done+' DELIVERED</div></div></div>'+
+    '<table class="a4tbl"><colgroup><col style="width:2%"><col style="width:5%"><col style="width:10%"><col style="width:17%"><col style="width:8%"><col style="width:3%">'+
+      '<col style="width:6%"><col style="width:6%"><col style="width:5%"><col style="width:6%"><col style="width:9%"><col style="width:8%"><col style="width:7%"><col style="width:8%"></colgroup>'+
+      '<thead><tr><th>#</th><th>ORDER</th><th>CUSTOMER</th><th>ADDRESS / NOTES</th><th>DELIVERY</th><th>QTY</th>'+
+        '<th>ITEM PRICE</th><th>COLLECT</th><th>FEE</th><th>TOTAL</th><th>PAYMENT / MM REF</th><th>STATUS / POD</th><th>RECEIVED</th><th>ADDED</th></tr></thead><tbody>'+
+      m.map(function(r,i){var rec=r.rec||{},total=Number(r.cod||0)+Number(r.ship||0),notes=[rec.note,r.notes].filter(Boolean).join(' · ');
+        return '<tr><td class="num">'+(i+1)+'</td><td class="mono"><b>'+esc(r.oid||'—')+'</b></td>'+
+          '<td><b>'+esc(rec.name||'—')+'</b><br><span class="mono">'+esc(rec.phone||'—')+'</span></td>'+
+          '<td>'+esc([rec.address,rec.area].filter(Boolean).join(', ')||'—')+(notes?'<br><b>NOTE:</b> '+esc(notes):'')+'</td>'+
+          '<td class="mono">'+(r.deliverAt?esc(fmtDeliverDate(r.deliverAt,r.deliverTime)):'—')+'</td><td class="num">'+Number(r.qty||1)+'</td>'+
+          '<td class="money">'+money(r.price||0)+'</td><td class="money">'+money(r.cod||0)+'</td><td class="money">'+money(r.ship||0)+'</td><td class="money">'+money(total)+'</td>'+
+          '<td class="mono">'+esc(r.pay||'COD')+'<br>MM: '+esc(r.mmRef||'—')+'</td>'+
+          '<td class="stat">'+(r.done?'DELIVERED':'PENDING')+'<br>POD '+(r.pod?'YES':'NO')+' · PAID '+(r.paid?'YES':'NO')+'</td>'+
+          '<td class="money">'+money(r.received||0)+'</td><td class="mono">'+esc(fmtDT(r.addedAt||now.toISOString()))+'</td></tr>';}).join('')+'</tbody></table>'+
+    '<div class="a4totals"><div><small>PARCELS</small>'+m.length+'</div><div><small>PENDING / DELIVERED</small>'+pending+' / '+done+'</div>'+
+      '<div><small>ITEM VALUE</small>'+money(itemAll)+'</div><div><small>COLLECT</small>'+money(codAll)+'</div><div><small>DELIVERY</small>'+money(shipAll)+'</div>'+
+      '<div><small>GRAND TOTAL</small>'+money(totAll)+'</div><div><small>RECEIVED</small>'+money(receivedAll)+'</div></div>'+
     '<div class="a4sig"><div>PREPARED BY</div><div>RIDER SIGNATURE</div><div>DATE / TIME</div></div>'+
-    '<div class="a4foot">GENERATED BY LABELONZEWAY · '+now.toLocaleString()+'</div></div>';}
+    '<div class="a4foot">GENERATED BY SHIPDESK · A4 LANDSCAPE · '+now.toLocaleString()+'</div></div>';}
+
+/* Every-second-day delivery/payment exception report: active manifest + retained daily archives. */
+function exceptionReportEntries(){var out=[];
+  state.manifest.forEach(function(r){if(r&&(!r.done||!r.paid))out.push({row:r,source:'ACTIVE',sourceDate:'CURRENT'})});
+  state.archive.forEach(function(day){if(!day||!Array.isArray(day.rows))return;var sourceDate='ARCHIVE';
+    try{sourceDate=new Date(day.date).toLocaleDateString()}catch(e){}
+    day.rows.forEach(function(r){if(r&&(!r.done||!r.paid))out.push({row:r,source:'ARCHIVE',sourceDate:sourceDate})});});
+  out.sort(function(a,b){return (Date.parse(a.row.addedAt)||0)-(Date.parse(b.row.addedAt)||0)});return out;}
+function updateExceptionReportCount(){var count=exceptionReportEntries().length,el=getEl('exception-report-count'),btn=getEl('exception-report-btn');
+  if(el)el.textContent=count;if(btn){btn.title=count+' parcel'+(count!==1?'s':'')+' not fully delivered and paid · automatic preview every second day at/after 09:00';
+    btn.style.borderColor=count?'var(--red)':'';btn.style.color=count?'var(--red)':'';}return count;}
+function exceptionReportHTML(){var entries=exceptionReportEntries(),s=state.shop,now=new Date();
+  var notDelivered=entries.filter(function(e){return !e.row.done}).length;
+  var notPaid=entries.filter(function(e){return !e.row.paid}).length;
+  var both=entries.filter(function(e){return !e.row.done&&!e.row.paid}).length;
+  var active=entries.filter(function(e){return e.source==='ACTIVE'}).length,archived=entries.length-active;
+  var unpaidTotal=entries.filter(function(e){return !e.row.paid}).reduce(function(a,e){var r=e.row;return a+Number(r.cod||0)+Number(r.ship||0)},0);
+  return '<div class="a4sheet exception-report">'+
+    '<div class="a4head"><div><div class="a4shop">'+esc(s.name)+'</div><div class="a4tag">'+esc(s.tagline||'')+' · ☎ '+esc(s.phone)+'</div></div>'+
+      '<div><div class="a4title">TWO-DAY DELIVERY &amp; PAYMENT EXCEPTION REPORT</div>'+
+      '<div class="a4date">A4 LANDSCAPE · '+now.toLocaleDateString()+' '+now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' · '+entries.length+' EXCEPTION'+(entries.length!==1?'S':'')+'</div></div></div>'+
+    '<div class="exception-note">SCOPE: ACTIVE MANIFEST + ARCHIVED DAYS. A parcel appears until both DELIVERED and PAID are marked. Automatic check runs every second day at/after 09:00 while SHIPDESK is open.</div>'+
+    '<table class="a4tbl"><colgroup><col style="width:2%"><col style="width:7%"><col style="width:5%"><col style="width:11%"><col style="width:17%"><col style="width:8%"><col style="width:3%">'+
+      '<col style="width:7%"><col style="width:8%"><col style="width:9%"><col style="width:6%"><col style="width:8%"><col style="width:9%"></colgroup>'+
+      '<thead><tr><th>#</th><th>SOURCE</th><th>ORDER</th><th>CUSTOMER</th><th>ADDRESS / NOTES</th><th>DELIVERY</th><th>QTY</th>'+
+      '<th>ITEM / COLLECT</th><th>FEE / TOTAL</th><th>PAYMENT / MM</th><th>DELIVERY / POD</th><th>PAYMENT / RECEIVED</th><th>ADDED / ISSUE</th></tr></thead><tbody>'+
+      (entries.length?entries.map(function(e,i){var r=e.row,rec=r.rec||{},total=Number(r.cod||0)+Number(r.ship||0),notes=[rec.note,r.notes].filter(Boolean).join(' · ');
+        var issue=[!r.done?'NOT DELIVERED':'',!r.paid?'NOT PAID':''].filter(Boolean).join(' + '),age=Math.max(0,Math.floor((now-(Date.parse(r.addedAt)||now))/86400000));
+        return '<tr><td class="num">'+(i+1)+'</td><td class="mono"><b>'+esc(e.source)+'</b><br>'+esc(e.sourceDate)+'</td><td class="mono"><b>'+esc(r.oid||'—')+'</b></td>'+
+          '<td><b>'+esc(rec.name||'—')+'</b><br><span class="mono">'+esc(rec.phone||'—')+'</span></td>'+
+          '<td>'+esc([rec.address,rec.area].filter(Boolean).join(', ')||'—')+(notes?'<br><b>NOTE:</b> '+esc(notes):'')+'</td>'+
+          '<td class="mono">'+(r.deliverAt?esc(fmtDeliverDate(r.deliverAt,r.deliverTime)):'—')+'</td><td class="num">'+Number(r.qty||1)+'</td>'+
+          '<td class="money">ITEM '+money(r.price||0)+'<br>COLLECT '+money(r.cod||0)+'</td><td class="money">FEE '+money(r.ship||0)+'<br>TOTAL '+money(total)+'</td>'+
+          '<td class="mono">'+esc(r.pay||'COD')+'<br>MM '+esc(r.mmRef||'—')+'</td><td class="stat">'+(r.done?'DELIVERED':'PENDING')+'<br>POD '+(r.pod?'YES':'NO')+'</td>'+
+          '<td class="stat">'+(r.paid?'PAID':'UNPAID')+'<br>RECV '+money(r.received||0)+'</td><td class="issue">'+esc(fmtDT(r.addedAt||now.toISOString()))+' · '+age+'D<br>'+esc(issue)+'</td></tr>';}).join(''):
+        '<tr><td colspan="13" style="padding:8mm;text-align:center;font:800 12px var(--body)">ALL CLEAR — NO PARCELS ARE WAITING FOR DELIVERY OR PAYMENT.</td></tr>')+'</tbody></table>'+
+    '<div class="a4totals"><div><small>EXCEPTIONS</small>'+entries.length+'</div><div><small>NOT DELIVERED</small>'+notDelivered+'</div><div><small>NOT PAID</small>'+notPaid+'</div>'+
+      '<div><small>BOTH OUTSTANDING</small>'+both+'</div><div><small>ACTIVE / ARCHIVED</small>'+active+' / '+archived+'</div><div><small>UNPAID TOTAL</small>'+money(unpaidTotal)+'</div></div>'+
+    '<div class="a4sig"><div>REVIEWED BY</div><div>FOLLOW-UP ACTION</div><div>DATE / TIME</div></div>'+
+    '<div class="a4foot">GENERATED BY SHIPDESK · TWO-DAY AUTOMATIC EXCEPTION CONTROL · '+now.toLocaleString()+'</div></div>';}
+function openExceptionReport(){showPreview('TWO-DAY REPORT — NOT DELIVERED OR NOT PAID',exceptionReportHTML(),'exceptions',1,297);}
+function localDateKey(d){d=d||new Date();var p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())}
+function dateKeyDayNumber(key){var p=String(key||'').split('-').map(Number);return p.length===3&&p.every(isFinite)?Math.floor(Date.UTC(p[0],p[1]-1,p[2])/86400000):NaN}
+function maybeBiDailyExceptionReport(){var now=new Date(),today=localDateKey(now),last=load(K('exceptionReportLastDate'),'');
+  if(!last){save(K('exceptionReportLastDate'),today);return}
+  if(now.getHours()<EXCEPTION_REPORT_HOUR||exceptionRunSessionDate===today)return;
+  var elapsed=dateKeyDayNumber(today)-dateKeyDayNumber(last);if(!isFinite(elapsed)||elapsed<2)return;
+  exceptionRunSessionDate=today;save(K('exceptionReportLastDate'),today);updateExceptionReportCount();
+  setTimeout(function(){toast('Two-day control: '+exceptionReportEntries().length+' parcel(s) need delivery/payment follow-up',exceptionReportEntries().length?'err':'ok');openExceptionReport();},500);}
 function salesReportHTML(){var m=state.manifest,s=state.shop,now=new Date();
   var tot=m.reduce(function(a,r){return a+Number(r.cod||0)+Number(r.ship||0)},0);
   var itemVal=m.reduce(function(a,r){return a+Number(r.cod||0)},0);
@@ -1436,7 +1533,7 @@ function salesReportHTML(){var m=state.manifest,s=state.shop,now=new Date();
     '<table class="a4tbl"><thead><tr><th>Method</th><th>Expected</th></tr></thead><tbody>'+(rowsPay||'<tr><td>—</td><td>—</td></tr>')+'</tbody></table>'+
     '<div class="rpt-sec">BY AREA</div>'+
     '<table class="a4tbl"><thead><tr><th>Area</th><th>Expected</th></tr></thead><tbody>'+(rowsArea||'<tr><td>—</td><td>—</td></tr>')+'</tbody></table>'+
-    '<div class="a4foot">GENERATED BY LABELONZEWAY · '+now.toLocaleString()+'</div></div>';}
+    '<div class="a4foot">GENERATED BY SHIPDESK · '+now.toLocaleString()+'</div></div>';}
 function printReport(){if(!state.manifest.length){toast('Manifest empty','err');return}
   doPrint('a4',salesReportHTML());toast('Printing sales report…','ok');}
 
@@ -1445,19 +1542,21 @@ function showPreview(title,html,mode,baseScale,mmW){previewMode=mode;
   var avail=Math.min(window.innerWidth*.92,780)-64;
   var scale=Math.min(baseScale,avail/(mmW*96/25.4));
   var body=getEl('preview-body');if(!body)return;
-  var hint=mode==='a4'
-    ?'<div class="pv-hint">📄 TO GET THE PDF: click <b>PRINT NOW</b> → Destination <b>"Save as PDF"</b>, Paper <b>A4</b>.</div>'
-    :'<div class="pv-hint">🧾 Prints on the POS80C at 72 mm label width (auto-cut per page).</div>';
+  var hint=(mode==='a4'||mode==='exceptions')
+    ?'<div class="pv-hint">📄 TO GET THE PDF: click <b>PRINT NOW</b> → Destination <b>"Save as PDF"</b> → Paper <b>A4</b> → <b>Landscape</b>.</div>'
+    :(mode==='man'?'<div class="pv-hint">🧾 Light, compact manifest for an <b>80 mm POS80C roll</b>. Includes only dispatch-required information.</div>':'<div class="pv-hint">🏷 Preserved claim label at 72 mm printable width.</div>');
   body.innerHTML=hint+'<div id="pv2-wrap" style="position:relative;flex:none">'+
     '<div id="pv2-scale" style="transform:scale('+scale+');transform-origin:top left">'+html+'</div></div>';
   getEl('pv2-wrap').style.width=(mmW*scale)+'mm';
   requestAnimationFrame(function(){var inner=getEl('pv2-scale');if(inner)getEl('pv2-wrap').style.height=(inner.offsetHeight*scale)+'px';});
   getEl('m-preview').classList.add('open');}
 function printManifest(){if(!state.manifest.length){toast('Manifest empty','err');return}
-  showPreview('MANIFEST — LABEL SIZE 72 MM',manSheetHTML(),'man',1.35,72);}
+  showPreview('MANIFEST — 80 MM COMPACT',manSheetHTML(),'man',1.25,80);}
 function printA4(){if(!state.manifest.length){toast('Manifest empty','err');return}
-  showPreview('MANIFEST — A4 / PDF',a4SheetHTML(),'a4',1.2,210);}
+  showPreview('MANIFEST — A4 LANDSCAPE / ALL INFORMATION',a4SheetHTML(),'a4',1,297);}
 function printPreviewNow(){
+  if(previewMode==='claim'){var claimId=previewClaimId;if(!claimId){toast('Saved label not found','err');closeModal('m-preview');return}printClaimLabel(claimId);return}
+  if(previewMode==='exceptions'){closeModal('m-preview');doPrint('a4',exceptionReportHTML());toast('Opening two-day report print dialog…','ok');return}
   if(!state.manifest.length){toast('Manifest empty','err');closeModal('m-preview');return}
   closeModal('m-preview');
   if(previewMode==='man')doPrint('manifest',manSheetHTML());
@@ -1475,15 +1574,11 @@ var directPrintBusy=false;
 function printerConfig(useForm){var s=state.shop;
   var from=function(id,fallback){var e=useForm?getEl(id):null;return e?e.value:fallback};
   var checked=function(id,fallback){var e=useForm?getEl(id):null;return e?e.checked:fallback};
-  var bridgeRaw=String(from('s-bridge-url',s.bridgeUrl||'auto')).trim()||'auto';
-  var host=String(location.hostname||'').toLowerCase(),isPrivate=/^10\./.test(host)||/^192\.168\./.test(host)||/^172\.(1[6-9]|2\d|3[01])\./.test(host)||host.endsWith('.local');
-  var localGateway=location.protocol==='http:'&&(location.port==='8765'||host==='localhost'||host==='127.0.0.1'||isPrivate);
-  var bridge=bridgeRaw.toLowerCase()==='auto'?(localGateway?location.origin+'/api':'http://127.0.0.1:8765/api'):bridgeRaw;
   return {
     mode:from('s-print-mode',s.printMode||'browser'),
     ip:String(from('s-printer-ip',s.printerIp||'')).trim(),
     port:Math.min(65535,Math.max(1,parseInt(from('s-printer-port',s.printerPort||9100))||9100)),
-    bridge:bridge.replace(/\/+$/,''),bridgeRaw:bridgeRaw,
+    bridge:String(from('s-bridge-url',s.bridgeUrl||'http://127.0.0.1:8765')).trim().replace(/\/+$/,''),
     dots:Math.min(640,Math.max(384,parseInt(from('s-printer-dots',s.printerDots||576))||576)),
     feed:Math.min(255,Math.max(0,parseInt(from('s-printer-feed',s.printerFeed==null?24:s.printerFeed))||0)),
     threshold:Math.min(254,Math.max(1,parseInt(from('s-printer-threshold',s.printerThreshold||180))||180)),
@@ -1493,36 +1588,36 @@ function printerConfig(useForm){var s=state.shop;
 function setPrinterStatus(msg,type){var el=getEl('s-printer-status');if(!el)return;
   el.textContent=msg;el.className='printer-status'+(type?' '+type:'');}
 function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser');
-  if(mode==='direct')setPrinterStatus('Direct Wi-Fi mode selected — test the gateway and printer.','');
-  else setPrinterStatus('Phone system print selected — uses AirPrint or Android Print.','');}
+  if(mode==='direct')setPrinterStatus('Direct mode selected — test the bridge and printer.','');
+  else setPrinterStatus('Browser print dialog selected. ESC/POS settings are saved for later.','');}
 function localRequestAddressSpace(url){try{var h=new URL(url,location.href).hostname.toLowerCase();
   if(h==='localhost'||h==='127.0.0.1'||h==='::1')return'loopback';
   if(h.endsWith('.local')||/^10\./.test(h)||/^192\.168\./.test(h)||/^172\.(1[6-9]|2\d|3[01])\./.test(h))return'local';
   }catch(e){}return'';}
-function fetchWithTimeout(url,opts,ms){if(typeof fetch!=='function')return Promise.reject(new Error('This browser does not support Wi-Fi Gateway requests'));
+function fetchWithTimeout(url,opts,ms){if(typeof fetch!=='function')return Promise.reject(new Error('This browser does not support local bridge requests'));
   opts=Object.assign({},opts||{});var addressSpace=localRequestAddressSpace(url);if(addressSpace)opts.targetAddressSpace=addressSpace;
   if(typeof AbortController==='undefined')return fetch(url,opts);
   var ctrl=new AbortController(),timer=setTimeout(function(){ctrl.abort()},ms||12000);opts.signal=ctrl.signal;
   return fetch(url,opts).finally(function(){clearTimeout(timer)});}
 function checkedBridgeJSON(res){return res.json().catch(function(){return{}}).then(function(data){
-  if(!res.ok||!data.ok)throw new Error(data.error||('Gateway returned HTTP '+res.status));return data;});}
+  if(!res.ok||!data.ok)throw new Error(data.error||('Bridge returned HTTP '+res.status));return data;});}
 function testPrinterBridge(){var c=printerConfig(true);
   if(!c.ip){setPrinterStatus('Enter the POS80C printer IP address first.','err');toast('Enter printer IP address','err');return}
-  if(!c.bridge){setPrinterStatus('Enter the Wi-Fi Gateway URL.','err');return}
-  setPrinterStatus('Testing Wi-Fi Gateway and '+c.ip+':'+c.port+'…','');
+  if(!c.bridge){setPrinterStatus('Enter the local bridge URL.','err');return}
+  setPrinterStatus('Testing local bridge and '+c.ip+':'+c.port+'…','');
   var url=c.bridge+'/health?host='+encodeURIComponent(c.ip)+'&port='+encodeURIComponent(c.port);
   fetchWithTimeout(url,{method:'GET',cache:'no-store'},8000).then(checkedBridgeJSON).then(function(data){
-    if(data.printer_ok){setPrinterStatus('✓ Gateway running · printer reachable at '+c.ip+':'+c.port,'ok');toast('POS80C connection ready','ok');}
-    else{throw new Error(data.printer_error||'Gateway is running, but the printer is not reachable');}
+    if(data.printer_ok){setPrinterStatus('✓ Bridge running · printer reachable at '+c.ip+':'+c.port,'ok');toast('POS80C connection ready','ok');}
+    else{throw new Error(data.printer_error||'Bridge is running, but the printer is not reachable');}
   }).catch(function(e){var msg=e&&e.name==='AbortError'?'Connection timed out':(e.message||String(e));
-    setPrinterStatus('✕ '+msg,'err');toast('Printer/gateway test failed — '+msg,'err');});}
+    setPrinterStatus('✕ '+msg,'err');toast('Printer test failed — '+msg,'err');});}
 function asciiBytes(text){var out=new Uint8Array(text.length);for(var i=0;i<text.length;i++)out[i]=text.charCodeAt(i)&255;return out;}
 function combineBytes(parts){var n=parts.reduce(function(sum,p){return sum+p.length},0),out=new Uint8Array(n),at=0;
   parts.forEach(function(p){out.set(p,at);at+=p.length});return out;}
 function cutCommand(type){if(type==='full')return new Uint8Array([29,86,65,0]);
   if(type==='partial')return new Uint8Array([29,86,66,0]);return new Uint8Array(0);}
 function buildCutTestBytes(c){var parts=[new Uint8Array([27,64,27,97,1]),
-    asciiBytes('LABELONZEWAY POS80C TEST\nDirect ESC/POS is ready\n'+c.ip+':'+c.port+'\n'),new Uint8Array([27,97,0])];
+    asciiBytes('SHIPDESK POS80C TEST\nDirect ESC/POS is ready\n'+c.ip+':'+c.port+'\n'),new Uint8Array([27,97,0])];
   if(c.feed)parts.push(new Uint8Array([29,74,c.feed]));
   var cut=cutCommand(c.cut);if(cut.length)parts.push(cut);return combineBytes(parts);}
 function bytesBase64(bytes){var chunks=[],size=32768;
@@ -1565,8 +1660,8 @@ function canvasRule(ctx,y,x,width,dashed){ctx.save();ctx.strokeStyle='#000';ctx.
 function renderDirectLabelCanvas(r,c){var W=c.dots,H=4800,pad=Math.max(20,Math.round(W*.042)),inner=W-pad*2;
   var cv=document.createElement('canvas');cv.width=W;cv.height=H;var ctx=cv.getContext('2d');
   if(!ctx)throw new Error('Canvas rendering is unavailable in this browser');ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.fillStyle='#000';
-  var s=state.shop,rec=r.rec||{},y=18;
-  y=drawCanvasText(ctx,String(s.name||'LABELONZEWAY').toUpperCase(),pad,y,inner,'800 31px Arial, sans-serif',35,'left',2);
+  var s=r._labelShop||state.shop,rec=r.rec||{},y=18;
+  y=drawCanvasText(ctx,String(s.name||'SHIPDESK').toUpperCase(),pad,y,inner,'800 31px Arial, sans-serif',35,'left',2);
   if(s.tagline)y=drawCanvasText(ctx,s.tagline,pad,y+1,inner,'700 17px Menlo, monospace',21,'left',2);
   if(s.phone)y=drawCanvasText(ctx,s.phone,pad,y,inner,'700 21px Menlo, monospace',25,'left',2);
   y+=8;canvasRule(ctx,y,pad,inner,false);y+=12;
@@ -1586,10 +1681,10 @@ function renderDirectLabelCanvas(r,c){var W=c.dots,H=4800,pad=Math.max(20,Math.r
   var codV=r.cod!==undefined?Number(r.cod||0):0,shipV=Number(r.ship||0),total=codV+shipV;
   var payTop=y,payH=126,leftW=Math.round(inner*.60);ctx.lineWidth=3;ctx.strokeRect(pad+1.5,payTop+1.5,inner-3,payH-3);
   drawCanvasText(ctx,s.codLabel||'COLLECT',pad+12,payTop+12,leftW-20,'700 16px Menlo, monospace',20,'left',2);
-  drawFittedText(ctx,money(total),pad+12,payTop+50,leftW-20,38,'800','left',22);
+  drawFittedText(ctx,moneyFor(total,s),pad+12,payTop+50,leftW-20,38,'800','left',22);
   var rx=pad+leftW,rw=inner-leftW-12,ry=payTop+12;
-  ry=drawCanvasText(ctx,'ITEM '+money(codV),rx,ry,rw,'700 17px Menlo, monospace',22,'right',2);
-  ry=drawCanvasText(ctx,'DELIVERY '+money(shipV),rx,ry+2,rw,'700 17px Menlo, monospace',22,'right',2);
+  ry=drawCanvasText(ctx,'ITEM '+moneyFor(codV,s),rx,ry,rw,'700 17px Menlo, monospace',22,'right',2);
+  ry=drawCanvasText(ctx,'DELIVERY '+moneyFor(shipV,s),rx,ry+2,rw,'700 17px Menlo, monospace',22,'right',2);
   drawCanvasText(ctx,'MODE '+String(r.pay||'COD'),rx,ry+2,rw,'700 16px Menlo, monospace',21,'right',2);
   y=payTop+payH+12;
   if(s.thanks)y=drawCanvasText(ctx,s.thanks,pad,y,inner,'700 19px Arial, sans-serif',24,'center',4);
@@ -1607,7 +1702,8 @@ function buildDirectLabelBytes(rows,c){var parts=[new Uint8Array([27,64,27,97,0]
 function continuePrintChainAfterDirect(){if(!printChain.length)return;var next=printChain.shift();
   setTimeout(function(){if(next==='manifest'&&state.manifest.length)doPrint('a4',a4SheetHTML());
     else if(next==='report'&&state.manifest.length)doPrint('a4',salesReportHTML());},400);}
-function directEscposPrint(rows){var c=printerConfig(false);
+function directEscposPrint(rows){var c=printerConfig(false),saved=(rows.length===1&&rows[0]&&rows[0]._labelShop)?rows[0]._labelShop:null;
+  if(saved){c.dots=Math.min(640,Math.max(384,Number(saved.printerDots)||c.dots));c.threshold=Math.min(254,Math.max(1,Number(saved.printerThreshold)||c.threshold));}
   if(directPrintBusy){toast('A direct print job is already being sent','err');return}
   if(!c.ip){toast('Set the POS80C printer IP in ⚙ Settings first','err');openSettings();return}
   directPrintBusy=true;toast('Preparing '+rows.length+' ESC/POS label'+(rows.length!==1?'s':'')+'…','ok');
@@ -1615,14 +1711,15 @@ function directEscposPrint(rows){var c=printerConfig(false);
     toast('Sending '+Number(bytes.length).toLocaleString()+' bytes to POS80C…','ok');return sendBridgeBytes(bytes,c,rows.length);
   }).then(function(data){toast('✓ '+rows.length+' label'+(rows.length!==1?'s':'')+' sent directly'+(c.cut!=='none'&&c.cutEach?' · cut after each':''),'ok');
     setPrinterStatus('✓ Last job: '+rows.length+' label(s), '+Number(data.bytes_sent||0).toLocaleString()+' bytes','ok');continuePrintChainAfterDirect();
-  }).catch(function(e){printChain=[];var msg=e&&e.name==='AbortError'?'Gateway/printer timed out':(e.message||String(e));
+  }).catch(function(e){printChain=[];var msg=e&&e.name==='AbortError'?'Bridge/printer timed out':(e.message||String(e));
     setPrinterStatus('✕ '+msg,'err');toast('Direct print failed — '+msg,'err');
   }).finally(function(){directPrintBusy=false});}
 
-var BRIDGE_PY_B64='IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJMYWJlbE9uWmVXYXkgV2ktRmkgR2F0ZXdheS4KCkhvc3RzIHRoZSBMYWJlbE9uWmVXYXkgbW9iaWxlIHdlYiBhcHAgb24gdGhlIGxvY2FsIG5ldHdvcmsgYW5kIGZvcndhcmRzCkVTQy9QT1MgYnl0ZXMgdG8gYSBwcml2YXRlLW5ldHdvcmsgdGhlcm1hbCBwcmludGVyLiBVc2VzIG9ubHkgUHl0aG9uJ3MKc3RhbmRhcmQgbGlicmFyeTsgbm8gdmVuZG9yIGRyaXZlciBvciBQeXRob24gcGFja2FnZSBpcyByZXF1aXJlZC4KIiIiCgpmcm9tIF9fZnV0dXJlX18gaW1wb3J0IGFubm90YXRpb25zCgppbXBvcnQgYmFzZTY0CmltcG9ydCBiaW5hc2NpaQppbXBvcnQgaXBhZGRyZXNzCmltcG9ydCBqc29uCmltcG9ydCBtaW1ldHlwZXMKaW1wb3J0IG9zCmltcG9ydCBzb2NrZXQKaW1wb3J0IHN5cwpmcm9tIGh0dHAuc2VydmVyIGltcG9ydCBCYXNlSFRUUFJlcXVlc3RIYW5kbGVyLCBUaHJlYWRpbmdIVFRQU2VydmVyCmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApmcm9tIHVybGxpYi5wYXJzZSBpbXBvcnQgcGFyc2VfcXMsIHVucXVvdGUsIHVybHBhcnNlCgpHQVRFV0FZX0hPU1QgPSAiMC4wLjAuMCIKR0FURVdBWV9QT1JUID0gODc2NQpNQVhfQk9EWSA9IDY0ICogMTAyNCAqIDEwMjQKVkVSU0lPTiA9ICIxLjAiCkFQUF9ESVIgPSBQYXRoKF9fZmlsZV9fKS5yZXNvbHZlKCkucGFyZW50CgptaW1ldHlwZXMuYWRkX3R5cGUoImFwcGxpY2F0aW9uL21hbmlmZXN0K2pzb24iLCAiLndlYm1hbmlmZXN0IikKbWltZXR5cGVzLmFkZF90eXBlKCJhcHBsaWNhdGlvbi9qYXZhc2NyaXB0IiwgIi5qcyIpCgoKZGVmIHJlc29sdmVkX3ByaXZhdGUoaG9zdDogc3RyLCBwb3J0OiBpbnQpIC0+IHR1cGxlW3N0ciwgaW50XToKICAgIGhvc3QgPSAoaG9zdCBvciAiIikuc3RyaXAoKQogICAgaWYgbm90IGhvc3Qgb3IgbGVuKGhvc3QpID4gMjUzOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkVudGVyIHRoZSBwcmludGVyIElQIGFkZHJlc3MiKQogICAgaWYgbm90IDEgPD0gaW50KHBvcnQpIDw9IDY1NTM1OgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIlByaW50ZXIgcG9ydCBtdXN0IGJlIGJldHdlZW4gMSBhbmQgNjU1MzUiKQogICAgdHJ5OgogICAgICAgIGluZm9zID0gc29ja2V0LmdldGFkZHJpbmZvKGhvc3QsIGludChwb3J0KSwgdHlwZT1zb2NrZXQuU09DS19TVFJFQU0pCiAgICBleGNlcHQgc29ja2V0LmdhaWVycm9yIGFzIGV4YzoKICAgICAgICByYWlzZSBWYWx1ZUVycm9yKGYiQ2Fubm90IHJlc29sdmUgcHJpbnRlciBhZGRyZXNzOiB7aG9zdH0iKSBmcm9tIGV4YwogICAgZm9yIGluZm8gaW4gaW5mb3M6CiAgICAgICAgYWRkcmVzcyA9IGluZm9bNF1bMF0uc3BsaXQoIiUiLCAxKVswXQogICAgICAgIHRyeToKICAgICAgICAgICAgaXAgPSBpcGFkZHJlc3MuaXBfYWRkcmVzcyhhZGRyZXNzKQogICAgICAgIGV4Y2VwdCBWYWx1ZUVycm9yOgogICAgICAgICAgICBjb250aW51ZQogICAgICAgIGlmIGlwLmlzX3ByaXZhdGUgb3IgaXAuaXNfbGlua19sb2NhbCBvciBpcC5pc19sb29wYmFjazoKICAgICAgICAgICAgcmV0dXJuIGhvc3QsIGludChwb3J0KQogICAgcmFpc2UgVmFsdWVFcnJvcigiRm9yIHNhZmV0eSwgdGhlIGdhdGV3YXkgb25seSBjb25uZWN0cyB0byBwcml2YXRlL2xvY2FsIHByaW50ZXIgYWRkcmVzc2VzIikKCgpkZWYgc2VuZF90b19wcmludGVyKGhvc3Q6IHN0ciwgcG9ydDogaW50LCBwYXlsb2FkOiBieXRlcykgLT4gTm9uZToKICAgIGhvc3QsIHBvcnQgPSByZXNvbHZlZF9wcml2YXRlKGhvc3QsIHBvcnQpCiAgICB3aXRoIHNvY2tldC5jcmVhdGVfY29ubmVjdGlvbigoaG9zdCwgcG9ydCksIHRpbWVvdXQ9NSkgYXMgc29jazoKICAgICAgICBzb2NrLnNldHRpbWVvdXQoMzApCiAgICAgICAgc29jay5zZW5kYWxsKHBheWxvYWQpCiAgICAgICAgdHJ5OgogICAgICAgICAgICBzb2NrLnNodXRkb3duKHNvY2tldC5TSFVUX1dSKQogICAgICAgIGV4Y2VwdCBPU0Vycm9yOgogICAgICAgICAgICBwYXNzCgoKZGVmIGxvY2FsX2lwdjRfYWRkcmVzc2VzKCkgLT4gbGlzdFtzdHJdOgogICAgZm91bmQ6IHNldFtzdHJdID0gc2V0KCkKICAgIHRyeToKICAgICAgICBmb3IgaW5mbyBpbiBzb2NrZXQuZ2V0YWRkcmluZm8oc29ja2V0LmdldGhvc3RuYW1lKCksIE5vbmUsIHNvY2tldC5BRl9JTkVUKToKICAgICAgICAgICAgaXAgPSBpbmZvWzRdWzBdCiAgICAgICAgICAgIGlmIG5vdCBpcC5zdGFydHN3aXRoKCIxMjcuIik6CiAgICAgICAgICAgICAgICBmb3VuZC5hZGQoaXApCiAgICBleGNlcHQgT1NFcnJvcjoKICAgICAgICBwYXNzCiAgICB0cnk6CiAgICAgICAgd2l0aCBzb2NrZXQuc29ja2V0KHNvY2tldC5BRl9JTkVULCBzb2NrZXQuU09DS19ER1JBTSkgYXMgc29jazoKICAgICAgICAgICAgc29jay5jb25uZWN0KCgiOC44LjguOCIsIDgwKSkKICAgICAgICAgICAgaXAgPSBzb2NrLmdldHNvY2tuYW1lKClbMF0KICAgICAgICAgICAgaWYgbm90IGlwLnN0YXJ0c3dpdGgoIjEyNy4iKToKICAgICAgICAgICAgICAgIGZvdW5kLmFkZChpcCkKICAgIGV4Y2VwdCBPU0Vycm9yOgogICAgICAgIHBhc3MKICAgIHJldHVybiBzb3J0ZWQoZm91bmQpCgoKY2xhc3MgR2F0ZXdheUhhbmRsZXIoQmFzZUhUVFBSZXF1ZXN0SGFuZGxlcik6CiAgICBzZXJ2ZXJfdmVyc2lvbiA9ICJMYWJlbE9uWmVXYXlHYXRld2F5LyIgKyBWRVJTSU9OCgogICAgZGVmIGxvZ19tZXNzYWdlKHNlbGYsIGZtdDogc3RyLCAqYXJnczogb2JqZWN0KSAtPiBOb25lOgogICAgICAgIHN5cy5zdGRvdXQud3JpdGUoIlslc10gJXNcbiIgJSAoc2VsZi5sb2dfZGF0ZV90aW1lX3N0cmluZygpLCBmbXQgJSBhcmdzKSkKICAgICAgICBzeXMuc3Rkb3V0LmZsdXNoKCkKCiAgICBkZWYgb3JpZ2luX2FsbG93ZWQoc2VsZikgLT4gYm9vbDoKICAgICAgICBvcmlnaW4gPSBzZWxmLmhlYWRlcnMuZ2V0KCJPcmlnaW4iKQogICAgICAgIGlmIG5vdCBvcmlnaW4gb3Igb3JpZ2luID09ICJudWxsIjoKICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgICAgICB0cnk6CiAgICAgICAgICAgIHBhcnNlZCA9IHVybHBhcnNlKG9yaWdpbikKICAgICAgICAgICAgaG9zdCA9IHBhcnNlZC5ob3N0bmFtZSBvciAiIgogICAgICAgICAgICBpZiBob3N0IGluIHsibG9jYWxob3N0IiwgIjEyNy4wLjAuMSIsICI6OjEifToKICAgICAgICAgICAgICAgIHJldHVybiBUcnVlCiAgICAgICAgICAgIGZvciBpbmZvIGluIHNvY2tldC5nZXRhZGRyaW5mbyhob3N0LCBOb25lKToKICAgICAgICAgICAgICAgIHJhdyA9IGluZm9bNF1bMF0uc3BsaXQoIiUiLCAxKVswXQogICAgICAgICAgICAgICAgaXAgPSBpcGFkZHJlc3MuaXBfYWRkcmVzcyhyYXcpCiAgICAgICAgICAgICAgICBpZiBpcC5pc19wcml2YXRlIG9yIGlwLmlzX2xpbmtfbG9jYWwgb3IgaXAuaXNfbG9vcGJhY2s6CiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgICAgICBleGNlcHQgRXhjZXB0aW9uOgogICAgICAgICAgICByZXR1cm4gRmFsc2UKICAgICAgICByZXR1cm4gRmFsc2UKCiAgICBkZWYgY29ycyhzZWxmKSAtPiBOb25lOgogICAgICAgIG9yaWdpbiA9IHNlbGYuaGVhZGVycy5nZXQoIk9yaWdpbiIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQWNjZXNzLUNvbnRyb2wtQWxsb3ctT3JpZ2luIiwgb3JpZ2luIGlmIG9yaWdpbiBlbHNlICIqIikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJWYXJ5IiwgIk9yaWdpbiIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQWNjZXNzLUNvbnRyb2wtQWxsb3ctTWV0aG9kcyIsICJHRVQsIFBPU1QsIE9QVElPTlMiKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIkFjY2Vzcy1Db250cm9sLUFsbG93LUhlYWRlcnMiLCAiQ29udGVudC1UeXBlIikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJBY2Nlc3MtQ29udHJvbC1BbGxvdy1Qcml2YXRlLU5ldHdvcmsiLCAidHJ1ZSIpCgogICAgZGVmIGpzb25fcmVzcG9uc2Uoc2VsZiwgc3RhdHVzOiBpbnQsIGRhdGE6IGRpY3QpIC0+IE5vbmU6CiAgICAgICAgYm9keSA9IGpzb24uZHVtcHMoZGF0YSwgZW5zdXJlX2FzY2lpPUZhbHNlKS5lbmNvZGUoInV0Zi04IikKICAgICAgICBzZWxmLnNlbmRfcmVzcG9uc2Uoc3RhdHVzKQogICAgICAgIGlmIHNlbGYub3JpZ2luX2FsbG93ZWQoKToKICAgICAgICAgICAgc2VsZi5jb3JzKCkKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJDb250ZW50LVR5cGUiLCAiYXBwbGljYXRpb24vanNvbjsgY2hhcnNldD11dGYtOCIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ2FjaGUtQ29udHJvbCIsICJuby1zdG9yZSIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1MZW5ndGgiLCBzdHIobGVuKGJvZHkpKSkKICAgICAgICBzZWxmLmVuZF9oZWFkZXJzKCkKICAgICAgICBzZWxmLndmaWxlLndyaXRlKGJvZHkpCgogICAgZGVmIGRvX09QVElPTlMoc2VsZikgLT4gTm9uZTogICMgbm9xYTogTjgwMgogICAgICAgIGlmIG5vdCBzZWxmLm9yaWdpbl9hbGxvd2VkKCk6CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg0MDMsIHsib2siOiBGYWxzZSwgImVycm9yIjogIk9yaWdpbiBub3QgYWxsb3dlZCJ9KQogICAgICAgICAgICByZXR1cm4KICAgICAgICBzZWxmLnNlbmRfcmVzcG9uc2UoMjA0KQogICAgICAgIHNlbGYuY29ycygpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1MZW5ndGgiLCAiMCIpCiAgICAgICAgc2VsZi5lbmRfaGVhZGVycygpCgogICAgZGVmIGhlYWx0aChzZWxmLCBwYXJzZWQpIC0+IE5vbmU6CiAgICAgICAgcXVlcnkgPSBwYXJzZV9xcyhwYXJzZWQucXVlcnkpCiAgICAgICAgaG9zdCA9IChxdWVyeS5nZXQoImhvc3QiKSBvciBbIiJdKVswXQogICAgICAgIHBvcnRfcmF3ID0gKHF1ZXJ5LmdldCgicG9ydCIpIG9yIFsiOTEwMCJdKVswXQogICAgICAgIHByaW50ZXJfb2sgPSBOb25lCiAgICAgICAgcHJpbnRlcl9lcnJvciA9ICIiCiAgICAgICAgaWYgaG9zdDoKICAgICAgICAgICAgdHJ5OgogICAgICAgICAgICAgICAgaG9zdCwgcG9ydCA9IHJlc29sdmVkX3ByaXZhdGUoaG9zdCwgaW50KHBvcnRfcmF3KSkKICAgICAgICAgICAgICAgIHdpdGggc29ja2V0LmNyZWF0ZV9jb25uZWN0aW9uKChob3N0LCBwb3J0KSwgdGltZW91dD0yKToKICAgICAgICAgICAgICAgICAgICBwYXNzCiAgICAgICAgICAgICAgICBwcmludGVyX29rID0gVHJ1ZQogICAgICAgICAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGV4YzoKICAgICAgICAgICAgICAgIHByaW50ZXJfb2sgPSBGYWxzZQogICAgICAgICAgICAgICAgcHJpbnRlcl9lcnJvciA9IHN0cihleGMpCiAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDIwMCwgewogICAgICAgICAgICAib2siOiBUcnVlLAogICAgICAgICAgICAiZ2F0ZXdheSI6ICJMYWJlbE9uWmVXYXkgV2ktRmkgR2F0ZXdheSIsCiAgICAgICAgICAgICJ2ZXJzaW9uIjogVkVSU0lPTiwKICAgICAgICAgICAgInByaW50ZXJfb2siOiBwcmludGVyX29rLAogICAgICAgICAgICAicHJpbnRlcl9lcnJvciI6IHByaW50ZXJfZXJyb3IsCiAgICAgICAgfSkKCiAgICBkZWYgc3RhdGljX2ZpbGUoc2VsZiwgcGFyc2VkKSAtPiBOb25lOgogICAgICAgIHJlbCA9IHVucXVvdGUocGFyc2VkLnBhdGgpLmxzdHJpcCgiLyIpIG9yICJpbmRleC5odG1sIgogICAgICAgIGNhbmRpZGF0ZSA9IChBUFBfRElSIC8gcmVsKS5yZXNvbHZlKCkKICAgICAgICB0cnk6CiAgICAgICAgICAgIGNhbmRpZGF0ZS5yZWxhdGl2ZV90byhBUFBfRElSKQogICAgICAgIGV4Y2VwdCBWYWx1ZUVycm9yOgogICAgICAgICAgICBzZWxmLnNlbmRfZXJyb3IoNDAzKQogICAgICAgICAgICByZXR1cm4KICAgICAgICBpZiBjYW5kaWRhdGUuaXNfZGlyKCk6CiAgICAgICAgICAgIGNhbmRpZGF0ZSA9IGNhbmRpZGF0ZSAvICJpbmRleC5odG1sIgogICAgICAgIGlmIG5vdCBjYW5kaWRhdGUuaXNfZmlsZSgpIG9yIGNhbmRpZGF0ZS5uYW1lLnN0YXJ0c3dpdGgoIi4iKSBvciBjYW5kaWRhdGUuc3VmZml4IGluIHsiLnB5IiwgIi5jb21tYW5kIiwgIi50eHQiLCAiLnppcCJ9OgogICAgICAgICAgICBzZWxmLnNlbmRfZXJyb3IoNDA0KQogICAgICAgICAgICByZXR1cm4KICAgICAgICBib2R5ID0gY2FuZGlkYXRlLnJlYWRfYnl0ZXMoKQogICAgICAgIGNvbnRlbnRfdHlwZSA9IG1pbWV0eXBlcy5ndWVzc190eXBlKHN0cihjYW5kaWRhdGUpKVswXSBvciAiYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtIgogICAgICAgIHNlbGYuc2VuZF9yZXNwb25zZSgyMDApCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1UeXBlIiwgY29udGVudF90eXBlICsgKCI7IGNoYXJzZXQ9dXRmLTgiIGlmIGNvbnRlbnRfdHlwZS5zdGFydHN3aXRoKCJ0ZXh0LyIpIG9yIGNvbnRlbnRfdHlwZSBpbiB7ImFwcGxpY2F0aW9uL2phdmFzY3JpcHQiLCAiYXBwbGljYXRpb24vbWFuaWZlc3QranNvbiJ9IGVsc2UgIiIpKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIlgtQ29udGVudC1UeXBlLU9wdGlvbnMiLCAibm9zbmlmZiIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1MZW5ndGgiLCBzdHIobGVuKGJvZHkpKSkKICAgICAgICBpZiBjYW5kaWRhdGUubmFtZSBpbiB7ImluZGV4Lmh0bWwiLCAic2VydmljZS13b3JrZXIuanMiLCAibWFuaWZlc3Qud2VibWFuaWZlc3QifToKICAgICAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ2FjaGUtQ29udHJvbCIsICJuby1jYWNoZSIpCiAgICAgICAgZWxzZToKICAgICAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ2FjaGUtQ29udHJvbCIsICJwdWJsaWMsIG1heC1hZ2U9ODY0MDAiKQogICAgICAgIHNlbGYuZW5kX2hlYWRlcnMoKQogICAgICAgIHNlbGYud2ZpbGUud3JpdGUoYm9keSkKCiAgICBkZWYgZG9fR0VUKHNlbGYpIC0+IE5vbmU6ICAjIG5vcWE6IE44MDIKICAgICAgICBwYXJzZWQgPSB1cmxwYXJzZShzZWxmLnBhdGgpCiAgICAgICAgaWYgcGFyc2VkLnBhdGggaW4geyIvYXBpL2hlYWx0aCIsICIvaGVhbHRoIn06CiAgICAgICAgICAgIGlmIG5vdCBzZWxmLm9yaWdpbl9hbGxvd2VkKCk6CiAgICAgICAgICAgICAgICBzZWxmLmpzb25fcmVzcG9uc2UoNDAzLCB7Im9rIjogRmFsc2UsICJlcnJvciI6ICJPcmlnaW4gbm90IGFsbG93ZWQifSkKICAgICAgICAgICAgICAgIHJldHVybgogICAgICAgICAgICBzZWxmLmhlYWx0aChwYXJzZWQpCiAgICAgICAgICAgIHJldHVybgogICAgICAgIHNlbGYuc3RhdGljX2ZpbGUocGFyc2VkKQoKICAgIGRlZiBkb19QT1NUKHNlbGYpIC0+IE5vbmU6ICAjIG5vcWE6IE44MDIKICAgICAgICBpZiBub3Qgc2VsZi5vcmlnaW5fYWxsb3dlZCgpOgogICAgICAgICAgICBzZWxmLmpzb25fcmVzcG9uc2UoNDAzLCB7Im9rIjogRmFsc2UsICJlcnJvciI6ICJPcmlnaW4gbm90IGFsbG93ZWQifSkKICAgICAgICAgICAgcmV0dXJuCiAgICAgICAgaWYgdXJscGFyc2Uoc2VsZi5wYXRoKS5wYXRoIG5vdCBpbiB7Ii9hcGkvcHJpbnQiLCAiL3ByaW50In06CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg0MDQsIHsib2siOiBGYWxzZSwgImVycm9yIjogIk5vdCBmb3VuZCJ9KQogICAgICAgICAgICByZXR1cm4KICAgICAgICB0cnk6CiAgICAgICAgICAgIGxlbmd0aCA9IGludChzZWxmLmhlYWRlcnMuZ2V0KCJDb250ZW50LUxlbmd0aCIsICIwIikpCiAgICAgICAgICAgIGlmIGxlbmd0aCA8PSAwIG9yIGxlbmd0aCA+IE1BWF9CT0RZOgogICAgICAgICAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiSW52YWxpZCBvciBvdmVyc2l6ZWQgcHJpbnQgcmVxdWVzdCIpCiAgICAgICAgICAgIHJlcXVlc3QgPSBqc29uLmxvYWRzKHNlbGYucmZpbGUucmVhZChsZW5ndGgpLmRlY29kZSgidXRmLTgiKSkKICAgICAgICAgICAgaG9zdCA9IHN0cihyZXF1ZXN0LmdldCgicHJpbnRlcl9pcCIsICIiKSkKICAgICAgICAgICAgcG9ydCA9IGludChyZXF1ZXN0LmdldCgicHJpbnRlcl9wb3J0IiwgOTEwMCkpCiAgICAgICAgICAgIGVuY29kZWQgPSByZXF1ZXN0LmdldCgiZGF0YSIsICIiKQogICAgICAgICAgICBpZiBub3QgaXNpbnN0YW5jZShlbmNvZGVkLCBzdHIpOgogICAgICAgICAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiSW52YWxpZCBFU0MvUE9TIHBheWxvYWQiKQogICAgICAgICAgICB0cnk6CiAgICAgICAgICAgICAgICBwYXlsb2FkID0gYmFzZTY0LmI2NGRlY29kZShlbmNvZGVkLCB2YWxpZGF0ZT1UcnVlKQogICAgICAgICAgICBleGNlcHQgKGJpbmFzY2lpLkVycm9yLCBWYWx1ZUVycm9yKSBhcyBleGM6CiAgICAgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJJbnZhbGlkIGJhc2U2NCBwcmludCBkYXRhIikgZnJvbSBleGMKICAgICAgICAgICAgaWYgbm90IHBheWxvYWQgb3IgbGVuKHBheWxvYWQpID4gTUFYX0JPRFk6CiAgICAgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJFbXB0eSBvciBvdmVyc2l6ZWQgRVNDL1BPUyBwYXlsb2FkIikKICAgICAgICAgICAgc2VuZF90b19wcmludGVyKGhvc3QsIHBvcnQsIHBheWxvYWQpCiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSgyMDAsIHsKICAgICAgICAgICAgICAgICJvayI6IFRydWUsCiAgICAgICAgICAgICAgICAiYnl0ZXNfc2VudCI6IGxlbihwYXlsb2FkKSwKICAgICAgICAgICAgICAgICJsYWJlbHMiOiBpbnQocmVxdWVzdC5nZXQoImxhYmVscyIsIDApIG9yIDApLAogICAgICAgICAgICB9KQogICAgICAgICAgICBwcmludChmIlNlbnQge2xlbihwYXlsb2FkKTosfSBieXRlcyB0byB7aG9zdH06e3BvcnR9IikKICAgICAgICBleGNlcHQgKFZhbHVlRXJyb3IsIFR5cGVFcnJvciwganNvbi5KU09ORGVjb2RlRXJyb3IpIGFzIGV4YzoKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDQwMCwgeyJvayI6IEZhbHNlLCAiZXJyb3IiOiBzdHIoZXhjKX0pCiAgICAgICAgZXhjZXB0IChPU0Vycm9yLCBUaW1lb3V0RXJyb3IpIGFzIGV4YzoKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDUwMiwgeyJvayI6IEZhbHNlLCAiZXJyb3IiOiBmIlByaW50ZXIgY29ubmVjdGlvbiBmYWlsZWQ6IHtleGN9In0pCiAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbiBhcyBleGM6CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg1MDAsIHsib2siOiBGYWxzZSwgImVycm9yIjogZiJHYXRld2F5IGVycm9yOiB7ZXhjfSJ9KQoKCmRlZiBtYWluKCkgLT4gTm9uZToKICAgIHBvcnQgPSBHQVRFV0FZX1BPUlQKICAgIGlmIGxlbihzeXMuYXJndikgPiAxOgogICAgICAgIHBvcnQgPSBpbnQoc3lzLmFyZ3ZbMV0pCiAgICBzZXJ2ZXIgPSBUaHJlYWRpbmdIVFRQU2VydmVyKChHQVRFV0FZX0hPU1QsIHBvcnQpLCBHYXRld2F5SGFuZGxlcikKICAgIHByaW50KCJcbkxhYmVsT25aZVdheSBXaS1GaSBHYXRld2F5IGlzIHJ1bm5pbmciKQogICAgcHJpbnQoIj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IikKICAgIHByaW50KGYiT24gdGhpcyBjb21wdXRlcjogaHR0cDovLzEyNy4wLjAuMTp7cG9ydH0vIikKICAgIGFkZHJlc3NlcyA9IGxvY2FsX2lwdjRfYWRkcmVzc2VzKCkKICAgIGZvciBpcCBpbiBhZGRyZXNzZXM6CiAgICAgICAgcHJpbnQoZiJPbiBBbmRyb2lkL2lQaG9uZTogaHR0cDovL3tpcH06e3BvcnR9LyIpCiAgICBpZiBub3QgYWRkcmVzc2VzOgogICAgICAgIHByaW50KCJDb3VsZCBub3QgZGV0ZWN0IHRoZSBMQU4gYWRkcmVzcy4gQ2hlY2sgdGhpcyBjb21wdXRlcidzIFdpLUZpIG5ldHdvcmsgZGV0YWlscy4iKQogICAgcHJpbnQoIlxuT3BlbiB0aGUgbW9iaWxlIFVSTCBvbiBhIHBob25lIGNvbm5lY3RlZCB0byB0aGUgc2FtZSBXaS1GaS4iKQogICAgcHJpbnQoIktlZXAgdGhpcyB3aW5kb3cgb3BlbiBmb3IgZGlyZWN0IFBPUzgwQyBwcmludGluZy4iKQogICAgcHJpbnQoIlByZXNzIENvbnRyb2wtQyB0byBzdG9wLlxuIikKICAgIHRyeToKICAgICAgICBzZXJ2ZXIuc2VydmVfZm9yZXZlcigpCiAgICBleGNlcHQgS2V5Ym9hcmRJbnRlcnJ1cHQ6CiAgICAgICAgcHJpbnQoIlxuU3RvcHBpbmcgTGFiZWxPblplV2F5IEdhdGV3YXnigKYiKQogICAgZmluYWxseToKICAgICAgICBzZXJ2ZXIuc2VydmVyX2Nsb3NlKCkKCgppZiBfX25hbWVfXyA9PSAiX19tYWluX18iOgogICAgbWFpbigpCg==';
-function downloadPrinterBridge(){try{var a=document.createElement('a');a.href='../POS80C_Hosted_Print_Gateway.zip';a.download='POS80C_Hosted_Print_Gateway.zip';document.body.appendChild(a);a.click();a.remove();toast('POS80C gateway kit downloaded','ok');}catch(e){toast('Could not download gateway kit: '+(e.message||e),'err');}}
+var BRIDGE_PY_B64='IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJTSElQREVTSyBsb2NhbCBFU0MvUE9TIGJyaWRnZSBmb3IgbWFjT1MuCgpMaXN0ZW5zIG9ubHkgb24gMTI3LjAuMC4xOjg3NjUgYW5kIGZvcndhcmRzIEVTQy9QT1MgYnl0ZXMgZnJvbSB0aGUKU0hJUERFU0sgSFRNTCBmaWxlIHRvIGEgcHJpdmF0ZS1uZXR3b3JrIHByaW50ZXIgb24gVENQIHBvcnQgOTEwMC4KTm8gdmVuZG9yIGRyaXZlciBvciBQeXRob24gcGFja2FnZSBpcyByZXF1aXJlZC4KIiIiCgpmcm9tIF9fZnV0dXJlX18gaW1wb3J0IGFubm90YXRpb25zCgppbXBvcnQgYmFzZTY0CmltcG9ydCBiaW5hc2NpaQppbXBvcnQgaXBhZGRyZXNzCmltcG9ydCBqc29uCmltcG9ydCBzb2NrZXQKaW1wb3J0IHN5cwpmcm9tIGh0dHAuc2VydmVyIGltcG9ydCBCYXNlSFRUUFJlcXVlc3RIYW5kbGVyLCBUaHJlYWRpbmdIVFRQU2VydmVyCmZyb20gdXJsbGliLnBhcnNlIGltcG9ydCBwYXJzZV9xcywgdXJscGFyc2UKCkJSSURHRV9IT1NUID0gIjEyNy4wLjAuMSIKQlJJREdFX1BPUlQgPSA4NzY1Ck1BWF9CT0RZID0gNjQgKiAxMDI0ICogMTAyNApWRVJTSU9OID0gIjEuMCIKCgpkZWYgcHJpdmF0ZV9wcmludGVyX2hvc3QoaG9zdDogc3RyLCBwb3J0OiBpbnQpIC0+IHR1cGxlW3N0ciwgaW50XToKICAgIGhvc3QgPSAoaG9zdCBvciAiIikuc3RyaXAoKQogICAgaWYgbm90IGhvc3Qgb3IgbGVuKGhvc3QpID4gMjUzOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkVudGVyIHRoZSBwcmludGVyIElQIGFkZHJlc3MiKQogICAgaWYgbm90IDEgPD0gaW50KHBvcnQpIDw9IDY1NTM1OgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIlByaW50ZXIgcG9ydCBtdXN0IGJlIGJldHdlZW4gMSBhbmQgNjU1MzUiKQoKICAgIHRyeToKICAgICAgICBpbmZvcyA9IHNvY2tldC5nZXRhZGRyaW5mbyhob3N0LCBpbnQocG9ydCksIHR5cGU9c29ja2V0LlNPQ0tfU1RSRUFNKQogICAgZXhjZXB0IHNvY2tldC5nYWllcnJvciBhcyBleGM6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcihmIkNhbm5vdCByZXNvbHZlIHByaW50ZXIgYWRkcmVzczoge2hvc3R9IikgZnJvbSBleGMKCiAgICBhbGxvd2VkID0gRmFsc2UKICAgIGZvciBpbmZvIGluIGluZm9zOgogICAgICAgIGFkZHJlc3MgPSBpbmZvWzRdWzBdLnNwbGl0KCIlIiwgMSlbMF0KICAgICAgICB0cnk6CiAgICAgICAgICAgIGlwID0gaXBhZGRyZXNzLmlwX2FkZHJlc3MoYWRkcmVzcykKICAgICAgICBleGNlcHQgVmFsdWVFcnJvcjoKICAgICAgICAgICAgY29udGludWUKICAgICAgICBpZiBpcC5pc19wcml2YXRlIG9yIGlwLmlzX2xpbmtfbG9jYWwgb3IgaXAuaXNfbG9vcGJhY2s6CiAgICAgICAgICAgIGFsbG93ZWQgPSBUcnVlCiAgICAgICAgICAgIGJyZWFrCiAgICBpZiBub3QgYWxsb3dlZDoKICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJGb3Igc2FmZXR5LCB0aGUgYnJpZGdlIG9ubHkgY29ubmVjdHMgdG8gcHJpdmF0ZS9sb2NhbCBwcmludGVyIGFkZHJlc3NlcyIpCiAgICByZXR1cm4gaG9zdCwgaW50KHBvcnQpCgoKZGVmIHNlbmRfdG9fcHJpbnRlcihob3N0OiBzdHIsIHBvcnQ6IGludCwgcGF5bG9hZDogYnl0ZXMpIC0+IE5vbmU6CiAgICBob3N0LCBwb3J0ID0gcHJpdmF0ZV9wcmludGVyX2hvc3QoaG9zdCwgcG9ydCkKICAgIHdpdGggc29ja2V0LmNyZWF0ZV9jb25uZWN0aW9uKChob3N0LCBwb3J0KSwgdGltZW91dD01KSBhcyBzb2NrOgogICAgICAgIHNvY2suc2V0dGltZW91dCgzMCkKICAgICAgICBzb2NrLnNlbmRhbGwocGF5bG9hZCkKICAgICAgICB0cnk6CiAgICAgICAgICAgIHNvY2suc2h1dGRvd24oc29ja2V0LlNIVVRfV1IpCiAgICAgICAgZXhjZXB0IE9TRXJyb3I6CiAgICAgICAgICAgIHBhc3MKCgpjbGFzcyBCcmlkZ2VIYW5kbGVyKEJhc2VIVFRQUmVxdWVzdEhhbmRsZXIpOgogICAgc2VydmVyX3ZlcnNpb24gPSAiU0hJUERFU0tCcmlkZ2UvIiArIFZFUlNJT04KCiAgICBkZWYgbG9nX21lc3NhZ2Uoc2VsZiwgZm10OiBzdHIsICphcmdzOiBvYmplY3QpIC0+IE5vbmU6CiAgICAgICAgc3lzLnN0ZG91dC53cml0ZSgiWyVzXSAlc1xuIiAlIChzZWxmLmxvZ19kYXRlX3RpbWVfc3RyaW5nKCksIGZtdCAlIGFyZ3MpKQogICAgICAgIHN5cy5zdGRvdXQuZmx1c2goKQoKICAgIGRlZiBvcmlnaW5fYWxsb3dlZChzZWxmKSAtPiBib29sOgogICAgICAgIG9yaWdpbiA9IHNlbGYuaGVhZGVycy5nZXQoIk9yaWdpbiIpCiAgICAgICAgaWYgbm90IG9yaWdpbiBvciBvcmlnaW4gPT0gIm51bGwiOiAgIyBmaWxlOi8vIFNISVBERVNLIGFwcAogICAgICAgICAgICByZXR1cm4gVHJ1ZQogICAgICAgIHRyeToKICAgICAgICAgICAgcGFyc2VkID0gdXJscGFyc2Uob3JpZ2luKQogICAgICAgICAgICByZXR1cm4gcGFyc2VkLmhvc3RuYW1lIGluIHsibG9jYWxob3N0IiwgIjEyNy4wLjAuMSIsICI6OjEifQogICAgICAgIGV4Y2VwdCBFeGNlcHRpb246CiAgICAgICAgICAgIHJldHVybiBGYWxzZQoKICAgIGRlZiBjb3JzKHNlbGYpIC0+IE5vbmU6CiAgICAgICAgb3JpZ2luID0gc2VsZi5oZWFkZXJzLmdldCgiT3JpZ2luIikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJBY2Nlc3MtQ29udHJvbC1BbGxvdy1PcmlnaW4iLCBvcmlnaW4gaWYgb3JpZ2luIGVsc2UgIm51bGwiKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIlZhcnkiLCAiT3JpZ2luIikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJBY2Nlc3MtQ29udHJvbC1BbGxvdy1NZXRob2RzIiwgIkdFVCwgUE9TVCwgT1BUSU9OUyIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQWNjZXNzLUNvbnRyb2wtQWxsb3ctSGVhZGVycyIsICJDb250ZW50LVR5cGUiKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIkFjY2Vzcy1Db250cm9sLUFsbG93LVByaXZhdGUtTmV0d29yayIsICJ0cnVlIikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJDYWNoZS1Db250cm9sIiwgIm5vLXN0b3JlIikKCiAgICBkZWYganNvbl9yZXNwb25zZShzZWxmLCBzdGF0dXM6IGludCwgZGF0YTogZGljdCkgLT4gTm9uZToKICAgICAgICBib2R5ID0ganNvbi5kdW1wcyhkYXRhLCBlbnN1cmVfYXNjaWk9RmFsc2UpLmVuY29kZSgidXRmLTgiKQogICAgICAgIHNlbGYuc2VuZF9yZXNwb25zZShzdGF0dXMpCiAgICAgICAgaWYgc2VsZi5vcmlnaW5fYWxsb3dlZCgpOgogICAgICAgICAgICBzZWxmLmNvcnMoKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIkNvbnRlbnQtVHlwZSIsICJhcHBsaWNhdGlvbi9qc29uOyBjaGFyc2V0PXV0Zi04IikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJDb250ZW50LUxlbmd0aCIsIHN0cihsZW4oYm9keSkpKQogICAgICAgIHNlbGYuZW5kX2hlYWRlcnMoKQogICAgICAgIHNlbGYud2ZpbGUud3JpdGUoYm9keSkKCiAgICBkZWYgZG9fT1BUSU9OUyhzZWxmKSAtPiBOb25lOiAgIyBub3FhOiBOODAyCiAgICAgICAgaWYgbm90IHNlbGYub3JpZ2luX2FsbG93ZWQoKToKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDQwMywgeyJvayI6IEZhbHNlLCAiZXJyb3IiOiAiT3JpZ2luIG5vdCBhbGxvd2VkLiBPcGVuIFNISVBERVNLIGFzIGEgbG9jYWwgZmlsZS4ifSkKICAgICAgICAgICAgcmV0dXJuCiAgICAgICAgc2VsZi5zZW5kX3Jlc3BvbnNlKDIwNCkKICAgICAgICBzZWxmLmNvcnMoKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIkNvbnRlbnQtTGVuZ3RoIiwgIjAiKQogICAgICAgIHNlbGYuZW5kX2hlYWRlcnMoKQoKICAgIGRlZiBkb19HRVQoc2VsZikgLT4gTm9uZTogICMgbm9xYTogTjgwMgogICAgICAgIGlmIG5vdCBzZWxmLm9yaWdpbl9hbGxvd2VkKCk6CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg0MDMsIHsib2siOiBGYWxzZSwgImVycm9yIjogIk9yaWdpbiBub3QgYWxsb3dlZCJ9KQogICAgICAgICAgICByZXR1cm4KICAgICAgICBwYXJzZWQgPSB1cmxwYXJzZShzZWxmLnBhdGgpCiAgICAgICAgaWYgcGFyc2VkLnBhdGggbm90IGluIHsiLyIsICIvaGVhbHRoIn06CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg0MDQsIHsib2siOiBGYWxzZSwgImVycm9yIjogIk5vdCBmb3VuZCJ9KQogICAgICAgICAgICByZXR1cm4KCiAgICAgICAgcXVlcnkgPSBwYXJzZV9xcyhwYXJzZWQucXVlcnkpCiAgICAgICAgaG9zdCA9IChxdWVyeS5nZXQoImhvc3QiKSBvciBbIiJdKVswXQogICAgICAgIHBvcnRfcmF3ID0gKHF1ZXJ5LmdldCgicG9ydCIpIG9yIFsiOTEwMCJdKVswXQogICAgICAgIHByaW50ZXJfb2sgPSBOb25lCiAgICAgICAgcHJpbnRlcl9lcnJvciA9ICIiCiAgICAgICAgaWYgaG9zdDoKICAgICAgICAgICAgdHJ5OgogICAgICAgICAgICAgICAgaG9zdCwgcG9ydCA9IHByaXZhdGVfcHJpbnRlcl9ob3N0KGhvc3QsIGludChwb3J0X3JhdykpCiAgICAgICAgICAgICAgICB3aXRoIHNvY2tldC5jcmVhdGVfY29ubmVjdGlvbigoaG9zdCwgcG9ydCksIHRpbWVvdXQ9Mik6CiAgICAgICAgICAgICAgICAgICAgcGFzcwogICAgICAgICAgICAgICAgcHJpbnRlcl9vayA9IFRydWUKICAgICAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbiBhcyBleGM6CiAgICAgICAgICAgICAgICBwcmludGVyX29rID0gRmFsc2UKICAgICAgICAgICAgICAgIHByaW50ZXJfZXJyb3IgPSBzdHIoZXhjKQogICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSgyMDAsIHsKICAgICAgICAgICAgIm9rIjogVHJ1ZSwKICAgICAgICAgICAgImJyaWRnZSI6ICJTSElQREVTSyBQT1M4MEMiLAogICAgICAgICAgICAidmVyc2lvbiI6IFZFUlNJT04sCiAgICAgICAgICAgICJwcmludGVyX29rIjogcHJpbnRlcl9vaywKICAgICAgICAgICAgInByaW50ZXJfZXJyb3IiOiBwcmludGVyX2Vycm9yLAogICAgICAgIH0pCgogICAgZGVmIGRvX1BPU1Qoc2VsZikgLT4gTm9uZTogICMgbm9xYTogTjgwMgogICAgICAgIGlmIG5vdCBzZWxmLm9yaWdpbl9hbGxvd2VkKCk6CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg0MDMsIHsib2siOiBGYWxzZSwgImVycm9yIjogIk9yaWdpbiBub3QgYWxsb3dlZC4gT3BlbiBTSElQREVTSyBhcyBhIGxvY2FsIGZpbGUuIn0pCiAgICAgICAgICAgIHJldHVybgogICAgICAgIGlmIHVybHBhcnNlKHNlbGYucGF0aCkucGF0aCAhPSAiL3ByaW50IjoKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDQwNCwgeyJvayI6IEZhbHNlLCAiZXJyb3IiOiAiTm90IGZvdW5kIn0pCiAgICAgICAgICAgIHJldHVybgogICAgICAgIHRyeToKICAgICAgICAgICAgbGVuZ3RoID0gaW50KHNlbGYuaGVhZGVycy5nZXQoIkNvbnRlbnQtTGVuZ3RoIiwgIjAiKSkKICAgICAgICAgICAgaWYgbGVuZ3RoIDw9IDAgb3IgbGVuZ3RoID4gTUFYX0JPRFk6CiAgICAgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJJbnZhbGlkIG9yIG92ZXJzaXplZCBwcmludCByZXF1ZXN0IikKICAgICAgICAgICAgcmVxdWVzdCA9IGpzb24ubG9hZHMoc2VsZi5yZmlsZS5yZWFkKGxlbmd0aCkuZGVjb2RlKCJ1dGYtOCIpKQogICAgICAgICAgICBob3N0ID0gc3RyKHJlcXVlc3QuZ2V0KCJwcmludGVyX2lwIiwgIiIpKQogICAgICAgICAgICBwb3J0ID0gaW50KHJlcXVlc3QuZ2V0KCJwcmludGVyX3BvcnQiLCA5MTAwKSkKICAgICAgICAgICAgZW5jb2RlZCA9IHJlcXVlc3QuZ2V0KCJkYXRhIiwgIiIpCiAgICAgICAgICAgIGlmIG5vdCBpc2luc3RhbmNlKGVuY29kZWQsIHN0cik6CiAgICAgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJJbnZhbGlkIEVTQy9QT1MgcGF5bG9hZCIpCiAgICAgICAgICAgIHRyeToKICAgICAgICAgICAgICAgIHBheWxvYWQgPSBiYXNlNjQuYjY0ZGVjb2RlKGVuY29kZWQsIHZhbGlkYXRlPVRydWUpCiAgICAgICAgICAgIGV4Y2VwdCAoYmluYXNjaWkuRXJyb3IsIFZhbHVlRXJyb3IpIGFzIGV4YzoKICAgICAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkludmFsaWQgYmFzZTY0IHByaW50IGRhdGEiKSBmcm9tIGV4YwogICAgICAgICAgICBpZiBub3QgcGF5bG9hZCBvciBsZW4ocGF5bG9hZCkgPiBNQVhfQk9EWToKICAgICAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkVtcHR5IG9yIG92ZXJzaXplZCBFU0MvUE9TIHBheWxvYWQiKQogICAgICAgICAgICBzZW5kX3RvX3ByaW50ZXIoaG9zdCwgcG9ydCwgcGF5bG9hZCkKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDIwMCwgewogICAgICAgICAgICAgICAgIm9rIjogVHJ1ZSwKICAgICAgICAgICAgICAgICJieXRlc19zZW50IjogbGVuKHBheWxvYWQpLAogICAgICAgICAgICAgICAgImxhYmVscyI6IGludChyZXF1ZXN0LmdldCgibGFiZWxzIiwgMCkgb3IgMCksCiAgICAgICAgICAgIH0pCiAgICAgICAgICAgIHByaW50KGYiU2VudCB7bGVuKHBheWxvYWQpOix9IGJ5dGVzIHRvIHtob3N0fTp7cG9ydH0iKQogICAgICAgIGV4Y2VwdCAoVmFsdWVFcnJvciwgVHlwZUVycm9yLCBqc29uLkpTT05EZWNvZGVFcnJvcikgYXMgZXhjOgogICAgICAgICAgICBzZWxmLmpzb25fcmVzcG9uc2UoNDAwLCB7Im9rIjogRmFsc2UsICJlcnJvciI6IHN0cihleGMpfSkKICAgICAgICBleGNlcHQgKE9TRXJyb3IsIFRpbWVvdXRFcnJvcikgYXMgZXhjOgogICAgICAgICAgICBzZWxmLmpzb25fcmVzcG9uc2UoNTAyLCB7Im9rIjogRmFsc2UsICJlcnJvciI6IGYiUHJpbnRlciBjb25uZWN0aW9uIGZhaWxlZDoge2V4Y30ifSkKICAgICAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGV4YzoKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDUwMCwgeyJvayI6IEZhbHNlLCAiZXJyb3IiOiBmIkJyaWRnZSBlcnJvcjoge2V4Y30ifSkKCgpkZWYgbWFpbigpIC0+IE5vbmU6CiAgICBwb3J0ID0gQlJJREdFX1BPUlQKICAgIGlmIGxlbihzeXMuYXJndikgPiAxOgogICAgICAgIHBvcnQgPSBpbnQoc3lzLmFyZ3ZbMV0pCiAgICBzZXJ2ZXIgPSBUaHJlYWRpbmdIVFRQU2VydmVyKChCUklER0VfSE9TVCwgcG9ydCksIEJyaWRnZUhhbmRsZXIpCiAgICBwcmludCgiU0hJUERFU0sgUE9TODBDIGJyaWRnZSBpcyBydW5uaW5nIikKICAgIHByaW50KGYiQnJpZGdlIFVSTDogaHR0cDovL3tCUklER0VfSE9TVH06e3BvcnR9IikKICAgIHByaW50KCJLZWVwIHRoaXMgVGVybWluYWwgd2luZG93IG9wZW4gd2hpbGUgdXNpbmcgZGlyZWN0IEVTQy9QT1MgcHJpbnRpbmcuIikKICAgIHByaW50KCJQcmVzcyBDb250cm9sLUMgdG8gc3RvcC5cbiIpCiAgICB0cnk6CiAgICAgICAgc2VydmVyLnNlcnZlX2ZvcmV2ZXIoKQogICAgZXhjZXB0IEtleWJvYXJkSW50ZXJydXB0OgogICAgICAgIHByaW50KCJcblN0b3BwaW5nIGJyaWRnZeKApiIpCiAgICBmaW5hbGx5OgogICAgICAgIHNlcnZlci5zZXJ2ZXJfY2xvc2UoKQoKCmlmIF9fbmFtZV9fID09ICJfX21haW5fXyI6CiAgICBtYWluKCkK';
+function downloadPrinterBridge(){try{var a=document.createElement('a');a.href='./POS80C_Hosted_Print_Gateway.zip';a.download='POS80C_Hosted_Print_Gateway.zip';document.body.appendChild(a);a.click();a.remove();toast('POS80C gateway kit downloaded','ok');}catch(e){toast('Could not download gateway kit: '+(e.message||e),'err');}}
 
 function doPrint(mode,html,rows){
+  if(mode==='label'&&Array.isArray(rows)&&rows.length){var isClaim=rows.some(function(r){return !!(r&&r._vaultId)});storeLabelCopies(rows,isClaim?'claim reprint':'printed / generated',true);}
   if(mode==='label'&&state.shop.printMode==='direct'&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
   var pr=getEl('print-root');
   if(pr){
@@ -1644,8 +1741,8 @@ window.addEventListener('afterprint',function(){
       if(next==='manifest'&&state.manifest.length)doPrint('a4',a4SheetHTML());
       else if(next==='report'&&state.manifest.length)doPrint('a4',salesReportHTML());
     },400);}});
-function printLabel(row){var len=Math.min(300,Math.max(100,Number(state.shop.labelLen)||210));
-  var html=labelHTML(row);var maxPx=len*96/25.4;
+function printLabel(row){var labelShop=row._labelShop||state.shop,len=Math.min(300,Math.max(100,Number(labelShop.labelLen)||210));
+  var html=labelHTML(row,labelShop);var maxPx=len*96/25.4;
   if(measureLbl(html)>maxPx){html=html.replace('class="lbl"','class="lbl lbl-compact"');
     if(measureLbl(html)>maxPx)toast('⚠ Label very long — check address','err');}
   doPrint('label',html,[row]);toast('Printing label '+row.oid,'ok');}
@@ -1668,7 +1765,7 @@ function openSettings(){var s=state.shop;
   getEl('s-reconhour').value=s.reconHour==null?9:s.reconHour;
   getEl('s-thanks').value=s.thanks;getEl('s-qwen-url').value=s.qwenUrl||'';getEl('s-qwen-model').value=s.qwenModel||'';
   getEl('s-print-mode').value=s.printMode||'browser';getEl('s-printer-ip').value=s.printerIp||'';
-  getEl('s-printer-port').value=s.printerPort||9100;getEl('s-bridge-url').value=s.bridgeUrl||'auto';
+  getEl('s-printer-port').value=s.printerPort||9100;getEl('s-bridge-url').value=s.bridgeUrl||'http://127.0.0.1:8765';
   getEl('s-printer-dots').value=s.printerDots||576;getEl('s-printer-feed').value=s.printerFeed==null?24:s.printerFeed;
   getEl('s-printer-threshold').value=s.printerThreshold||180;getEl('s-cut-type').value=s.printerCut||'partial';
   getEl('s-cut-each').checked=s.cutEach!==false;updatePrinterSettingsUI();
@@ -1680,7 +1777,7 @@ function saveSettings(){var pc=printerConfig(true);Object.assign(state.shop,{
     labelLen:Math.min(300,Math.max(100,parseInt(getEl('s-len').value)||210)),
     reconHour:Math.min(23,Math.max(0,parseInt(getEl('s-reconhour').value)||9)),
     thanks:getEl('s-thanks').value.trim(),qwenUrl:getEl('s-qwen-url').value.trim(),qwenModel:getEl('s-qwen-model').value.trim(),
-    printMode:pc.mode,printerIp:pc.ip,printerPort:pc.port,bridgeUrl:pc.bridgeRaw||'auto',printerDots:pc.dots,
+    printMode:pc.mode,printerIp:pc.ip,printerPort:pc.port,bridgeUrl:pc.bridge,printerDots:pc.dots,
     printerFeed:pc.feed,printerThreshold:pc.threshold,printerCut:pc.cut,cutEach:pc.cutEach});
   persist();applyCurrency();applyLabelLen();renderManifest();renderPreview();renderBatch();
   closeModal('m-settings');toast('Settings saved','ok');}
@@ -1689,12 +1786,12 @@ function applyCurrency(){var c=state.shop.currency||'';
   ['cur-lbl-1','cur-lbl-2','cur-lbl-3'].forEach(function(id){var el=getEl(id);if(el)el.textContent=c});}
 function downloadBackup(){
   var profile=PROFILES.find(function(p){return p.id===PID})||{id:PID,name:PID};
-  var payload={app:'LABELONZEWAY',version:3,exportedAt:new Date().toISOString(),profile:profile,
-    data:{shop:state.shop,addr:state.addr,manifest:state.manifest,archive:state.archive,counter:state.counter},
-    preferences:{auto:load(K('auto'),true),merge:load(K('merge'),true)}};
+  var payload={app:'SHIPDESK',version:3,exportedAt:new Date().toISOString(),profile:profile,
+    data:{shop:state.shop,addr:state.addr,manifest:state.manifest,archive:state.archive,labelVault:state.labelVault,counter:state.counter},
+    preferences:{auto:load(K('auto'),true),merge:load(K('merge'),true),exceptionReportLastDate:load(K('exceptionReportLastDate'),'')}};
   var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
   var a=document.createElement('a');var url=URL.createObjectURL(blob);
-  a.href=url;a.download='labelonzeway-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.href=url;a.download='shipdesk-backup-'+new Date().toISOString().slice(0,10)+'.json';
   document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1000);
   toast('Backup downloaded','ok');}
 function restoreBackup(file){
@@ -1704,37 +1801,25 @@ function restoreBackup(file){
   rd.onload=function(){try{
     var payload=JSON.parse(String(rd.result||''));
     var d=payload&&payload.data?payload.data:payload;
-    if(!d||typeof d!=='object'||(!d.shop&&!Array.isArray(d.addr)&&!Array.isArray(d.manifest))){throw new Error('Invalid LabelOnZeWay backup')}
+    if(!d||typeof d!=='object'||(!d.shop&&!Array.isArray(d.addr)&&!Array.isArray(d.manifest))){throw new Error('Invalid SHIPDESK backup')}
     if(!confirm('Restore this backup into the current profile? Existing data will be replaced.'))return;
     save(K('shop'),d.shop&&typeof d.shop==='object'?d.shop:state.shop);
     save(K('addr'),Array.isArray(d.addr)?d.addr:[]);
     save(K('mani'),Array.isArray(d.manifest)?d.manifest:(Array.isArray(d.mani)?d.mani:[]));
     save(K('arch'),Array.isArray(d.archive)?d.archive:(Array.isArray(d.arch)?d.arch:[]));
+    save(K('labels'),Array.isArray(d.labelVault)?d.labelVault:(Array.isArray(d.labels)?d.labels:[]));
     save(K('ctr'),Math.max(0,Number(d.counter!=null?d.counter:d.ctr)||0));
-    if(payload.preferences){save(K('auto'),payload.preferences.auto!==false);save(K('merge'),payload.preferences.merge!==false)}
+    if(payload.preferences){save(K('auto'),payload.preferences.auto!==false);save(K('merge'),payload.preferences.merge!==false);
+      if(typeof payload.preferences.exceptionReportLastDate==='string')save(K('exceptionReportLastDate'),payload.preferences.exceptionReportLastDate)}
     toast('Backup restored — reloading…','ok');setTimeout(function(){location.reload()},350);
   }catch(e){console.error(e);toast(e.message||'Invalid backup file','err')}};
   rd.readAsText(file);}
-function resetAll(){if(!confirm('Erase ALL data for this profile?'))return;
-  ['shop','addr','mani','ctr','arch','reconDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});
+function resetAll(){if(!confirm('Erase ALL data for this profile, including every retained label claim copy?'))return;
+  ['shop','addr','mani','ctr','arch','labels','reconDate','exceptionReportLastDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});
   location.reload();}
 function closeModal(id){var e=getEl(id);if(e)e.classList.remove('open')}
 function renderProfileSel(){var s=getEl('profile-sel');if(!s)return;
   s.innerHTML=PROFILES.map(function(p){return '<option value="'+p.id+'"'+(p.id===PID?' selected':'')+'>'+esc(p.name)+'</option>'}).join('');}
-
-var deferredInstallPrompt=null;
-window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredInstallPrompt=e;var b=getEl('install-app-btn');if(b)b.style.display='';});
-window.addEventListener('appinstalled',function(){deferredInstallPrompt=null;toast('LabelOnZeWay installed','ok');var b=getEl('install-app-btn');if(b)b.style.display='none';});
-function installApp(){
-  if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches){toast('LabelOnZeWay is already installed','ok');return}
-  if(deferredInstallPrompt){deferredInstallPrompt.prompt();deferredInstallPrompt.userChoice.then(function(out){
-      if(out.outcome==='accepted')toast('Installing LabelOnZeWay…','ok');deferredInstallPrompt=null;});return}
-  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
-  alert(ios?'On iPhone/iPad: tap Safari’s Share button, then choose “Add to Home Screen”.':'Open your browser menu and choose “Install app” or “Add to Home screen”.');}
-function scrollSection(id){var el=getEl(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
-function registerLabelOnZeWay(){
-  if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
-    navigator.serviceWorker.register('service-worker.js').catch(function(e){console.warn('Service worker:',e)});}}
 
 var ACTIONS={
   scanPrice:scanPrice, deepScan:deepScan, qwenScan:qwenScan,
@@ -1745,9 +1830,10 @@ var ACTIONS={
   downloadAddrTemplate:downloadAddrTemplate, toggleAbList:toggleAbList,
   printCalibration:printCalibration, applyBatchRecAll:applyBatchRecAll,
   printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, clearBatch:clearBatch,
-  exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
-  closeDay:closeDay, openArch:openArch, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, clearManifestSelection:clearManifestSelection,
-  openRecon:openRecon, openSettings:openSettings, addProfile:addProfile, installApp:installApp, scrollSection:scrollSection,
+  exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, openExceptionReport:openExceptionReport, printPreviewNow:printPreviewNow,
+  closeDay:closeDay, openArch:openArch, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel,
+  clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, clearManifestSelection:clearManifestSelection,
+  openRecon:openRecon, openSettings:openSettings, addProfile:addProfile,
   saveSuggestedContact:saveSuggestedContact, dismissSuggest:dismissSuggest,
   noprixUnit:noprixUnit, noprixOne:noprixOne, applyOnePrice:applyOnePrice,
   saveSettings:saveSettings, resetAll:resetAll, downloadBackup:downloadBackup,
@@ -1778,6 +1864,7 @@ document.addEventListener('change',function(e){
 function init(){
   try{document.querySelectorAll('button').forEach(function(b){if(!b.hasAttribute('type'))b.type='button'});}catch(e){fatal(e)}
   try{renderProfileSel();}catch(e){fatal(e)}
+  try{migrateExistingLabels();}catch(e){fatal(e)}
   try{applyCurrency();applyLabelLen();}catch(e){fatal(e)}
   try{bindUpload();}catch(e){fatal(e)}
   try{setPaymentMenu('f-pay','COD');}catch(e){fatal(e)}
@@ -1796,9 +1883,9 @@ function init(){
   try{renderStats();}catch(e){fatal(e)}
   try{renderPreview();}catch(e){fatal(e)}
   try{maybeAutoRecon();}catch(e){fatal(e)}
-  try{registerLabelOnZeWay();}catch(e){console.warn(e)}
-  try{if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches){var ib=getEl('install-app-btn');if(ib)ib.style.display='none';}}catch(e){}
+  try{maybeBiDailyExceptionReport();}catch(e){fatal(e)}
   setInterval(function(){var c=getEl('clock');if(c)c.textContent=new Date().toLocaleTimeString();},1000);
+  setInterval(function(){try{maybeBiDailyExceptionReport()}catch(e){console.error(e)}},60000);
   setTimeout(function(){getOcrWorker().then(function(){toast('OCR engine ready (FR+EN)','ok')}).catch(function(){})},2000);
 }
 init();
