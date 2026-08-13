@@ -10,8 +10,8 @@ import subprocess
 import threading
 import time
 
-ROOT = Path(__file__).resolve().parents[1]
-GATEWAY = ROOT / "docs" / "downloads" / "hosted_pos80c_gateway.py"
+ROOT = Path(__file__).resolve().parent
+GATEWAY = ROOT / "downloads" / "hosted_pos80c_gateway.py"
 
 
 def free_port():
@@ -57,7 +57,7 @@ def main():
     process = subprocess.Popen(
         [
             "python3", "-u", str(GATEWAY), "--host", "127.0.0.1", "--port", str(gateway_port),
-            "--allow-origin", "https://owner.github.io", "--web-root", str(ROOT / "docs"), "--no-browser",
+            "--allow-origin", "https://owner.github.io", "--web-root", str(ROOT), "--no-browser",
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,

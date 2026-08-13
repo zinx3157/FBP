@@ -1,13 +1,13 @@
 {
   "id": "./",
-  "name": "LabelOnZeWay",
+  "name": "LabelOnZeWay for iPhone",
   "short_name": "LabelOnZeWay",
-  "description": "Mobile parcel labels, customers, manifest, payments, reports, and POS80C printing.",
+  "description": "APK-style iPhone web app for parcel labels, customers, manifest, payments, reports, AirPrint, and optional POS80C gateway printing.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
   "background_color": "#e9ebee",
   "theme_color": "#141a21",
@@ -19,7 +19,7 @@
     {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
   ],
   "shortcuts": [
-    {"name": "New parcel", "short_name": "New", "url": "./#card-parcel", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
+    {"name": "New label", "short_name": "New", "url": "./#card-parcel", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]},
     {"name": "Manifest", "short_name": "Manifest", "url": "./#card-manifest", "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]}
   ]
 }

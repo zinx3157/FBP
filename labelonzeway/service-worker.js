@@ -1,4 +1,4 @@
-const CACHE = 'labelonzeway-pages-v2';
+const CACHE = 'labelonzeway-ios-web-v121';
 const APP_SHELL = [
   './',
   './index.html',

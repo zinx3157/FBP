@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LabelOnZeWay — Mobile Sales & Label Printing</title>
-<meta name="description" content="Mobile parcel labels, customer manifest, payments, reports, and POS80C printing for Android and iPhone.">
+<title>LabelOnZeWay — iPhone Web App</title>
+<meta name="description" content="LabelOnZeWay iPhone web app for mobile parcel labels, customers, manifest, payments, reports, AirPrint, and optional POS80C gateway printing.">
 <meta name="theme-color" content="#141a21">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LabelOnZeWay">
+<meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -39,8 +40,8 @@ select.profile{background:#1e2833;color:#fff;border:1px solid #35434f;border-rad
 .card-head .hint{font:500 11px var(--mono);color:#66727e}
 .card-head .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 label.f{display:block;font:700 10.5px var(--mono);letter-spacing:1.5px;color:#4c5864;margin:12px 0 5px;text-transform:uppercase}
-input[type=text],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:7px;background:#fbfbfa;padding:9px 11px;font:500 14px var(--body);color:var(--ink);outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--orange)}
+input[type=text],input[type=search],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{width:100%;border:1.5px solid var(--line);border-radius:7px;background:#fbfbfa;padding:9px 11px;font:500 14px var(--body);color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,92,28,.12)}
 textarea{resize:vertical;min-height:56px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btn{border:1.5px solid var(--ink);border-radius:8px;padding:11px 16px;font:800 13.5px var(--body);cursor:pointer;background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--ink);display:inline-flex;align-items:center;gap:8px;justify-content:center;text-align:center}
@@ -74,16 +75,20 @@ button:focus-visible{outline:3px solid rgba(255,92,28,.35);outline-offset:2px}
 .money-wrap input{padding-left:48px;font:700 16px var(--mono)}
 .batch-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;background:#fbfbfa;margin-bottom:6px}
 .batch-bar select{width:auto;min-width:200px}.batch-bar .chk{margin-top:0}
+.batch-toolbar{border:1.5px solid var(--line);border-radius:9px;background:#f8fafb;padding:11px;margin-bottom:10px;display:grid;gap:9px}
+.batch-customer-all{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:8px;align-items:end}.batch-customer-all label{grid-column:1/-1;font:800 9.5px var(--mono);letter-spacing:1px;color:#596672}.batch-customer-all select{min-width:0}
+.batch-options{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-top:1px solid #dfe4e8;padding-top:8px}.batch-options .chk{margin:0}
+.batch-primary-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.batch-primary-actions .btn{min-width:0;text-align:center}
 .brow{display:flex;gap:12px;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:10px;align-items:flex-start;background:#fdfdfc}
 .brow.err{border-color:var(--red);background:#fdf3f2}
 .b-thumb{width:58px;height:58px;object-fit:cover;border-radius:7px;border:1.5px solid var(--ink);flex:none}
 .b-main{flex:1;min-width:0}
 .b-status{font:600 10.5px var(--mono);color:var(--blue);margin-bottom:5px;min-height:14px}
 .b-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px}.b-chips .pchip{font-size:11px;padding:3px 10px}
-.b-grid{display:grid;grid-template-columns:58px 92px 92px 110px minmax(150px,1.7fr) minmax(115px,1fr);gap:8px}
-.b-grid input,.b-grid select{padding:7px 8px;font-size:12.5px}
+.b-grid{display:grid;grid-template-columns:58px 70px 92px 92px 110px minmax(150px,1.7fr) minmax(115px,1fr);gap:8px;align-items:start}
+.b-field{min-width:0}.b-field>label{display:block;font:800 8px var(--mono);letter-spacing:.7px;color:#687581;margin-bottom:3px;white-space:nowrap}.b-field input,.b-field select{padding:7px 8px;font-size:12.5px;min-width:0}
 .b-ship{display:flex;flex-direction:column;gap:4px}.b-ship input{display:none}.b-ship.manual input{display:block}
-.b-actions{display:flex;flex-direction:column;gap:6px}
+.b-actions{display:flex;flex-direction:column;gap:6px}.b-actions .btn{min-height:32px;padding:5px 7px;font-size:9px;box-shadow:none;white-space:nowrap}
 .rec-toolbar{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
 #ab-list{max-height:0;overflow:hidden;transition:max-height .35s}
 #ab-list.open{max-height:500px;overflow:auto}
@@ -98,6 +103,18 @@ button:focus-visible{outline:3px solid rgba(255,92,28,.35);outline-offset:2px}
 #rec-form.open{display:block}
 .chk{display:flex;align-items:center;gap:8px;font:600 13px var(--body);cursor:pointer;margin-top:12px}
 .chk input{accent-color:var(--orange);width:16px;height:16px}
+.mobile-only{display:none!important}
+.customer-link{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-left:5px solid var(--orange);border-radius:9px;background:#fbfbfa;padding:10px 12px;margin-bottom:13px}
+.customer-link.ready{border-color:var(--green);background:#eefaf1}
+.customer-link-main{min-width:0;flex:1}.customer-link-k{font:700 9.5px var(--mono);letter-spacing:1.2px;color:#66727e}.customer-link-name{font:800 14px var(--body);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.customer-link-meta{font:500 11px var(--mono);color:#5c6873;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.customer-status{display:flex;align-items:center;gap:8px;border-radius:8px;background:#fff4ee;border:1.5px solid #ffc1a5;padding:9px 11px;margin-bottom:10px;font:600 12px var(--body)}
+.customer-status.ready{background:#eefaf1;border-color:#8ccda8}.customer-status strong{font:800 12px var(--body)}
+.step-dot{width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font:800 11px var(--mono);flex:none}.customer-status.ready .step-dot{background:var(--green)}
+.photo-tools{border:1.5px solid var(--line);border-radius:9px;background:#f8f9fa;margin-bottom:12px;overflow:hidden}
+.photo-tools>summary{list-style:none;cursor:pointer;padding:11px 12px;display:flex;align-items:center;gap:9px;font:800 12px var(--body)}.photo-tools>summary::-webkit-details-marker{display:none}.photo-tools>summary::after{content:'▾';margin-left:auto;color:var(--blue)}.photo-tools[open]>summary::after{content:'▴'}
+.photo-summary-meta{font:600 10px var(--mono);color:#66727e;margin-left:auto}.photo-tools[open] .photo-summary-meta{display:none}.photo-tools-body{padding:0 10px 10px}
+.section-divider{display:flex;align-items:center;gap:8px;margin:4px 0 8px;font:800 11px var(--mono);letter-spacing:1px;color:var(--blue)}.section-divider::after{content:'';height:1px;background:#d8dee5;flex:1}
+.mobile-manifest-list{display:none}
 #card-preview{display:flex;flex-direction:column}
 .pv-frame{align-self:center;width:calc(72mm*.58);height:calc(var(--lblh)*.58);border:1.5px solid var(--ink);overflow:auto;background:#fff;margin-top:4px}
 .pv-scale{transform:scale(.58);transform-origin:top left;width:72mm}
@@ -167,7 +184,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 .lbl-val{text-align:right;font:700 11px var(--mono);line-height:1.45}
 .lbl-foot{font:700 10px var(--body);text-align:center;border-top:1.4px dashed #000;margin-top:1.4mm;padding-top:1.4mm}
 .lbl-compact .lbl-name{font-size:14px}.lbl-compact .lbl-addr{font-size:9px}.lbl-compact .lbl-amt{font-size:18px}
-.man-sheet{width:72mm;padding:3.5mm;background:#fff;color:#000;font-family:var(--body);box-sizing:border-box}
+.man-sheet{width:80mm;padding:3.5mm;background:#fff;color:#000;font-family:var(--body);box-sizing:border-box}
 .man-head{background:#000;color:#fff;padding:2.5mm 3mm}
 .man-title{font:15px var(--disp)}.man-sub{font:600 9px var(--mono);color:#ccc;margin-top:1px}
 .mtbl{width:100%;border-collapse:collapse;margin-top:2.5mm;table-layout:fixed}
@@ -200,10 +217,16 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 .a4foot{font:600 8px var(--mono);text-align:center;margin-top:5mm;color:#555}
 .rpt-sec{font:800 12px var(--body);margin:4mm 0 2mm;border-bottom:2px solid #000}
 .rpt-big{font:800 22px var(--mono);margin:2mm 0}
-#mobile-nav{display:none}
+#mobile-nav,#mobile-context{display:none}
 #mobile-nav button{border:0;background:transparent;color:#dfe6ec;font:700 9px var(--mono);min-width:0;flex:1;padding:7px 2px;cursor:pointer}
 #mobile-nav button span{display:block;color:#ff8a55;font:800 20px/1 var(--body);margin-bottom:3px}
 #install-app-btn{border-color:var(--orange);color:#ffd0bb}
+.compact-action-menu>summary{display:none}.action-menu-grid{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.discovery-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.discovery-controls .btn{flex:1}.discovery-spinner{display:none;width:17px;height:17px;border:2px solid #d7dee5;border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}.discovery-spinner.active{display:inline-block}@keyframes spin{to{transform:rotate(360deg)}}
+.printer-results{display:grid;gap:6px;margin-top:8px}.printer-result{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:#fff;font:700 11px var(--mono)}
+.print-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}.print-method{border:1.5px solid var(--line);border-radius:8px;padding:9px;background:#fff;font-size:11px;line-height:1.35}.print-method b{display:block;color:var(--blue);margin-bottom:3px}.print-method small{display:block;color:#65717d;margin-top:3px}
+.advanced-printer{margin-top:9px;border:1px solid var(--line);border-radius:8px;background:#fbfbfa}.advanced-printer>summary{cursor:pointer;padding:9px 10px;font:800 10px var(--mono);color:var(--blue)}.advanced-printer-body{padding:0 10px 10px}
+.print-fallback-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.print-fallback-actions .btn{min-height:48px}.queue-note{font:600 10px/1.45 var(--body);color:#586674;margin-top:7px}
 #print-root{display:none}
 @media print{
   #top,.hzd,#app,#toasts,.modal,#fatal,#mobile-nav{display:none!important}
@@ -217,22 +240,49 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 @media (max-width:1120px){#app{grid-template-columns:1fr 1fr}#card-preview{grid-column:1/-1}}
 @media (max-width:780px){
   body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
-  #top{padding:calc(9px + env(safe-area-inset-top)) 10px 9px;gap:8px;position:sticky;top:0;z-index:40}
-  .brand{width:100%;justify-content:center}.brand .logo{width:34px;height:34px;font-size:16px}.brand h1{font-size:17px}.brand small{font-size:8px;letter-spacing:1px}
-  .chips{width:100%;margin-left:0;gap:5px;justify-content:center}.chip{padding:5px 8px;font-size:10px}.chip.clock{display:none}
-  select.profile{width:auto;max-width:130px;padding:6px;font-size:10px}.btn-ghost{padding:7px 8px;font-size:10px}
-  #app{grid-template-columns:1fr;padding:10px;gap:12px}.card{padding:13px;border-radius:9px;box-shadow:3px 3px 0 rgba(20,26,33,.14)}
-  .card-head{margin-bottom:10px}.card-head h2{font-size:13px}.row2{grid-template-columns:1fr}
-  .btn{min-height:44px}.btn.sm{min-height:38px}.mini-btn{width:38px;height:38px}.mani-actions{min-width:174px}
-  input[type=text],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{font-size:16px;min-height:44px}
+  .mobile-only{display:inline-flex!important}
+  #top{padding:calc(7px + env(safe-area-inset-top)) 9px 7px;gap:7px;position:sticky;top:0;z-index:40;flex-wrap:nowrap;min-height:54px}
+  #mobile-context{display:grid;grid-template-columns:88px minmax(0,1fr) 88px;align-items:center;gap:6px;position:sticky;top:calc(54px + env(safe-area-inset-top));z-index:39;background:#fff;border-bottom:1px solid var(--line);padding:5px 8px;box-shadow:0 3px 9px rgba(20,26,33,.08)}#mobile-context button{min-height:36px;border:1.5px solid var(--blue);border-radius:7px;background:#fff;color:var(--blue);font:800 10px var(--mono);padding:5px 7px}#mobile-context button:last-child{border-color:var(--red);color:var(--red)}#mobile-context-title{text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:800 11px var(--mono);letter-spacing:.6px;color:var(--ink)}
+  .brand{width:auto;min-width:0;flex:1;gap:7px}.brand .logo{width:29px;height:29px;border-radius:6px;font-size:13px}.brand h1{font-size:14px;white-space:nowrap}.brand small{display:none}
+  .chips{width:auto;margin-left:0;gap:4px;justify-content:flex-end;flex-wrap:nowrap}.chip{padding:5px 6px;font-size:9px}.chip.clock{display:none}
+  select.profile{width:78px;max-width:78px;padding:5px 4px;font-size:9px}.btn-ghost{padding:7px 8px;font-size:10px}
+  #add-profile-btn,#recon-btn,#install-app-btn,#top-settings-btn{display:none}
+  .hzd{height:4px}
+  #app{width:100%;max-width:100%;min-width:0;grid-template-columns:minmax(0,1fr);padding:8px;gap:9px;overflow-x:hidden}.card{min-width:0;padding:11px;border-radius:9px;box-shadow:2px 2px 0 rgba(20,26,33,.14)}
+  body.mobile-ui-ready #app>.card{display:none}
+  body.mobile-ui-ready #app>.card.mobile-view-active{display:flex;flex-direction:column}
+  #card-recipient{order:1}#card-parcel{order:2}#card-preview{order:3}#card-batch{order:4}#card-manifest{order:5}
+  #card-batch,#card-manifest{width:100%;max-width:100%;min-width:0;margin-left:auto;margin-right:auto;overflow:hidden}#mani-body,.mobile-manifest-list{width:100%;max-width:100%;min-width:0}.mobile-manifest-item{width:100%;min-width:0}.mobile-amount{max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card-head{margin-bottom:8px;align-items:center}.card-head h2{font-size:13px}.card-head .hint{font-size:9px}
+  .card-head .right{width:100%;overflow-x:auto;flex-wrap:nowrap;padding:2px 2px 5px;margin-left:0;scrollbar-width:none}.card-head .right::-webkit-scrollbar{display:none}.card-head .right .btn{white-space:nowrap;flex:none}
+  .card-head .right.manifest-tools{overflow:visible;display:block;padding:0;margin-top:2px}.compact-action-menu>summary{display:flex;align-items:center;justify-content:space-between;list-style:none;min-height:40px;border:1.5px solid var(--blue);border-radius:7px;padding:7px 10px;background:#f4f8fc;color:var(--blue);font:800 10px var(--mono);cursor:pointer}.compact-action-menu>summary::-webkit-details-marker{display:none}.compact-action-menu>summary:after{content:'▾';font-size:15px}.compact-action-menu[open]>summary:after{content:'▴'}.compact-action-menu .action-menu-grid{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:7px}.compact-action-menu[open] .action-menu-grid{display:grid}.compact-action-menu .action-menu-grid .btn{min-width:0!important;width:100%;min-height:38px;padding:6px 3px!important;white-space:normal!important;font-size:9px!important;line-height:1.15;box-shadow:none}
+  .row2{grid-template-columns:1fr}.row2.mobile-pair{grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr);gap:8px}.row2.mobile-pair.equal{grid-template-columns:1fr 1fr}
+  label.f{font-size:9px;letter-spacing:1px;margin:8px 0 4px}
+  .btn{min-height:44px;padding:9px 11px}.btn.sm{min-height:38px}.mini-btn{width:38px;height:38px}.mani-actions{min-width:174px}
+  input[type=text],input[type=search],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{font-size:16px;min-height:44px;padding:8px 9px}textarea{min-height:52px}
+  #card-recipient.mobile-collapsed #recipient-body{display:none}#card-recipient.mobile-collapsed .card-head{margin-bottom:7px}
+  .customer-status{margin-bottom:0;padding:8px 9px}.customer-status .btn{margin-left:auto;min-height:34px;padding:5px 9px}
+  .customer-link{padding:8px 9px;margin-bottom:9px}.customer-link .btn{min-height:36px;padding:5px 9px}.customer-link-meta{font-size:9.5px}
+  #rec-form{padding:9px}.rec-toolbar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.rec-toolbar .btn{padding:6px 3px;font-size:10px}.rec-toolbar .btn:first-child{grid-column:span 2}.rec-toolbar .btn:nth-child(2){grid-column:span 2}
+  #customer-secondary-tools{display:none}#customer-secondary-tools.open{display:flex}
+  .photo-tools{margin-bottom:9px}.photo-tools>summary{min-height:44px;padding:9px 10px}.photo-tools-body{padding:0 8px 8px}#drop{min-height:108px;padding:10px}#ocr-zone{padding:8px;margin-top:8px}#ocr-note{display:none}
+  #parcel-actions{position:sticky;bottom:calc(60px + env(safe-area-inset-bottom));z-index:24;background:#fff;border-top:1px solid var(--line);margin:10px -7px -7px!important;padding:8px 7px 7px;box-shadow:0 -5px 14px rgba(20,26,33,.08)}#parcel-actions .btn{padding:8px 6px;font-size:11px}
+  #card-preview.mobile-collapsed #live-preview-body{display:none}#card-preview.mobile-collapsed .card-head{margin-bottom:0}.pv-frame{width:calc(72mm*.50);height:min(calc(var(--lblh)*.50),52vh)}.pv-scale{transform:scale(.50)}
   .modal{padding:0;align-items:end}.modal-box{width:100%!important;max-height:92dvh;border-radius:14px 14px 0 0;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
-  .batch-bar{align-items:stretch}.batch-bar select{width:100%;min-width:0}.brow{flex-wrap:wrap}.b-grid{grid-template-columns:1fr 1fr}.b-actions{width:100%;flex-direction:row;justify-content:flex-end}
+  .batch-toolbar{width:100%;padding:9px;gap:8px}.batch-customer-all{grid-template-columns:1fr}.batch-customer-all label{grid-column:auto}.batch-customer-all .btn{width:100%;min-height:40px}.batch-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding-top:7px}.batch-options .chk{min-height:38px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:6px 8px;font-size:11px}.batch-primary-actions{grid-template-columns:1fr 1fr;gap:7px}.batch-primary-actions .btn{min-height:42px;padding:7px 5px;font-size:10px;line-height:1.15;box-shadow:none}.brow{display:grid;grid-template-columns:48px minmax(0,1fr);padding:9px;gap:8px}.b-main{display:contents}.b-status{align-self:center;margin:0;min-height:0}.b-chips{grid-column:1/-1;margin:0}.b-grid{grid-column:1/-1;grid-template-columns:1fr 1fr;gap:7px}.b-field>label{font-size:8px}.b-field.batch-customer{grid-column:1/-1}.b-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}.b-actions .btn{min-height:38px;padding:5px 3px;font-size:9px}.b-thumb{width:48px;height:48px}
+  .mobile-manifest-list{display:flex;flex-direction:column;gap:6px}.tbl-wrap{display:none}.mobile-manifest-item{border:1.5px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}.mobile-manifest-item[open]{border-color:var(--blue)}.mobile-manifest-item.done{background:#f4fbf6}.mobile-manifest-item.mani-selected{box-shadow:inset 4px 0 0 var(--orange)}
+  .mobile-manifest-item>summary{list-style:none;display:grid;grid-template-columns:24px 38px minmax(0,1fr) auto;align-items:center;gap:6px;padding:7px 8px;min-height:52px}.mobile-manifest-item>summary::-webkit-details-marker{display:none}.mobile-order{font:800 10px var(--mono);color:var(--blue)}.mobile-rec{min-width:0}.mobile-rec b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}.mobile-rec small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:500 9px var(--mono);color:#66727e}.mobile-amount{text-align:right;font:800 10px var(--mono);color:var(--orange-d)}.mobile-amount small{display:block;font-size:7.5px;color:#66727e}
+  .mobile-manifest-edit{border-top:1px solid var(--line);padding:8px;background:#fbfbfa}.mobile-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mobile-edit-grid .span2{grid-column:1/-1}.mobile-field label{display:block;font:700 8px var(--mono);letter-spacing:.7px;color:#66727e;margin-bottom:2px}.mobile-manifest-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.mobile-manifest-actions .btn{min-width:0;min-height:36px;padding:5px 2px;font-size:8.5px;box-shadow:none}
+  #mani-select-bar{display:grid!important;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);align-items:center!important;padding:7px!important;gap:6px!important}#mani-select-bar>span[style]{display:none}#mani-select-bar .btn{min-height:38px;padding:6px 4px;font-size:9px}#mani-select-bar label{grid-column:span 2}#mani-selection-status{text-align:right;font:700 9px var(--mono)}.print-methods{grid-template-columns:1fr}.print-method{padding:8px}.print-fallback-actions{grid-template-columns:1fr}.printer-results{margin-top:6px}.advanced-printer input,.advanced-printer select{min-height:40px;font-size:14px}
+  .totals{overflow-x:auto;flex-wrap:nowrap;margin:9px -2px 0;padding:2px 2px 6px;scrollbar-width:none}.totals::-webkit-scrollbar{display:none}.tot{min-width:104px;padding:7px 10px}.tot b{font-size:16px}
   #mobile-nav{position:fixed;left:0;right:0;bottom:0;z-index:55;display:flex;background:var(--ink);border-top:3px solid var(--orange);padding:3px 6px calc(3px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px rgba(0,0,0,.22)}
+  #mobile-nav button[aria-current=true]{background:#25313c;border-radius:7px;color:#fff}#mobile-nav button[aria-current=true] span{color:#fff}
   #toasts{bottom:calc(72px + env(safe-area-inset-bottom));width:calc(100% - 24px)}.toast{text-align:center}
 }
+@media (max-width:360px){.brand h1{font-size:12px}.brand .logo{display:none}select.profile{width:68px}.chip{padding:4px;font-size:8px}.row2.mobile-pair{gap:6px}}
 </style>
 <style id="pgLabel" disabled>@page{size:72mm auto;margin:0}</style>
-<style id="pgMan" disabled>@page{size:72mm auto;margin:0}</style>
+<style id="pgMan" disabled>@page{size:80mm auto;margin:0}</style>
 <style id="pgA4" disabled>@page{size:A4 portrait;margin:11mm}</style>
 </head>
 <body>
@@ -242,19 +292,30 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <div><h1>LABEL<em>ONZEWAY</em></h1><small>MOBILE SALES · LABELS · DISPATCH</small></div></div>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
-    <button class="btn-ghost" data-act="addProfile">+ PROFILE</button>
+    <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
     <div class="chip">📦 <b id="stat-count">0</b></div>
     <div class="chip">💰 <b id="stat-cod">0</b></div>
     <div class="chip clock">⏱ <b id="clock">--:--</b></div>
-    <button class="btn-ghost" data-act="openRecon">🔄 RECON</button>
+    <button class="btn-ghost" id="recon-btn" data-act="openRecon">🔄 RECON</button>
     <button class="btn-ghost" id="install-app-btn" data-act="installApp">⬇ INSTALL</button>
-    <button class="btn-ghost" data-act="openSettings">⚙ SETTINGS</button>
+    <button class="btn-ghost" id="top-settings-btn" data-act="openSettings">⚙ SETTINGS</button>
   </div>
 </header>
 <div class="hzd"></div>
+<nav id="mobile-context" aria-label="Current screen controls">
+  <button data-act="mobileBack" aria-label="Go back">‹ BACK</button>
+  <strong id="mobile-context-title">NEW LABEL</strong>
+  <button data-act="cancelMobile" aria-label="Cancel current operation">CANCEL</button>
+</nav>
 <main id="app">
   <section class="card" id="card-parcel">
-    <div class="card-head"><h2>NEW PARCEL</h2><span class="hint">photo · price · auto-scan</span></div>
+    <div class="card-head"><h2>LABEL DETAILS</h2><span class="hint">price · delivery · print</span></div>
+    <div class="customer-link" id="linked-customer">
+      <span class="step-dot">1</span><div class="customer-link-main"><div class="customer-link-k">CUSTOMER ON THIS LABEL</div>
+      <div class="customer-link-name" id="linked-customer-name">Choose or add a customer</div><div class="customer-link-meta" id="linked-customer-meta">Required before saving or printing</div></div>
+      <button class="btn sm" data-act="editRecipientStep">CHANGE</button>
+    </div>
+    <details class="photo-tools" id="photo-tools" open><summary>📷 PHOTO &amp; PRICE SCAN <span class="photo-summary-meta" id="photo-summary">optional</span></summary><div class="photo-tools-body">
     <label class="f">Sold item photo — 1 photo = parcel · several = batch</label>
     <div id="drop"><div class="dz-inner"><div style="font-size:30px">📷</div>
       <p style="font:600 13px var(--body);color:#5a6672;margin-top:6px">Drop photo(s) here or click to upload</p>
@@ -271,14 +332,17 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
       <div id="ocr-note">Reads only the number after "prix". Detects phone/address to suggest a customer.</div>
     </div>
     <div id="contact-suggest"><div class="cs-t"> CONTACT DETECTED IN PHOTO</div><div class="cs-x" id="cs-text"></div>
-      <div style="display:flex;gap:8px"><button class="btn sm green" data-act="saveSuggestedContact">＋ Save to address book</button>
+      <div style="display:flex;gap:8px"><button class="btn sm green" data-act="saveSuggestedContact">＋ Save &amp; use customer</button>
       <button class="btn sm" data-act="dismissSuggest">Ignore</button></div></div>
-    <div class="row2">
-      <div><label class="f">Qty</label><input type="number" id="f-qty" value="1" min="1" oninput="queuePreview()"></div>
-      <div><label class="f">Item price (<span id="cur-lbl-1">Ar</span>)</label>
-        <div class="money-wrap"><span id="cur-pre">Ar</span><input type="number" id="f-price" min="0" step="any" placeholder="0" oninput="syncCod();queuePreview()"></div></div>
+    </div></details>
+    <div class="section-divider"><span>2</span> LABEL &amp; PAYMENT</div>
+    <div class="row2 mobile-pair equal">
+      <div><label class="f">Item quantity</label><input type="number" id="f-qty" value="1" min="1" oninput="queuePreview()"></div>
+      <div><label class="f">Label copies to print</label><input type="number" id="f-copies" value="1" min="1" max="20" inputmode="numeric"></div>
     </div>
-    <div class="row2">
+    <label class="f">Item price (<span id="cur-lbl-1">Ar</span>)</label>
+    <div class="money-wrap"><span id="cur-pre">Ar</span><input type="number" id="f-price" min="0" step="any" placeholder="0" oninput="syncCod();queuePreview()"></div>
+    <div class="row2 mobile-pair equal">
       <div><label class="f">Collect (<span id="cur-lbl-2">Ar</span>) — blank = price</label>
         <div class="money-wrap"><span id="cur-pre2">Ar</span><input type="number" id="f-cod" min="0" step="any" placeholder="auto" oninput="queuePreview()"></div></div>
       <div><label class="f">Delivery cost (<span id="cur-lbl-3">Ar</span>)</label>
@@ -288,8 +352,8 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
           <option value="manual">Manual…</option></select>
         <div class="money-wrap" id="f-ship-manual-wrap" style="display:none;margin-top:6px"><span id="cur-pre3">Ar</span><input type="number" id="f-ship-manual" min="0" step="any" placeholder="0" oninput="queuePreview()"></div></div>
     </div>
-    <div class="row2">
-      <div><label class="f">Delivery date (blank = not shown)</label><input type="date" id="f-ddate" oninput="queuePreview()"></div>
+    <div class="row2 mobile-pair equal">
+      <div><label class="f">Delivery date</label><input type="date" id="f-ddate" oninput="queuePreview()"></div>
       <div><label class="f">Delivery time (optional)</label><input type="time" id="f-dtime" oninput="queuePreview()"></div>
     </div>
     <label class="f">Mode of payment</label>
@@ -302,75 +366,91 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
       <option value="PAID (prepaid)">PAID (prepaid)</option>
       <option value="Bank / Other">Bank / Other</option>
     </select>
-    <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="btn orange" style="flex:1" data-act="addToManifest">＋ ADD TO MANIFEST</button>
-      <button class="btn dark" style="flex:1" data-act="savePrint">🖨 SAVE + PRINT LABEL</button>
+    <div id="parcel-actions" style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn orange" style="flex:1" data-act="addToManifest">＋ SAVE LABEL</button>
+      <button class="btn dark" style="flex:1" data-act="savePrint">🖨 SAVE + PRINT</button>
     </div>
   </section>
 
   <section class="card" id="card-recipient">
-    <div class="card-head"><h2>DELIVER TO</h2><span class="hint">address book</span></div>
-    <label class="f">Search customer</label>
-    <input type="text" id="rec-search" placeholder="🔎 name, phone or area…" oninput="rebuildRecSelect()">
-    <label class="f">Customer</label>
+    <div class="card-head"><h2>1 · CUSTOMER</h2><span class="hint">linked directly to this label</span></div>
+    <div class="customer-status" id="customer-step-status"><span class="step-dot">1</span><div style="min-width:0;flex:1"><strong id="customer-step-name">Customer required</strong><div id="customer-step-meta">Choose an existing customer or add a new one</div></div><button class="btn sm mobile-only" data-act="toggleRecipientStep">OPEN</button></div>
+    <div id="recipient-body">
+    <label class="f">Find customer</label>
+    <input type="search" id="rec-search" placeholder="🔎 name, phone, area or address…" oninput="rebuildRecSelect()">
+    <label class="f">Use on label</label>
     <select id="rec-select" onchange="onRecChange()"></select>
     <div class="rec-toolbar">
-      <button class="btn sm" data-act="toggleRecForm">＋ New</button>
-      <button class="btn sm" id="edit-rec-btn" data-arg="sel" data-act="openAddrModal" style="display:none">✎ Edit</button>
-      <button class="btn sm" data-act="openAddrModal">📇 Book</button>
+      <button class="btn sm orange" data-act="toggleRecForm">＋ NEW CUSTOMER</button>
+      <button class="btn sm" id="edit-rec-btn" data-arg="sel" data-act="openAddrModal" style="display:none">✎ EDIT SELECTED</button>
+      <button class="btn sm" data-act="openAddrModal">📇 BOOK</button>
+      <button class="btn sm mobile-only" data-act="toggleCustomerTools">••• MORE</button>
+    </div>
+    <div class="rec-toolbar" id="customer-secondary-tools">
       <button class="btn sm" data-act="clickAbCsv">⤒ Import CSV</button>
-      <button class="btn sm" data-act="downloadAddrTemplate">⤓ Template</button>
+      <button class="btn sm" data-act="downloadAddrTemplate">⤓ CSV Template</button>
       <input type="file" id="ab-csv" accept=".csv,text/csv" hidden onchange="if(this.files[0])importAddrCSV(this.files[0]);this.value=''">
     </div>
     <div id="rec-form">
-      <label class="f">Name</label><input type="text" id="r-name">
-      <label class="f">Phone</label><input type="tel" id="r-phone">
-      <label class="f">Area / City</label><input type="text" id="r-area">
-      <label class="f">Full address</label><textarea id="r-addr"></textarea>
+      <div class="row2 mobile-pair equal"><div><label class="f">Name *</label><input type="text" id="r-name" autocomplete="name"></div>
+      <div><label class="f">Phone</label><input type="tel" id="r-phone" inputmode="tel" autocomplete="tel"></div></div>
+      <label class="f">Area / City</label><input type="text" id="r-area" autocomplete="address-level2">
+      <label class="f">Full address</label><textarea id="r-addr" autocomplete="street-address"></textarea>
       <label class="f">Rider note</label><input type="text" id="r-note">
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn sm orange" data-act="quickSaveRec">Save</button>
+        <button class="btn sm orange" style="flex:1" data-act="quickSaveRec">SAVE &amp; USE ON LABEL</button>
         <button class="btn sm" data-act="cancelRecForm">Cancel</button></div>
     </div>
     <label class="f" style="margin-top:16px">Saved customers <span id="ab-count" style="color:var(--orange-d)"></span></label>
-    <button class="btn sm wide" data-act="toggleAbList" style="box-shadow:none">▾ Show / hide</button>
+    <button class="btn sm wide" data-act="toggleAbList" style="box-shadow:none">▾ Show saved customers</button>
     <div id="ab-list"></div>
+    </div>
   </section>
 
   <aside class="card" id="card-preview">
-    <div class="card-head"><h2>LABEL</h2><span class="hint">live preview</span></div>
+    <div class="card-head"><h2>LABEL PREVIEW</h2><span class="hint">customer + label details</span><button class="btn sm mobile-only" style="margin-left:auto" data-act="togglePreviewCard">SHOW</button></div>
+    <div id="live-preview-body" style="display:flex;flex-direction:column">
     <div class="pv-badge">72 MM · POS80C</div>
     <div class="pv-frame"><div class="pv-scale" id="pv-sheet"></div></div>
     <div class="pv-cap">Prints at content length, cut at dashed line.<br>Max length: <b><span class="pv-len2">210</span> mm</b></div>
     <button class="btn sm" data-act="printCalibration" style="align-self:center;margin-top:9px">📏 TEST PAGE</button>
+    </div>
   </aside>
 
   <section class="card" id="card-batch">
-    <div class="card-head"><h2>BATCH</h2><span class="hint" id="batch-count">(0 photos)</span>
-      <div class="right"><label class="chk"><input type="checkbox" id="f-auto" checked> AUTO-SCAN on upload</label></div></div>
-    <div class="batch-bar">
-      <select id="batch-rec-all"></select>
-      <button class="btn sm" data-act="applyBatchRecAll">⇩ Same customer for all</button>
-      <label class="chk"><input type="checkbox" id="f-merge" checked> Merge same customer</label>
-      <span style="flex:1"></span>
-      <button class="btn sm dark" data-act="printAllBatchLabels">🖨 PRINT ALL LABELS</button>
-      <button class="btn sm blue" data-act="addAllBatch">＋ ADD ALL</button>
-      <button class="btn sm" data-act="clearBatch" style="color:var(--red);border-color:var(--red)">✕ Clear</button>
+    <div class="card-head"><h2>BATCH LABELS</h2><span class="hint" id="batch-count">(0 photos)</span></div>
+    <div class="batch-toolbar">
+      <div class="batch-customer-all">
+        <label for="batch-rec-all">1 · CUSTOMER FOR ALL LABELS (OPTIONAL)</label>
+        <select id="batch-rec-all"></select>
+        <button class="btn sm blue" data-act="applyBatchRecAll">APPLY CUSTOMER</button>
+      </div>
+      <div class="batch-options">
+        <label class="chk"><input type="checkbox" id="f-auto" checked> Read photo text (OCR)</label>
+        <label class="chk"><input type="checkbox" id="f-merge" checked> Merge same customer</label>
+      </div>
+      <div class="batch-primary-actions">
+        <label class="btn sm blue" for="file" style="cursor:pointer">📷 2 · ADD PHOTOS</label>
+        <button class="btn sm dark" data-act="printAllBatchLabels">🖨 3 · PRINT ALL</button>
+        <button class="btn sm orange" data-act="addAllBatch">＋ ADD ALL TO MANIFEST</button>
+        <button class="btn sm" data-act="clearBatch" style="color:var(--red);border-color:var(--red)">✕ CLEAR BATCH</button>
+      </div>
     </div>
     <div id="batch-list"></div>
   </section>
 
   <section class="card" id="card-manifest">
     <div class="card-head"><h2>MANIFEST</h2><span class="hint" id="mani-date"></span>
-      <div class="right">
+      <div class="right manifest-tools"><details class="compact-action-menu" id="manifest-action-menu"><summary>PRINT &amp; MANIFEST MENU</summary><div class="action-menu-grid">
         <button class="btn sm" data-act="exportCSV">⤓ CSV</button>
         <button class="btn sm dark" data-act="printManifest">🧾 72 MM</button>
         <button class="btn sm blue" data-act="printA4">⎙ A4 / PDF</button>
         <button class="btn sm green" data-act="printReport">📊 SALES REPORT</button>
-        <button class="btn sm" data-act="closeDay">🌙 Close day</button>
-        <button class="btn sm" data-act="openArch">🗄 Archive</button>
-        <button class="btn sm" data-act="clearManifest" style="color:var(--red);border-color:var(--red)">✕ Clear</button>
-      </div></div>
+        <button class="btn sm" data-act="closeDay">🌙 CLOSE DAY</button>
+        <button class="btn sm" data-act="openArch">🗄 ARCHIVE</button>
+        <button class="btn sm" data-act="retryPrintQueue">↻ <span class="queue-count-label">QUEUE 0</span></button>
+        <button class="btn sm" data-act="clearManifest" style="color:var(--red);border-color:var(--red)">✕ CLEAR</button>
+      </div></details></div></div>
     <div class="batch-bar" id="mani-select-bar">
       <label class="chk" style="margin-top:0"><input type="checkbox" id="mani-select-all" onchange="toggleManifestAll(this.checked)"> Select all parcels</label>
       <span id="mani-selection-status">0 selected</span>
@@ -383,10 +463,10 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   </section>
 </main>
 
-<nav id="mobile-nav" aria-label="Quick navigation">
-  <button data-act="scrollSection" data-arg="card-parcel"><span>＋</span>NEW</button>
-  <button data-act="scrollSection" data-arg="card-batch"><span>▦</span>BATCH</button>
-  <button data-act="scrollSection" data-arg="card-manifest"><span>☷</span>MANIFEST</button>
+<nav id="mobile-nav" aria-label="App sections">
+  <button data-act="showMobileView" data-arg="new" data-view="new" aria-current="true"><span>＋</span>NEW LABEL</button>
+  <button data-act="showMobileView" data-arg="batch" data-view="batch"><span>▦</span>BATCH</button>
+  <button data-act="showMobileView" data-arg="manifest" data-view="manifest"><span>☷</span>MANIFEST</button>
   <button data-act="openSettings"><span>⚙</span>SETTINGS</button>
 </nav>
 
@@ -410,6 +490,15 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 <div class="modal" id="m-settings"><div class="modal-box">
   <button class="modal-x" data-close="m-settings">✕</button>
   <h3>SETTINGS</h3>
+  <div class="printer-box" id="profile-create-box">
+    <div class="printer-title">🏢 COMPANY PROFILES</div>
+    <p class="printer-help">Create a separate company workspace directly in the app. The current profile's data stays separate.</p>
+    <div class="row2 mobile-pair equal">
+      <div><label class="f" for="s-new-profile">New company profile name</label><input type="text" id="s-new-profile" maxlength="60" placeholder="e.g. Antananarivo Shop" autocomplete="organization"></div>
+      <div style="display:flex;align-items:end"><button class="btn orange wide" data-act="addProfileFromSettings">＋ ADD &amp; SWITCH TO PROFILE</button></div>
+    </div>
+    <div id="s-profile-feedback" class="printer-status" aria-live="polite">Profiles are stored on this phone.</div>
+  </div>
   <div class="row2"><div><label class="f">Shop name</label><input type="text" id="s-name"></div>
     <div><label class="f">Tagline</label><input type="text" id="s-tag"></div></div>
   <div class="row2"><div><label class="f">Phone</label><input type="text" id="s-phone"></div>
@@ -421,27 +510,36 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <div><label class="f">Recon time (hour)</label><input type="number" id="s-reconhour" min="0" max="23" value="9"></div></div>
   <label class="f">Thank-you line</label><input type="text" id="s-thanks">
   <div class="printer-box">
-    <div class="printer-title">🖨 MOBILE &amp; POS80C PRINTING</div>
-    <p class="printer-help">System Print uses AirPrint on iPhone/iPad or Android's print service. Direct mode sends compact ESC/POS labels through the LabelOnZeWay Wi-Fi Gateway and cuts after each label.</p>
+    <div class="printer-title"> IPHONE / IPAD &amp; POS80C PRINTING</div>
+    <p class="printer-help" id="native-print-help"><b>iPhone System Print</b> is the default for this web app. It opens the iOS print sheet for AirPrint-compatible printers or PDF output. Safari cannot open raw TCP port 9100 directly.</p>
     <label class="f">Print labels using</label>
     <select id="s-print-mode" onchange="updatePrinterSettingsUI()">
-      <option value="browser">Phone system print · AirPrint / Android</option>
-      <option value="direct">Direct Wi-Fi ESC/POS through gateway</option>
+      <option value="browser">iPhone / iPad system print · AirPrint</option>
+      <option value="direct">Direct ESC/POS · local Wi-Fi gateway</option>
     </select>
-    <div class="row2"><div><label class="f">Printer IP address</label><input type="text" id="s-printer-ip" placeholder="192.168.1.100"></div>
-      <div><label class="f">Raw TCP port</label><input type="number" id="s-printer-port" min="1" max="65535" value="9100"></div></div>
-    <label class="f">Wi-Fi Gateway URL</label><input type="text" id="s-bridge-url" placeholder="auto · desktop loopback or enter computer LAN URL">
-    <div class="row2"><div><label class="f">Print width (dots)</label><input type="number" id="s-printer-dots" min="384" max="640" step="8" value="576"></div>
-      <div><label class="f">Feed before cut (dots)</label><input type="number" id="s-printer-feed" min="0" max="255" value="24"></div></div>
-    <div class="row2"><div><label class="f">Image threshold</label><input type="number" id="s-printer-threshold" min="1" max="254" value="180"></div>
-      <div><label class="f">Cutter command</label><select id="s-cut-type"><option value="partial">Partial cut</option><option value="full">Full cut</option><option value="none">No cut</option></select></div></div>
-    <label class="chk"><input type="checkbox" id="s-cut-each" checked> Auto-cut after every label</label>
-    <div id="s-printer-status" class="printer-status">Not tested yet</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-      <button class="btn sm blue" data-act="testPrinterBridge">TEST CONNECTION</button>
+    <div class="row2 mobile-pair equal"><div><label class="f">POS80C IP address</label><input type="text" id="s-printer-ip" placeholder="192.168.100.173" inputmode="decimal"></div>
+      <div><label class="f">Raw TCP port</label><input type="number" id="s-printer-port" min="1" max="65535" value="9100" inputmode="numeric"></div></div>
+    <label class="f">Local gateway URL</label><input type="text" id="s-bridge-url" placeholder="auto when opened from the local gateway">
+    <div id="s-printer-status" class="printer-status">iPhone system print is ready</div>
+    <div class="print-methods" aria-label="iPhone printing choices">
+      <div class="print-method"><b>IOS SYSTEM PRINT</b>Open the Apple print sheet and select an available AirPrint printer.<small>No computer gateway is needed for AirPrint.</small></div>
+      <div class="print-method"><b>HOME SCREEN APP</b>In Safari, tap Share, then <b>Add to Home Screen</b> for an APK-style full-screen layout.<small>Records stay on this iPhone.</small></div>
+      <div class="print-method"><b>DIRECT POS80C</b>Run the local gateway on a Mac/PC/Raspberry Pi, then open the local LabelOnZeWay address it displays.<small>Required because Safari cannot use raw TCP 9100.</small></div>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn sm blue" data-act="testPrinterBridge">TEST GATEWAY</button>
       <button class="btn sm orange" data-act="testPrinterCut">PRINT + CUT TEST</button>
-      <button class="btn sm" data-act="downloadPrinterBridge">DOWNLOAD WI-FI GATEWAY</button></div>
-    <p class="printer-help">Hosted direct printing: run the <b>POS80C Gateway Kit</b> on a Mac/PC. On that same computer, <code>auto</code> uses loopback. On Android, enter the computer LAN URL ending in <code>/api</code>. On iPhone/iPad, use the local LabelOnZeWay URL printed by the gateway for dependable direct printing.</p>
+      <button class="btn sm" data-act="retryPrintQueue">↻ RETRY QUEUED</button>
+      <button class="btn sm" data-act="clearPrintQueue" style="color:var(--red)">CLEAR QUEUE</button></div>
+    <details class="advanced-printer"><summary>ADVANCED LABEL &amp; CUT SETTINGS</summary><div class="advanced-printer-body">
+      <div class="row2"><div><label class="f">Print width (dots)</label><input type="number" id="s-printer-dots" min="384" max="640" step="8" value="576"></div>
+        <div><label class="f">Feed before cut (dots)</label><input type="number" id="s-printer-feed" min="0" max="255" value="0"></div></div>
+      <div class="row2"><div><label class="f">Image threshold</label><input type="number" id="s-printer-threshold" min="1" max="254" value="180"></div>
+        <div><label class="f">Cutter command</label><select id="s-cut-type"><option value="partial">Partial cut</option><option value="full">Full cut</option><option value="none">No cut</option></select></div></div>
+      <label class="chk"><input type="checkbox" id="s-cut-each" checked> Auto-cut after every physical label copy</label>
+      <button class="btn sm" id="download-gateway-btn" data-act="downloadPrinterBridge" style="margin-top:8px">DOWNLOAD WI-FI GATEWAY</button>
+    </div></details>
+    <p class="printer-help" id="native-printer-note">For direct ESC/POS printing on iPhone, do not try to connect this public HTTPS page to an HTTP LAN gateway. Instead, start the gateway and open its local <code>http://…:8765/</code> LabelOnZeWay address in Safari. For this GitHub Pages URL, use iOS System Print.</p>
   </div>
   <div style="border-top:2px dashed var(--line);margin-top:14px;padding-top:12px">
     <p style="font:700 11px var(--mono);color:var(--green)">🤖 QWEN BACKEND (optional)</p>
@@ -455,6 +553,19 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <button class="btn sm blue" data-act="downloadBackup">⤓ Backup</button>
     <button class="btn sm" data-act="clickRestore">⤒ Restore</button>
     <input type="file" id="restore-file" accept=".json" hidden onchange="if(this.files[0])restoreBackup(this.files[0]);this.value=''"></div>
+</div></div>
+
+<div class="modal" id="m-print-fallback"><div class="modal-box" style="max-width:540px">
+  <button class="modal-x" data-act="cancelPrintFallback">✕</button>
+  <h3>PRINTER UNAVAILABLE</h3>
+  <p id="print-fallback-message" style="font:600 12px/1.5 var(--body);color:#4c5864;margin:8px 0 13px">The POS80C gateway could not be reached.</p>
+  <div class="print-fallback-actions">
+    <button class="btn blue" data-act="detectAndRetryPrint">↻ TEST GATEWAY &amp; RETRY</button>
+    <button class="btn dark" data-act="systemPrintFallback">▣ IOS SYSTEM PRINT</button>
+    <button class="btn orange" data-act="queueFailedPrint">＋ QUEUE FOR LATER</button>
+    <button class="btn" data-act="cancelPrintFallback">CANCEL</button>
+  </div>
+  <p class="queue-note">Safari cannot connect directly to raw TCP port 9100. Use the iOS print sheet, or open the local URL supplied by the running gateway for direct ESC/POS output.</p>
 </div></div>
 
 <div class="modal" id="m-addr"><div class="modal-box">
@@ -515,14 +626,23 @@ function K(k){return PID+'.'+k}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function switchProfile(id){localStorage.setItem('lz.profile',id);location.reload();}
-function addProfile(){var name=prompt('Company / profile name:');if(!name)return;
+function createProfile(name){name=String(name||'').trim().replace(/\s+/g,' ');
+  if(!name)return {ok:false,message:'Enter a company profile name.'};
+  if(PROFILES.some(function(p){return String(p.name||'').toLowerCase()===name.toLowerCase()}))return {ok:false,message:'A profile with this name already exists.'};
   var id='P'+Date.now();PROFILES.push({id:id,name:name});
   localStorage.setItem('lz.profiles',JSON.stringify(PROFILES));
-  localStorage.setItem('lz.profile',id);location.reload();}
+  localStorage.setItem(id+'.shop',JSON.stringify(Object.assign({},DEFAULT_SHOP,{name:name})));
+  localStorage.setItem('lz.profile',id);return {ok:true,id:id,name:name};}
+function addProfile(){var name=prompt('Company / profile name:');if(!name)return;var out=createProfile(name);
+  if(!out.ok){toast(out.message,'err');return}location.reload();}
+function addProfileFromSettings(){var input=getEl('s-new-profile'),feedback=getEl('s-profile-feedback');var out=createProfile(input?input.value:'');
+  if(!out.ok){if(feedback){feedback.textContent=out.message;feedback.className='printer-status err'}if(input)input.focus();toast(out.message,'err');return}
+  if(feedback){feedback.textContent='✓ Profile created. Switching to '+out.name+'…';feedback.className='printer-status ok'}
+  toast('Company profile created','ok');setTimeout(function(){location.reload()},250);}
 
 var PAY_MODES=['Espèces','COD','MVola','Orange Money','Airtel Money','PAID (prepaid)','Bank / Other'];
 var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,qwenUrl:'',qwenModel:'qwen2.5-vl:7b',
-  printMode:'browser',printerIp:'',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:24,printerThreshold:180,printerCut:'partial',cutEach:true};
+  printMode:'browser',printerIp:'192.168.100.173',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:0,printerThreshold:180,printerCut:'partial',cutEach:true};
 var state={
   shop:Object.assign({},DEFAULT_SHOP,load(K('shop'),{})),
   addr:load(K('addr'),[]),manifest:load(K('mani'),[]),archive:load(K('arch'),[]),counter:load(K('ctr'),0),
@@ -545,6 +665,73 @@ function renderStats(){var m=state.manifest;
   var c=getEl('stat-count');if(c)c.textContent=m.length;
   var sc=getEl('stat-cod');if(sc)sc.textContent=money(m.filter(function(r){return !r.done}).reduce(function(sum,r){return sum+Number(r.cod||0)+Number(r.ship||0)},0));
   var md=getEl('mani-date');if(md)md.textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase();}
+
+var mobileView='new';
+function isMobileUI(){return !!(window.matchMedia&&window.matchMedia('(max-width:780px)').matches)}
+function updateMobileContext(){var t=getEl('mobile-context-title');if(!t)return;
+  t.textContent=mobileView==='manifest'?'MANIFEST':mobileView==='batch'?'BATCH LABELS':(getEl('card-recipient')&&getEl('card-recipient').classList.contains('mobile-collapsed')?'LABEL DETAILS':'CUSTOMER & LABEL');}
+function showMobileView(view){
+  view=(view==='batch'||view==='manifest')?view:'new';mobileView=view;
+  if(!isMobileUI()){
+    var target=getEl(view==='batch'?'card-batch':view==='manifest'?'card-manifest':'card-recipient');
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});return;
+  }
+  var active=view==='new'?['card-recipient','card-parcel','card-preview']:[view==='batch'?'card-batch':'card-manifest'];
+  document.querySelectorAll('#app>.card').forEach(function(card){card.classList.toggle('mobile-view-active',active.indexOf(card.id)>=0)});
+  document.querySelectorAll('#mobile-nav [data-view]').forEach(function(btn){btn.setAttribute('aria-current',btn.getAttribute('data-view')===view?'true':'false')});
+  document.body.classList.add('mobile-ui-ready');updateMobileContext();window.scrollTo({top:0,behavior:'auto'});
+  if(view==='batch')renderBatch();if(view==='manifest')renderManifest();
+}
+function updateCustomerCoordination(){
+  var rec=currentRec(),ready=!!rec;
+  var status=getEl('customer-step-status'),link=getEl('linked-customer');
+  if(status)status.classList.toggle('ready',ready);if(link)link.classList.toggle('ready',ready);
+  var statusName=getEl('customer-step-name'),statusMeta=getEl('customer-step-meta');
+  var linkName=getEl('linked-customer-name'),linkMeta=getEl('linked-customer-meta');
+  var name=ready?rec.name:'Customer required';
+  var meta=ready?[rec.phone,rec.area,rec.address].filter(Boolean).join(' · '):'Choose an existing customer or add a new one';
+  if(statusName)statusName.textContent=name;if(statusMeta)statusMeta.textContent=meta;
+  if(linkName)linkName.textContent=ready?rec.name:'Choose or add a customer';
+  if(linkMeta)linkMeta.textContent=ready?([rec.phone,[rec.address,rec.area].filter(Boolean).join(', ')].filter(Boolean).join(' · ')||'Saved customer'):'Required before saving or printing';
+}
+function finishCustomerStep(){
+  updateCustomerCoordination();var card=getEl('card-recipient');
+  if(isMobileUI()&&currentRec()&&card){card.classList.add('mobile-collapsed');updateMobileContext();setTimeout(function(){var p=getEl('card-parcel');if(p)p.scrollIntoView({behavior:'smooth',block:'start'})},80)}
+}
+function editRecipientStep(){
+  showMobileView('new');var card=getEl('card-recipient');if(card)card.classList.remove('mobile-collapsed');updateMobileContext();
+  setTimeout(function(){if(card)card.scrollIntoView({behavior:'smooth',block:'start'});var s=getEl('rec-search');if(s)s.focus()},60);
+}
+function toggleRecipientStep(){var card=getEl('card-recipient');if(!card)return;card.classList.toggle('mobile-collapsed');updateMobileContext();if(!card.classList.contains('mobile-collapsed')){var s=getEl('rec-search');if(s)s.focus()}}
+function toggleCustomerTools(){var tools=getEl('customer-secondary-tools');if(tools)tools.classList.toggle('open')}
+function togglePreviewCard(){var card=getEl('card-preview');if(!card)return;card.classList.toggle('mobile-collapsed');var b=card.querySelector('[data-act="togglePreviewCard"]');if(b)b.textContent=card.classList.contains('mobile-collapsed')?'SHOW':'HIDE';if(!card.classList.contains('mobile-collapsed'))renderPreview()}
+function prepareMobileUI(){
+  if(!isMobileUI()){document.body.classList.remove('mobile-ui-ready');document.querySelectorAll('#app>.card').forEach(function(c){c.classList.remove('mobile-view-active')});return}
+  var photo=getEl('photo-tools');if(photo&&!state.img)photo.removeAttribute('open');
+  var preview=getEl('card-preview');if(preview)preview.classList.add('mobile-collapsed');
+  showMobileView(mobileView);updateCustomerCoordination();
+}
+function resetCurrentLabelDraft(){
+  state.img=null;state.imgOCR=null;state.imgBig=null;state.currentFile=null;paintDrop();hideSuggest();
+  ['f-price','f-cod','f-ship-manual'].forEach(function(id){var e=getEl(id);if(e)e.value=''});
+  var q=getEl('f-qty');if(q)q.value=1;var copies=getEl('f-copies');if(copies)copies.value=1;var pay=getEl('f-pay');if(pay)pay.value='COD';
+  var ship=getEl('f-ship');if(ship)ship.value='3000';var sw=getEl('f-ship-manual-wrap');if(sw)sw.style.display='none';
+  var dd=getEl('f-ddate');if(dd)dd.value=dPlus1Date();var dt=getEl('f-dtime');if(dt)dt.value='';
+  var rec=getEl('rec-select');if(rec)rec.value='';var rc=getEl('card-recipient');if(rc)rc.classList.remove('mobile-collapsed');
+  var rf=getEl('rec-form');if(rf)rf.classList.remove('open');clearRecForm();updateCustomerCoordination();updateMobileContext();renderPreview();}
+function mobileGoBack(){
+  var modal=document.querySelector('.modal.open');if(modal){if(modal.id==='m-settings')cancelPrinterDiscovery();if(modal.id==='m-print-fallback')failedPrintRows=null;closeModal(modal.id);return true}
+  if(mobileView!=='new'){showMobileView('new');return true}
+  var rc=getEl('card-recipient');if(rc&&rc.classList.contains('mobile-collapsed')){editRecipientStep();return true}
+  var rf=getEl('rec-form');if(rf&&rf.classList.contains('open')){cancelRecForm();return true}
+  return false;}
+function mobileBack(){if(!mobileGoBack())toast('Already at the first step','ok')}
+function cancelMobile(){
+  if(mobileView==='manifest'){clearManifestSelection();document.querySelectorAll('.mobile-manifest-item[open]').forEach(function(x){x.removeAttribute('open')});var mm=getEl('manifest-action-menu');if(mm)mm.removeAttribute('open');toast('Manifest selection cancelled','ok');return}
+  if(mobileView==='batch'){if(!state.batch.length){toast('No batch operation to cancel','ok');return}if(confirm('Cancel and clear the current batch?')){state.batch=[];renderBatch();toast('Batch cancelled','ok')}return}
+  var dirty=!!(state.img||val('f-price')||val('f-cod')||currentRec()||(getEl('rec-form')&&getEl('rec-form').classList.contains('open')));
+  if(dirty&&!confirm('Cancel this label and clear its unsaved details?'))return;resetCurrentLabelDraft();window.scrollTo({top:0,behavior:'smooth'});toast('Label cancelled','ok');}
+window.handleNativeBack=function(){return mobileGoBack()};
 
 function onShipChange(){var v=val('f-ship','3000');
   var w=getEl('f-ship-manual-wrap');if(w)w.style.display=(v==='manual')?'block':'none';
@@ -590,7 +777,7 @@ function handleFiles(files){files=(files||[]).filter(function(f){return f&&f.typ
 function makeBatchItem(file){return new Promise(function(res){var url=URL.createObjectURL(file),img=new Image();
   img.onload=function(){var it={id:'b'+Date.now()+Math.random().toString(36).slice(2,6),
     img:scaleTo(img,400,.8),imgOCR:scaleTo(img,900,.85),imgBig:scaleTo(img,1400,.9),fileRef:file,
-    qty:1,price:null,cod:null,ship:SHIP_RATES[0],shipManual:false,recId:'',pay:'COD',found:[],
+    qty:1,copies:1,price:null,cod:null,ship:SHIP_RATES[0],shipManual:false,recId:'',pay:'COD',found:[],
     status:'waiting',contactDetected:false,msg:getEl('f-auto').checked?'QUEUED':'Queued',err:false};
     URL.revokeObjectURL(url);res(it)};
   img.onerror=function(){URL.revokeObjectURL(url);res(null)};img.src=url;});}
@@ -602,6 +789,7 @@ function handleFile(file){var url=URL.createObjectURL(file),img=new Image();
   img.onerror=function(){URL.revokeObjectURL(url);toast('Could not read image','err')};img.src=url;}
 function paintDrop(){var drop=getEl('drop');if(!drop)return;
   drop.querySelectorAll('img,.clear-img').forEach(function(n){n.remove()});
+  var summary=getEl('photo-summary');if(summary)summary.textContent=state.img?'photo attached':'optional';
   if(!state.img)return;
   var im=document.createElement('img');im.src=state.img;
   var b=document.createElement('button');b.className='clear-img';b.textContent='✕';b.title='Remove photo';
@@ -729,8 +917,8 @@ function dismissSuggest(){hideSuggest();afterContactResolved();}
 function saveSuggestedContact(){
   var c=state.pendingContact;if(!c)return dismissSuggest();
   var rec={id:'a'+Date.now(),name:c.name||'(customer)',phone:c.phone||'',area:'',address:c.address||'',note:'from photo'};
-  state.addr.push(rec);persist();rebuildRecSelect();renderAmList();
-  hideSuggest();toast('Customer saved to address book','ok');
+  state.addr.push(rec);persist();rebuildRecSelect(rec.id);renderAmList();
+  hideSuggest();toast('Customer saved and linked to this label','ok');finishCustomerStep();
   afterContactResolved();
 }
 function runPipeline(im,passes,onProgress){return getOcrWorker().then(function(worker){
@@ -929,28 +1117,29 @@ function recOptionsHTML(sel,ph,withNew){var byArea={};state.addr.forEach(functio
 function batchThumb(it){return it.img?('<img class="b-thumb" src="'+it.img+'">'):('<div class="b-thumb" style="background:#dfe3e7;display:grid;place-items:center;font-size:20px">📷</div>')}
 function renderBatch(){var box=getEl('batch-list');if(!box)return;var n=state.batch.length;
   var bc=getEl('batch-count');if(bc)bc.textContent='('+n+' photo'+(n!==1?'s':'')+')';
-  if(!n){box.innerHTML='<div class="empty" style="padding:20px;font-size:12.5px"><b>Batch empty</b>Drop several photos at once.</div>';return}
+  if(!n){box.innerHTML='<div class="empty" style="padding:20px;font-size:12.5px"><b>Batch empty</b>Add several photos to start a clean batch.</div>';return}
   box.innerHTML=state.batch.map(function(it){return '<div class="brow'+(it.err?' err':'')+'" id="brow-'+it.id+'">'+
       batchThumb(it)+
       '<div class="b-main">'+
         '<div class="b-status" id="bs-'+it.id+'"></div>'+
         '<div class="b-chips" id="bc-'+it.id+'"></div>'+
         '<div class="b-grid">'+
-          '<input type="number" min="1" value="'+it.qty+'" title="Qty" oninput="bset(\''+it.id+'\',\'qty\',this.value)">'+
-          '<input type="number" min="0" step="any" value="'+nn(it.price)+'" placeholder="price" oninput="bset(\''+it.id+'\',\'price\',this.value)">'+
-          '<input type="number" min="0" step="any" value="'+nn(it.cod)+'" placeholder="collect" oninput="bset(\''+it.id+'\',\'cod\',this.value)">'+
-          '<div class="b-ship'+(it.shipManual?' manual':'')+'">'+
+          '<div class="b-field"><label>ITEM QTY</label><input class="b-qty" type="number" min="1" value="'+(it.qty||1)+'" inputmode="numeric" oninput="bset(\''+it.id+'\',\'qty\',this.value)"></div>'+
+          '<div class="b-field"><label>LABEL COPIES</label><input class="b-copies" type="number" min="1" max="20" value="'+(it.copies||1)+'" inputmode="numeric" oninput="bset(\''+it.id+'\',\'copies\',this.value)"></div>'+
+          '<div class="b-field"><label>ITEM PRICE</label><input class="b-price" type="number" min="0" step="any" value="'+nn(it.price)+'" placeholder="0" inputmode="decimal" oninput="bset(\''+it.id+'\',\'price\',this.value)"></div>'+
+          '<div class="b-field"><label>COLLECT</label><input class="b-cod" type="number" min="0" step="any" value="'+nn(it.cod)+'" placeholder="0" inputmode="decimal" oninput="bset(\''+it.id+'\',\'cod\',this.value)"></div>'+
+          '<div class="b-field"><label>DELIVERY</label><div class="b-ship'+(it.shipManual?' manual':'')+'">'+
             '<select title="Delivery cost" onchange="bset(\''+it.id+'\',\'ship\',this.value)">'+shipSelectHTML(it.ship)+'</select>'+
-            '<input type="number" min="0" step="any" value="'+nn(it.ship)+'" placeholder="custom" oninput="bset(\''+it.id+'\',\'shipManualVal\',this.value)">'+
-          '</div>'+
-          '<select id="br-'+it.id+'" onchange="bset(\''+it.id+'\',\'recId\',this.value)">'+recOptionsHTML(it.recId,'— customer for THIS photo —',true)+'</select>'+
-          '<select onchange="bset(\''+it.id+'\',\'pay\',this.value)">'+payOptionsHTML(it.pay)+'</select>'+
+            '<input type="number" min="0" step="any" value="'+nn(it.ship)+'" placeholder="custom" inputmode="decimal" oninput="bset(\''+it.id+'\',\'shipManualVal\',this.value)">'+
+          '</div></div>'+
+          '<div class="b-field batch-customer"><label>CUSTOMER</label><select id="br-'+it.id+'" onchange="bset(\''+it.id+'\',\'recId\',this.value)">'+recOptionsHTML(it.recId,'— customer for this photo —',true)+'</select></div>'+
+          '<div class="b-field"><label>PAYMENT</label><select onchange="bset(\''+it.id+'\',\'pay\',this.value)">'+payOptionsHTML(it.pay)+'</select></div>'+
         '</div></div>'+
       '<div class="b-actions">'+
-        '<button class="mini-btn" data-arg="'+it.id+'" data-act="batchScanOne">🔁</button>'+
-        '<button class="mini-btn" data-arg="'+it.id+'" data-act="printSingleFromBatch" style="border-color:var(--blue)">🏷</button>'+
-        '<button class="mini-btn" data-arg="'+it.id+'" data-act="addSingleBatch" style="border-color:var(--green)">＋</button>'+
-        '<button class="mini-btn del" data-arg="'+it.id+'" data-act="removeBatch">✕</button>'+
+        '<button class="btn sm" data-arg="'+it.id+'" data-act="batchScanOne">🔁 SCAN</button>'+
+        '<button class="btn sm blue" data-arg="'+it.id+'" data-act="printSingleFromBatch">🏷 PRINT</button>'+
+        '<button class="btn sm green" data-arg="'+it.id+'" data-act="addSingleBatch">＋ MANIFEST</button>'+
+        '<button class="btn sm" data-arg="'+it.id+'" data-act="removeBatch" style="color:var(--red);border-color:var(--red)">✕ REMOVE</button>'+
       '</div></div>';}).join('');
   state.batch.forEach(renderBatchRow);}
 function renderBatchRow(it){var st=getEl('bs-'+it.id),ch=getEl('bc-'+it.id);if(!st)return;
@@ -961,14 +1150,15 @@ function renderBatchRow(it){var st=getEl('bs-'+it.id),ch=getEl('bc-'+it.id);if(!
     c.className='pchip'+(idx===0?' top':'');
     c.textContent=state.shop.currency+' '+f.v.toLocaleString(undefined,{maximumFractionDigits:2});
     c.onclick=function(){it.price=f.v;if(it.cod===null||it.cod==='')it.cod=f.v;
-      var row=getEl('brow-'+it.id);if(row){var inputs=row.querySelectorAll('input[type=number]');
-        if(inputs[1])inputs[1].value=f.v;if(inputs[2]&&!inputs[2].value)inputs[2].value=f.v;}
+      var row=getEl('brow-'+it.id);if(row){var price=row.querySelector('.b-price'),cod=row.querySelector('.b-cod');
+        if(price)price.value=f.v;if(cod&&!cod.value)cod.value=f.v;}
       toast('Price set','ok')};
     ch.appendChild(c);});}
 function bset(id,k,v){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   if(k==='recId'&&v==='__new'){state.addrAssign=id;openAddrModal();
     var sel=getEl('br-'+id);if(sel)sel.value=it.recId||'';return}
   if(k==='qty')it.qty=Math.max(1,parseInt(v)||1);
+  else if(k==='copies')it.copies=Math.min(20,Math.max(1,parseInt(v)||1));
   else if(k==='price'||k==='cod')it[k]=v===''?null:parseFloat(v);
   else if(k==='ship'){if(v==='manual'){it.shipManual=true;}else{it.shipManual=false;it.ship=parseFloat(v)||0;}renderBatch();return;}
   else if(k==='shipManualVal'){it.ship=parseFloat(v)||0;return;}
@@ -985,7 +1175,7 @@ function scanBatchItem(it){it.status='scanning';it.found=[];it.msg='SCANNING…'
       it.price=best.v;if(it.cod===null||it.cod==='')it.cod=best.v;
       it.status='done';it.msg=(out.anchored?'✓ PRIX: ':'✓ ')+money(best.v);
       var row=getEl('brow-'+it.id);
-      if(row){var inputs=row.querySelectorAll('input[type=number]');if(inputs[1])inputs[1].value=best.v;if(inputs[2]&&!inputs[2].value)inputs[2].value=best.v;}}
+      if(row){var price=row.querySelector('.b-price'),cod=row.querySelector('.b-cod');if(price)price.value=best.v;if(cod&&!cod.value)cod.value=best.v;}}
     else{it.status='none';it.msg='No « prix » — enter manually';}});}
 function processBatch(){if(batchBusy)return;batchBusy=true;
   var step=function(){var it=state.batch.find(function(b){return b.status==='waiting'});
@@ -1002,7 +1192,7 @@ function applyBatchRecAll(){var v=getEl('batch-rec-all').value;if(!v){toast('Cho
   state.batch.forEach(function(it){it.recId=v;it.err=false;var sel=getEl('br-'+it.id);if(sel)sel.value=v;renderBatchRow(it);});
   toast('Customer applied to '+state.batch.length+' photos','ok');}
 function makeRow(it,rec,oid){var price=Number(it.price)||0;
-  return {id:'r'+Date.now()+Math.random().toString(36).slice(2,6),oid:oid,name:'',qty:it.qty||1,price:price,
+  return {id:'r'+Date.now()+Math.random().toString(36).slice(2,6),oid:oid,name:'',qty:it.qty||1,copies:Math.min(20,Math.max(1,parseInt(it.copies)||1)),price:price,
     cod:it.cod===null||it.cod===''?price:Number(it.cod),ship:Number(it.ship)||0,notes:'',
     pay:it.pay||'COD',mmRef:'',img:it.img||null,deliverAt:it.deliverAt||dPlus1Date(),deliverTime:it.deliverTime||'',pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};}
@@ -1011,7 +1201,8 @@ function makeMergedRow(items,rec,oid){
   var price=items.reduce(function(s,p){return s+(Number(p.price)||0)*(p.qty||1)},0);
   var cod=items.reduce(function(s,p){return s+(p.cod===null||p.cod===''?(Number(p.price)||0):(Number(p.cod)||0))},0);
   var ship=items.reduce(function(s,p){return s+(Number(p.ship)||0)},0);
-  return {id:'r'+Date.now()+Math.random().toString(36).slice(2,6),oid:oid,name:'',qty:qty,price:price,cod:cod,ship:ship,notes:'',
+  var copies=items.reduce(function(n,p){return Math.max(n,Math.min(20,Math.max(1,parseInt(p.copies)||1)))},1);
+  return {id:'r'+Date.now()+Math.random().toString(36).slice(2,6),oid:oid,name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
     pay:items[0].pay||'COD',mmRef:'',img:items[0].img||null,deliverAt:dPlus1Date(),deliverTime:'',pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};}
 function commitBatch(){
@@ -1049,7 +1240,7 @@ function printAllBatchLabels(){
   if(!out.rows.length){toast(out.skipped?'Nothing to print — '+out.skipped+' row(s) missing customer':'Nothing to print','err');return}
   printChain=['manifest','report'];
   doPrint('label',out.rows.map(labelHTML).join(''),out.rows);
-  toast('Printing '+out.rows.length+' label'+(out.rows.length!==1?'s':'')+' (auto-cut per label when direct mode is enabled)…','ok');}
+  var labels=physicalLabelCount(out.rows);toast('Printing '+labels+' label cop'+(labels===1?'y':'ies')+' (auto-cut after every copy in direct mode)…','ok');}
 function addSingleBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
@@ -1070,7 +1261,7 @@ function clearBatch(){if(!state.batch.length)return;if(!confirm('Clear batch?'))
 function rebuildRecSelect(keep){var sel=getEl('rec-select');if(!sel)return;var prev=keep||sel.value;
   var q=(val('rec-search')).toLowerCase();
   var list=q?state.addr.filter(function(a){return[a.name,a.phone,a.area,a.address].some(function(v){return String(v||'').toLowerCase().indexOf(q)>=0})}):state.addr;
-  var html='<option value="__new">＋ New customer…</option>';
+  var html='<option value="">— Choose a customer —</option><option value="__new">＋ New customer…</option>';
   if(prev&&state.addr.some(function(a){return a.id===prev})&&!list.some(function(a){return a.id===prev})){
     var pa=state.addr.find(function(a){return a.id===prev});html+='<option value="'+pa.id+'">'+esc(pa.name)+' — '+esc(pa.phone)+'</option>';}
   var byArea={};list.forEach(function(a){(byArea[a.area||'Other']=byArea[a.area||'Other']||[]).push(a)});
@@ -1081,18 +1272,20 @@ function rebuildRecSelect(keep){var sel=getEl('rec-select');if(!sel)return;var p
   if(prev&&state.addr.some(function(a){return a.id===prev}))sel.value=prev;
   var ab=getEl('ab-count');if(ab)ab.textContent='('+state.addr.length+')';
   var bra=getEl('batch-rec-all');if(bra)bra.innerHTML=recOptionsHTML('','— customer for ALL rows —',false);
-  onRecChange();renderAbList();}
-function onRecChange(){var v=getEl('rec-select').value;
+  onRecChange(true);renderAbList();}
+function onRecChange(preserveOpen){var v=getEl('rec-select').value;
   var eb=getEl('edit-rec-btn');if(eb)eb.style.display=(v&&v!=='__new')?'':'none';
-  var f=getEl('rec-form');if(!f)return;
-  if(v==='__new')f.classList.add('open');else f.classList.remove('open');
-  queuePreview();}
-function toggleRecForm(){var f=getEl('rec-form');if(!f)return;f.classList.toggle('open');
-  if(f.classList.contains('open')){var n=getEl('r-name');if(n)n.focus();}}
-function cancelRecForm(){var f=getEl('rec-form');if(f)f.classList.remove('open');}
+  var f=getEl('rec-form');if(f){if(v==='__new')f.classList.add('open');else f.classList.remove('open')}
+  updateCustomerCoordination();queuePreview();
+  if(!preserveOpen&&v&&v!=='__new')finishCustomerStep();
+  else if(v==='__new'){var card=getEl('card-recipient');if(card)card.classList.remove('mobile-collapsed');setTimeout(function(){var n=getEl('r-name');if(n)n.focus()},40)}
+}
+function toggleRecForm(){var f=getEl('rec-form');if(!f)return;var card=getEl('card-recipient');if(card)card.classList.remove('mobile-collapsed');
+  f.classList.toggle('open');if(f.classList.contains('open')){var s=getEl('rec-select');if(s)s.value='__new';updateCustomerCoordination();var n=getEl('r-name');if(n)n.focus();}}
+function cancelRecForm(){var f=getEl('rec-form');if(f)f.classList.remove('open');var s=getEl('rec-select');if(s&&s.value==='__new')s.value='';updateCustomerCoordination();queuePreview();}
 function quickSaveRec(){var rec=readRecForm('r-');if(!rec)return;
   rec.id='a'+Date.now();state.addr.push(rec);persist();
-  rebuildRecSelect(rec.id);cancelRecForm();clearRecForm();toast('Customer saved','ok');queuePreview();}
+  rebuildRecSelect(rec.id);cancelRecForm();clearRecForm();toast('Customer saved and linked to this label','ok');queuePreview();finishCustomerStep();}
 function readRecForm(p){var name=val(p+'name').trim(),phone=val(p+'phone').trim(),
     area=val(p+'area').trim(),address=val(p+'addr').trim(),note=val(p+'note').trim();
   if(!name){toast('Name required','err');return null}
@@ -1109,7 +1302,7 @@ function renderAbList(){var box=getEl('ab-list');if(!box)return;
       '<button class="mini-btn del" data-arg="'+a.id+'" data-act="delAddr">🗑</button>'+
       '<button class="mini-btn" data-arg="'+a.id+'" data-act="useAddr">→</button>'+
     '</div>';}).join('');}
-function useAddr(id){rebuildRecSelect(id);window.scrollTo({top:0,behavior:'smooth'});}
+function useAddr(id){rebuildRecSelect(id);closeModal('m-addr');showMobileView('new');finishCustomerStep();toast('Customer linked to this label','ok');}
 function delAddr(id){if(!confirm('Delete this customer?'))return;
   state.addr=state.addr.filter(function(a){return a.id!==id});persist();
   if(getEl('rec-select').value===id)rebuildRecSelect();else rebuildRecSelect(getEl('rec-select').value);
@@ -1142,21 +1335,22 @@ function saveAddrModal(){var rec=readRecForm('am-');if(!rec)return;
 function currentRec(){var id=getEl('rec-select').value;if(!id||id==='__new')return null;
   return state.addr.find(function(a){return a.id===id})||null}
 function addToManifest(printAfter){var qty=Math.max(1,parseInt(val('f-qty'))||1);
+  var copies=Math.min(20,Math.max(1,parseInt(val('f-copies'))||1));
   var price=parseFloat(val('f-price'))||0;
   var codRaw=val('f-cod'),cod=codRaw===''?price:parseFloat(codRaw)||0;
   var ship=currentShip();
   var ddate=val('f-ddate');var dtime=val('f-dtime');
   var rec=currentRec();
-  if(!rec){toast('Choose a customer first','err');return}
+  if(!rec){toast('Choose or add the customer for this label first','err');editRecipientStep();return}
   state.counter++;
-  var row={id:'r'+Date.now(),oid:nextOid(state.counter),name:'',qty:qty,price:price,cod:cod,ship:ship,notes:'',
+  var row={id:'r'+Date.now(),oid:nextOid(state.counter),name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
     pay:getEl('f-pay').value||'COD',mmRef:'',img:state.img||null,deliverAt:ddate,deliverTime:dtime,pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};
   state.manifest.push(row);persist();renderManifest();renderStats();
   toast(row.oid+' added','ok');
   state.img=null;state.imgOCR=null;state.imgBig=null;state.currentFile=null;paintDrop();hideSuggest();
   ['f-price','f-cod','f-ship-manual'].forEach(function(i){var e=getEl(i);if(e)e.value=''});
-  var q=getEl('f-qty');if(q)q.value=1;var p=getEl('f-pay');if(p)p.value='COD';
+  var q=getEl('f-qty');if(q)q.value=1;var cp=getEl('f-copies');if(cp)cp.value=1;var p=getEl('f-pay');if(p)p.value='COD';
   var sh=getEl('f-ship');if(sh)sh.value='3000';var sw=getEl('f-ship-manual-wrap');if(sw)sw.style.display='none';
   var dd=getEl('f-ddate');if(dd)dd.value=dPlus1Date();var dt=getEl('f-dtime');if(dt)dt.value='';
   var or=getEl('ocr-results');if(or)or.style.display='none';var ot=getEl('ocr-text');if(ot)ot.style.display='none';
@@ -1166,6 +1360,7 @@ function setMan(id,k,v){var r=state.manifest.find(function(x){return x.id===id})
   else if(k==='phone')r.rec.phone=v;
   else if(k==='address')r.rec.address=v;
   else if(k==='cod')r.cod=parseFloat(v)||0;
+  else if(k==='copies')r.copies=Math.min(20,Math.max(1,parseInt(v)||1));
   else if(k==='pay')r.pay=PAY_MODES.indexOf(v)>=0?v:'COD';
   else if(k==='deliverAt')r.deliverAt=v||'';
   else if(k==='deliverTime')r.deliverTime=v||'';
@@ -1183,13 +1378,13 @@ function toBatch(id){
   if(!recId&&r.rec.name){var m2=state.addr.find(function(a){return a.name===r.rec.name});if(m2)recId=m2.id;}
   var it={id:'b'+Date.now()+Math.random().toString(36).slice(2,6),
     img:r.img||null,imgOCR:r.img||null,imgBig:null,fileRef:null,
-    qty:r.qty||1,price:r.price||null,cod:r.cod||null,ship:r.ship||SHIP_RATES[0],shipManual:(r.ship!=null&&SHIP_RATES.indexOf(r.ship)<0),recId:recId,pay:r.pay||'COD',found:[],
+    qty:r.qty||1,copies:r.copies||1,price:r.price||null,cod:r.cod||null,ship:r.ship||SHIP_RATES[0],shipManual:(r.ship!=null&&SHIP_RATES.indexOf(r.ship)<0),recId:recId,pay:r.pay||'COD',found:[],
     status:'none',contactDetected:false,msg:'↩ Returned from manifest — edit & re-add',err:false};
   state.batch.push(it);
   state.manifest=state.manifest.filter(function(x){return x.id!==id});
   persist();renderManifest();renderStats();renderBatch();
-  toast(r.oid+' sent back to batch','ok');
-  var bc=getEl('card-batch');if(bc)bc.scrollIntoView({behavior:'smooth'});}
+  toast(r.oid+' sent back to batch','ok');showMobileView('batch');
+  var bc=getEl('card-batch');if(bc&&!isMobileUI())bc.scrollIntoView({behavior:'smooth'});}
 function selectedManifestRows(){return state.manifest.filter(function(r){return !!manifestSelection[r.id]})}
 function setManifestSelected(id,checked){
   if(checked)manifestSelection[id]=true;else delete manifestSelection[id];
@@ -1205,7 +1400,7 @@ function updateManifestSelectionUI(){
   var rows=selectedManifestRows(),count=rows.length,total=state.manifest.length;
   document.querySelectorAll('.mani-select').forEach(function(cb){
     var on=!!manifestSelection[cb.getAttribute('data-id')];cb.checked=on;
-    var tr=cb.closest('tr');if(tr)tr.classList.toggle('mani-selected',on);});
+    var row=cb.closest('tr,.mobile-manifest-item');if(row)row.classList.toggle('mani-selected',on);});
   var all=getEl('mani-select-all');if(all){all.checked=total>0&&count===total;all.indeterminate=count>0&&count<total;all.disabled=!total;}
   var status=getEl('mani-selection-status');if(status)status.textContent=count+' selected'+(total?' of '+total:'');
   var printBtn=getEl('print-selected-labels');if(printBtn)printBtn.disabled=!count;
@@ -1214,12 +1409,33 @@ function printSelectedLabels(){
   var rows=selectedManifestRows();
   if(!rows.length){toast('Select at least one parcel from the manifest','err');return}
   doPrint('label',rows.map(labelHTML).join(''),rows);
-  toast('Printing '+rows.length+' selected label'+(rows.length!==1?'s':'')+'…','ok');}
+  var labels=physicalLabelCount(rows);toast('Printing '+labels+' label cop'+(labels===1?'y':'ies')+' from '+rows.length+' selected parcel'+(rows.length===1?'':'s')+'…','ok');}
+function mobileManifestHTML(rows){return '<div class="mobile-manifest-list">'+rows.map(function(r,i){
+  var address=[r.rec.address,r.rec.area].filter(Boolean).join(', '),total=Number(r.cod||0)+Number(r.ship||0);
+  return '<details class="mobile-manifest-item '+(r.done?'done ':'')+(manifestSelection[r.id]?'mani-selected':'')+'" data-id="'+esc(r.id)+'"><summary>'+
+    '<input type="checkbox" class="mani-check mani-select" data-id="'+esc(r.id)+'" aria-label="Select order '+esc(r.oid)+'" '+(manifestSelection[r.id]?'checked':'')+' onclick="event.stopPropagation()" onchange="setManifestSelected(\''+r.id+'\',this.checked)">'+
+    '<span class="mobile-order">#'+esc(r.oid)+'</span><span class="mobile-rec"><b>'+esc(r.rec.name)+'</b><small>'+esc(r.rec.phone||address||'No contact details')+'</small></span>'+
+    '<span class="mobile-amount">'+money(total)+'<small>'+(r.done?'DELIVERED':'PENDING')+'</small></span></summary>'+
+    '<div class="mobile-manifest-edit"><div class="mobile-edit-grid">'+
+      '<div class="mobile-field"><label>NAME</label><input value="'+esc(r.rec.name)+'" onchange="setMan(\''+r.id+'\',\'name\',this.value)"></div>'+
+      '<div class="mobile-field"><label>PHONE</label><input type="tel" value="'+esc(r.rec.phone||'')+'" onchange="setMan(\''+r.id+'\',\'phone\',this.value)"></div>'+
+      '<div class="mobile-field span2"><label>ADDRESS</label><input value="'+esc(address)+'" onchange="setMan(\''+r.id+'\',\'address\',this.value)"></div>'+
+      '<div class="mobile-field"><label>DELIVERY DATE</label><input type="date" value="'+(r.deliverAt||'')+'" onchange="setDeliver(\''+r.id+'\',this.value)"></div>'+
+      '<div class="mobile-field"><label>TIME</label><input type="time" value="'+(r.deliverTime||'')+'" onchange="setDeliverTime(\''+r.id+'\',this.value)"></div>'+
+      '<div class="mobile-field"><label>ITEM / COLLECT</label><input type="number" min="0" step="any" value="'+r.cod+'" onchange="setMan(\''+r.id+'\',\'cod\',this.value)"></div>'+
+      '<div class="mobile-field"><label>DELIVERY COST</label><input type="number" min="0" step="any" value="'+(r.ship||0)+'" onchange="setShip(\''+r.id+'\',this.value)"></div>'+
+      '<div class="mobile-field"><label>LABEL COPIES</label><input type="number" min="1" max="20" inputmode="numeric" value="'+(r.copies||1)+'" onchange="setMan(\''+r.id+'\',\'copies\',this.value)"></div>'+
+      '<div class="mobile-field"><label>PAYMENT</label><select onchange="setMan(\''+r.id+'\',\'pay\',this.value)">'+payOptionsHTML(r.pay||'COD')+'</select></div>'+
+      '<div class="mobile-field"><label>MM REF</label><input value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></div>'+
+    '</div><div class="mobile-manifest-actions">'+
+      '<button class="btn dark" data-arg="'+r.id+'" data-act="printRow">🖨 PRINT</button><button class="btn" data-arg="'+r.id+'" data-act="toBatch">↩ BATCH</button>'+
+      '<button class="btn green" data-arg="'+r.id+'" data-act="toggleDone">✓ '+(r.done?'REOPEN':'DONE')+'</button><button class="btn" style="color:var(--red)" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
+    '</div></div></details>';}).join('')+'</div>'}
 function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=state.manifest;
   if(!m.length){body.innerHTML='<div class="empty"><b>No parcels yet</b>Add from the form or batch. All cells are editable; 🖨 reprints with amended values.</div>';var tt=getEl('totals');if(tt)tt.innerHTML='';updateManifestSelectionUI();return}
-  body.innerHTML='<div class="tbl-wrap"><table><thead><tr>'+
+  body.innerHTML=mobileManifestHTML(m)+'<div class="tbl-wrap"><table><thead><tr>'+
     '<th style="width:48px;text-align:center">PICK</th><th>#</th><th>NAME</th><th>ADDRESS</th><th>PHONE</th><th>DELIVERY DATE / TIME</th>'+
-    '<th>AMOUNT</th><th>DELIVERY</th><th>MM REF</th><th>PAYMENT</th><th>STATUS</th><th>ACTIONS</th>'+
+    '<th>AMOUNT</th><th>DELIVERY</th><th>COPIES</th><th>MM REF</th><th>PAYMENT</th><th>STATUS</th><th>ACTIONS</th>'+
     '</tr></thead><tbody>'+m.map(function(r,i){return '<tr class="'+(r.done?'done ':'')+(manifestSelection[r.id]?'mani-selected':'')+'">'+
       '<td style="text-align:center"><input type="checkbox" class="mani-check mani-select" data-id="'+esc(r.id)+'" aria-label="Select order '+esc(r.oid)+'" '+(manifestSelection[r.id]?'checked':'')+' onchange="setManifestSelected(\''+r.id+'\',this.checked)"></td>'+
       '<td><span class="oid">'+(i+1)+'</span><br><span class="oid">'+esc(r.oid)+'</span><br>'+
@@ -1231,6 +1447,7 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
           '<input type="time" class="dt-in dt-time" value="'+(r.deliverTime||'')+'" onchange="setDeliverTime(\''+r.id+'\',this.value)"></td>'+
       '<td><input class="cell-in num" type="number" min="0" step="any" value="'+r.cod+'" onchange="setMan(\''+r.id+'\',\'cod\',this.value)"></td>'+
       '<td><input class="cell-in num" type="number" min="0" step="any" value="'+(r.ship||0)+'" onchange="setShip(\''+r.id+'\',this.value)"></td>'+
+      '<td><input class="cell-in num" type="number" min="1" max="20" value="'+(r.copies||1)+'" onchange="setMan(\''+r.id+'\',\'copies\',this.value)"></td>'+
       '<td><input class="cell-in mono" value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></td>'+
       '<td><select class="cell-in mono" aria-label="Payment mode for order '+esc(r.oid)+'" onchange="setMan(\''+r.id+'\',\'pay\',this.value)">'+payOptionsHTML(r.pay||'COD')+'</select></td>'+
       '<td>'+(r.done?(r.paid?'<span class="stamp paid">✓ PAID</span>':'<span class="stamp">✓ DELIVERED</span>'):'<span class="stamp pending">◷ PENDING</span>')+'</td>'+
@@ -1312,9 +1529,9 @@ function delArch(id){if(!confirm('Delete this archived day?'))return;
 
 function exportRowsCSV(rows,fname){if(!rows.length){toast('Nothing to export','err');return}
   var q=function(s){return '"'+String(s==null?'':s).replace(/\r?\n/g,' ').replace(/"/g,'""')+'"'};
-  var data=[['N° Commande','Nom','Adresse','Téléphone','Date livraison','Heure','Montant','Frais de livraison','Réf Mobile Money','Paiement','Qté','Statut','Payé','Reçu','Ajouté']];
+  var data=[['N° Commande','Nom','Adresse','Téléphone','Date livraison','Heure','Montant','Frais de livraison','Réf Mobile Money','Paiement','Qté','Copies étiquette','Statut','Payé','Reçu','Ajouté']];
   rows.forEach(function(r){data.push([r.oid,r.rec.name,[r.rec.address,r.rec.area].filter(Boolean).join(', '),r.rec.phone,
-      r.deliverAt||'',r.deliverTime||'',r.cod,r.ship||0,r.mmRef||'',r.pay||'COD',r.qty||1,
+      r.deliverAt||'',r.deliverTime||'',r.cod,r.ship||0,r.mmRef||'',r.pay||'COD',r.qty||1,r.copies||1,
       r.done?'LIVRÉ':'EN ATTENTE',r.paid?'OUI':'NON',r.received||0,fmtDT(r.addedAt)]);});
   var csv='\uFEFF'+data.map(function(r){return r.map(q).join(';')}).join('\r\n');
   var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
@@ -1346,7 +1563,7 @@ function labelHTML(r){var s=state.shop,rec=r.rec||{};
   '<div class="lbl-foot">'+esc(s.thanks)+'</div>'+
 '</div>';}
 function liveRow(){return{oid:nextOid(state.counter+1),
-    qty:parseInt(val('f-qty'))||1,
+    qty:parseInt(val('f-qty'))||1,copies:Math.min(20,Math.max(1,parseInt(val('f-copies'))||1)),
     cod:val('f-cod')===''?((parseFloat(val('f-price'))||0)):(parseFloat(val('f-cod'))||0),
     ship:currentShip(),pay:getEl('f-pay').value||'COD',mmRef:'',
     deliverAt:val('f-ddate'),deliverTime:val('f-dtime'),
@@ -1454,7 +1671,7 @@ function showPreview(title,html,mode,baseScale,mmW){previewMode=mode;
   requestAnimationFrame(function(){var inner=getEl('pv2-scale');if(inner)getEl('pv2-wrap').style.height=(inner.offsetHeight*scale)+'px';});
   getEl('m-preview').classList.add('open');}
 function printManifest(){if(!state.manifest.length){toast('Manifest empty','err');return}
-  showPreview('MANIFEST — LABEL SIZE 72 MM',manSheetHTML(),'man',1.35,72);}
+  showPreview('MANIFEST — 80 MM THERMAL ROLL',manSheetHTML(),'man',1.35,80);}
 function printA4(){if(!state.manifest.length){toast('Manifest empty','err');return}
   showPreview('MANIFEST — A4 / PDF',a4SheetHTML(),'a4',1.2,210);}
 function printPreviewNow(){
@@ -1471,21 +1688,66 @@ function applyLabelLen(){var len=Math.min(300,Math.max(100,Number(state.shop.lab
   if(stL)stL.textContent='@page{size:72mm auto;margin:0}';
   var t2=getEl('pv-len2');if(t2)t2.textContent=len;}
 
-var directPrintBusy=false;
+var directPrintBusy=false,printerDiscoveryActive=false,failedPrintRows=null,retryingPrintQueue=false;
+function getPrintQueue(){var q=load(K('printQueue'),[]);return Array.isArray(q)?q:[]}
+function updatePrintQueueUI(){var count=getPrintQueue().reduce(function(n,j){return n+((j.rows&&j.rows.length)||0)},0);
+  document.querySelectorAll('.queue-count-label').forEach(function(el){el.textContent='QUEUE '+count});}
+function cleanRowsForQueue(rows){return rows.map(function(r){var copy=JSON.parse(JSON.stringify(r));delete copy.img;return copy})}
+function queueRowsForLater(rows,reason){if(!rows||!rows.length)return;var q=getPrintQueue();
+  q.push({id:'pq'+Date.now(),createdAt:new Date().toISOString(),reason:reason||'Printer unavailable',rows:cleanRowsForQueue(rows)});
+  save(K('printQueue'),q.slice(-40));updatePrintQueueUI();toast(rows.length+' label'+(rows.length===1?'':'s')+' queued on this phone','ok');}
+function clearPrintQueue(){var q=getPrintQueue();if(!q.length){toast('Print queue is empty','ok');return}if(!confirm('Clear '+q.reduce(function(n,j){return n+(j.rows||[]).length},0)+' queued label(s)?'))return;
+  save(K('printQueue'),[]);updatePrintQueueUI();toast('Print queue cleared','ok');}
+function setDiscoveryBusy(on){printerDiscoveryActive=!!on;var spin=getEl('printer-discovery-spinner'),start=getEl('discover-printer-btn'),cancel=getEl('cancel-discovery-btn');
+  if(spin)spin.classList.toggle('active',!!on);if(start)start.disabled=!!on;if(cancel)cancel.style.display=on?'':'none';}
+function selectDiscoveredPrinter(ip,port,announce){if(!ip)return;var p=Math.min(65535,Math.max(1,parseInt(port)||9100));
+  state.shop.printerIp=ip;state.shop.printerPort=p;persist();var ie=getEl('s-printer-ip'),pe=getEl('s-printer-port');if(ie)ie.value=ip;if(pe)pe.value=p;
+  setPrinterStatus('✓ POS80C found at '+ip+':'+p,'ok');if(announce!==false)toast('POS80C detected at '+ip,'ok');}
+function renderDiscoveredPrinters(printers,port){var box=getEl('printer-discovery-results');if(!box)return;box.innerHTML='';
+  if(!printers.length){box.innerHTML='<div class="printer-help">No raw TCP printer found. Check that the POS80C is powered on and connected to the same LAN or phone hotspot.</div>';return}
+  printers.forEach(function(p){var ip=typeof p==='string'?p:p.ip;var row=document.createElement('div');row.className='printer-result';
+    row.innerHTML='<span>🖨 '+esc(ip)+':'+(p.port||port||9100)+'</span><button class="btn sm" type="button">USE</button>';
+    row.querySelector('button').addEventListener('click',function(){selectDiscoveredPrinter(ip,p.port||port||9100,true)});box.appendChild(row);});}
+function discoverPrinter(options){options=options&&typeof options==='object'?options:{};var nativePrinter=nativePOS80Printer(),c=printerConfig(!!options.useForm);
+  if(!nativePrinter||typeof nativePrinter.discover!=='function'){var e=new Error('Automatic discovery is available in the native Android app. Enter the printer IP manually here.');if(!options.silent){setPrinterStatus(e.message,'err');toast(e.message,'err')}return Promise.reject(e)}
+  if(printerDiscoveryActive)return Promise.reject(new Error('Printer discovery is already running'));
+  setDiscoveryBusy(true);if(!options.silent)setPrinterStatus('Scanning the local LAN / phone hotspot on port '+c.port+'…','');
+  var box=getEl('printer-discovery-results');if(box)box.innerHTML='<div class="printer-help">Scanning reachable local addresses… You can cancel this scan.</div>';
+  return nativePrinter.discover({printer_port:c.port,preferred_ip:c.ip||''}).then(function(data){
+    var printers=data&&Array.isArray(data.printers)?data.printers:[];renderDiscoveredPrinters(printers,c.port);
+    if(data&&data.cancelled){if(!options.silent)setPrinterStatus('Printer scan cancelled.','');throw new Error('Printer scan cancelled')}
+    if(!printers.length){var networks=data&&Array.isArray(data.networks)&&data.networks.length?' Checked '+data.networks.join(', ')+'.':'';var err=new Error('No POS80C found on a reachable local network.'+networks);if(!options.silent){setPrinterStatus(err.message,'err');toast('No printer detected','err')}throw err}
+    var chosen=printers[0],ip=typeof chosen==='string'?chosen:chosen.ip,port=typeof chosen==='string'?c.port:(chosen.port||c.port);
+    selectDiscoveredPrinter(ip,port,!options.silent);return {ip:ip,port:port,printers:printers};
+  }).catch(function(e){if(!options.silent&&e&&e.message!=='Printer scan cancelled')console.warn(e);throw e}).finally(function(){setDiscoveryBusy(false)});}
+function cancelPrinterDiscovery(){var n=nativePOS80Printer();if(printerDiscoveryActive&&n&&typeof n.cancelDiscovery==='function')n.cancelDiscovery({}).catch(function(){});setDiscoveryBusy(false);}
+function openPrintFallback(rows,msg){failedPrintRows=cleanRowsForQueue(rows||[]);var text=getEl('print-fallback-message');if(text)text.textContent='Direct POS80C printing failed: '+msg+' Choose another method below.';
+  var modal=getEl('m-print-fallback');if(modal)modal.classList.add('open');}
+function cancelPrintFallback(){failedPrintRows=null;closeModal('m-print-fallback')}
+function detectAndRetryPrint(){var rows=failedPrintRows;if(!rows||!rows.length)return cancelPrintFallback();var c=printerConfig(false);
+  if(!c.ip||!c.bridge){setPrinterStatus('Open the app from the local gateway, then save the printer IP.','err');toast('Local gateway details are required','err');return}
+  setPrinterStatus('Testing the local gateway before retry…','');
+  fetchWithTimeout(c.bridge+'/health?host='+encodeURIComponent(c.ip)+'&port='+encodeURIComponent(c.port),{method:'GET',cache:'no-store'},8000).then(checkedBridgeJSON).then(function(data){
+    if(!data.printer_ok)throw new Error(data.printer_error||'The gateway cannot reach the POS80C');cancelPrintFallback();directEscposPrint(rows);
+  }).catch(function(e){var msg=e&&e.name==='AbortError'?'Connection timed out':(e.message||String(e));setPrinterStatus('✕ '+msg,'err');toast('Gateway retry failed — '+msg,'err')});}
+function systemPrintFallback(){var rows=failedPrintRows;if(!rows||!rows.length)return cancelPrintFallback();cancelPrintFallback();
+  doPrint('label',rows.map(labelHTML).join(''),rows,true);toast('Opening iPhone / iPad system print','ok');}
+function queueFailedPrint(){var rows=failedPrintRows;if(!rows||!rows.length)return cancelPrintFallback();queueRowsForLater(rows,'Direct POS80C unavailable');cancelPrintFallback();}
 function printerConfig(useForm){var s=state.shop;
   var from=function(id,fallback){var e=useForm?getEl(id):null;return e?e.value:fallback};
   var checked=function(id,fallback){var e=useForm?getEl(id):null;return e?e.checked:fallback};
   var bridgeRaw=String(from('s-bridge-url',s.bridgeUrl||'auto')).trim()||'auto';
   var host=String(location.hostname||'').toLowerCase(),isPrivate=/^10\./.test(host)||/^192\.168\./.test(host)||/^172\.(1[6-9]|2\d|3[01])\./.test(host)||host.endsWith('.local');
   var localGateway=location.protocol==='http:'&&(location.port==='8765'||host==='localhost'||host==='127.0.0.1'||isPrivate);
-  var bridge=bridgeRaw.toLowerCase()==='auto'?(localGateway?location.origin+'/api':'http://127.0.0.1:8765/api'):bridgeRaw;
+  var bridge=bridgeRaw.toLowerCase()==='auto'?(localGateway?location.origin+'/api':''):bridgeRaw;
+  if(location.protocol==='https:'&&/^http:\/\//i.test(bridge))bridge='';
   return {
     mode:from('s-print-mode',s.printMode||'browser'),
     ip:String(from('s-printer-ip',s.printerIp||'')).trim(),
     port:Math.min(65535,Math.max(1,parseInt(from('s-printer-port',s.printerPort||9100))||9100)),
     bridge:bridge.replace(/\/+$/,''),bridgeRaw:bridgeRaw,
     dots:Math.min(640,Math.max(384,parseInt(from('s-printer-dots',s.printerDots||576))||576)),
-    feed:Math.min(255,Math.max(0,parseInt(from('s-printer-feed',s.printerFeed==null?24:s.printerFeed))||0)),
+    feed:Math.min(255,Math.max(0,parseInt(from('s-printer-feed',s.printerFeed==null?0:s.printerFeed))||0)),
     threshold:Math.min(254,Math.max(1,parseInt(from('s-printer-threshold',s.printerThreshold||180))||180)),
     cut:from('s-cut-type',s.printerCut||'partial'),
     cutEach:checked('s-cut-each',s.cutEach!==false)
@@ -1493,8 +1755,8 @@ function printerConfig(useForm){var s=state.shop;
 function setPrinterStatus(msg,type){var el=getEl('s-printer-status');if(!el)return;
   el.textContent=msg;el.className='printer-status'+(type?' '+type:'');}
 function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser');
-  if(mode==='direct')setPrinterStatus('Direct Wi-Fi mode selected — test the gateway and printer.','');
-  else setPrinterStatus('Phone system print selected — uses AirPrint or Android Print.','');}
+  if(mode==='direct')setPrinterStatus('Gateway mode selected — open LabelOnZeWay from the gateway local URL, then test it here.','');
+  else setPrinterStatus('iPhone / iPad system print selected — uses the iOS print sheet and AirPrint.','ok');}
 function localRequestAddressSpace(url){try{var h=new URL(url,location.href).hostname.toLowerCase();
   if(h==='localhost'||h==='127.0.0.1'||h==='::1')return'loopback';
   if(h.endsWith('.local')||/^10\./.test(h)||/^192\.168\./.test(h)||/^172\.(1[6-9]|2\d|3[01])\./.test(h))return'local';
@@ -1506,13 +1768,22 @@ function fetchWithTimeout(url,opts,ms){if(typeof fetch!=='function')return Promi
   return fetch(url,opts).finally(function(){clearTimeout(timer)});}
 function checkedBridgeJSON(res){return res.json().catch(function(){return{}}).then(function(data){
   if(!res.ok||!data.ok)throw new Error(data.error||('Gateway returned HTTP '+res.status));return data;});}
-function testPrinterBridge(){var c=printerConfig(true);
+function nativePOS80Printer(){var n=window.LabelOnZeWayNative;
+  return n&&n.isNative&&n.printer?n.printer:null;}
+function testPrinterBridge(){var c=printerConfig(true),nativePrinter=nativePOS80Printer();
   if(!c.ip){setPrinterStatus('Enter the POS80C printer IP address first.','err');toast('Enter printer IP address','err');return}
-  if(!c.bridge){setPrinterStatus('Enter the Wi-Fi Gateway URL.','err');return}
-  setPrinterStatus('Testing Wi-Fi Gateway and '+c.ip+':'+c.port+'…','');
+  if(nativePrinter){
+    setPrinterStatus('Testing direct Android connection to '+c.ip+':'+c.port+'…','');
+    nativePrinter.health({printer_ip:c.ip,printer_port:c.port}).then(function(data){
+      if(data&&data.printer_ok){setPrinterStatus('✓ Android connected directly to '+c.ip+':'+c.port,'ok');toast('POS80C direct connection ready','ok');}
+      else throw new Error('The printer did not accept the connection');
+    }).catch(function(e){var msg=e&&e.message?e.message:String(e);
+      setPrinterStatus('✕ '+msg,'err');toast('Direct printer test failed — '+msg,'err');});return;}
+  if(!c.bridge){setPrinterStatus('Start the gateway and open its local LabelOnZeWay URL on this iPhone.','err');toast('Local gateway URL required for direct ESC/POS','err');return}
+  setPrinterStatus('Testing local gateway and '+c.ip+':'+c.port+'…','');
   var url=c.bridge+'/health?host='+encodeURIComponent(c.ip)+'&port='+encodeURIComponent(c.port);
   fetchWithTimeout(url,{method:'GET',cache:'no-store'},8000).then(checkedBridgeJSON).then(function(data){
-    if(data.printer_ok){setPrinterStatus('✓ Gateway running · printer reachable at '+c.ip+':'+c.port,'ok');toast('POS80C connection ready','ok');}
+    if(data.printer_ok){setPrinterStatus('✓ Local gateway running · POS80C reachable at '+c.ip+':'+c.port,'ok');toast('POS80C gateway ready','ok');}
     else{throw new Error(data.printer_error||'Gateway is running, but the printer is not reachable');}
   }).catch(function(e){var msg=e&&e.name==='AbortError'?'Connection timed out':(e.message||String(e));
     setPrinterStatus('✕ '+msg,'err');toast('Printer/gateway test failed — '+msg,'err');});}
@@ -1528,12 +1799,15 @@ function buildCutTestBytes(c){var parts=[new Uint8Array([27,64,27,97,1]),
 function bytesBase64(bytes){var chunks=[],size=32768;
   for(var i=0;i<bytes.length;i+=size){var sub=bytes.subarray(i,Math.min(bytes.length,i+size));chunks.push(String.fromCharCode.apply(null,sub));}
   return btoa(chunks.join(''));}
-function sendBridgeBytes(bytes,c,labelCount){return fetchWithTimeout(c.bridge+'/print',{
+function sendBridgeBytes(bytes,c,labelCount){var encoded=bytesBase64(bytes),nativePrinter=nativePOS80Printer();
+  if(nativePrinter)return nativePrinter.print({printer_ip:c.ip,printer_port:c.port,labels:labelCount||0,data:encoded});
+  return fetchWithTimeout(c.bridge+'/print',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({printer_ip:c.ip,printer_port:c.port,labels:labelCount||0,data:bytesBase64(bytes)})
+    body:JSON.stringify({printer_ip:c.ip,printer_port:c.port,labels:labelCount||0,data:encoded})
   },45000).then(checkedBridgeJSON);}
 function testPrinterCut(){var c=printerConfig(true);
   if(!c.ip){setPrinterStatus('Enter the POS80C printer IP address first.','err');toast('Enter printer IP address','err');return}
+  if(!nativePOS80Printer()&&!c.bridge){setPrinterStatus('Start the gateway and open its local LabelOnZeWay URL before running a cut test.','err');toast('Local gateway URL required for direct ESC/POS','err');return}
   setPrinterStatus('Sending ESC/POS test to '+c.ip+':'+c.port+'…','');
   sendBridgeBytes(buildCutTestBytes(c),c,0).then(function(data){
     setPrinterStatus('✓ Test sent ('+Number(data.bytes_sent||0).toLocaleString()+' bytes)'+(c.cut==='none'?' · no cut selected':' · cutter command sent'),'ok');
@@ -1607,23 +1881,48 @@ function buildDirectLabelBytes(rows,c){var parts=[new Uint8Array([27,64,27,97,0]
 function continuePrintChainAfterDirect(){if(!printChain.length)return;var next=printChain.shift();
   setTimeout(function(){if(next==='manifest'&&state.manifest.length)doPrint('a4',a4SheetHTML());
     else if(next==='report'&&state.manifest.length)doPrint('a4',salesReportHTML());},400);}
+function sendDirectRows(rows,c){return Promise.resolve().then(function(){return buildDirectLabelBytes(rows,c)}).then(function(bytes){
+  toast('Sending '+Number(bytes.length).toLocaleString()+' bytes to POS80C…','ok');return sendBridgeBytes(bytes,c,rows.length);});}
 function directEscposPrint(rows){var c=printerConfig(false);
   if(directPrintBusy){toast('A direct print job is already being sent','err');return}
-  if(!c.ip){toast('Set the POS80C printer IP in ⚙ Settings first','err');openSettings();return}
+  if(!c.ip){var noIp='No printer IP is set';toast(noIp,'err');openPrintFallback(rows,noIp);return}
+  if(!nativePOS80Printer()&&!c.bridge){var noGateway='Safari requires the local LabelOnZeWay gateway URL for direct ESC/POS printing';toast(noGateway,'err');openPrintFallback(rows,noGateway);return}
   directPrintBusy=true;toast('Preparing '+rows.length+' ESC/POS label'+(rows.length!==1?'s':'')+'…','ok');
-  Promise.resolve().then(function(){return buildDirectLabelBytes(rows,c)}).then(function(bytes){
-    toast('Sending '+Number(bytes.length).toLocaleString()+' bytes to POS80C…','ok');return sendBridgeBytes(bytes,c,rows.length);
-  }).then(function(data){toast('✓ '+rows.length+' label'+(rows.length!==1?'s':'')+' sent directly'+(c.cut!=='none'&&c.cutEach?' · cut after each':''),'ok');
+  sendDirectRows(rows,c).then(function(data){toast('✓ '+rows.length+' label'+(rows.length!==1?'s':'')+' sent directly'+(c.cut!=='none'&&c.cutEach?' · cut after each':''),'ok');
     setPrinterStatus('✓ Last job: '+rows.length+' label(s), '+Number(data.bytes_sent||0).toLocaleString()+' bytes','ok');continuePrintChainAfterDirect();
   }).catch(function(e){printChain=[];var msg=e&&e.name==='AbortError'?'Gateway/printer timed out':(e.message||String(e));
-    setPrinterStatus('✕ '+msg,'err');toast('Direct print failed — '+msg,'err');
+    setPrinterStatus('✕ '+msg,'err');toast('Direct print failed — choose another method','err');openPrintFallback(rows,msg);
   }).finally(function(){directPrintBusy=false});}
+function retryPrintQueue(){var jobs=getPrintQueue();if(!jobs.length){toast('Print queue is empty','ok');return}if(retryingPrintQueue||directPrintBusy){toast('A print job is already running','err');return}
+  var rows=[];jobs.forEach(function(j){if(Array.isArray(j.rows))rows=rows.concat(j.rows)});if(!rows.length){save(K('printQueue'),[]);updatePrintQueueUI();return}
+  retryingPrintQueue=true;var c=printerConfig(false);
+  if(!c.ip||!c.bridge){retryingPrintQueue=false;setPrinterStatus('Queue remains saved. Open the app from the local gateway and configure the POS80C first.','err');toast('Queued labels remain saved — local gateway required','err');return}
+  setPrinterStatus('Testing gateway before retrying queued labels…','');
+  fetchWithTimeout(c.bridge+'/health?host='+encodeURIComponent(c.ip)+'&port='+encodeURIComponent(c.port),{method:'GET',cache:'no-store'},8000).then(checkedBridgeJSON).then(function(d){if(!d.printer_ok)throw new Error(d.printer_error||'POS80C is not reachable');directPrintBusy=true;toast('Retrying '+rows.length+' queued label(s)…','ok');return sendDirectRows(rows,c)}).then(function(data){
+    save(K('printQueue'),[]);updatePrintQueueUI();setPrinterStatus('✓ Queued labels sent: '+rows.length+' · '+Number(data.bytes_sent||0).toLocaleString()+' bytes','ok');toast('✓ Print queue completed','ok');
+  }).catch(function(e){var msg=e&&e.message?e.message:String(e);setPrinterStatus('Queue retry failed: '+msg,'err');toast('Queued labels remain saved — '+msg,'err');
+  }).finally(function(){directPrintBusy=false;retryingPrintQueue=false});}
+
 
 var BRIDGE_PY_B64='IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJMYWJlbE9uWmVXYXkgV2ktRmkgR2F0ZXdheS4KCkhvc3RzIHRoZSBMYWJlbE9uWmVXYXkgbW9iaWxlIHdlYiBhcHAgb24gdGhlIGxvY2FsIG5ldHdvcmsgYW5kIGZvcndhcmRzCkVTQy9QT1MgYnl0ZXMgdG8gYSBwcml2YXRlLW5ldHdvcmsgdGhlcm1hbCBwcmludGVyLiBVc2VzIG9ubHkgUHl0aG9uJ3MKc3RhbmRhcmQgbGlicmFyeTsgbm8gdmVuZG9yIGRyaXZlciBvciBQeXRob24gcGFja2FnZSBpcyByZXF1aXJlZC4KIiIiCgpmcm9tIF9fZnV0dXJlX18gaW1wb3J0IGFubm90YXRpb25zCgppbXBvcnQgYmFzZTY0CmltcG9ydCBiaW5hc2NpaQppbXBvcnQgaXBhZGRyZXNzCmltcG9ydCBqc29uCmltcG9ydCBtaW1ldHlwZXMKaW1wb3J0IG9zCmltcG9ydCBzb2NrZXQKaW1wb3J0IHN5cwpmcm9tIGh0dHAuc2VydmVyIGltcG9ydCBCYXNlSFRUUFJlcXVlc3RIYW5kbGVyLCBUaHJlYWRpbmdIVFRQU2VydmVyCmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApmcm9tIHVybGxpYi5wYXJzZSBpbXBvcnQgcGFyc2VfcXMsIHVucXVvdGUsIHVybHBhcnNlCgpHQVRFV0FZX0hPU1QgPSAiMC4wLjAuMCIKR0FURVdBWV9QT1JUID0gODc2NQpNQVhfQk9EWSA9IDY0ICogMTAyNCAqIDEwMjQKVkVSU0lPTiA9ICIxLjAiCkFQUF9ESVIgPSBQYXRoKF9fZmlsZV9fKS5yZXNvbHZlKCkucGFyZW50CgptaW1ldHlwZXMuYWRkX3R5cGUoImFwcGxpY2F0aW9uL21hbmlmZXN0K2pzb24iLCAiLndlYm1hbmlmZXN0IikKbWltZXR5cGVzLmFkZF90eXBlKCJhcHBsaWNhdGlvbi9qYXZhc2NyaXB0IiwgIi5qcyIpCgoKZGVmIHJlc29sdmVkX3ByaXZhdGUoaG9zdDogc3RyLCBwb3J0OiBpbnQpIC0+IHR1cGxlW3N0ciwgaW50XToKICAgIGhvc3QgPSAoaG9zdCBvciAiIikuc3RyaXAoKQogICAgaWYgbm90IGhvc3Qgb3IgbGVuKGhvc3QpID4gMjUzOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkVudGVyIHRoZSBwcmludGVyIElQIGFkZHJlc3MiKQogICAgaWYgbm90IDEgPD0gaW50KHBvcnQpIDw9IDY1NTM1OgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIlByaW50ZXIgcG9ydCBtdXN0IGJlIGJldHdlZW4gMSBhbmQgNjU1MzUiKQogICAgdHJ5OgogICAgICAgIGluZm9zID0gc29ja2V0LmdldGFkZHJpbmZvKGhvc3QsIGludChwb3J0KSwgdHlwZT1zb2NrZXQuU09DS19TVFJFQU0pCiAgICBleGNlcHQgc29ja2V0LmdhaWVycm9yIGFzIGV4YzoKICAgICAgICByYWlzZSBWYWx1ZUVycm9yKGYiQ2Fubm90IHJlc29sdmUgcHJpbnRlciBhZGRyZXNzOiB7aG9zdH0iKSBmcm9tIGV4YwogICAgZm9yIGluZm8gaW4gaW5mb3M6CiAgICAgICAgYWRkcmVzcyA9IGluZm9bNF1bMF0uc3BsaXQoIiUiLCAxKVswXQogICAgICAgIHRyeToKICAgICAgICAgICAgaXAgPSBpcGFkZHJlc3MuaXBfYWRkcmVzcyhhZGRyZXNzKQogICAgICAgIGV4Y2VwdCBWYWx1ZUVycm9yOgogICAgICAgICAgICBjb250aW51ZQogICAgICAgIGlmIGlwLmlzX3ByaXZhdGUgb3IgaXAuaXNfbGlua19sb2NhbCBvciBpcC5pc19sb29wYmFjazoKICAgICAgICAgICAgcmV0dXJuIGhvc3QsIGludChwb3J0KQogICAgcmFpc2UgVmFsdWVFcnJvcigiRm9yIHNhZmV0eSwgdGhlIGdhdGV3YXkgb25seSBjb25uZWN0cyB0byBwcml2YXRlL2xvY2FsIHByaW50ZXIgYWRkcmVzc2VzIikKCgpkZWYgc2VuZF90b19wcmludGVyKGhvc3Q6IHN0ciwgcG9ydDogaW50LCBwYXlsb2FkOiBieXRlcykgLT4gTm9uZToKICAgIGhvc3QsIHBvcnQgPSByZXNvbHZlZF9wcml2YXRlKGhvc3QsIHBvcnQpCiAgICB3aXRoIHNvY2tldC5jcmVhdGVfY29ubmVjdGlvbigoaG9zdCwgcG9ydCksIHRpbWVvdXQ9NSkgYXMgc29jazoKICAgICAgICBzb2NrLnNldHRpbWVvdXQoMzApCiAgICAgICAgc29jay5zZW5kYWxsKHBheWxvYWQpCiAgICAgICAgdHJ5OgogICAgICAgICAgICBzb2NrLnNodXRkb3duKHNvY2tldC5TSFVUX1dSKQogICAgICAgIGV4Y2VwdCBPU0Vycm9yOgogICAgICAgICAgICBwYXNzCgoKZGVmIGxvY2FsX2lwdjRfYWRkcmVzc2VzKCkgLT4gbGlzdFtzdHJdOgogICAgZm91bmQ6IHNldFtzdHJdID0gc2V0KCkKICAgIHRyeToKICAgICAgICBmb3IgaW5mbyBpbiBzb2NrZXQuZ2V0YWRkcmluZm8oc29ja2V0LmdldGhvc3RuYW1lKCksIE5vbmUsIHNvY2tldC5BRl9JTkVUKToKICAgICAgICAgICAgaXAgPSBpbmZvWzRdWzBdCiAgICAgICAgICAgIGlmIG5vdCBpcC5zdGFydHN3aXRoKCIxMjcuIik6CiAgICAgICAgICAgICAgICBmb3VuZC5hZGQoaXApCiAgICBleGNlcHQgT1NFcnJvcjoKICAgICAgICBwYXNzCiAgICB0cnk6CiAgICAgICAgd2l0aCBzb2NrZXQuc29ja2V0KHNvY2tldC5BRl9JTkVULCBzb2NrZXQuU09DS19ER1JBTSkgYXMgc29jazoKICAgICAgICAgICAgc29jay5jb25uZWN0KCgiOC44LjguOCIsIDgwKSkKICAgICAgICAgICAgaXAgPSBzb2NrLmdldHNvY2tuYW1lKClbMF0KICAgICAgICAgICAgaWYgbm90IGlwLnN0YXJ0c3dpdGgoIjEyNy4iKToKICAgICAgICAgICAgICAgIGZvdW5kLmFkZChpcCkKICAgIGV4Y2VwdCBPU0Vycm9yOgogICAgICAgIHBhc3MKICAgIHJldHVybiBzb3J0ZWQoZm91bmQpCgoKY2xhc3MgR2F0ZXdheUhhbmRsZXIoQmFzZUhUVFBSZXF1ZXN0SGFuZGxlcik6CiAgICBzZXJ2ZXJfdmVyc2lvbiA9ICJMYWJlbE9uWmVXYXlHYXRld2F5LyIgKyBWRVJTSU9OCgogICAgZGVmIGxvZ19tZXNzYWdlKHNlbGYsIGZtdDogc3RyLCAqYXJnczogb2JqZWN0KSAtPiBOb25lOgogICAgICAgIHN5cy5zdGRvdXQud3JpdGUoIlslc10gJXNcbiIgJSAoc2VsZi5sb2dfZGF0ZV90aW1lX3N0cmluZygpLCBmbXQgJSBhcmdzKSkKICAgICAgICBzeXMuc3Rkb3V0LmZsdXNoKCkKCiAgICBkZWYgb3JpZ2luX2FsbG93ZWQoc2VsZikgLT4gYm9vbDoKICAgICAgICBvcmlnaW4gPSBzZWxmLmhlYWRlcnMuZ2V0KCJPcmlnaW4iKQogICAgICAgIGlmIG5vdCBvcmlnaW4gb3Igb3JpZ2luID09ICJudWxsIjoKICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgICAgICB0cnk6CiAgICAgICAgICAgIHBhcnNlZCA9IHVybHBhcnNlKG9yaWdpbikKICAgICAgICAgICAgaG9zdCA9IHBhcnNlZC5ob3N0bmFtZSBvciAiIgogICAgICAgICAgICBpZiBob3N0IGluIHsibG9jYWxob3N0IiwgIjEyNy4wLjAuMSIsICI6OjEifToKICAgICAgICAgICAgICAgIHJldHVybiBUcnVlCiAgICAgICAgICAgIGZvciBpbmZvIGluIHNvY2tldC5nZXRhZGRyaW5mbyhob3N0LCBOb25lKToKICAgICAgICAgICAgICAgIHJhdyA9IGluZm9bNF1bMF0uc3BsaXQoIiUiLCAxKVswXQogICAgICAgICAgICAgICAgaXAgPSBpcGFkZHJlc3MuaXBfYWRkcmVzcyhyYXcpCiAgICAgICAgICAgICAgICBpZiBpcC5pc19wcml2YXRlIG9yIGlwLmlzX2xpbmtfbG9jYWwgb3IgaXAuaXNfbG9vcGJhY2s6CiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgICAgICBleGNlcHQgRXhjZXB0aW9uOgogICAgICAgICAgICByZXR1cm4gRmFsc2UKICAgICAgICByZXR1cm4gRmFsc2UKCiAgICBkZWYgY29ycyhzZWxmKSAtPiBOb25lOgogICAgICAgIG9yaWdpbiA9IHNlbGYuaGVhZGVycy5nZXQoIk9yaWdpbiIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQWNjZXNzLUNvbnRyb2wtQWxsb3ctT3JpZ2luIiwgb3JpZ2luIGlmIG9yaWdpbiBlbHNlICIqIikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJWYXJ5IiwgIk9yaWdpbiIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQWNjZXNzLUNvbnRyb2wtQWxsb3ctTWV0aG9kcyIsICJHRVQsIFBPU1QsIE9QVElPTlMiKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIkFjY2Vzcy1Db250cm9sLUFsbG93LUhlYWRlcnMiLCAiQ29udGVudC1UeXBlIikKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJBY2Nlc3MtQ29udHJvbC1BbGxvdy1Qcml2YXRlLU5ldHdvcmsiLCAidHJ1ZSIpCgogICAgZGVmIGpzb25fcmVzcG9uc2Uoc2VsZiwgc3RhdHVzOiBpbnQsIGRhdGE6IGRpY3QpIC0+IE5vbmU6CiAgICAgICAgYm9keSA9IGpzb24uZHVtcHMoZGF0YSwgZW5zdXJlX2FzY2lpPUZhbHNlKS5lbmNvZGUoInV0Zi04IikKICAgICAgICBzZWxmLnNlbmRfcmVzcG9uc2Uoc3RhdHVzKQogICAgICAgIGlmIHNlbGYub3JpZ2luX2FsbG93ZWQoKToKICAgICAgICAgICAgc2VsZi5jb3JzKCkKICAgICAgICBzZWxmLnNlbmRfaGVhZGVyKCJDb250ZW50LVR5cGUiLCAiYXBwbGljYXRpb24vanNvbjsgY2hhcnNldD11dGYtOCIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ2FjaGUtQ29udHJvbCIsICJuby1zdG9yZSIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1MZW5ndGgiLCBzdHIobGVuKGJvZHkpKSkKICAgICAgICBzZWxmLmVuZF9oZWFkZXJzKCkKICAgICAgICBzZWxmLndmaWxlLndyaXRlKGJvZHkpCgogICAgZGVmIGRvX09QVElPTlMoc2VsZikgLT4gTm9uZTogICMgbm9xYTogTjgwMgogICAgICAgIGlmIG5vdCBzZWxmLm9yaWdpbl9hbGxvd2VkKCk6CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg0MDMsIHsib2siOiBGYWxzZSwgImVycm9yIjogIk9yaWdpbiBub3QgYWxsb3dlZCJ9KQogICAgICAgICAgICByZXR1cm4KICAgICAgICBzZWxmLnNlbmRfcmVzcG9uc2UoMjA0KQogICAgICAgIHNlbGYuY29ycygpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1MZW5ndGgiLCAiMCIpCiAgICAgICAgc2VsZi5lbmRfaGVhZGVycygpCgogICAgZGVmIGhlYWx0aChzZWxmLCBwYXJzZWQpIC0+IE5vbmU6CiAgICAgICAgcXVlcnkgPSBwYXJzZV9xcyhwYXJzZWQucXVlcnkpCiAgICAgICAgaG9zdCA9IChxdWVyeS5nZXQoImhvc3QiKSBvciBbIiJdKVswXQogICAgICAgIHBvcnRfcmF3ID0gKHF1ZXJ5LmdldCgicG9ydCIpIG9yIFsiOTEwMCJdKVswXQogICAgICAgIHByaW50ZXJfb2sgPSBOb25lCiAgICAgICAgcHJpbnRlcl9lcnJvciA9ICIiCiAgICAgICAgaWYgaG9zdDoKICAgICAgICAgICAgdHJ5OgogICAgICAgICAgICAgICAgaG9zdCwgcG9ydCA9IHJlc29sdmVkX3ByaXZhdGUoaG9zdCwgaW50KHBvcnRfcmF3KSkKICAgICAgICAgICAgICAgIHdpdGggc29ja2V0LmNyZWF0ZV9jb25uZWN0aW9uKChob3N0LCBwb3J0KSwgdGltZW91dD0yKToKICAgICAgICAgICAgICAgICAgICBwYXNzCiAgICAgICAgICAgICAgICBwcmludGVyX29rID0gVHJ1ZQogICAgICAgICAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGV4YzoKICAgICAgICAgICAgICAgIHByaW50ZXJfb2sgPSBGYWxzZQogICAgICAgICAgICAgICAgcHJpbnRlcl9lcnJvciA9IHN0cihleGMpCiAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDIwMCwgewogICAgICAgICAgICAib2siOiBUcnVlLAogICAgICAgICAgICAiZ2F0ZXdheSI6ICJMYWJlbE9uWmVXYXkgV2ktRmkgR2F0ZXdheSIsCiAgICAgICAgICAgICJ2ZXJzaW9uIjogVkVSU0lPTiwKICAgICAgICAgICAgInByaW50ZXJfb2siOiBwcmludGVyX29rLAogICAgICAgICAgICAicHJpbnRlcl9lcnJvciI6IHByaW50ZXJfZXJyb3IsCiAgICAgICAgfSkKCiAgICBkZWYgc3RhdGljX2ZpbGUoc2VsZiwgcGFyc2VkKSAtPiBOb25lOgogICAgICAgIHJlbCA9IHVucXVvdGUocGFyc2VkLnBhdGgpLmxzdHJpcCgiLyIpIG9yICJpbmRleC5odG1sIgogICAgICAgIGNhbmRpZGF0ZSA9IChBUFBfRElSIC8gcmVsKS5yZXNvbHZlKCkKICAgICAgICB0cnk6CiAgICAgICAgICAgIGNhbmRpZGF0ZS5yZWxhdGl2ZV90byhBUFBfRElSKQogICAgICAgIGV4Y2VwdCBWYWx1ZUVycm9yOgogICAgICAgICAgICBzZWxmLnNlbmRfZXJyb3IoNDAzKQogICAgICAgICAgICByZXR1cm4KICAgICAgICBpZiBjYW5kaWRhdGUuaXNfZGlyKCk6CiAgICAgICAgICAgIGNhbmRpZGF0ZSA9IGNhbmRpZGF0ZSAvICJpbmRleC5odG1sIgogICAgICAgIGlmIG5vdCBjYW5kaWRhdGUuaXNfZmlsZSgpIG9yIGNhbmRpZGF0ZS5uYW1lLnN0YXJ0c3dpdGgoIi4iKSBvciBjYW5kaWRhdGUuc3VmZml4IGluIHsiLnB5IiwgIi5jb21tYW5kIiwgIi50eHQiLCAiLnppcCJ9OgogICAgICAgICAgICBzZWxmLnNlbmRfZXJyb3IoNDA0KQogICAgICAgICAgICByZXR1cm4KICAgICAgICBib2R5ID0gY2FuZGlkYXRlLnJlYWRfYnl0ZXMoKQogICAgICAgIGNvbnRlbnRfdHlwZSA9IG1pbWV0eXBlcy5ndWVzc190eXBlKHN0cihjYW5kaWRhdGUpKVswXSBvciAiYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtIgogICAgICAgIHNlbGYuc2VuZF9yZXNwb25zZSgyMDApCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1UeXBlIiwgY29udGVudF90eXBlICsgKCI7IGNoYXJzZXQ9dXRmLTgiIGlmIGNvbnRlbnRfdHlwZS5zdGFydHN3aXRoKCJ0ZXh0LyIpIG9yIGNvbnRlbnRfdHlwZSBpbiB7ImFwcGxpY2F0aW9uL2phdmFzY3JpcHQiLCAiYXBwbGljYXRpb24vbWFuaWZlc3QranNvbiJ9IGVsc2UgIiIpKQogICAgICAgIHNlbGYuc2VuZF9oZWFkZXIoIlgtQ29udGVudC1UeXBlLU9wdGlvbnMiLCAibm9zbmlmZiIpCiAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ29udGVudC1MZW5ndGgiLCBzdHIobGVuKGJvZHkpKSkKICAgICAgICBpZiBjYW5kaWRhdGUubmFtZSBpbiB7ImluZGV4Lmh0bWwiLCAic2VydmljZS13b3JrZXIuanMiLCAibWFuaWZlc3Qud2VibWFuaWZlc3QifToKICAgICAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ2FjaGUtQ29udHJvbCIsICJuby1jYWNoZSIpCiAgICAgICAgZWxzZToKICAgICAgICAgICAgc2VsZi5zZW5kX2hlYWRlcigiQ2FjaGUtQ29udHJvbCIsICJwdWJsaWMsIG1heC1hZ2U9ODY0MDAiKQogICAgICAgIHNlbGYuZW5kX2hlYWRlcnMoKQogICAgICAgIHNlbGYud2ZpbGUud3JpdGUoYm9keSkKCiAgICBkZWYgZG9fR0VUKHNlbGYpIC0+IE5vbmU6ICAjIG5vcWE6IE44MDIKICAgICAgICBwYXJzZWQgPSB1cmxwYXJzZShzZWxmLnBhdGgpCiAgICAgICAgaWYgcGFyc2VkLnBhdGggaW4geyIvYXBpL2hlYWx0aCIsICIvaGVhbHRoIn06CiAgICAgICAgICAgIGlmIG5vdCBzZWxmLm9yaWdpbl9hbGxvd2VkKCk6CiAgICAgICAgICAgICAgICBzZWxmLmpzb25fcmVzcG9uc2UoNDAzLCB7Im9rIjogRmFsc2UsICJlcnJvciI6ICJPcmlnaW4gbm90IGFsbG93ZWQifSkKICAgICAgICAgICAgICAgIHJldHVybgogICAgICAgICAgICBzZWxmLmhlYWx0aChwYXJzZWQpCiAgICAgICAgICAgIHJldHVybgogICAgICAgIHNlbGYuc3RhdGljX2ZpbGUocGFyc2VkKQoKICAgIGRlZiBkb19QT1NUKHNlbGYpIC0+IE5vbmU6ICAjIG5vcWE6IE44MDIKICAgICAgICBpZiBub3Qgc2VsZi5vcmlnaW5fYWxsb3dlZCgpOgogICAgICAgICAgICBzZWxmLmpzb25fcmVzcG9uc2UoNDAzLCB7Im9rIjogRmFsc2UsICJlcnJvciI6ICJPcmlnaW4gbm90IGFsbG93ZWQifSkKICAgICAgICAgICAgcmV0dXJuCiAgICAgICAgaWYgdXJscGFyc2Uoc2VsZi5wYXRoKS5wYXRoIG5vdCBpbiB7Ii9hcGkvcHJpbnQiLCAiL3ByaW50In06CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg0MDQsIHsib2siOiBGYWxzZSwgImVycm9yIjogIk5vdCBmb3VuZCJ9KQogICAgICAgICAgICByZXR1cm4KICAgICAgICB0cnk6CiAgICAgICAgICAgIGxlbmd0aCA9IGludChzZWxmLmhlYWRlcnMuZ2V0KCJDb250ZW50LUxlbmd0aCIsICIwIikpCiAgICAgICAgICAgIGlmIGxlbmd0aCA8PSAwIG9yIGxlbmd0aCA+IE1BWF9CT0RZOgogICAgICAgICAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiSW52YWxpZCBvciBvdmVyc2l6ZWQgcHJpbnQgcmVxdWVzdCIpCiAgICAgICAgICAgIHJlcXVlc3QgPSBqc29uLmxvYWRzKHNlbGYucmZpbGUucmVhZChsZW5ndGgpLmRlY29kZSgidXRmLTgiKSkKICAgICAgICAgICAgaG9zdCA9IHN0cihyZXF1ZXN0LmdldCgicHJpbnRlcl9pcCIsICIiKSkKICAgICAgICAgICAgcG9ydCA9IGludChyZXF1ZXN0LmdldCgicHJpbnRlcl9wb3J0IiwgOTEwMCkpCiAgICAgICAgICAgIGVuY29kZWQgPSByZXF1ZXN0LmdldCgiZGF0YSIsICIiKQogICAgICAgICAgICBpZiBub3QgaXNpbnN0YW5jZShlbmNvZGVkLCBzdHIpOgogICAgICAgICAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiSW52YWxpZCBFU0MvUE9TIHBheWxvYWQiKQogICAgICAgICAgICB0cnk6CiAgICAgICAgICAgICAgICBwYXlsb2FkID0gYmFzZTY0LmI2NGRlY29kZShlbmNvZGVkLCB2YWxpZGF0ZT1UcnVlKQogICAgICAgICAgICBleGNlcHQgKGJpbmFzY2lpLkVycm9yLCBWYWx1ZUVycm9yKSBhcyBleGM6CiAgICAgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJJbnZhbGlkIGJhc2U2NCBwcmludCBkYXRhIikgZnJvbSBleGMKICAgICAgICAgICAgaWYgbm90IHBheWxvYWQgb3IgbGVuKHBheWxvYWQpID4gTUFYX0JPRFk6CiAgICAgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJFbXB0eSBvciBvdmVyc2l6ZWQgRVNDL1BPUyBwYXlsb2FkIikKICAgICAgICAgICAgc2VuZF90b19wcmludGVyKGhvc3QsIHBvcnQsIHBheWxvYWQpCiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSgyMDAsIHsKICAgICAgICAgICAgICAgICJvayI6IFRydWUsCiAgICAgICAgICAgICAgICAiYnl0ZXNfc2VudCI6IGxlbihwYXlsb2FkKSwKICAgICAgICAgICAgICAgICJsYWJlbHMiOiBpbnQocmVxdWVzdC5nZXQoImxhYmVscyIsIDApIG9yIDApLAogICAgICAgICAgICB9KQogICAgICAgICAgICBwcmludChmIlNlbnQge2xlbihwYXlsb2FkKTosfSBieXRlcyB0byB7aG9zdH06e3BvcnR9IikKICAgICAgICBleGNlcHQgKFZhbHVlRXJyb3IsIFR5cGVFcnJvciwganNvbi5KU09ORGVjb2RlRXJyb3IpIGFzIGV4YzoKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDQwMCwgeyJvayI6IEZhbHNlLCAiZXJyb3IiOiBzdHIoZXhjKX0pCiAgICAgICAgZXhjZXB0IChPU0Vycm9yLCBUaW1lb3V0RXJyb3IpIGFzIGV4YzoKICAgICAgICAgICAgc2VsZi5qc29uX3Jlc3BvbnNlKDUwMiwgeyJvayI6IEZhbHNlLCAiZXJyb3IiOiBmIlByaW50ZXIgY29ubmVjdGlvbiBmYWlsZWQ6IHtleGN9In0pCiAgICAgICAgZXhjZXB0IEV4Y2VwdGlvbiBhcyBleGM6CiAgICAgICAgICAgIHNlbGYuanNvbl9yZXNwb25zZSg1MDAsIHsib2siOiBGYWxzZSwgImVycm9yIjogZiJHYXRld2F5IGVycm9yOiB7ZXhjfSJ9KQoKCmRlZiBtYWluKCkgLT4gTm9uZToKICAgIHBvcnQgPSBHQVRFV0FZX1BPUlQKICAgIGlmIGxlbihzeXMuYXJndikgPiAxOgogICAgICAgIHBvcnQgPSBpbnQoc3lzLmFyZ3ZbMV0pCiAgICBzZXJ2ZXIgPSBUaHJlYWRpbmdIVFRQU2VydmVyKChHQVRFV0FZX0hPU1QsIHBvcnQpLCBHYXRld2F5SGFuZGxlcikKICAgIHByaW50KCJcbkxhYmVsT25aZVdheSBXaS1GaSBHYXRld2F5IGlzIHJ1bm5pbmciKQogICAgcHJpbnQoIj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09IikKICAgIHByaW50KGYiT24gdGhpcyBjb21wdXRlcjogaHR0cDovLzEyNy4wLjAuMTp7cG9ydH0vIikKICAgIGFkZHJlc3NlcyA9IGxvY2FsX2lwdjRfYWRkcmVzc2VzKCkKICAgIGZvciBpcCBpbiBhZGRyZXNzZXM6CiAgICAgICAgcHJpbnQoZiJPbiBBbmRyb2lkL2lQaG9uZTogaHR0cDovL3tpcH06e3BvcnR9LyIpCiAgICBpZiBub3QgYWRkcmVzc2VzOgogICAgICAgIHByaW50KCJDb3VsZCBub3QgZGV0ZWN0IHRoZSBMQU4gYWRkcmVzcy4gQ2hlY2sgdGhpcyBjb21wdXRlcidzIFdpLUZpIG5ldHdvcmsgZGV0YWlscy4iKQogICAgcHJpbnQoIlxuT3BlbiB0aGUgbW9iaWxlIFVSTCBvbiBhIHBob25lIGNvbm5lY3RlZCB0byB0aGUgc2FtZSBXaS1GaS4iKQogICAgcHJpbnQoIktlZXAgdGhpcyB3aW5kb3cgb3BlbiBmb3IgZGlyZWN0IFBPUzgwQyBwcmludGluZy4iKQogICAgcHJpbnQoIlByZXNzIENvbnRyb2wtQyB0byBzdG9wLlxuIikKICAgIHRyeToKICAgICAgICBzZXJ2ZXIuc2VydmVfZm9yZXZlcigpCiAgICBleGNlcHQgS2V5Ym9hcmRJbnRlcnJ1cHQ6CiAgICAgICAgcHJpbnQoIlxuU3RvcHBpbmcgTGFiZWxPblplV2F5IEdhdGV3YXnigKYiKQogICAgZmluYWxseToKICAgICAgICBzZXJ2ZXIuc2VydmVyX2Nsb3NlKCkKCgppZiBfX25hbWVfXyA9PSAiX19tYWluX18iOgogICAgbWFpbigpCg==';
-function downloadPrinterBridge(){try{var a=document.createElement('a');a.href='../POS80C_Hosted_Print_Gateway.zip';a.download='POS80C_Hosted_Print_Gateway.zip';document.body.appendChild(a);a.click();a.remove();toast('POS80C gateway kit downloaded','ok');}catch(e){toast('Could not download gateway kit: '+(e.message||e),'err');}}
+function downloadPrinterBridge(){try{
+    if(location.protocol==='https:'||/github\.io$/i.test(location.hostname)){
+      var hosted=document.createElement('a');hosted.href='../downloads/POS80C_Hosted_Print_Gateway.zip';hosted.download='POS80C_Hosted_Print_Gateway.zip';document.body.appendChild(hosted);hosted.click();hosted.remove();
+      toast('Hosted POS80C gateway package download started','ok');return;
+    }
+    var raw=atob(BRIDGE_PY_B64),bytes=new Uint8Array(raw.length);
+    for(var i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);var url=URL.createObjectURL(new Blob([bytes],{type:'text/x-python'})),a=document.createElement('a');
+    a.href=url;a.download='labelonzeway_gateway.py';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1200);
+    toast('Wi-Fi Gateway downloaded — run it with Python 3','ok');
+  }catch(e){toast('Could not download gateway: '+(e.message||e),'err');}}
 
-function doPrint(mode,html,rows){
-  if(mode==='label'&&state.shop.printMode==='direct'&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
+function labelCopyCount(row){return Math.min(20,Math.max(1,parseInt(row&&row.copies)||1))}
+function expandLabelCopies(rows){var out=[];(rows||[]).forEach(function(row){var count=labelCopyCount(row);
+  for(var copyNo=1;copyNo<=count;copyNo++){var physical=Object.assign({},row,{copies:1,copyNo:copyNo,copyTotal:count});out.push(physical);}});return out}
+function physicalLabelCount(rows){return (rows||[]).reduce(function(n,row){return n+labelCopyCount(row)},0)}
+function doPrint(mode,html,rows,forceSystem){
+  if(mode==='label'&&Array.isArray(rows)&&rows.length){rows=expandLabelCopies(rows);html=rows.map(labelHTML).join('');}
+  if(!forceSystem&&mode==='label'&&state.shop.printMode==='direct'&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
   var pr=getEl('print-root');
   if(pr){
     pr.className='';pr.innerHTML=html;
@@ -1662,6 +1961,7 @@ function printCalibration(){var len=Math.min(300,Math.max(100,Number(state.shop.
   doPrint('label',html);toast('Printing calibration','ok');}
 
 function openSettings(){var s=state.shop;
+  var newProfile=getEl('s-new-profile'),profileFeedback=getEl('s-profile-feedback');if(newProfile)newProfile.value='';if(profileFeedback){profileFeedback.textContent='Profiles are stored on this phone.';profileFeedback.className='printer-status'}
   getEl('s-name').value=s.name;getEl('s-tag').value=s.tagline;getEl('s-phone').value=s.phone;
   getEl('s-cur').value=s.currency;getEl('s-sep').value=s.sep==null?' ':s.sep;
   getEl('s-codlbl').value=s.codLabel;getEl('s-len').value=s.labelLen||210;
@@ -1669,10 +1969,12 @@ function openSettings(){var s=state.shop;
   getEl('s-thanks').value=s.thanks;getEl('s-qwen-url').value=s.qwenUrl||'';getEl('s-qwen-model').value=s.qwenModel||'';
   getEl('s-print-mode').value=s.printMode||'browser';getEl('s-printer-ip').value=s.printerIp||'';
   getEl('s-printer-port').value=s.printerPort||9100;getEl('s-bridge-url').value=s.bridgeUrl||'auto';
-  getEl('s-printer-dots').value=s.printerDots||576;getEl('s-printer-feed').value=s.printerFeed==null?24:s.printerFeed;
+  getEl('s-printer-dots').value=s.printerDots||576;getEl('s-printer-feed').value=s.printerFeed==null?0:s.printerFeed;
   getEl('s-printer-threshold').value=s.printerThreshold||180;getEl('s-cut-type').value=s.printerCut||'partial';
-  getEl('s-cut-each').checked=s.cutEach!==false;updatePrinterSettingsUI();
-  getEl('m-settings').classList.add('open');}
+  getEl('s-cut-each').checked=s.cutEach!==false;updatePrinterSettingsUI();updatePrintQueueUI();
+  getEl('m-settings').classList.add('open');
+  if(nativePOS80Printer()&&typeof nativePOS80Printer().discover==='function'&&s.printMode==='direct'&&!s.printerIp)setTimeout(function(){discoverPrinter({useForm:true,silent:false}).catch(function(){})},180);}
+
 function saveSettings(){var pc=printerConfig(true);Object.assign(state.shop,{
     name:getEl('s-name').value.trim()||'MY SHOP',tagline:getEl('s-tag').value.trim(),
     phone:getEl('s-phone').value.trim(),currency:getEl('s-cur').value.trim(),sep:getEl('s-sep').value,
@@ -1731,10 +2033,19 @@ function installApp(){
       if(out.outcome==='accepted')toast('Installing LabelOnZeWay…','ok');deferredInstallPrompt=null;});return}
   var ios=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
   alert(ios?'On iPhone/iPad: tap Safari’s Share button, then choose “Add to Home Screen”.':'Open your browser menu and choose “Install app” or “Add to Home screen”.');}
-function scrollSection(id){var el=getEl(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function scrollSection(id){
+  if(isMobileUI()){showMobileView(id==='card-batch'?'batch':id==='card-manifest'?'manifest':'new');return}
+  var el=getEl(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 function registerLabelOnZeWay(){
+  if(nativePOS80Printer())return;
   if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
     navigator.serviceWorker.register('service-worker.js').catch(function(e){console.warn('Service worker:',e)});}}
+function autoDetectSavedPrinter(){var n=nativePOS80Printer(),c=printerConfig(false);
+  if(!n||state.shop.printMode!=='direct'||typeof n.health!=='function'||typeof n.discover!=='function')return;
+  if(!c.ip){discoverPrinter({silent:true,useForm:false}).catch(function(){});return}
+  n.health({printer_ip:c.ip,printer_port:c.port}).then(function(d){if(!d||!d.printer_ok)throw new Error('not reachable');
+    setPrinterStatus('✓ Saved POS80C reachable at '+c.ip+':'+c.port,'ok');
+  }).catch(function(){discoverPrinter({silent:true,useForm:false}).catch(function(){})});}
 
 var ACTIONS={
   scanPrice:scanPrice, deepScan:deepScan, qwenScan:qwenScan,
@@ -1747,11 +2058,17 @@ var ACTIONS={
   printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, clearBatch:clearBatch,
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
   closeDay:closeDay, openArch:openArch, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, clearManifestSelection:clearManifestSelection,
-  openRecon:openRecon, openSettings:openSettings, addProfile:addProfile, installApp:installApp, scrollSection:scrollSection,
+  openRecon:openRecon, openSettings:openSettings, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
+  showMobileView:showMobileView, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
+  mobileBack:mobileBack, cancelMobile:cancelMobile,
+  toggleCustomerTools:toggleCustomerTools, togglePreviewCard:togglePreviewCard,
   saveSuggestedContact:saveSuggestedContact, dismissSuggest:dismissSuggest,
   noprixUnit:noprixUnit, noprixOne:noprixOne, applyOnePrice:applyOnePrice,
   saveSettings:saveSettings, resetAll:resetAll, downloadBackup:downloadBackup,
   testPrinterBridge:testPrinterBridge, testPrinterCut:testPrinterCut, downloadPrinterBridge:downloadPrinterBridge,
+  discoverPrinter:function(){discoverPrinter({useForm:true,silent:false}).catch(function(){})},cancelPrinterDiscovery:cancelPrinterDiscovery,
+  retryPrintQueue:retryPrintQueue,clearPrintQueue:clearPrintQueue,detectAndRetryPrint:detectAndRetryPrint,
+  systemPrintFallback:systemPrintFallback,queueFailedPrint:queueFailedPrint,cancelPrintFallback:cancelPrintFallback,
   clickRestore:function(){var e=getEl('restore-file');if(e)e.click()},
   saveAddrModal:saveAddrModal, prepAddrModal:prepAddrModal,
   saveRecon:saveRecon,
@@ -1763,7 +2080,7 @@ var ACTIONS={
 };
 document.addEventListener('click',function(e){
   var closeBtn=e.target.closest('[data-close]');
-  if(closeBtn){closeModal(closeBtn.getAttribute('data-close'));return}
+  if(closeBtn){var closeId=closeBtn.getAttribute('data-close');if(closeId==='m-settings')cancelPrinterDiscovery();closeModal(closeId);return}
   var btn=e.target.closest('[data-act]');
   if(!btn)return;
   var act=btn.getAttribute('data-act');
@@ -1795,10 +2112,12 @@ function init(){
   try{renderManifest();}catch(e){fatal(e)}
   try{renderStats();}catch(e){fatal(e)}
   try{renderPreview();}catch(e){fatal(e)}
+  try{prepareMobileUI();updatePrintQueueUI();}catch(e){fatal(e)}
   try{maybeAutoRecon();}catch(e){fatal(e)}
-  try{registerLabelOnZeWay();}catch(e){console.warn(e)}
-  try{if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches){var ib=getEl('install-app-btn');if(ib)ib.style.display='none';}}catch(e){}
+  try{registerLabelOnZeWay();setTimeout(autoDetectSavedPrinter,700);}catch(e){console.warn(e)}
+  try{if(nativePOS80Printer()||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)){var ib=getEl('install-app-btn');if(ib)ib.style.display='none';}}catch(e){}
   setInterval(function(){var c=getEl('clock');if(c)c.textContent=new Date().toLocaleTimeString();},1000);
+  var resizeTimer=null;window.addEventListener('resize',function(){clearTimeout(resizeTimer);resizeTimer=setTimeout(prepareMobileUI,120)});
   setTimeout(function(){getOcrWorker().then(function(){toast('OCR engine ready (FR+EN)','ok')}).catch(function(){})},2000);
 }
 init();
