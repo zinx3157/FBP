@@ -269,7 +269,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   #parcel-actions{position:sticky;bottom:calc(60px + env(safe-area-inset-bottom));z-index:24;background:#fff;border-top:1px solid var(--line);margin:10px -7px -7px!important;padding:8px 7px 7px;box-shadow:0 -5px 14px rgba(20,26,33,.08)}#parcel-actions .btn{padding:8px 6px;font-size:11px}
   #card-preview.mobile-collapsed #live-preview-body{display:none}#card-preview.mobile-collapsed .card-head{margin-bottom:0}.pv-frame{width:calc(72mm*.50);height:min(calc(var(--lblh)*.50),52vh)}.pv-scale{transform:scale(.50)}
   .modal{padding:0;align-items:end}.modal-box{width:100%!important;max-height:92dvh;border-radius:14px 14px 0 0;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
-  .batch-toolbar{width:100%;padding:9px;gap:8px}.batch-customer-all{grid-template-columns:1fr}.batch-customer-all label{grid-column:auto}.batch-customer-all .btn{width:100%;min-height:40px}.batch-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding-top:7px}.batch-options .chk{min-height:38px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:6px 8px;font-size:11px}.batch-primary-actions{grid-template-columns:1fr 1fr;gap:7px}.batch-primary-actions .btn{min-height:42px;padding:7px 5px;font-size:10px;line-height:1.15;box-shadow:none}.brow{display:grid;grid-template-columns:48px minmax(0,1fr);padding:9px;gap:8px}.b-main{display:contents}.b-status{align-self:center;margin:0;min-height:0}.b-chips{grid-column:1/-1;margin:0}.b-grid{grid-column:1/-1;grid-template-columns:1fr 1fr;gap:7px}.b-field>label{font-size:8px}.b-field.batch-customer{grid-column:1/-1}.b-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}.b-actions .btn{min-height:38px;padding:5px 3px;font-size:9px}.b-thumb{width:48px;height:48px}
+  .batch-toolbar{width:100%;padding:9px;gap:8px}.batch-customer-all{grid-template-columns:1fr}.batch-customer-all label{grid-column:auto}.batch-customer-all .btn{width:100%;min-height:40px}.batch-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding-top:7px}.batch-options .chk{min-height:38px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:6px 8px;font-size:11px}.batch-primary-actions{grid-template-columns:1fr 1fr;gap:7px}.batch-primary-actions .btn{min-height:42px;padding:7px 5px;font-size:10px;line-height:1.15;box-shadow:none}.brow{display:grid;grid-template-columns:48px minmax(0,1fr);padding:9px;gap:8px}.b-main{display:contents}.b-status{align-self:center;margin:0;min-height:0}.b-chips{grid-column:1/-1;margin:0}.b-grid{grid-column:1/-1;grid-template-columns:1fr 1fr;gap:7px}.b-field>label{font-size:8px}.b-field.batch-customer{grid-column:1/-1}.b-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}.b-actions .btn{min-height:38px;padding:5px 3px;font-size:9px}.b-actions .batch-delete{grid-column:1/-1;min-height:42px;font-size:10px;font-weight:900;background:#fff4f3}.b-thumb{width:48px;height:48px}
   .mobile-manifest-list{display:flex;flex-direction:column;gap:6px}.tbl-wrap{display:none}.mobile-manifest-item{border:1.5px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}.mobile-manifest-item[open]{border-color:var(--blue)}.mobile-manifest-item.done{background:#f4fbf6}.mobile-manifest-item.mani-selected{box-shadow:inset 4px 0 0 var(--orange)}
   .mobile-manifest-item>summary{list-style:none;display:grid;grid-template-columns:24px 38px minmax(0,1fr) auto;align-items:center;gap:6px;padding:7px 8px;min-height:52px}.mobile-manifest-item>summary::-webkit-details-marker{display:none}.mobile-order{font:800 10px var(--mono);color:var(--blue)}.mobile-rec{min-width:0}.mobile-rec b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}.mobile-rec small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:500 9px var(--mono);color:#66727e}.mobile-amount{text-align:right;font:800 10px var(--mono);color:var(--orange-d)}.mobile-amount small{display:block;font-size:7.5px;color:#66727e}
   .mobile-manifest-edit{border-top:1px solid var(--line);padding:8px;background:#fbfbfa}.mobile-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mobile-edit-grid .span2{grid-column:1/-1}.mobile-field label{display:block;font:700 8px var(--mono);letter-spacing:.7px;color:#66727e;margin-bottom:2px}.mobile-manifest-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.mobile-manifest-actions .btn{min-width:0;min-height:36px;padding:5px 2px;font-size:8.5px;box-shadow:none}
@@ -387,8 +387,10 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
       <button class="btn sm mobile-only" data-act="toggleCustomerTools">••• MORE</button>
     </div>
     <div class="rec-toolbar" id="customer-secondary-tools">
+      <button class="btn sm" data-act="recoverOldAddressBooks">↻ Recover Old Books</button>
+      <button class="btn sm green" data-act="exportAddressBookCSV">⤓ Export CSV</button>
       <button class="btn sm" data-act="clickAbCsv">⤒ Import CSV</button>
-      <button class="btn sm" data-act="downloadAddrTemplate">⤓ CSV Template</button>
+      <button class="btn sm" data-act="downloadAddrTemplate">CSV Template</button>
       <input type="file" id="ab-csv" accept=".csv,text/csv" hidden onchange="if(this.files[0])importAddrCSV(this.files[0]);this.value=''">
     </div>
     <div id="rec-form">
@@ -430,6 +432,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
         <label class="chk"><input type="checkbox" id="f-merge" checked> Merge same customer</label>
       </div>
       <div class="batch-primary-actions">
+        <button class="btn sm orange" data-act="startNewLabel">＋ NEW LABEL</button>
         <label class="btn sm blue" for="file" style="cursor:pointer">📷 2 · ADD PHOTOS</label>
         <button class="btn sm dark" data-act="printAllBatchLabels">🖨 3 · PRINT ALL</button>
         <button class="btn sm orange" data-act="addAllBatch">＋ ADD ALL TO MANIFEST</button>
@@ -442,8 +445,9 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   <section class="card" id="card-manifest">
     <div class="card-head"><h2>MANIFEST</h2><span class="hint" id="mani-date"></span>
       <div class="right manifest-tools"><details class="compact-action-menu" id="manifest-action-menu"><summary>PRINT &amp; MANIFEST MENU</summary><div class="action-menu-grid">
+        <button class="btn sm orange" data-act="startNewLabel">＋ NEW LABEL</button>
         <button class="btn sm" data-act="exportCSV">⤓ CSV</button>
-        <button class="btn sm dark" data-act="printManifest">🧾 72 MM</button>
+        <button class="btn sm dark" data-act="printManifest">🧾 80 MM</button>
         <button class="btn sm blue" data-act="printA4">⎙ A4 / PDF</button>
         <button class="btn sm green" data-act="printReport">📊 SALES REPORT</button>
         <button class="btn sm" data-act="closeDay">🌙 CLOSE DAY</button>
@@ -464,7 +468,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 </main>
 
 <nav id="mobile-nav" aria-label="App sections">
-  <button data-act="showMobileView" data-arg="new" data-view="new" aria-current="true"><span>＋</span>NEW LABEL</button>
+  <button data-act="startNewLabel" data-view="new" aria-current="true"><span>＋</span>NEW LABEL</button>
   <button data-act="showMobileView" data-arg="batch" data-view="batch"><span>▦</span>BATCH</button>
   <button data-act="showMobileView" data-arg="manifest" data-view="manifest"><span>☷</span>MANIFEST</button>
   <button data-act="openSettings"><span>⚙</span>SETTINGS</button>
@@ -517,8 +521,14 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
       <option value="browser">iPhone / iPad system print · AirPrint</option>
       <option value="direct">Direct ESC/POS · local Wi-Fi gateway</option>
     </select>
-    <div class="row2 mobile-pair equal"><div><label class="f">POS80C IP address</label><input type="text" id="s-printer-ip" placeholder="192.168.100.173" inputmode="decimal"></div>
+    <div class="row2 mobile-pair equal"><div><label class="f">POS80C IP address</label><input type="text" id="s-printer-ip" placeholder="Auto-detect or enter manually" inputmode="decimal"></div>
       <div><label class="f">Raw TCP port</label><input type="number" id="s-printer-port" min="1" max="65535" value="9100" inputmode="numeric"></div></div>
+    <div class="discovery-controls" style="margin-top:9px">
+      <span class="discovery-spinner" id="printer-discovery-spinner" aria-hidden="true"></span>
+      <button class="btn sm blue" id="discover-printer-btn" data-act="discoverPrinter">⌁ AUTO-DETECT POS80C</button>
+      <button class="btn sm" id="cancel-discovery-btn" data-act="cancelPrinterDiscovery" style="display:none;color:var(--red);border-color:var(--red)">CANCEL SCAN</button>
+    </div>
+    <div id="printer-discovery-results" class="printer-results" aria-live="polite"></div>
     <label class="f">Local gateway URL</label><input type="text" id="s-bridge-url" placeholder="auto when opened from the local gateway">
     <div id="s-printer-status" class="printer-status">iPhone system print is ready</div>
     <div class="print-methods" aria-label="iPhone printing choices">
@@ -572,6 +582,10 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   <button class="modal-x" data-close="m-addr">✕</button>
   <h3>ADDRESS BOOK</h3>
   <input type="text" id="am-search" placeholder="🔎 Search…" oninput="renderAmList()" style="margin-bottom:8px">
+  <div class="rec-toolbar" style="margin-bottom:8px">
+    <button class="btn sm" data-act="recoverOldAddressBooks">↻ Recover Old Books</button>
+    <button class="btn sm green" data-act="exportAddressBookCSV">⤓ Export CSV</button>
+  </div>
   <div id="am-list" style="margin:4px 0 14px;max-height:300px;overflow:auto"></div>
   <div style="border-top:2px dashed var(--line);padding-top:12px">
     <p style="font:700 11px var(--mono);color:var(--blue)" id="am-form-title">ADD ADDRESS</p>
@@ -610,6 +624,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <button class="btn" data-close="m-preview">Cancel</button></div>
 </div></div>
 
+<script src="cloud-sync.js?v=130-auth4"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -625,14 +640,16 @@ if(!PROFILES.some(function(p){return p.id===PID})){PID=PROFILES[0].id;localStora
 function K(k){return PID+'.'+k}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+var LOCAL_DEVICE_ID=localStorage.getItem('lz.local.device')||('D'+Math.random().toString(36).slice(2,8).toUpperCase());localStorage.setItem('lz.local.device',LOCAL_DEVICE_ID);var localIdSeq=0;
+function uniqueId(prefix){localIdSeq=(localIdSeq+1)%46656;return prefix+Date.now().toString(36)+'-'+LOCAL_DEVICE_ID+'-'+localIdSeq.toString(36)}
 function switchProfile(id){localStorage.setItem('lz.profile',id);location.reload();}
 function createProfile(name){name=String(name||'').trim().replace(/\s+/g,' ');
   if(!name)return {ok:false,message:'Enter a company profile name.'};
   if(PROFILES.some(function(p){return String(p.name||'').toLowerCase()===name.toLowerCase()}))return {ok:false,message:'A profile with this name already exists.'};
-  var id='P'+Date.now();PROFILES.push({id:id,name:name});
+  var id=uniqueId('P');PROFILES.push({id:id,name:name});
   localStorage.setItem('lz.profiles',JSON.stringify(PROFILES));
   localStorage.setItem(id+'.shop',JSON.stringify(Object.assign({},DEFAULT_SHOP,{name:name})));
-  localStorage.setItem('lz.profile',id);return {ok:true,id:id,name:name};}
+  localStorage.setItem('lz.profile',id);if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.captureNow(id,true);return {ok:true,id:id,name:name};}
 function addProfile(){var name=prompt('Company / profile name:');if(!name)return;var out=createProfile(name);
   if(!out.ok){toast(out.message,'err');return}location.reload();}
 function addProfileFromSettings(){var input=getEl('s-new-profile'),feedback=getEl('s-profile-feedback');var out=createProfile(input?input.value:'');
@@ -643,12 +660,13 @@ function addProfileFromSettings(){var input=getEl('s-new-profile'),feedback=getE
 var PAY_MODES=['Espèces','COD','MVola','Orange Money','Airtel Money','PAID (prepaid)','Bank / Other'];
 var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,qwenUrl:'',qwenModel:'qwen2.5-vl:7b',
   printMode:'browser',printerIp:'192.168.100.173',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:0,printerThreshold:180,printerCut:'partial',cutEach:true};
+var INITIAL_SHOP=load(K('shop'),{});if(window.LabelOnZeWayNative&&window.LabelOnZeWayNative.isNative&&!Object.prototype.hasOwnProperty.call(INITIAL_SHOP,'printMode'))INITIAL_SHOP.printMode='direct';
 var state={
-  shop:Object.assign({},DEFAULT_SHOP,load(K('shop'),{})),
+  shop:Object.assign({},DEFAULT_SHOP,INITIAL_SHOP),
   addr:load(K('addr'),[]),manifest:load(K('mani'),[]),archive:load(K('arch'),[]),counter:load(K('ctr'),0),
   img:null,imgOCR:null,imgBig:null,currentFile:null,editingAddr:null,batch:[],addrAssign:null,resumeBatch:false};
 var batchBusy=false,previewMode=null,noprixShown=false,scanActive=false,printChain=[],manifestSelection={};
-function persist(){try{save(K('shop'),state.shop);save(K('addr'),state.addr);save(K('mani'),state.manifest);save(K('ctr'),state.counter);save(K('arch'),state.archive)}catch(e){toast('⚠ Storage full — backup now!','err')}}
+function persist(){try{save(K('shop'),state.shop);save(K('addr'),state.addr);save(K('mani'),state.manifest);save(K('ctr'),state.counter);save(K('arch'),state.archive);if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change')}catch(e){toast('⚠ Storage full — backup now!','err')}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function money(v){var n=Number(v||0),sep=(state.shop.sep==null?' ':state.shop.sep);var p=Math.abs(n).toFixed(2).split('.');
   return (n<0?'-':'')+(state.shop.currency?state.shop.currency+' ':'')+p[0].replace(/\B(?=(\d{3})+(?!\d))/g,sep)+(p[1]==='00'?'':','+p[1])}
@@ -656,6 +674,11 @@ function fmtDT(iso){var d=new Date(iso);return d.toLocaleDateString(undefined,{d
 function fmtDeliverDate(d,t){if(!d)return'';var dt=new Date(d+'T'+(t||'00:00'));
   if(isNaN(dt))return d;var s=dt.toLocaleDateString(undefined,{day:'2-digit',month:'short'});if(t)s+=' '+t;return s;}
 function nextOid(n){return String(n).padStart(4,'0')}
+function allocateOrderId(){
+  var cloud=window.LabelOnZeWayCloud,oid=cloud&&typeof cloud.nextOrderIdentifier==='function'?cloud.nextOrderIdentifier(PID):null;
+  if(oid){var numeric=/^\d+$/.test(oid)?parseInt(oid,10):0;state.counter=numeric?Math.max(Number(state.counter)||0,numeric):(Number(state.counter)||0)+1;return oid}
+  state.counter=(Number(state.counter)||0)+1;return nextOid(state.counter);
+}
 function dPlus1Date(){var d=new Date();d.setDate(d.getDate()+1);
   var p=function(n){return String(n).padStart(2,'0')};
   return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
@@ -719,6 +742,12 @@ function resetCurrentLabelDraft(){
   var dd=getEl('f-ddate');if(dd)dd.value=dPlus1Date();var dt=getEl('f-dtime');if(dt)dt.value='';
   var rec=getEl('rec-select');if(rec)rec.value='';var rc=getEl('card-recipient');if(rc)rc.classList.remove('mobile-collapsed');
   var rf=getEl('rec-form');if(rf)rf.classList.remove('open');clearRecForm();updateCustomerCoordination();updateMobileContext();renderPreview();}
+function startNewLabel(silent){
+  resetCurrentLabelDraft();showMobileView('new');
+  var photo=getEl('photo-tools');if(photo)photo.removeAttribute('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(!silent)toast('Fresh label ready — choose a customer','ok');
+}
 function mobileGoBack(){
   var modal=document.querySelector('.modal.open');if(modal){if(modal.id==='m-settings')cancelPrinterDiscovery();if(modal.id==='m-print-fallback')failedPrintRows=null;closeModal(modal.id);return true}
   if(mobileView!=='new'){showMobileView('new');return true}
@@ -916,7 +945,7 @@ function afterContactResolved(){
 function dismissSuggest(){hideSuggest();afterContactResolved();}
 function saveSuggestedContact(){
   var c=state.pendingContact;if(!c)return dismissSuggest();
-  var rec={id:'a'+Date.now(),name:c.name||'(customer)',phone:c.phone||'',area:'',address:c.address||'',note:'from photo'};
+  var rec={id:uniqueId('a'),name:c.name||'(customer)',phone:c.phone||'',area:'',address:c.address||'',note:'from photo'};
   state.addr.push(rec);persist();rebuildRecSelect(rec.id);renderAmList();
   hideSuggest();toast('Customer saved and linked to this label','ok');finishCustomerStep();
   afterContactResolved();
@@ -1100,13 +1129,66 @@ function importAddrCSV(file){var rd=new FileReader();rd.onload=function(){try{
     var name=g(idx.name);if(!name){skipped++;continue}
     var phone=g(idx.phone),area=g(idx.area),address=g(idx.address),note=g(idx.note);
     if(state.addr.some(function(a){return a.name.toLowerCase()===name.toLowerCase()&&(a.phone||'')===(phone||'')})){skipped++;continue}
-    state.addr.push({id:'a'+Date.now()+'x'+r,name:name,phone:phone,area:area,address:address,note:note});added++;}
+    state.addr.push({id:uniqueId('a'),name:name,phone:phone,area:area,address:address,note:note});added++;}
   persist();rebuildRecSelect();renderBatch();renderAmList();
   toast('Imported '+added+' customer'+(added!==1?'s':'')+(skipped?' · '+skipped+' skipped':''),added?'ok':'err');}
   catch(e){toast('Could not read CSV','err')}};rd.readAsText(file);}
 function downloadAddrTemplate(){var csv='\uFEFFNom;Téléphone;Quartier;Adresse;Note\r\nRakoto Jean;0341234567;Analakely;"Lot II 45";"appeler avant"\r\n';
   var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
   a.download='address-book-template.csv';a.click();toast('Template downloaded','ok');}
+function csvCell(value){return '"'+String(value==null?'':value).replace(/"/g,'""')+'"'}
+function exportAddressBookCSV(){
+  if(!state.addr.length){toast('Address book is empty','err');return false}
+  var profile=PROFILES.find(function(p){return p.id===PID})||{name:PID};
+  var rows=[['Profile','Customer ID','Name','Phone','Area / City','Address','Note']];
+  state.addr.forEach(function(a){rows.push([profile.name||PID,a.id||'',a.name||'',a.phone||'',a.area||'',a.address||'',a.note||''])});
+  var csv='\uFEFF'+rows.map(function(row){return row.map(csvCell).join(';')}).join('\r\n')+'\r\n';
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='labelonzeway-address-book-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1000);
+  toast('Exported '+state.addr.length+' customer'+(state.addr.length===1?'':'s'),'ok');return true;}
+function cleanLegacyText(value){return String(value==null?'':value).trim().replace(/\s+/g,' ')}
+function normalizeLegacyText(value){var s=cleanLegacyText(value).toLowerCase();try{s=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'')}catch(e){}return s}
+function normalizeLegacyPhone(value){return cleanLegacyText(value).replace(/\D/g,'')}
+function legacyCustomer(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+  var name=cleanLegacyText(raw.name||raw.fullName||raw.full_name||raw.nom||raw.customer||raw.client||[raw.firstName,raw.lastName].filter(Boolean).join(' '));
+  var phone=cleanLegacyText(raw.phone||raw.mobile||raw.tel||raw.telephone||raw.finday);
+  var area=cleanLegacyText(raw.area||raw.city||raw.ville||raw.zone||raw.district);
+  var address=cleanLegacyText(raw.address||raw.addr||raw.street||raw.adresse||raw.adiresy);
+  var note=cleanLegacyText(raw.note||raw.notes||raw.remark||raw.observation||raw.naoty);
+  if(!name&&!phone&&!area&&!address&&!note)return null;
+  return{id:cleanLegacyText(raw.id),name:name||'(Recovered customer)',phone:phone,area:area,address:address,note:note};}
+function sameLegacyCustomer(a,b){
+  var ap=normalizeLegacyPhone(a.phone),bp=normalizeLegacyPhone(b.phone);
+  if(ap&&bp&&ap.length>=7&&ap===bp)return true;
+  var an=normalizeLegacyText(a.name),bn=normalizeLegacyText(b.name);if(!an||an!==bn)return false;
+  var al=normalizeLegacyText([a.address,a.area].filter(Boolean).join(' ')),bl=normalizeLegacyText([b.address,b.area].filter(Boolean).join(' '));
+  if(al||bl)return !!al&&al===bl;
+  return normalizeLegacyText(a.phone)===normalizeLegacyText(b.phone);}
+function mergeLegacyCustomers(current,candidates){
+  var merged=(Array.isArray(current)?current:[]).map(function(a){return Object.assign({},a)}),added=0,enriched=0,duplicates=0;
+  (candidates||[]).forEach(function(candidate){var c=legacyCustomer(candidate);if(!c)return;
+    var existing=merged.find(function(a){return sameLegacyCustomer(a,c)});
+    if(existing){var changed=false;['name','phone','area','address','note'].forEach(function(k){if(!cleanLegacyText(existing[k])&&cleanLegacyText(c[k])){existing[k]=c[k];changed=true}});if(changed)enriched++;else duplicates++;return}
+    var id=c.id;if(!id||merged.some(function(a){return String(a.id)===id}))id=uniqueId('a');c.id=id;merged.push(c);added++;});
+  return{customers:merged,added:added,enriched:enriched,duplicates:duplicates};}
+function collectOldAddressBooks(){
+  var keys={},profileLists=['sd.profiles','lz.profiles'];
+  profileLists.forEach(function(profileKey){var profiles=load(profileKey,[]);if(Array.isArray(profiles))profiles.forEach(function(p){if(p&&p.id)keys[String(p.id)+'.addr']=true})});
+  try{for(var i=0;i<localStorage.length;i++){var key=localStorage.key(i);if(key&&(/\.addr$/i.test(key)||/^(addr|addressbook|address_book|customers|contacts|recipients)$/i.test(key)))keys[key]=true}}catch(e){}
+  var contacts=[],sources=[];Object.keys(keys).sort().forEach(function(key){if(key===K('addr'))return;var list=load(key,null);if(!Array.isArray(list)||!list.length)return;
+    var valid=list.map(legacyCustomer).filter(Boolean);if(valid.length){sources.push({key:key,count:valid.length});contacts=contacts.concat(valid)}});
+  return{contacts:contacts,sources:sources};}
+function recoverOldAddressBooks(){
+  var found=collectOldAddressBooks(),result=mergeLegacyCustomers(state.addr,found.contacts),sourceCount=found.sources.length;
+  if(!sourceCount){alert('No separate old address books were found in this browser. Your current book already contains '+state.addr.length+' customer'+(state.addr.length===1?'':'s')+'.\n\nOld Android/iPhone app storage and cleared browser data cannot be read from this page; use a JSON backup or CSV export from that installation.');return result}
+  var message='Found '+found.contacts.length+' customer record'+(found.contacts.length===1?'':'s')+' in '+sourceCount+' old address book'+(sourceCount===1?'':'s')+'.\n\n'+result.added+' new customer'+(result.added===1?'':'s')+' will be added';
+  if(result.enriched)message+=' and '+result.enriched+' existing customer'+(result.enriched===1?' will':'s will')+' receive missing details';
+  message+='. '+result.duplicates+' duplicate'+(result.duplicates===1?' was':'s were')+' safely ignored.\n\nCurrent customers will NOT be deleted. Continue?';
+  if(!confirm(message))return result;
+  state.addr=result.customers;persist();rebuildRecSelect();renderBatch();renderAmList();
+  toast('Recovered '+result.added+' customer'+(result.added===1?'':'s')+(result.enriched?' · enriched '+result.enriched:''),'ok');return result;}
 
 function recOptionsHTML(sel,ph,withNew){var byArea={};state.addr.forEach(function(a){(byArea[a.area||'Other']=byArea[a.area||'Other']||[]).push(a)});
   var html='<option value="">'+esc(ph||'— customer —')+'</option>';
@@ -1139,7 +1221,7 @@ function renderBatch(){var box=getEl('batch-list');if(!box)return;var n=state.ba
         '<button class="btn sm" data-arg="'+it.id+'" data-act="batchScanOne">🔁 SCAN</button>'+
         '<button class="btn sm blue" data-arg="'+it.id+'" data-act="printSingleFromBatch">🏷 PRINT</button>'+
         '<button class="btn sm green" data-arg="'+it.id+'" data-act="addSingleBatch">＋ MANIFEST</button>'+
-        '<button class="btn sm" data-arg="'+it.id+'" data-act="removeBatch" style="color:var(--red);border-color:var(--red)">✕ REMOVE</button>'+
+        '<button class="btn sm batch-delete" data-arg="'+it.id+'" data-act="removeBatch" style="color:var(--red);border-color:var(--red)">🗑 DELETE LABEL</button>'+
       '</div></div>';}).join('');
   state.batch.forEach(renderBatchRow);}
 function renderBatchRow(it){var st=getEl('bs-'+it.id),ch=getEl('bc-'+it.id);if(!st)return;
@@ -1192,7 +1274,7 @@ function applyBatchRecAll(){var v=getEl('batch-rec-all').value;if(!v){toast('Cho
   state.batch.forEach(function(it){it.recId=v;it.err=false;var sel=getEl('br-'+it.id);if(sel)sel.value=v;renderBatchRow(it);});
   toast('Customer applied to '+state.batch.length+' photos','ok');}
 function makeRow(it,rec,oid){var price=Number(it.price)||0;
-  return {id:'r'+Date.now()+Math.random().toString(36).slice(2,6),oid:oid,name:'',qty:it.qty||1,copies:Math.min(20,Math.max(1,parseInt(it.copies)||1)),price:price,
+  return {id:uniqueId('r'),oid:oid,name:'',qty:it.qty||1,copies:Math.min(20,Math.max(1,parseInt(it.copies)||1)),price:price,
     cod:it.cod===null||it.cod===''?price:Number(it.cod),ship:Number(it.ship)||0,notes:'',
     pay:it.pay||'COD',mmRef:'',img:it.img||null,deliverAt:it.deliverAt||dPlus1Date(),deliverTime:it.deliverTime||'',pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};}
@@ -1202,7 +1284,7 @@ function makeMergedRow(items,rec,oid){
   var cod=items.reduce(function(s,p){return s+(p.cod===null||p.cod===''?(Number(p.price)||0):(Number(p.cod)||0))},0);
   var ship=items.reduce(function(s,p){return s+(Number(p.ship)||0)},0);
   var copies=items.reduce(function(n,p){return Math.max(n,Math.min(20,Math.max(1,parseInt(p.copies)||1)))},1);
-  return {id:'r'+Date.now()+Math.random().toString(36).slice(2,6),oid:oid,name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
+  return {id:uniqueId('r'),oid:oid,name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
     pay:items[0].pay||'COD',mmRef:'',img:items[0].img||null,deliverAt:dPlus1Date(),deliverTime:'',pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};}
 function commitBatch(){
@@ -1212,8 +1294,7 @@ function commitBatch(){
     state.batch.forEach(function(it){
       var rec=state.addr.find(function(a){return a.id===it.recId});
       if(!rec){skipped++;it.err=true;remaining.push(it);return}
-      state.counter++;
-      rows.push(makeRow(it,rec,nextOid(state.counter)));});
+      rows.push(makeRow(it,rec,allocateOrderId()));});
   }else{
     var groups={};
     state.batch.forEach(function(it){
@@ -1222,8 +1303,7 @@ function commitBatch(){
       (groups[it.recId]=groups[it.recId]||[]).push(it);});
     Object.keys(groups).forEach(function(k){
       var items=groups[k];
-      state.counter++;
-      rows.push(makeMergedRow(items,state.addr.find(function(a){return a.id===items[0].recId}),nextOid(state.counter)));});
+      rows.push(makeMergedRow(items,state.addr.find(function(a){return a.id===items[0].recId}),allocateOrderId()));});
   }
   rows.forEach(function(r){state.manifest.push(r)});
   if(rows.length){persist();renderManifest();renderStats();}
@@ -1244,14 +1324,12 @@ function printAllBatchLabels(){
 function addSingleBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
-  state.counter++;
-  state.manifest.push(makeRow(it,rec,nextOid(state.counter)));persist();renderManifest();renderStats();
+  state.manifest.push(makeRow(it,rec,allocateOrderId()));persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();toast('Added to manifest','ok');}
 function printSingleFromBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
-  state.counter++;
-  var rowM=makeRow(it,rec,nextOid(state.counter));
+  var rowM=makeRow(it,rec,allocateOrderId());
   state.manifest.push(rowM);persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();
   toast(rowM.oid+' — printing label…','ok');setTimeout(function(){printLabel(rowM)},250);}
@@ -1284,7 +1362,7 @@ function toggleRecForm(){var f=getEl('rec-form');if(!f)return;var card=getEl('ca
   f.classList.toggle('open');if(f.classList.contains('open')){var s=getEl('rec-select');if(s)s.value='__new';updateCustomerCoordination();var n=getEl('r-name');if(n)n.focus();}}
 function cancelRecForm(){var f=getEl('rec-form');if(f)f.classList.remove('open');var s=getEl('rec-select');if(s&&s.value==='__new')s.value='';updateCustomerCoordination();queuePreview();}
 function quickSaveRec(){var rec=readRecForm('r-');if(!rec)return;
-  rec.id='a'+Date.now();state.addr.push(rec);persist();
+  rec.id=uniqueId('a');state.addr.push(rec);persist();
   rebuildRecSelect(rec.id);cancelRecForm();clearRecForm();toast('Customer saved and linked to this label','ok');queuePreview();finishCustomerStep();}
 function readRecForm(p){var name=val(p+'name').trim(),phone=val(p+'phone').trim(),
     area=val(p+'area').trim(),address=val(p+'addr').trim(),note=val(p+'note').trim();
@@ -1325,7 +1403,7 @@ function prepAddrModal(editId){state.editingAddr=editId||null;
 function saveAddrModal(){var rec=readRecForm('am-');if(!rec)return;
   if(state.editingAddr){var i=state.addr.findIndex(function(a){return a.id===state.editingAddr});
     rec.id=state.editingAddr;state.addr[i]=rec;toast('Updated','ok');}
-  else{rec.id='a'+Date.now();state.addr.push(rec);toast('Added','ok');}
+  else{rec.id=uniqueId('a');state.addr.push(rec);toast('Added','ok');}
   persist();renderAmList();rebuildRecSelect(rec.id);renderBatch();
   if(state.addrAssign){var it=state.batch.find(function(x){return x.id===state.addrAssign});
     if(it){it.recId=rec.id;it.err=false;var sel=getEl('br-'+it.id);if(sel)sel.value=rec.id;renderBatchRow(it);toast('Assigned to photo','ok');}
@@ -1342,18 +1420,11 @@ function addToManifest(printAfter){var qty=Math.max(1,parseInt(val('f-qty'))||1)
   var ddate=val('f-ddate');var dtime=val('f-dtime');
   var rec=currentRec();
   if(!rec){toast('Choose or add the customer for this label first','err');editRecipientStep();return}
-  state.counter++;
-  var row={id:'r'+Date.now(),oid:nextOid(state.counter),name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
+  var row={id:uniqueId('r'),oid:allocateOrderId(),name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
     pay:getEl('f-pay').value||'COD',mmRef:'',img:state.img||null,deliverAt:ddate,deliverTime:dtime,pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};
   state.manifest.push(row);persist();renderManifest();renderStats();
-  toast(row.oid+' added','ok');
-  state.img=null;state.imgOCR=null;state.imgBig=null;state.currentFile=null;paintDrop();hideSuggest();
-  ['f-price','f-cod','f-ship-manual'].forEach(function(i){var e=getEl(i);if(e)e.value=''});
-  var q=getEl('f-qty');if(q)q.value=1;var cp=getEl('f-copies');if(cp)cp.value=1;var p=getEl('f-pay');if(p)p.value='COD';
-  var sh=getEl('f-ship');if(sh)sh.value='3000';var sw=getEl('f-ship-manual-wrap');if(sw)sw.style.display='none';
-  var dd=getEl('f-ddate');if(dd)dd.value=dPlus1Date();var dt=getEl('f-dtime');if(dt)dt.value='';
-  var or=getEl('ocr-results');if(or)or.style.display='none';var ot=getEl('ocr-text');if(ot)ot.style.display='none';
+  startNewLabel(true);toast(row.oid+' saved — fresh New Label ready','ok');
   if(printAfter)setTimeout(function(){printLabel(row)},200);}
 function setMan(id,k,v){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;
   if(k==='name')r.rec.name=v;
@@ -1477,7 +1548,7 @@ function clearManifest(){if(!state.manifest.length){toast('Manifest empty','err'
   state.manifest=[];persist();renderManifest();renderStats();toast('Cleared','ok');}
 function closeDay(){if(!state.manifest.length){toast('Manifest empty','err');return}
   if(!confirm('Close today\'s manifest ('+state.manifest.length+' parcels) and archive it?'))return;
-  state.archive.unshift({id:'d'+Date.now(),date:new Date().toISOString(),rows:state.manifest});
+  state.archive.unshift({id:uniqueId('d'),date:new Date().toISOString(),rows:state.manifest});
   if(state.archive.length>90)state.archive=state.archive.slice(0,90);
   state.manifest=[];persist();renderManifest();renderStats();toast('Archived','ok');}
 
@@ -1688,7 +1759,7 @@ function applyLabelLen(){var len=Math.min(300,Math.max(100,Number(state.shop.lab
   if(stL)stL.textContent='@page{size:72mm auto;margin:0}';
   var t2=getEl('pv-len2');if(t2)t2.textContent=len;}
 
-var directPrintBusy=false,printerDiscoveryActive=false,failedPrintRows=null,retryingPrintQueue=false;
+var directPrintBusy=false,printerDiscoveryActive=false,printerDiscoveryRun=0,printerDiscoveryAbort=null,failedPrintRows=null,retryingPrintQueue=false;
 function getPrintQueue(){var q=load(K('printQueue'),[]);return Array.isArray(q)?q:[]}
 function updatePrintQueueUI(){var count=getPrintQueue().reduce(function(n,j){return n+((j.rows&&j.rows.length)||0)},0);
   document.querySelectorAll('.queue-count-label').forEach(function(el){el.textContent='QUEUE '+count});}
@@ -1708,30 +1779,64 @@ function renderDiscoveredPrinters(printers,port){var box=getEl('printer-discover
   printers.forEach(function(p){var ip=typeof p==='string'?p:p.ip;var row=document.createElement('div');row.className='printer-result';
     row.innerHTML='<span>🖨 '+esc(ip)+':'+(p.port||port||9100)+'</span><button class="btn sm" type="button">USE</button>';
     row.querySelector('button').addEventListener('click',function(){selectDiscoveredPrinter(ip,p.port||port||9100,true)});box.appendChild(row);});}
-function discoverPrinter(options){options=options&&typeof options==='object'?options:{};var nativePrinter=nativePOS80Printer(),c=printerConfig(!!options.useForm);
-  if(!nativePrinter||typeof nativePrinter.discover!=='function'){var e=new Error('Automatic discovery is available in the native Android app. Enter the printer IP manually here.');if(!options.silent){setPrinterStatus(e.message,'err');toast(e.message,'err')}return Promise.reject(e)}
-  if(printerDiscoveryActive)return Promise.reject(new Error('Printer discovery is already running'));
-  setDiscoveryBusy(true);if(!options.silent)setPrinterStatus('Scanning the local LAN / phone hotspot on port '+c.port+'…','');
+function gatewayDiscoveryUrl(c){
+  if(!c.bridge)return'';
+  try{var u=new URL(c.bridge,location.href);u.pathname=u.pathname.replace(/\/+$/,'')+'/discover';u.search='?port='+encodeURIComponent(c.port)+'&preferred_ip='+encodeURIComponent(c.ip||'');return u.toString()}
+  catch(e){return c.bridge+'/discover?port='+encodeURIComponent(c.port)+'&preferred_ip='+encodeURIComponent(c.ip||'')}
+}
+function discoverPrinter(options){
+  options=options&&typeof options==='object'?options:{};var nativePrinter=nativePOS80Printer(),c=printerConfig(!!options.useForm);
+  if(printerDiscoveryActive)return Promise.resolve({cancelled:false,busy:true});
+  var run=++printerDiscoveryRun;setDiscoveryBusy(true);
+  if(!options.silent)setPrinterStatus((nativePrinter?'Phone':'Local gateway')+' is scanning for POS80C on port '+c.port+'…','');
   var box=getEl('printer-discovery-results');if(box)box.innerHTML='<div class="printer-help">Scanning reachable local addresses… You can cancel this scan.</div>';
-  return nativePrinter.discover({printer_port:c.port,preferred_ip:c.ip||''}).then(function(data){
-    var printers=data&&Array.isArray(data.printers)?data.printers:[];renderDiscoveredPrinters(printers,c.port);
-    if(data&&data.cancelled){if(!options.silent)setPrinterStatus('Printer scan cancelled.','');throw new Error('Printer scan cancelled')}
-    if(!printers.length){var networks=data&&Array.isArray(data.networks)&&data.networks.length?' Checked '+data.networks.join(', ')+'.':'';var err=new Error('No POS80C found on a reachable local network.'+networks);if(!options.silent){setPrinterStatus(err.message,'err');toast('No printer detected','err')}throw err}
-    var chosen=printers[0],ip=typeof chosen==='string'?chosen:chosen.ip,port=typeof chosen==='string'?c.port:(chosen.port||c.port);
-    selectDiscoveredPrinter(ip,port,!options.silent);return {ip:ip,port:port,printers:printers};
-  }).catch(function(e){if(!options.silent&&e&&e.message!=='Printer scan cancelled')console.warn(e);throw e}).finally(function(){setDiscoveryBusy(false)});}
-function cancelPrinterDiscovery(){var n=nativePOS80Printer();if(printerDiscoveryActive&&n&&typeof n.cancelDiscovery==='function')n.cancelDiscovery({}).catch(function(){});setDiscoveryBusy(false);}
+  var request;
+  if(nativePrinter&&typeof nativePrinter.discover==='function'){
+    request=Promise.resolve(nativePrinter.discover({printer_port:c.port,preferred_ip:c.ip||''}));
+  }else{
+    var url=gatewayDiscoveryUrl(c);
+    if(!url){
+      var help='On iPhone web/PWA, open LabelOnZeWay from the local gateway URL before auto-detecting the POS80C.';
+      setDiscoveryBusy(false);setPrinterStatus(help,'err');if(box)box.innerHTML='<div class="printer-help">'+esc(help)+'</div>';if(!options.silent)toast('Open the local gateway app first','err');
+      return Promise.resolve({ok:false,printers:[],error:help});
+    }
+    var fetchOptions={method:'GET',cache:'no-store'},space=localRequestAddressSpace(url);if(space)fetchOptions.targetAddressSpace=space;
+    if(typeof AbortController!=='undefined'){printerDiscoveryAbort=new AbortController();fetchOptions.signal=printerDiscoveryAbort.signal}
+    request=fetch(url,fetchOptions).then(checkedBridgeJSON);
+  }
+  var timer=setTimeout(function(){if(run===printerDiscoveryRun&&printerDiscoveryAbort)printerDiscoveryAbort.abort()},25000);
+  return request.then(function(data){
+    if(run!==printerDiscoveryRun)return {cancelled:true,printers:[]};
+    if(typeof data==='string'){try{data=JSON.parse(data)}catch(e){data={printers:[]}}}
+    var raw=data&&(data.printers||data.devices),printers=Array.isArray(raw)?raw:[];renderDiscoveredPrinters(printers,c.port);
+    if(data&&data.cancelled){setPrinterStatus('Printer scan cancelled.','');return {cancelled:true,printers:[]}}
+    if(!printers.length){var networks=data&&Array.isArray(data.networks)&&data.networks.length?' Checked '+data.networks.join(', ')+'.':'';var msg='No POS80C found on a reachable local network.'+networks;if(!options.silent){setPrinterStatus(msg,'err');toast('No printer detected','err')}return {ok:true,printers:[],networks:data&&data.networks||[]}}
+    var chosen=printers[0],ip=typeof chosen==='string'?chosen:(chosen.ip||chosen.address||chosen.host),port=typeof chosen==='string'?c.port:(chosen.port||c.port);
+    selectDiscoveredPrinter(ip,port,!options.silent);return {ok:true,ip:ip,port:port,printers:printers};
+  }).catch(function(e){
+    var cancelled=run!==printerDiscoveryRun||(e&&e.name==='AbortError');
+    if(cancelled){setPrinterStatus('Printer scan cancelled.','');return {cancelled:true,printers:[]}}
+    var msg=e&&e.message?e.message:String(e);if(!options.silent){setPrinterStatus('Printer scan failed: '+msg,'err');toast('Printer scan failed','err')}return {ok:false,printers:[],error:msg};
+  }).finally(function(){clearTimeout(timer);if(run===printerDiscoveryRun){printerDiscoveryAbort=null;setDiscoveryBusy(false)}});}
+function cancelPrinterDiscovery(){
+  if(!printerDiscoveryActive)return;printerDiscoveryRun++;
+  if(printerDiscoveryAbort){try{printerDiscoveryAbort.abort()}catch(e){}printerDiscoveryAbort=null}
+  var n=nativePOS80Printer();if(n&&typeof n.cancelDiscovery==='function')Promise.resolve(n.cancelDiscovery({})).catch(function(){});
+  setDiscoveryBusy(false);setPrinterStatus('Printer scan cancelled.','');
+  var box=getEl('printer-discovery-results');if(box)box.innerHTML='<div class="printer-help">Scan cancelled. Tap Auto-Detect POS80C to try again.</div>';}
+
 function openPrintFallback(rows,msg){failedPrintRows=cleanRowsForQueue(rows||[]);var text=getEl('print-fallback-message');if(text)text.textContent='Direct POS80C printing failed: '+msg+' Choose another method below.';
   var modal=getEl('m-print-fallback');if(modal)modal.classList.add('open');}
 function cancelPrintFallback(){failedPrintRows=null;closeModal('m-print-fallback')}
-function detectAndRetryPrint(){var rows=failedPrintRows;if(!rows||!rows.length)return cancelPrintFallback();var c=printerConfig(false);
+function detectAndRetryPrint(){var rows=failedPrintRows;if(!rows||!rows.length)return cancelPrintFallback();var c=printerConfig(false),nativePrinter=nativePOS80Printer();
+  if(nativePrinter){setPrinterStatus('Auto-detecting POS80C before retry…','');discoverPrinter({silent:false,useForm:false}).then(function(out){if(out&&out.ip){cancelPrintFallback();directEscposPrint(rows)}});return}
   if(!c.ip||!c.bridge){setPrinterStatus('Open the app from the local gateway, then save the printer IP.','err');toast('Local gateway details are required','err');return}
   setPrinterStatus('Testing the local gateway before retry…','');
   fetchWithTimeout(c.bridge+'/health?host='+encodeURIComponent(c.ip)+'&port='+encodeURIComponent(c.port),{method:'GET',cache:'no-store'},8000).then(checkedBridgeJSON).then(function(data){
     if(!data.printer_ok)throw new Error(data.printer_error||'The gateway cannot reach the POS80C');cancelPrintFallback();directEscposPrint(rows);
   }).catch(function(e){var msg=e&&e.name==='AbortError'?'Connection timed out':(e.message||String(e));setPrinterStatus('✕ '+msg,'err');toast('Gateway retry failed — '+msg,'err')});}
 function systemPrintFallback(){var rows=failedPrintRows;if(!rows||!rows.length)return cancelPrintFallback();cancelPrintFallback();
-  doPrint('label',rows.map(labelHTML).join(''),rows,true);toast('Opening iPhone / iPad system print','ok');}
+  doPrint('label',rows.map(labelHTML).join(''),rows,true);toast('Opening '+(nativePlatform()==='android'?'Android':'iPhone / iPad')+' system print','ok');}
 function queueFailedPrint(){var rows=failedPrintRows;if(!rows||!rows.length)return cancelPrintFallback();queueRowsForLater(rows,'Direct POS80C unavailable');cancelPrintFallback();}
 function printerConfig(useForm){var s=state.shop;
   var from=function(id,fallback){var e=useForm?getEl(id):null;return e?e.value:fallback};
@@ -1754,9 +1859,9 @@ function printerConfig(useForm){var s=state.shop;
   };}
 function setPrinterStatus(msg,type){var el=getEl('s-printer-status');if(!el)return;
   el.textContent=msg;el.className='printer-status'+(type?' '+type:'');}
-function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser');
-  if(mode==='direct')setPrinterStatus('Gateway mode selected — open LabelOnZeWay from the gateway local URL, then test it here.','');
-  else setPrinterStatus('iPhone / iPad system print selected — uses the iOS print sheet and AirPrint.','ok');}
+function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser'),platform=nativePlatform();
+  if(mode==='direct')setPrinterStatus(platform?'Direct '+(platform==='ios'?'iPhone/iPad':'Android')+' printing selected — use Auto-Detect or the saved IP.':'Gateway mode selected — open LabelOnZeWay from the gateway local URL, then use Auto-Detect.','');
+  else setPrinterStatus(platform==='android'?'Android system print selected — availability depends on installed print services.':'iPhone / iPad system print selected — uses the iOS print sheet and AirPrint.','ok');}
 function localRequestAddressSpace(url){try{var h=new URL(url,location.href).hostname.toLowerCase();
   if(h==='localhost'||h==='127.0.0.1'||h==='::1')return'loopback';
   if(h.endsWith('.local')||/^10\./.test(h)||/^192\.168\./.test(h)||/^172\.(1[6-9]|2\d|3[01])\./.test(h))return'local';
@@ -1768,14 +1873,24 @@ function fetchWithTimeout(url,opts,ms){if(typeof fetch!=='function')return Promi
   return fetch(url,opts).finally(function(){clearTimeout(timer)});}
 function checkedBridgeJSON(res){return res.json().catch(function(){return{}}).then(function(data){
   if(!res.ok||!data.ok)throw new Error(data.error||('Gateway returned HTTP '+res.status));return data;});}
+function nativePlatform(){var n=window.LabelOnZeWayNative;return n&&n.isNative?String(n.platform||'native'):''}
 function nativePOS80Printer(){var n=window.LabelOnZeWayNative;
   return n&&n.isNative&&n.printer?n.printer:null;}
+function configurePlatformUI(){
+  var platform=nativePlatform(),nativeMode=!!platform,select=getEl('s-print-mode');
+  if(select&&select.options.length>1){select.options[0].textContent=platform==='android'?'Android system print':platform==='ios'?'iPhone / iPad system print · AirPrint':'iPhone / iPad system print · AirPrint';select.options[1].textContent=nativeMode?'Direct ESC/POS · from this '+(platform==='ios'?'iPhone':'Android phone'):'Direct ESC/POS · local Wi-Fi gateway'}
+  var help=getEl('native-print-help');if(help&&nativeMode)help.innerHTML='<b>Direct phone printing</b> sends ESC/POS from this '+(platform==='ios'?'iPhone/iPad':'Android device')+' to the network POS80C — no Mac or gateway required. Auto-detect scans the connected LAN or phone hotspot. System Print remains available.';
+  var fallback=document.querySelector('[data-act="systemPrintFallback"]');if(fallback)fallback.textContent='▣ '+(platform==='android'?'ANDROID':'IOS')+' SYSTEM PRINT';
+  var gatewayButton=getEl('download-gateway-btn');if(gatewayButton)gatewayButton.style.display=nativeMode?'none':'';
+  var gatewayInput=getEl('s-bridge-url');if(gatewayInput)gatewayInput.disabled=nativeMode;
+  updatePrinterSettingsUI();
+}
 function testPrinterBridge(){var c=printerConfig(true),nativePrinter=nativePOS80Printer();
   if(!c.ip){setPrinterStatus('Enter the POS80C printer IP address first.','err');toast('Enter printer IP address','err');return}
   if(nativePrinter){
-    setPrinterStatus('Testing direct Android connection to '+c.ip+':'+c.port+'…','');
+    var device=nativePlatform()==='ios'?'iPhone/iPad':'Android';setPrinterStatus('Testing direct '+device+' connection to '+c.ip+':'+c.port+'…','');
     nativePrinter.health({printer_ip:c.ip,printer_port:c.port}).then(function(data){
-      if(data&&data.printer_ok){setPrinterStatus('✓ Android connected directly to '+c.ip+':'+c.port,'ok');toast('POS80C direct connection ready','ok');}
+      if(data&&data.printer_ok){setPrinterStatus('✓ '+device+' connected directly to '+c.ip+':'+c.port,'ok');toast('POS80C direct connection ready','ok');}
       else throw new Error('The printer did not accept the connection');
     }).catch(function(e){var msg=e&&e.message?e.message:String(e);
       setPrinterStatus('✕ '+msg,'err');toast('Direct printer test failed — '+msg,'err');});return;}
@@ -1895,10 +2010,11 @@ function directEscposPrint(rows){var c=printerConfig(false);
   }).finally(function(){directPrintBusy=false});}
 function retryPrintQueue(){var jobs=getPrintQueue();if(!jobs.length){toast('Print queue is empty','ok');return}if(retryingPrintQueue||directPrintBusy){toast('A print job is already running','err');return}
   var rows=[];jobs.forEach(function(j){if(Array.isArray(j.rows))rows=rows.concat(j.rows)});if(!rows.length){save(K('printQueue'),[]);updatePrintQueueUI();return}
-  retryingPrintQueue=true;var c=printerConfig(false);
-  if(!c.ip||!c.bridge){retryingPrintQueue=false;setPrinterStatus('Queue remains saved. Open the app from the local gateway and configure the POS80C first.','err');toast('Queued labels remain saved — local gateway required','err');return}
-  setPrinterStatus('Testing gateway before retrying queued labels…','');
-  fetchWithTimeout(c.bridge+'/health?host='+encodeURIComponent(c.ip)+'&port='+encodeURIComponent(c.port),{method:'GET',cache:'no-store'},8000).then(checkedBridgeJSON).then(function(d){if(!d.printer_ok)throw new Error(d.printer_error||'POS80C is not reachable');directPrintBusy=true;toast('Retrying '+rows.length+' queued label(s)…','ok');return sendDirectRows(rows,c)}).then(function(data){
+  retryingPrintQueue=true;var c=printerConfig(false),nativePrinter=nativePOS80Printer();
+  if(!c.ip||(!nativePrinter&&!c.bridge)){retryingPrintQueue=false;var setup=nativePrinter?'configure or auto-detect the POS80C first':'open the app from the local gateway and configure the POS80C first';setPrinterStatus('Queue remains saved. '+setup.charAt(0).toUpperCase()+setup.slice(1)+'.','err');toast('Queued labels remain saved — printer setup required','err');return}
+  setPrinterStatus('Testing '+(nativePrinter?'direct phone connection':'gateway')+' before retrying queued labels…','');
+  var health=nativePrinter?Promise.resolve(nativePrinter.health({printer_ip:c.ip,printer_port:c.port})):fetchWithTimeout(c.bridge+'/health?host='+encodeURIComponent(c.ip)+'&port='+encodeURIComponent(c.port),{method:'GET',cache:'no-store'},8000).then(checkedBridgeJSON);
+  health.then(function(d){if(!d||!d.printer_ok)throw new Error(d&&d.printer_error||'POS80C is not reachable');directPrintBusy=true;toast('Retrying '+rows.length+' queued label(s)…','ok');return sendDirectRows(rows,c)}).then(function(data){
     save(K('printQueue'),[]);updatePrintQueueUI();setPrinterStatus('✓ Queued labels sent: '+rows.length+' · '+Number(data.bytes_sent||0).toLocaleString()+' bytes','ok');toast('✓ Print queue completed','ok');
   }).catch(function(e){var msg=e&&e.message?e.message:String(e);setPrinterStatus('Queue retry failed: '+msg,'err');toast('Queued labels remain saved — '+msg,'err');
   }).finally(function(){directPrintBusy=false;retryingPrintQueue=false});}
@@ -1934,7 +2050,13 @@ function doPrint(mode,html,rows,forceSystem){
         pr.insertBefore(page,lbl);page.appendChild(lbl);});}}
   document.body.dataset.print=mode;
   if(stL)stL.disabled=mode!=='label';if(stM)stM.disabled=mode!=='manifest';if(stA)stA.disabled=mode!=='a4';
-  setTimeout(function(){window.print()},180);}
+  setTimeout(function(){
+    var nativePrinter=nativePOS80Printer();
+    if(nativePrinter&&typeof nativePrinter.systemPrint==='function'){
+      nativePrinter.systemPrint({title:'LabelOnZeWay '+mode}).catch(function(e){toast('System Print failed — '+(e&&e.message?e.message:String(e)),'err')})
+        .then(function(){window.dispatchEvent(new Event('afterprint'))});
+    }else window.print();
+  },180);}
 window.addEventListener('afterprint',function(){
   var pr=getEl('print-root');if(pr){pr.innerHTML='';pr.className='';}delete document.body.dataset.print;
   if(stL)stL.disabled=true;if(stM)stM.disabled=true;if(stA)stA.disabled=true;
@@ -2014,12 +2136,14 @@ function restoreBackup(file){
     save(K('arch'),Array.isArray(d.archive)?d.archive:(Array.isArray(d.arch)?d.arch:[]));
     save(K('ctr'),Math.max(0,Number(d.counter!=null?d.counter:d.ctr)||0));
     if(payload.preferences){save(K('auto'),payload.preferences.auto!==false);save(K('merge'),payload.preferences.merge!==false)}
-    toast('Backup restored — reloading…','ok');setTimeout(function(){location.reload()},350);
+    state.shop=load(K('shop'),state.shop);state.addr=load(K('addr'),[]);state.manifest=load(K('mani'),[]);state.archive=load(K('arch'),[]);state.counter=load(K('ctr'),0);
+    if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.captureNow(PID,true);
+    toast('Backup restored — reloading…','ok');setTimeout(function(){location.reload()},500);
   }catch(e){console.error(e);toast(e.message||'Invalid backup file','err')}};
   rd.readAsText(file);}
-function resetAll(){if(!confirm('Erase ALL data for this profile?'))return;
-  ['shop','addr','mani','ctr','arch','reconDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});
-  location.reload();}
+function resetAll(){if(!confirm('Erase ALL data for this profile? This also deletes its synchronized business records for authorized staff.'))return;
+  var finish=function(){['shop','addr','mani','ctr','arch','reconDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});location.reload()};
+  if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.resetCurrentProfile==='function')window.LabelOnZeWayCloud.resetCurrentProfile().then(finish).catch(finish);else finish();}
 function closeModal(id){var e=getEl(id);if(e)e.classList.remove('open')}
 function renderProfileSel(){var s=getEl('profile-sel');if(!s)return;
   s.innerHTML=PROFILES.map(function(p){return '<option value="'+p.id+'"'+(p.id===PID?' selected':'')+'>'+esc(p.name)+'</option>'}).join('');}
@@ -2053,13 +2177,14 @@ var ACTIONS={
   toggleRecForm:toggleRecForm, cancelRecForm:cancelRecForm, quickSaveRec:quickSaveRec,
   openAddrModal:function(arg){openAddrModal(arg==='sel'?getEl('rec-select').value:arg)},
   clickAbCsv:function(){var e=getEl('ab-csv');if(e)e.click()},
+  recoverOldAddressBooks:recoverOldAddressBooks, exportAddressBookCSV:exportAddressBookCSV,
   downloadAddrTemplate:downloadAddrTemplate, toggleAbList:toggleAbList,
   printCalibration:printCalibration, applyBatchRecAll:applyBatchRecAll,
   printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, clearBatch:clearBatch,
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
   closeDay:closeDay, openArch:openArch, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, clearManifestSelection:clearManifestSelection,
   openRecon:openRecon, openSettings:openSettings, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
-  showMobileView:showMobileView, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
+  showMobileView:showMobileView, startNewLabel:startNewLabel, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
   mobileBack:mobileBack, cancelMobile:cancelMobile,
   toggleCustomerTools:toggleCustomerTools, togglePreviewCard:togglePreviewCard,
   saveSuggestedContact:saveSuggestedContact, dismissSuggest:dismissSuggest,
@@ -2112,7 +2237,7 @@ function init(){
   try{renderManifest();}catch(e){fatal(e)}
   try{renderStats();}catch(e){fatal(e)}
   try{renderPreview();}catch(e){fatal(e)}
-  try{prepareMobileUI();updatePrintQueueUI();}catch(e){fatal(e)}
+  try{prepareMobileUI();updatePrintQueueUI();configurePlatformUI();}catch(e){fatal(e)}
   try{maybeAutoRecon();}catch(e){fatal(e)}
   try{registerLabelOnZeWay();setTimeout(autoDetectSavedPrinter,700);}catch(e){console.warn(e)}
   try{if(nativePOS80Printer()||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)){var ib=getEl('install-app-btn');if(ib)ib.style.display='none';}}catch(e){}
@@ -2120,6 +2245,7 @@ function init(){
   var resizeTimer=null;window.addEventListener('resize',function(){clearTimeout(resizeTimer);resizeTimer=setTimeout(prepareMobileUI,120)});
   setTimeout(function(){getOcrWorker().then(function(){toast('OCR engine ready (FR+EN)','ok')}).catch(function(){})},2000);
 }
+window.addEventListener('labelonzeway-native-ready',function(){configurePlatformUI();setTimeout(autoDetectSavedPrinter,250)});
 init();
 </script>
 </body>

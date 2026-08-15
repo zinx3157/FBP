@@ -1,48 +1,48 @@
-# Release notes — LabelOnZeWay Web iOS 1.2.1
+# Release notes — LabelOnZeWay Web iOS 1.3.0
 
-Date: 2026-08-13
+Date: 2026-08-15
 
-## LabelOnZeWay update
+## Historical address-book recovery
 
-- Replaced the older `/labelonzeway/` interface with the compact Android APK v1.2.1 workflow adapted for iPhone/iPad browsers.
-- Preserved coordinated customer creation/selection and label details.
-- Preserved compact New Label, Batch, centered Manifest, and More views.
-- Preserved mobile Back and Cancel controls.
-- Kept item quantity separate from physical label-copy count throughout New Label, Batch, Manifest, system print, direct print, and CSV output.
-- Preserved selected-label printing, payment modes, parcel/customer records, archive, reports/reconciliation, CSV exports, backups/restores, and deferred print queues.
-- Preserved in-app company-profile creation.
-- Added a light 80 mm thermal-roll Manifest and retained the complete A4 Manifest/PDF path.
+- Added **Recover Old Books** to the customer toolbar and Address Book.
+- Scans discoverable SHIPDESK/LabelOnZeWay company profiles and address-book storage keys on the same GitHub Pages origin.
+- Shows a recovery preview and requires confirmation before merging.
+- Retains all current customers, conservatively deduplicates, and enriches missing name, phone, area/city, address, and note values.
+- Handles malformed or empty legacy storage without deleting or rewriting source records.
+- Added direct semicolon-delimited UTF-8 CSV export with complete quoting/escaping.
+- Added address-book CSV export to root SHIPDESK as well.
 
-## iPhone/iPad web behavior
+Recovery must be run in the same Safari/Chrome browser profile and on the same device where the historical records remain visible. Do not clear website data before recovery, CSV export, and backup are verified.
 
-- Added iOS web-app metadata and standalone Add to Home Screen support.
-- Updated the PWA manifest and bumped the service-worker cache to `labelonzeway-ios-web-v121`.
-- Made iPhone/iPad system print and AirPrint the fresh-install default.
-- Kept direct ESC/POS as an optional local-gateway mode without claiming Safari can open raw TCP port `9100`.
-- Public HTTPS no longer auto-selects or calls an insecure HTTP LAN gateway.
-- Local gateway pages on private HTTP addresses auto-select their same-origin `/api` route.
-- Local requests include Private Network Access address-space metadata when supported.
-- Unavailable gateway retries keep deferred label queues stored instead of falling through to native-only discovery.
-- The hosted gateway ZIP download action points to `../downloads/POS80C_Hosted_Print_Gateway.zip`.
+## Shared workspace and authentication
 
-## POS80C gateway package
+- Added Supabase-backed synchronization for authorized business workflow data across separate staff logins in one company workspace.
+- Printer settings and active/deferred print queues remain device-local.
+- Includes Forgot Password, Set New Password, and signed-in Change Password flows with immediate reauthentication for sensitive changes.
+- Uses a public publishable client key with row-level security; no secret/service-role key is shipped.
 
-- Rebuilt the hosted gateway ZIP with the current LabelOnZeWay Web iOS 1.2.1 files.
-- Corrected the downloaded package's static `web_root` to its bundled `web` directory.
-- Preconfigured the gateway for `https://zinx3157.github.io/FBP/`.
-- Retained private/local printer destination enforcement and cut-after-each-label output.
-- Direct labels default to zero added feed so consecutive labels have no avoidable blank spacing.
+## Printing and mobile workflow
 
-## Validation completed
+- Retains system print/AirPrint and direct POS80C ESC/POS output.
+- Retains automatic native printer discovery, New Label, Batch Delete Label, copies 1–20, compact mobile screens, Back/Cancel, 80 mm/A4 Manifest formats, archives, and reports.
+- Refreshed the downloadable hosted gateway with the v1.3.0 web assets.
+- Bumped the PWA cache to `labelonzeway-ios-web-v130-auth4-address1`.
 
-- Extracted JavaScript and service-worker syntax checks passed.
-- HTML parse found one inline script, no external native bridge, 148 unique element IDs, and no duplicate IDs.
-- Compact mobile customer/label coordination regression passed.
-- Batch, quantity/copies, cutter, profile, Back/Cancel, Manifest centering, and system-print regression passed.
-- All-button/action retained-workflow smoke test passed with no missing actions or fatal UI errors.
-- Browser-specific public HTTPS, AirPrint, 80 mm/A4 preview, queue, hosted ZIP, local-gateway, Private Network Access, ESC/POS raster, cut, spacing, and PWA checks passed.
-- Canonical and `docs/labelonzeway/` distribution hashes match.
+## Validation completed locally
+
+- Canonical cloud sync, password authentication, historical recovery/export, and iOS/web workflow suites pass.
+- Android's complete five-suite JavaScript regression run passes.
+- iOS JavaScript workflow suites pass.
+- iOS static native-project validation passes all 46 checks, including raw TCP printing, AirPrint, and bounded cancellable private-LAN discovery.
+- Staged Pages assets match their canonical SHIPDESK and LabelOnZeWay sources.
+
+## Validation still required
+
+- Real password-recovery email callback.
+- Mac/Xcode compilation from `App.xcworkspace`.
+- Physical iPhone printer-discovery, AirPrint, and POS80C tests.
+- Production recovery/export on the original browser/device after publication.
 
 ## Publication status
 
-The validated Pages source is ready locally. Publication to GitHub still requires an authenticated Git remote or GitHub token in the working environment.
+This is a local release candidate. It has not been published. Commit/push and GitHub Pages deployment require approval and an authenticated Git environment.

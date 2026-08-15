@@ -1,7 +1,9 @@
-const CACHE = 'labelonzeway-ios-web-v121';
+const CACHE = 'labelonzeway-ios-web-v130-auth4-address1';
 const APP_SHELL = [
   './',
   './index.html',
+  './cloud-sync.js?v=130-auth4',
+  './sync-config.json',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
