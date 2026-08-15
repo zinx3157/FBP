@@ -1,32 +1,37 @@
-# Deployment checklist — Web iOS 1.3.0
+# Deployment checklist — release 1.3.3
 
 ## Completed locally
 
-- [x] Synchronize canonical LabelOnZeWay 1.3.0 into repository-root `labelonzeway/`.
-- [x] Add non-destructive historical address-book discovery, preview/confirmation, conservative merge, and CSV export.
-- [x] Add direct address-book CSV export to root SHIPDESK.
-- [x] Include Supabase shared-workspace synchronization and secure password recovery/change flows.
-- [x] Bump the service-worker cache to `labelonzeway-ios-web-v130-auth4-address1`.
-- [x] Refresh the hosted POS80C gateway ZIP with the v1.3.0 web assets.
-- [x] Run canonical cloud-sync, password-auth, recovery/export, and web workflow regressions.
-- [x] Run complete Android and iOS JavaScript regression suites.
-- [x] Pass all 46 iOS native project/static bridge checks, including bounded cancellable printer discovery.
-- [x] Verify canonical and Pages-source web assets match.
+- [x] Integrate Google Stitch Proposal A — Operations Deck into the canonical web workflow.
+- [x] Propagate matching web assets and native bridge behavior to Android and iOS source.
+- [x] Preserve SHIPDESK, Claims Vault, Deep Rescue, safe cloud synchronization, and all required operational workflows.
+- [x] Pass canonical web, cloud, password, Operations Deck, Deep Rescue, and Claims Vault suites.
+- [x] Pass complete Android and iOS JavaScript/project suites.
+- [x] Build Android `1.3.3 (8)` and validate APK metadata, embedded assets, permissions, signer, native discovery/direct printing, bounds, and DEX.
+- [x] Package clean Android and iOS source archives and the hosted gateway.
+- [x] Generate a release manifest and SHA-256 checksums.
 
-## Publication and real-device checks still required
+## Before push
 
-- [ ] Commit and push to <https://github.com/zinx3157/FBP> from an authenticated Git environment.
-- [ ] Confirm GitHub Pages deployment completes.
-- [ ] Open <https://zinx3157.github.io/FBP/> in the original browser/device and confirm the historical records remain visible.
-- [ ] In that same browser/device, open <https://zinx3157.github.io/FBP/labelonzeway/> and run **Recover Old Books**.
-- [ ] Review the preview, confirm the merge, verify customer counts/fields, then run **Export CSV** and a full backup.
-- [ ] Verify SHIPDESK's **Export Book**/address-book CSV action.
-- [ ] Test authorized shared-workspace synchronization using separate staff logins.
-- [ ] Validate the real password-recovery email callback and new-password flow.
-- [ ] Build the iOS app from `App.xcworkspace` on a Mac with Xcode.
-- [ ] On a physical iPhone, test native printer discovery, cancellation, AirPrint, and direct POS80C output.
-- [ ] Verify direct labels have no avoidable gap and one cut after each label copy.
+- [x] Review `git diff --check`, staged files, release manifest, and checksums.
+- [x] Commit locally with the repository's established public author identity.
+- [ ] Push the authenticated `main` branch to `zinx3157/FBP`.
 
-**Data safety:** Do not clear Safari/Chrome website data, remove the installed web app, or overwrite the historical address book before recovery and exports are verified. A normal page reload is safe; clearing site data is not.
+## After GitHub Pages deploys
 
-Do not upload live customer data, backups, reports, credentials, Supabase secret/service-role keys, or private printer configuration to this public repository.
+- [ ] Confirm <https://zinx3157.github.io/FBP/> loads current SHIPDESK.
+- [ ] Confirm <https://zinx3157.github.io/FBP/labelonzeway/> opens Operations Deck on Home and all five destinations work.
+- [ ] Confirm the v1.3.3 APK and source/gateway downloads match `CHECKSUMS.sha256`.
+- [ ] Install the APK over v1.3.2 without uninstalling and confirm existing local records remain.
+- [ ] Test physical POS80C detection/direct printing, no avoidable gap, and one cut after every label.
+- [ ] Test Android system printing and iOS AirPrint.
+- [ ] Compile/sign/install iOS through Mac/Xcode and test its direct printer bridge.
+
+## Shared cloud workspace
+
+- [ ] Run `supabase/SUPABASE_CLAIMS_MIGRATION.sql` on the existing project, or `SUPABASE_SETUP.sql` on a new project.
+- [ ] Verify separate staff logins in one company workspace on two clients.
+- [ ] Confirm customer, parcel, archive, claim-copy, profile, and counter synchronization in both directions.
+- [ ] Confirm printer settings and active print queues do not synchronize.
+
+Do not clear browser/application data, reset profiles, uninstall native apps, or expose a Supabase secret/service-role key.

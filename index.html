@@ -302,6 +302,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
       <button class="btn sm" data-act="toggleRecForm">＋ New</button>
       <button class="btn sm" id="edit-rec-btn" data-arg="sel" data-act="openAddrModal" style="display:none">✎ Edit</button>
       <button class="btn sm" data-act="openAddrModal">📇 Book</button>
+      <button class="btn sm" data-act="recoverOldAddressBooks">↻ Deep Rescue</button>
       <button class="btn sm green" data-act="exportAddressBookCSV">⤓ Export Book</button>
       <button class="btn sm" data-act="clickAbCsv">⤒ Import CSV</button>
       <button class="btn sm" data-act="downloadAddrTemplate">Template</button>
@@ -441,7 +442,10 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   <button class="modal-x" data-close="m-addr">✕</button>
   <h3>ADDRESS BOOK</h3>
   <input type="text" id="am-search" placeholder="🔎 Search…" oninput="renderAmList()" style="margin-bottom:8px">
-  <button class="btn sm green" data-act="exportAddressBookCSV" style="margin-bottom:8px">⤓ Export Address Book CSV</button>
+  <div class="rec-toolbar" style="margin-bottom:8px">
+    <button class="btn sm" data-act="recoverOldAddressBooks">↻ Deep Rescue</button>
+    <button class="btn sm green" data-act="exportAddressBookCSV">⤓ Export Address Book CSV</button>
+  </div>
   <div id="am-list" style="margin:4px 0 14px;max-height:300px;overflow:auto"></div>
   <div style="border-top:2px dashed var(--line);padding-top:12px">
     <p style="font:700 11px var(--mono);color:var(--blue)" id="am-form-title">ADD ADDRESS</p>
@@ -493,6 +497,10 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 </div></div>
 
 <script>
+window.LabelOnZeWaySyncHost={profileKey:'sd.profile',profilesKey:'sd.profiles',configPath:'labelonzeway/sync-config.json',passwordResetRedirect:'https://zinx3157.github.io/FBP/?lz_action=password-recovery'};
+</script>
+<script src="labelonzeway/cloud-sync.js?v=132-claims-sync1"></script>
+<script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
 function val(id,d){var e=getEl(id);return e?e.value:(d==null?'':d)}
@@ -525,7 +533,7 @@ if(!Array.isArray(state.labelVault))state.labelVault=[];
 var batchBusy=false,previewMode=null,previewClaimId=null,noprixShown=false,scanActive=false,printChain=[],manifestSelection={};
 var exceptionRunSessionDate='',EXCEPTION_REPORT_HOUR=9;
 function persist(){var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
-  if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
+  if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change');if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function moneyFor(v,shop){shop=shop||state.shop;var n=Number(v||0),sep=(shop.sep==null?' ':shop.sep);var p=Math.abs(n).toFixed(2).split('.');
   return (n<0?'-':'')+(shop.currency?shop.currency+' ':'')+p[0].replace(/\B(?=(\d{3})+(?!\d))/g,sep)+(p[1]==='00'?'':','+p[1])}
@@ -534,6 +542,9 @@ function fmtDT(iso){var d=new Date(iso);return d.toLocaleDateString(undefined,{d
 function fmtDeliverDate(d,t){if(!d)return'';var dt=new Date(d+'T'+(t||'00:00'));
   if(isNaN(dt))return d;var s=dt.toLocaleDateString(undefined,{day:'2-digit',month:'short'});if(t)s+=' '+t;return s;}
 function nextOid(n){return String(n).padStart(4,'0')}
+function allocateOrderId(){var cloud=window.LabelOnZeWayCloud,oid=cloud&&typeof cloud.nextOrderIdentifier==='function'?cloud.nextOrderIdentifier(PID):null;
+  if(oid){var numeric=/^\d+$/.test(oid)?parseInt(oid,10):0;state.counter=numeric?Math.max(Number(state.counter)||0,numeric):(Number(state.counter)||0)+1;return oid}
+  state.counter=(Number(state.counter)||0)+1;return nextOid(state.counter);}
 function dPlus1Date(){var d=new Date();d.setDate(d.getDate()+1);
   var p=function(n){return String(n).padStart(2,'0')};
   return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
@@ -564,7 +575,7 @@ function storeLabelCopies(rows,source,isPrint){
     state.labelVault.unshift({id:'lv'+Date.now()+Math.random().toString(36).slice(2,8),orderKey:key,orderId:row.id,oid:row.oid,
       version:version,row:row,shop:shop,fingerprint:fingerprint,savedAt:now,source:source||'created',
       printCount:isPrint?1:0,lastPrintedAt:isPrint?now:'',lastSource:source||'created'});changed++;});
-  if(changed){if(!save(K('labels'),state.labelVault))toast('⚠ Label copy is only in this session — storage is full. Download a backup now!','err');updateLabelVaultCount();}
+  if(changed){if(!save(K('labels'),state.labelVault))toast('⚠ Label copy is only in this session — storage is full. Download a backup now!','err');updateLabelVaultCount();if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('urgent');}
   return changed;}
 function migrateExistingLabels(){
   var rows=state.manifest.slice();
@@ -983,6 +994,90 @@ function exportAddressBookCSV(){
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='shipdesk-address-book-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();
   setTimeout(function(){URL.revokeObjectURL(url)},1000);toast('Exported '+state.addr.length+' customer'+(state.addr.length===1?'':'s'),'ok');return true;}
+function cleanLegacyText(value){return String(value==null?'':value).trim().replace(/\s+/g,' ')}
+function normalizeLegacyText(value){var s=cleanLegacyText(value).toLowerCase();try{s=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'')}catch(e){}return s}
+function normalizeLegacyPhone(value){return cleanLegacyText(value).replace(/\D/g,'')}
+function legacyField(raw,names){
+  for(var i=0;i<names.length;i++){var value=raw[names[i]];if(typeof value==='string'||typeof value==='number'){
+    value=cleanLegacyText(value);if(value)return value;}}
+  return'';}
+function legacyCustomer(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+  var name=legacyField(raw,['name','fullName','full_name','nom','customer','client','customerName','customer_name','clientName','recipientName','recipient_name','receiverName','consigneeName']);
+  if(!name){var parts=[legacyField(raw,['firstName','first_name','prenom']),legacyField(raw,['lastName','last_name','surname'])].filter(Boolean);name=cleanLegacyText(parts.join(' '));}
+  var phone=legacyField(raw,['phone','mobile','tel','telephone','finday','contact','customerPhone','customer_phone','recipientPhone','recipient_phone','receiverPhone']);
+  var area=legacyField(raw,['area','city','ville','zone','district','quartier','locality','town']);
+  var address=legacyField(raw,['address','addr','street','adresse','adiresy','deliveryAddress','delivery_address','recipientAddress','recipient_address']);
+  var note=legacyField(raw,['note','notes','remark','remarks','observation','naoty','instructions']);
+  if(!name&&!phone&&!area&&!address&&!note)return null;
+  return{id:legacyField(raw,['id','customerId','customer_id','contactId','contact_id']),name:name||'(Recovered customer)',phone:phone,area:area,address:address,note:note};}
+function sameLegacyCustomer(a,b){
+  var ap=normalizeLegacyPhone(a.phone),bp=normalizeLegacyPhone(b.phone);
+  if(ap&&bp&&ap.length>=7&&ap===bp)return true;
+  var an=normalizeLegacyText(a.name),bn=normalizeLegacyText(b.name);if(!an||an!==bn)return false;
+  var al=normalizeLegacyText([a.address,a.area].filter(Boolean).join(' ')),bl=normalizeLegacyText([b.address,b.area].filter(Boolean).join(' '));
+  if(al||bl)return !!al&&al===bl;
+  return normalizeLegacyText(a.phone)===normalizeLegacyText(b.phone);}
+var rescueIdSequence=0;
+function rescueCustomerId(customers){var id;do{id='a'+Date.now().toString(36)+'-rescue-'+(++rescueIdSequence).toString(36)}while(customers.some(function(a){return String(a.id)===id}));return id;}
+function mergeLegacyCustomers(current,candidates){
+  var merged=(Array.isArray(current)?current:[]).map(function(a){return Object.assign({},a)}),added=0,enriched=0,duplicates=0;
+  (candidates||[]).forEach(function(candidate){var c=legacyCustomer(candidate);if(!c)return;
+    var existing=merged.find(function(a){return sameLegacyCustomer(a,c)});
+    if(existing){var changed=false;['name','phone','area','address','note'].forEach(function(k){if(!cleanLegacyText(existing[k])&&cleanLegacyText(c[k])){existing[k]=c[k];changed=true}});if(changed)enriched++;else duplicates++;return}
+    var id=c.id;if(!id||merged.some(function(a){return String(a.id)===id}))id=rescueCustomerId(merged);c.id=id;merged.push(c);added++;});
+  return{customers:merged,added:added,enriched:enriched,duplicates:duplicates};}
+function rescueSourceKind(key){
+  var value=String(key||'').toLowerCase();
+  if(/(?:^|\.)addr$|address.?book|customers?|contacts?|recipients?/.test(value))return'address book';
+  if(/(?:^|\.)mani$|manifest|parcels?|orders?/.test(value))return'manifest / parcel records';
+  if(/(?:^|\.)arch$|archive|history/.test(value))return'archive';
+  if(/(?:^|\.)(?:labels|lbk)$|label.?vault|claim/.test(value))return'saved label copies';
+  if(/cloud|sync|pending|entities/.test(value))return'synchronization cache';
+  return'legacy browser JSON';}
+function rescueContactShape(raw,path,inArray){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return false;
+  var p=String(path||'').toLowerCase();
+  var identity=legacyField(raw,['name','fullName','full_name','nom','customer','client','customerName','customer_name','clientName','recipientName','recipient_name','receiverName','consigneeName','firstName','first_name','prenom']);
+  var phone=legacyField(raw,['phone','mobile','tel','telephone','finday','contact','customerPhone','customer_phone','recipientPhone','recipient_phone','receiverPhone']);
+  var location=legacyField(raw,['area','city','ville','zone','district','quartier','locality','town','address','addr','street','adresse','adiresy','deliveryAddress','delivery_address','recipientAddress','recipient_address']);
+  var positive=/(?:^|[.|\[])(?:addr|address.?book|customers?|contacts?|recipients?|recipient|receiver|consignee|client|manifest|mani|parcels?|orders?|archive|arch|history|labels?|label.?vault|lbk|claim|pending|sync|entities|payload)(?:[.|\[]|$)/i.test(p);
+  var negative=/(?:^|[.|\[])(?:shop|profile_settings|settings|config|printer)(?:[.|\[]|$)/i.test(p);
+  if(negative&&!/(?:customer|client|recipient|receiver|consignee|contact)/i.test(p))return false;
+  if(positive)return !!(identity||phone||location);
+  return !!(inArray&&identity&&(phone||location));}
+function collectOldAddressBooks(){
+  var contacts=[],sources=[],currentKey=K('addr'),scanned=0,nodeLimitHit=false;
+  var keys=[];try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k)keys.push(k)}}catch(e){}
+  keys.sort().forEach(function(key){
+    if(key===currentKey)return;
+    var parsed;try{var rawValue=localStorage.getItem(key);if(!rawValue)return;parsed=JSON.parse(rawValue)}catch(e){return}
+    if(!parsed||typeof parsed!=='object')return;
+    var sourceContacts=[],seen=typeof WeakSet==='function'?new WeakSet():null,nodes=0;
+    function walk(node,path,depth,inArray){
+      if(nodeLimitHit||node==null||typeof node!=='object'||depth>18)return;
+      if(++nodes>120000){nodeLimitHit=true;return}
+      if(seen){if(seen.has(node))return;seen.add(node)}
+      if(Array.isArray(node)){for(var a=0;a<node.length;a++)walk(node[a],path+'['+a+']',depth+1,true);return}
+      if(rescueContactShape(node,path,inArray)){var contact=legacyCustomer(node);if(contact)sourceContacts.push(contact)}
+      Object.keys(node).forEach(function(childKey){var child=node[childKey];if(child&&typeof child==='object')walk(child,path+'.'+childKey,depth+1,Array.isArray(child))});
+    }
+    walk(parsed,key,0,Array.isArray(parsed));scanned++;
+    if(sourceContacts.length){sources.push({key:key,kind:rescueSourceKind(key),count:sourceContacts.length});contacts=contacts.concat(sourceContacts)}
+  });
+  return{contacts:contacts,sources:sources,scanned:scanned,nodeLimitHit:nodeLimitHit};}
+function rescueSourceReport(sources){
+  var shown=sources.slice(0,12).map(function(source){return'• '+source.key+' ['+source.kind+'] — '+source.count+' record'+(source.count===1?'':'s')});
+  if(sources.length>shown.length)shown.push('• …and '+(sources.length-shown.length)+' more source'+(sources.length-shown.length===1?'':'s'));
+  return shown.join('\n');}
+function recoverOldAddressBooks(){
+  var found=collectOldAddressBooks(),result=mergeLegacyCustomers(state.addr,found.contacts),sourceCount=found.sources.length;
+  if(!sourceCount){alert('Deep Rescue scanned '+found.scanned+' JSON storage source'+(found.scanned===1?'':'s')+' in this browser, including old books, manifests, archives, saved labels, and synchronization queues.\n\nNo recoverable contact records remain in this storage container. Nothing was changed or deleted.\n\nKeep old apps installed and check every other browser/device, downloaded JSON backup, CSV, or shared cloud workspace.');return result}
+  var message='DEEP RESCUE PREVIEW — nothing has been changed\n\nFound '+found.contacts.length+' contact record'+(found.contacts.length===1?'':'s')+' in '+sourceCount+' surviving source'+(sourceCount===1?'':'s')+':\n'+rescueSourceReport(found.sources)+'\n\nMERGE RESULT\n• '+result.added+' new customer'+(result.added===1?'':'s')+'\n• '+result.enriched+' existing customer'+(result.enriched===1?'':'s')+' enriched\n• '+result.duplicates+' duplicate record'+(result.duplicates===1?'':'s')+' safely ignored\n\nCurrent customers and every source record will NOT be deleted or overwritten. A CSV rescue copy will download after the merge. Continue?';
+  if(found.nodeLimitHit)message+='\n\nNote: the safety scan limit was reached; run again after exporting the first recovery.';
+  if(!confirm(message))return result;
+  state.addr=result.customers;save(K('addr'),state.addr);if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('urgent');rebuildRecSelect();renderBatch();renderAmList();exportAddressBookCSV();
+  toast('Deep Rescue: '+result.added+' added'+(result.enriched?' · '+result.enriched+' enriched':'')+' · CSV saved','ok');return result;}
 
 function recOptionsHTML(sel,ph,withNew){var byArea={};state.addr.forEach(function(a){(byArea[a.area||'Other']=byArea[a.area||'Other']||[]).push(a)});
   var html='<option value="">'+esc(ph||'— customer —')+'</option>';
@@ -1085,8 +1180,7 @@ function commitBatch(){
     state.batch.forEach(function(it){
       var rec=state.addr.find(function(a){return a.id===it.recId});
       if(!rec){skipped++;it.err=true;remaining.push(it);return}
-      state.counter++;
-      rows.push(makeRow(it,rec,nextOid(state.counter)));});
+      rows.push(makeRow(it,rec,allocateOrderId()));});
   }else{
     var groups={};
     state.batch.forEach(function(it){
@@ -1095,8 +1189,7 @@ function commitBatch(){
       (groups[it.recId]=groups[it.recId]||[]).push(it);});
     Object.keys(groups).forEach(function(k){
       var items=groups[k];
-      state.counter++;
-      rows.push(makeMergedRow(items,state.addr.find(function(a){return a.id===items[0].recId}),nextOid(state.counter)));});
+      rows.push(makeMergedRow(items,state.addr.find(function(a){return a.id===items[0].recId}),allocateOrderId()));});
   }
   rows.forEach(function(r){state.manifest.push(r)});
   if(rows.length){storeLabelCopies(rows,'created',false);persist();renderManifest();renderStats();}
@@ -1117,14 +1210,12 @@ function printAllBatchLabels(){
 function addSingleBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
-  state.counter++;
-  var rowA=makeRow(it,rec,nextOid(state.counter));state.manifest.push(rowA);storeLabelCopies([rowA],'created',false);persist();renderManifest();renderStats();
+  var rowA=makeRow(it,rec,allocateOrderId());state.manifest.push(rowA);storeLabelCopies([rowA],'created',false);persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();toast('Added to manifest','ok');}
 function printSingleFromBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
-  state.counter++;
-  var rowM=makeRow(it,rec,nextOid(state.counter));
+  var rowM=makeRow(it,rec,allocateOrderId());
   state.manifest.push(rowM);storeLabelCopies([rowM],'created',false);persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();
   toast(rowM.oid+' — printing label…','ok');setTimeout(function(){printLabel(rowM)},250);}
@@ -1175,6 +1266,7 @@ function renderAbList(){var box=getEl('ab-list');if(!box)return;
     '</div>';}).join('');}
 function useAddr(id){rebuildRecSelect(id);window.scrollTo({top:0,behavior:'smooth'});}
 function delAddr(id){if(!confirm('Delete this customer?'))return;
+  if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.markEntityDeleted==='function')window.LabelOnZeWayCloud.markEntityDeleted('customer',id,PID);
   state.addr=state.addr.filter(function(a){return a.id!==id});persist();
   if(getEl('rec-select').value===id)rebuildRecSelect();else rebuildRecSelect(getEl('rec-select').value);
   renderAmList();renderBatch();toast('Removed','ok');}
@@ -1212,8 +1304,7 @@ function addToManifest(printAfter){var qty=Math.max(1,parseInt(val('f-qty'))||1)
   var ddate=val('f-ddate');var dtime=val('f-dtime');
   var rec=currentRec();
   if(!rec){toast('Choose a customer first','err');return}
-  state.counter++;
-  var row={id:'r'+Date.now(),oid:nextOid(state.counter),name:'',qty:qty,price:price,cod:cod,ship:ship,notes:'',
+  var row={id:'r'+Date.now(),oid:allocateOrderId(),name:'',qty:qty,price:price,cod:cod,ship:ship,notes:'',
     pay:getEl('f-pay').value||'COD',mmRef:'',img:state.img||null,deliverAt:ddate,deliverTime:dtime,pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};
   state.manifest.push(row);storeLabelCopies([row],'created',false);persist();renderManifest();renderStats();
@@ -1823,12 +1914,12 @@ function restoreBackup(file){
     save(K('ctr'),Math.max(0,Number(d.counter!=null?d.counter:d.ctr)||0));
     if(payload.preferences){save(K('auto'),payload.preferences.auto!==false);save(K('merge'),payload.preferences.merge!==false);
       if(typeof payload.preferences.exceptionReportLastDate==='string')save(K('exceptionReportLastDate'),payload.preferences.exceptionReportLastDate)}
-    toast('Backup restored — reloading…','ok');setTimeout(function(){location.reload()},350);
+    toast('Backup restored — reloading and synchronizing…','ok');setTimeout(function(){location.reload()},350);
   }catch(e){console.error(e);toast(e.message||'Invalid backup file','err')}};
   rd.readAsText(file);}
-function resetAll(){if(!confirm('Erase ALL data for this profile, including every retained label claim copy?'))return;
-  ['shop','addr','mani','ctr','arch','labels','reconDate','exceptionReportLastDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});
-  location.reload();}
+function resetAll(){if(!confirm('Erase ALL data for this profile, including every retained label claim copy? This also deletes its synchronized business records for authorized staff.'))return;
+  var finish=function(){['shop','addr','mani','ctr','arch','labels','reconDate','exceptionReportLastDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});location.reload()};
+  if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.resetCurrentProfile==='function')window.LabelOnZeWayCloud.resetCurrentProfile().then(finish).catch(finish);else finish();}
 function closeModal(id){var e=getEl(id);if(e)e.classList.remove('open')}
 function renderProfileSel(){var s=getEl('profile-sel');if(!s)return;
   s.innerHTML=PROFILES.map(function(p){return '<option value="'+p.id+'"'+(p.id===PID?' selected':'')+'>'+esc(p.name)+'</option>'}).join('');}
@@ -1839,7 +1930,7 @@ var ACTIONS={
   toggleRecForm:toggleRecForm, cancelRecForm:cancelRecForm, quickSaveRec:quickSaveRec,
   openAddrModal:function(arg){openAddrModal(arg==='sel'?getEl('rec-select').value:arg)},
   clickAbCsv:function(){var e=getEl('ab-csv');if(e)e.click()},
-  exportAddressBookCSV:exportAddressBookCSV, downloadAddrTemplate:downloadAddrTemplate, toggleAbList:toggleAbList,
+  recoverOldAddressBooks:recoverOldAddressBooks, exportAddressBookCSV:exportAddressBookCSV, downloadAddrTemplate:downloadAddrTemplate, toggleAbList:toggleAbList,
   printCalibration:printCalibration, applyBatchRecAll:applyBatchRecAll,
   printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, clearBatch:clearBatch,
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, openExceptionReport:openExceptionReport, printPreviewNow:printPreviewNow,

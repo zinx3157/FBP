@@ -1,19 +1,151 @@
 {
-  "release": "LabelOnZeWay Web iOS 1.3.0 + SHIPDESK address-book export",
+  "release": "SHIPDESK + LabelOnZeWay 1.3.3 — Operations Deck",
   "date": "2026-08-15",
   "deployment_layout": "GitHub Pages repository root",
-  "publication_status": "unpublished release candidate",
+  "base_commit": "72185fbbd1cb187669394a1964a7f240b7c890c8",
+  "repository": "https://github.com/zinx3157/FBP",
+  "public_urls": {
+    "shipdesk": "https://zinx3157.github.io/FBP/",
+    "labelonzeway": "https://zinx3157.github.io/FBP/labelonzeway/"
+  },
+  "design": {
+    "reference": "Google Stitch Proposal A — Operations Deck",
+    "canonical_routes": [
+      "home",
+      "new",
+      "batch",
+      "manifest",
+      "more"
+    ],
+    "integration": "additive integration into canonical workflow; standalone visual prototype not substituted"
+  },
+  "publication_status": "release committed locally; GitHub push attempted and blocked because no authenticated write credential is available",
+  "synchronization_status": "mock bidirectional Supabase integration confirmed; deployed-project SQL migration and authenticated two-staff verification pending",
+  "android_apk": {
+    "path": "downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck.apk",
+    "package": "mg.labelonzeway.app",
+    "version_name": "1.3.3",
+    "version_code": 8,
+    "compile_sdk": 35,
+    "target_sdk": 35,
+    "min_sdk": 23,
+    "bytes": 4770499,
+    "sha256": "2415ddd7d036d1edeacc1ca24ae80b8281693dd46a30516b415711d45c65a1ff",
+    "signer_certificate_sha256": "3b6575bfc0cb9cdcb7e57594ed6c52fe64d003619e7abcefd645efbb4a98bc1e",
+    "signing": "debug signer retained for upgrade continuity with v1.3.2",
+    "signature_schemes": {
+      "v1": true,
+      "v2": true,
+      "v3": false,
+      "v4": false
+    },
+    "zipaligned": true,
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE"
+    ],
+    "gradle": "Gradle 8.11.1 / Android Gradle Plugin 8.7.2; testDebugUnitTest assembleDebug BUILD SUCCESSFUL",
+    "unit_tests": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "embedded_asset_hashes": {
+      "index.html": "534798dc4e449bb74976f1f95c63edeae612ce829ce0b7f106c839956c188367",
+      "cloud-sync.js": "8513b1bf927cd03ddc8f1a63840a7a016becd779c5190aaabd8d13e523274259",
+      "service-worker.js": "6f2530951e27b51df88596e3c56dc9bb59d02e9d3d9ef4889a6eb4bbf00ebcc1",
+      "manifest.webmanifest": "822638b5bd96b384d94d952c409e3451f9186b90eda5afb4559d41d4bca28abc",
+      "sync-config.json": "f8ddcd7148dd621fd1239f2b07ada578b6b1a3c99a558f27738054d0ec21e606"
+    },
+    "native_discovery": {
+      "max_networks": 4,
+      "overall_deadline_seconds": 20,
+      "max_workers": 40,
+      "cancellable": true,
+      "compiled_class_confirmed_in_dex": true
+    },
+    "direct_print": {
+      "port": 9100,
+      "max_bytes": 67108864,
+      "cut_after_each_label": true,
+      "avoidable_feed_bytes": 0
+    }
+  },
+  "native_sources": {
+    "android": {
+      "path": "downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck_Source.zip",
+      "bytes": 412621,
+      "sha256": "3f1906bda500e59459e151d84f101815b1ce768eb5f76482c768d33003c953b4"
+    },
+    "ios": {
+      "path": "downloads/LabelOnZeWay_iOS_v1.3.3_Operations_Deck_Source.zip",
+      "bytes": 298276,
+      "sha256": "96dc4fb0bd5e764af8ec59b23dda7c34ec36c4bb6d6e49efa566812e33d57b53",
+      "marketing_version": "1.3.3",
+      "build": 8,
+      "validation": "complete npm suite and 49 project checks pass; Mac/Xcode compilation, signing, installation, and physical-device test pending"
+    }
+  },
+  "gateway": {
+    "path": "downloads/POS80C_Hosted_Print_Gateway.zip",
+    "version": "2.1",
+    "bytes": 103940,
+    "sha256": "9b5b1c3dc367e2a68ef23ddd23924b7f2449f0490cfa94ce2869e5a5cdf8ed7e",
+    "automatic_discovery": true,
+    "validation": {
+      "health": true,
+      "hosted_origin": true,
+      "same_gateway_origin": true,
+      "other_private_origin_denied": true,
+      "private_network_preflight": true,
+      "print_forwarding": true,
+      "local_labelonzeway": true
+    }
+  },
+  "supabase": {
+    "entities": [
+      "profile",
+      "profile_settings",
+      "customer",
+      "parcel_active",
+      "archive_day",
+      "label_copy",
+      "counter_state"
+    ],
+    "rpc": "public.apply_sync_changes",
+    "existing_project_migration": "supabase/SUPABASE_CLAIMS_MIGRATION.sql",
+    "new_project_setup": "supabase/SUPABASE_SETUP.sql",
+    "operator_guide": "supabase/SUPABASE_SETUP.md"
+  },
+  "validated": [
+    "Canonical LabelOnZeWay workflow, cloud synchronization, password authentication, Operations Deck, and JavaScript syntax",
+    "SHIPDESK Deep Rescue and permanent Claims Vault runtime suites",
+    "Android full npm suite, 15 project checks, Gradle unit test/compilation/assembly, APK metadata/signature/alignment/assets/permissions/DEX checks",
+    "iOS full npm suite and 49 project checks",
+    "Hosted gateway health, origin security, private-network preflight, discovery, print forwarding, and local-app serving",
+    "APK embedded public assets byte-equal native Android www sources"
+  ],
+  "notes": [
+    "No customer data, operational backup, staff credential, secret/service-role key, report, or private printer setting is included.",
+    "Do not clear site/app data, reset profiles, or uninstall native apps before Deep Rescue, rescue CSV, and backup verification.",
+    "Printer settings and active queues remain device-local.",
+    "iOS binary compilation is unavailable in this Linux workspace and is not claimed."
+  ],
   "files_sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "404.html": "4d4518c1dcd055340924e72fdac8ce8dc917cfd9e7e308889b998c8720ed4df4",
-    "DEPLOYMENT_CHECKLIST.md": "949d6d823b901c4330aeba62d60c61cab7343a329024c44ce788a05c959ac26c",
-    "POS80C_Hosted_Print_Gateway.zip": "7cc0dcdc44fb710456cadeaeb7056ddcc7fc09f6013d753a25eef4e70d3e4c2a",
-    "README.md": "518ca46c567172adbc1feb108a60a9b05a77efa7cdd9b6f05f264f791d4a0a57",
-    "RELEASE_NOTES.md": "8fcec6341091a8441f729ca2e76ab7563785f914502f65c2c4e38d16152bbba7",
+    "DEPLOYMENT_CHECKLIST.md": "a9d59a2f2e259c1b43c59d6b7630e0f2d053c13e4041a08b262c6e1dba317ff0",
+    "POS80C_Hosted_Print_Gateway.zip": "9b5b1c3dc367e2a68ef23ddd23924b7f2449f0490cfa94ce2869e5a5cdf8ed7e",
+    "README.md": "d0e6f65bd58a097af7e77f87de662061c6df5ba257522ae68a14ff69c1f62111",
+    "RELEASE_NOTES.md": "18d3cbda571bf95ae25317b13472a8c464220d96326ea227eb038243ac8ba812",
     "Start_Hosted_POS80C_Gateway.bat": "e48013544a35a4cd4ae6305f9d470151bd459fb9227fc524c7a0e7fd29580930",
     "Start_Hosted_POS80C_Gateway.command": "ab29c88a37d9823eb889197fe206e31690ef4b7fbe9512885c2790a28e4f4aeb",
     "configure_gateway.py": "caf686a94b38d1afd089fb50459dc8077b0e49fb80fa6394dc116c05088aaf46",
-    "downloads/POS80C_Hosted_Print_Gateway.zip": "7cc0dcdc44fb710456cadeaeb7056ddcc7fc09f6013d753a25eef4e70d3e4c2a",
+    "downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck.apk": "2415ddd7d036d1edeacc1ca24ae80b8281693dd46a30516b415711d45c65a1ff",
+    "downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck_Source.zip": "3f1906bda500e59459e151d84f101815b1ce768eb5f76482c768d33003c953b4",
+    "downloads/LabelOnZeWay_iOS_v1.3.3_Operations_Deck_Source.zip": "96dc4fb0bd5e764af8ec59b23dda7c34ec36c4bb6d6e49efa566812e33d57b53",
+    "downloads/POS80C_Hosted_Print_Gateway.zip": "9b5b1c3dc367e2a68ef23ddd23924b7f2449f0490cfa94ce2869e5a5cdf8ed7e",
     "downloads/Start_Hosted_POS80C_Gateway.bat": "e48013544a35a4cd4ae6305f9d470151bd459fb9227fc524c7a0e7fd29580930",
     "downloads/Start_Hosted_POS80C_Gateway.command": "ab29c88a37d9823eb889197fe206e31690ef4b7fbe9512885c2790a28e4f4aeb",
     "downloads/configure_gateway.py": "caf686a94b38d1afd089fb50459dc8077b0e49fb80fa6394dc116c05088aaf46",
@@ -29,27 +161,25 @@
     "icons/icon-512.png": "d0fe25fb229723aeb8324f0df02edc59af1d286f645551f2e99224b76a15e77b",
     "icons/icon-maskable-192.png": "7a5eeaad1c83478993da52d60844c0da031ef06075238dbceaf8cc18cb474b76",
     "icons/icon-maskable-512.png": "cb4d1bc0f5e82298d1dabea47af851ab1faa30a765c530ca1d1ecdf19a17328c",
-    "index.html": "f8c6d26261958a90b593023a1ac16d7c182767480e1e56246dd571442d22c70d",
-    "install.html": "3799748d6285b06c65c282fb1848787b0bab4f5a2fb9f645db0e7904f443ad9c",
-    "labelonzeway/cloud-sync.js": "1fa6503acb1b374166a4b5ac4757e05525fb7416fd5cee61810f14963ed4e3d7",
+    "index.html": "f0420469a16463c3c8225921baf8acb6464e310390d1697d610c5048aba66d78",
+    "install.html": "98922b6b9754905289fae428169a5fe892c41696d10de1690abb5cfb68a3fb7f",
+    "labelonzeway/cloud-sync.js": "8513b1bf927cd03ddc8f1a63840a7a016becd779c5190aaabd8d13e523274259",
     "labelonzeway/icons/icon-192.png": "4299b3d62281870010b9d0e2959be903249efd46e13ee3cb7fb3cd5c4cf5b245",
     "labelonzeway/icons/icon-512.png": "d0fe25fb229723aeb8324f0df02edc59af1d286f645551f2e99224b76a15e77b",
     "labelonzeway/icons/icon-maskable-192.png": "7a5eeaad1c83478993da52d60844c0da031ef06075238dbceaf8cc18cb474b76",
     "labelonzeway/icons/icon-maskable-512.png": "cb4d1bc0f5e82298d1dabea47af851ab1faa30a765c530ca1d1ecdf19a17328c",
-    "labelonzeway/index.html": "633c25a929549bb76d8a0dfefcd70d76e51f75998fa848df355ccf19f94b03cc",
-    "labelonzeway/manifest.webmanifest": "0d809639361d2de4d58da29558a69ff48194ce099d8bf324f169f6b9b93ce1b7",
-    "labelonzeway/service-worker.js": "6de134425a0a316e952ff4609cb330f22a12f89cbd2a44335f68681d60fdd150",
+    "labelonzeway/index.html": "dfcdb362e6a9c76557ab90bdc206453a2ddc78f0229b806d5f028de96711b6a8",
+    "labelonzeway/manifest.webmanifest": "822638b5bd96b384d94d952c409e3451f9186b90eda5afb4559d41d4bca28abc",
+    "labelonzeway/service-worker.js": "6f2530951e27b51df88596e3c56dc9bb59d02e9d3d9ef4889a6eb4bbf00ebcc1",
     "labelonzeway/sync-config.json": "f8ddcd7148dd621fd1239f2b07ada578b6b1a3c99a558f27738054d0ec21e606",
     "manifest.webmanifest": "0d809639361d2de4d58da29558a69ff48194ce099d8bf324f169f6b9b93ce1b7",
     "printing.html": "283b584852a091f6f83689dcffea63aeb8c6106703fb35f20684f76441aff034",
     "privacy.html": "daf62cd4a7ab3e077f54e79b94eb96d4df30aa591d31479bdd75c34e8855e769",
-    "service-worker.js": "6de134425a0a316e952ff4609cb330f22a12f89cbd2a44335f68681d60fdd150",
-    "shipdesk/index.html": "f8c6d26261958a90b593023a1ac16d7c182767480e1e56246dd571442d22c70d",
+    "service-worker.js": "98429ea7a3156cb4d2dc226bec066264b2c6079db3ad9271e4334a6c17c06c19",
+    "shipdesk/index.html": "f0420469a16463c3c8225921baf8acb6464e310390d1697d610c5048aba66d78",
+    "supabase/SUPABASE_CLAIMS_MIGRATION.sql": "fe6379bee1bd64863e3e9fbad6550e9b5350f42a787bbc57554888199f0ef334",
+    "supabase/SUPABASE_SETUP.md": "4e1b4e0bec4fb19f27e8f84245a8142fba29e46cc014bd30d4f6a8fd662e3b59",
+    "supabase/SUPABASE_SETUP.sql": "69cc759db78435e97725b31a35f9ca70ab6eab548fb598bcfeed73f760d647df",
     "test_gateway.py": "ec583324d23888806b577b51f3048767f7d0c5082009461cf8714e2d7ffb5d5e"
-  },
-  "notes": [
-    "No customer data, private printer settings, backups, reports, or secret/service-role keys are included.",
-    "Historical recovery must run in the original browser profile on the device where SHIPDESK records remain visible.",
-    "Do not clear site data until recovery, CSV export, and full backup are verified."
-  ]
+  }
 }

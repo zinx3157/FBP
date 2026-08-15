@@ -5,7 +5,10 @@
 (function () {
   'use strict';
 
-  var CONFIG_PATH = 'sync-config.json';
+  var HOST = window.LabelOnZeWaySyncHost || {};
+  var CONFIG_PATH = HOST.configPath || 'sync-config.json';
+  var PROFILE_KEY = HOST.profileKey || 'lz.profile';
+  var PROFILES_KEY = HOST.profilesKey || 'lz.profiles';
   var DEVICE_KEY = 'lz.cloud.device.v1';
   var WORKSPACE_KEY = 'lz.cloud.workspace.v1';
   var PENDING_KEY = 'lz.cloud.pending.v1';
@@ -14,7 +17,7 @@
     'printMode', 'printerIp', 'printerPort', 'bridgeUrl', 'printerDots',
     'printerFeed', 'printerThreshold', 'printerCut', 'cutEach', 'qwenUrl', 'qwenModel'
   ];
-  var SYNC_TYPES = ['profile_settings', 'customer', 'parcel_active', 'archive_day', 'counter_state'];
+  var SYNC_TYPES = ['profile_settings', 'customer', 'parcel_active', 'archive_day', 'label_copy', 'counter_state'];
   var PUSH_BATCH_RECORDS = 200;
   var PUSH_BATCH_BYTES = 4 * 1024 * 1024;
   var MAX_MUTATION_BYTES = 8 * 1024 * 1024;
@@ -34,7 +37,7 @@
   var suppressCapture = false;
   var lastResult = '';
   var deviceId = getDeviceId();
-  var PASSWORD_RESET_REDIRECT = 'https://zinx3157.github.io/FBP/labelonzeway/?lz_action=password-recovery';
+  var PASSWORD_RESET_REDIRECT = HOST.passwordResetRedirect || 'https://zinx3157.github.io/FBP/labelonzeway/?lz_action=password-recovery';
   var recoveryIntent = hasPasswordRecoveryIntent();
   var passwordFormMode = '';
   var passwordUpdateInProgress = false;
@@ -60,7 +63,7 @@
     return !!(config && /^https:\/\//i.test(config.supabaseUrl || '') && String(config.supabaseAnonKey || '').length > 20);
   }
   function currentProfileId() {
-    return typeof window.PID === 'string' && window.PID ? window.PID : (localStorage.getItem('lz.profile') || 'P1');
+    return typeof window.PID === 'string' && window.PID ? window.PID : (localStorage.getItem(PROFILE_KEY) || 'P1');
   }
   function profileKey(profileId, suffix) { return profileId + '.' + suffix; }
   function storageValue(profileId, suffix, fallback) {
@@ -68,7 +71,7 @@
   }
   function currentProfiles() {
     if (Array.isArray(window.PROFILES)) return window.PROFILES;
-    return safeParse(localStorage.getItem('lz.profiles'), [{ id: 'P1', name: 'Company 1' }]);
+    return safeParse(localStorage.getItem(PROFILES_KEY), [{ id: 'P1', name: 'Company 1' }]);
   }
   function safeShop(shop) {
     var output = Object.assign({}, shop || {});
@@ -80,8 +83,9 @@
     var customers = active ? window.state.addr : storageValue(profileId, 'addr', []);
     var parcels = active ? window.state.manifest : storageValue(profileId, 'mani', []);
     var archives = active ? window.state.archive : storageValue(profileId, 'arch', []);
+    var labels = active ? window.state.labelVault : storageValue(profileId, 'labels', []);
     var shop = active ? window.state.shop : storageValue(profileId, 'shop', {});
-    return (customers && customers.length) || (parcels && parcels.length) || (archives && archives.length) ||
+    return (customers && customers.length) || (parcels && parcels.length) || (archives && archives.length) || (labels && labels.length) ||
       (shop && shop.name && shop.name !== 'YOUR PAGE NAME' && shop.name !== 'Company 1');
   }
   function profileSnapshot(profileId) {
@@ -90,6 +94,7 @@
     var customers = active ? window.state.addr : storageValue(profileId, 'addr', []);
     var parcels = active ? window.state.manifest : storageValue(profileId, 'mani', []);
     var archives = active ? window.state.archive : storageValue(profileId, 'arch', []);
+    var labels = active ? window.state.labelVault : storageValue(profileId, 'labels', []);
     var counter = active ? window.state.counter : storageValue(profileId, 'ctr', 0);
     var entities = [];
     currentProfiles().forEach(function (profile) {
@@ -104,6 +109,9 @@
     });
     (Array.isArray(archives) ? archives : []).forEach(function (record) {
       if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'archive_day', entity_id: String(record.id), payload: record });
+    });
+    (Array.isArray(labels) ? labels : []).forEach(function (record) {
+      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'label_copy', entity_id: String(record.id), payload: record });
     });
     entities.push({ profile_id: profileId, entity_type: 'counter_state', entity_id: profileId, payload: { value: Math.max(0, Number(counter) || 0) } });
     return entities;
@@ -139,7 +147,18 @@
     if (suppressCapture || !workspaceId) return Promise.resolve(false);
     profileId = profileId || currentProfileId();
     var meta = loadMeta(), pending = loadPending(), seen = {}, changed = false;
-    profileSnapshot(profileId).forEach(function (entity) {
+    var snapshot = profileSnapshot(profileId);
+    var localCustomerCount = snapshot.filter(function (entity) { return entity.profile_id === profileId && entity.entity_type === 'customer'; }).length;
+    var knownActiveCustomerCount = Object.keys(meta.items).filter(function (key) {
+      var parts = key.split('|'), info = meta.items[key];
+      return parts[0] === profileId && parts[1] === 'customer' && info && !info.deleted;
+    }).length;
+    // A missing/cleared localStorage value must never become a mass cloud delete
+    // merely because stale sync metadata survived. Explicit customer deletion uses
+    // markEntityDeleted(); full-profile reset uses resetCurrentProfile(). A forced
+    // backup reconciliation may still intentionally replace the synchronized set.
+    var protectUnexpectedEmptyCustomers = !force && localCustomerCount === 0 && knownActiveCustomerCount > 0;
+    snapshot.forEach(function (entity) {
       var key = localEntityKey(entity), fullKey;
       seen[key] = true;
       var fp = fingerprint(entity.payload, false), previous = meta.items[key];
@@ -156,15 +175,31 @@
       if (parts.length < 3 || seen[key] || info.deleted) return;
       var itemProfile = parts[0], type = parts[1], id = parts.slice(2).join('|');
       var inScope = (type === 'profile') || (itemProfile === profileId && SYNC_TYPES.indexOf(type) >= 0);
-      if (!inScope) return;
+      // Claim copies are append-only during normal capture. Missing local storage,
+      // an older backup, archive deletion, or a second app must never tombstone them.
+      // Only the explicit full-profile reset may delete synchronized claim copies.
+      if (!inScope || type === 'label_copy' || (type === 'customer' && protectUnexpectedEmptyCustomers)) return;
       var modified = timestampAfter(info.modified_at);
       var mutation = { workspace_id: workspaceId, profile_id: itemProfile, entity_type: type, entity_id: id, payload: {}, modified_at: modified, deleted_at: modified, device_id: deviceId };
       pending[entityKey(mutation)] = mutation;
       meta.items[key] = { fingerprint: fingerprint({}, true), modified_at: modified, deleted: true, device_id: deviceId };
       changed = true;
     });
+    if (protectUnexpectedEmptyCustomers) setStatus('Empty local customer book detected — cloud deletions blocked while recovery is checked.', 'pending');
     if (changed) { saveMeta(meta); savePending(pending); setStatus('Changes saved offline; cloud sync pending.', 'pending'); }
     return Promise.resolve(changed);
+  }
+  function markEntityDeleted(entityType, entityId, profileId) {
+    profileId = profileId || currentProfileId();
+    if (!workspaceId || SYNC_TYPES.indexOf(entityType) < 0 || !entityId) return Promise.resolve(false);
+    var meta = loadMeta(), pending = loadPending(), key = profileId + '|' + entityType + '|' + String(entityId);
+    var previous = meta.items[key], modified = timestampAfter(previous && previous.modified_at);
+    var mutation = { workspace_id: workspaceId, profile_id: profileId, entity_type: entityType, entity_id: String(entityId), payload: {}, modified_at: modified, deleted_at: modified, device_id: deviceId };
+    pending[entityKey(mutation)] = mutation;
+    meta.items[key] = { fingerprint: fingerprint({}, true), modified_at: modified, deleted: true, device_id: deviceId };
+    saveMeta(meta); savePending(pending); setStatus('Deletion saved offline; cloud sync pending.', 'pending');
+    if (navigator.onLine !== false) scheduleCapture('urgent');
+    return Promise.resolve(true);
   }
   function scheduleCapture(reason) {
     if (!workspaceId || suppressCapture) return;
@@ -207,7 +242,7 @@
           if (deleted) { if (at >= 0 && record.entity_id !== profileId) profiles.splice(at, 1); }
           else if (at >= 0) profiles[at] = record.payload; else profiles.push(record.payload);
           window.PROFILES = profiles;
-          localStorage.setItem('lz.profiles', JSON.stringify(profiles));
+          localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
           if (typeof window.renderProfileSel === 'function') window.renderProfileSel();
           changed = true;
         } else if (record.profile_id === profileId && window.state) {
@@ -230,6 +265,10 @@
             window.state.archive = mergeById(window.state.archive, record, deleted);
             window.state.archive.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
             localStorage.setItem(profileKey(profileId, 'arch'), JSON.stringify(window.state.archive)); changed = true;
+          } else if (record.entity_type === 'label_copy') {
+            window.state.labelVault = mergeById(window.state.labelVault, record, deleted);
+            window.state.labelVault.sort(function (a, b) { return String(b.savedAt || '').localeCompare(String(a.savedAt || '')); });
+            localStorage.setItem(profileKey(profileId, 'labels'), JSON.stringify(window.state.labelVault)); changed = true;
           } else if (record.entity_type === 'counter_state') {
             window.state.counter = deleted ? 0 : Math.max(Number(window.state.counter) || 0, Number(record.payload && record.payload.value) || 0);
             localStorage.setItem(profileKey(profileId, 'ctr'), JSON.stringify(window.state.counter)); changed = true;
@@ -243,7 +282,7 @@
     return changed;
   }
   function refreshApp() {
-    ['applyCurrency', 'applyLabelLen', 'rebuildRecSelect', 'renderManifest', 'renderStats', 'renderPreview', 'renderBatch', 'renderProfileSel'].forEach(function (name) {
+    ['applyCurrency', 'applyLabelLen', 'rebuildRecSelect', 'renderManifest', 'renderStats', 'renderPreview', 'renderBatch', 'renderLabelVault', 'updateLabelVaultCount', 'renderProfileSel'].forEach(function (name) {
       try { if (typeof window[name] === 'function') window[name](); } catch (e) { console.warn('Cloud refresh ' + name, e); }
     });
   }
@@ -535,6 +574,7 @@
     var select = document.getElementById('cloud-workspace');
     if (select) select.innerHTML = workspaces.map(function (item) { return '<option value="' + item.id + '"' + (item.id === workspaceId ? ' selected' : '') + '>' + escapeHtml(item.name) + ' · ' + escapeHtml(item.role) + '</option>'; }).join('');
     if (lastResult) { var status = document.getElementById('cloud-status'); if (status && status.textContent === 'Checking cloud configuration…') status.textContent = lastResult; }
+    if (typeof window.LabelOnZeWayRefreshOperationsDeck === 'function') setTimeout(window.LabelOnZeWayRefreshOperationsDeck, 0);
   }
   function escapeHtml(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function openPanel() { var panel = document.getElementById('cloud-panel'); if (panel) panel.classList.add('open'); updateUI(); }
@@ -666,6 +706,7 @@
   api.init = init;
   api.capture = scheduleCapture;
   api.captureNow = captureProfile;
+  api.markEntityDeleted = markEntityDeleted;
   api.syncNow = syncNow;
   api.open = openPanel;
   api.requestPasswordReset = requestPasswordReset;

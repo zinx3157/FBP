@@ -1,48 +1,34 @@
-# Release notes — LabelOnZeWay Web iOS 1.3.0
+# Release notes — SHIPDESK + LabelOnZeWay 1.3.3
 
 Date: 2026-08-15
 
-## Historical address-book recovery
+## Proposal A — Operations Deck
 
-- Added **Recover Old Books** to the customer toolbar and Address Book.
-- Scans discoverable SHIPDESK/LabelOnZeWay company profiles and address-book storage keys on the same GitHub Pages origin.
-- Shows a recovery preview and requires confirmation before merging.
-- Retains all current customers, conservatively deduplicates, and enriches missing name, phone, area/city, address, and note values.
-- Handles malformed or empty legacy storage without deleting or rewriting source records.
-- Added direct semicolon-delimited UTF-8 CSV export with complete quoting/escaping.
-- Added address-book CSV export to root SHIPDESK as well.
+- Applies the saved Google Stitch Proposal A design to the canonical LabelOnZeWay workflow rather than substituting the standalone visual prototype.
+- Adds clear Home, New Label, Batch, Manifest, and More destinations.
+- Keeps phone layouts compact with safe areas, touch targets, persistent Back/Cancel controls, limited scrolling, and sticky editing/printing actions.
+- Preserves customer creation/selection, copies 1–20, post-save New Label, exact Batch Delete Label, 80 mm and A4/PDF manifests, payments, reports, two-day exceptions, archive, backup, profiles, cloud controls, Deep Rescue, and Claims Vault.
 
-Recovery must be run in the same Safari/Chrome browser profile and on the same device where the historical records remain visible. Do not clear website data before recovery, CSV export, and backup are verified.
+## Native applications and printing
 
-## Shared workspace and authentication
+- Android: version `1.3.3`, code `8`, upgrade-compatible debug signing, current Operations Deck web assets, direct POS80C output, system printing, and bounded/cancellable automatic discovery.
+- iOS source: marketing version `1.3.3`, build `8`, current Operations Deck web assets, AirPrint/system printing, direct POS80C output, and Android-style bounded/cancellable automatic discovery.
+- Direct ESC/POS output keeps zero avoidable feed and one auto-cut after each physical label copy.
+- Offline print queues and printer settings remain device-local.
+- Hosted gateway v2.1 is repackaged with the v1.3.3 Operations Deck web assets for macOS/desktop network printing.
 
-- Added Supabase-backed synchronization for authorized business workflow data across separate staff logins in one company workspace.
-- Printer settings and active/deferred print queues remain device-local.
-- Includes Forgot Password, Set New Password, and signed-in Change Password flows with immediate reauthentication for sensitive changes.
-- Uses a public publishable client key with row-level security; no secret/service-role key is shipped.
+## Claims, recovery, and synchronization
 
-## Printing and mobile workflow
+- Permanent Claims Vault versions remain independent of physical copy count and survive operational deletion.
+- Deep Rescue remains non-destructive and exports a recovery CSV.
+- Full safe-workflow Supabase synchronization remains enabled for authorized staff in one shared company workspace; printer settings and active print queues remain local.
+- The two-day report continues to include active and archived parcels and opens in a printable/Save-as-PDF preview.
 
-- Retains system print/AirPrint and direct POS80C ESC/POS output.
-- Retains automatic native printer discovery, New Label, Batch Delete Label, copies 1–20, compact mobile screens, Back/Cancel, 80 mm/A4 Manifest formats, archives, and reports.
-- Refreshed the downloadable hosted gateway with the v1.3.0 web assets.
-- Bumped the PWA cache to `labelonzeway-ios-web-v130-auth4-address1`.
+## Validation
 
-## Validation completed locally
-
-- Canonical cloud sync, password authentication, historical recovery/export, and iOS/web workflow suites pass.
-- Android's complete five-suite JavaScript regression run passes.
-- iOS JavaScript workflow suites pass.
-- iOS static native-project validation passes all 46 checks, including raw TCP printing, AirPrint, and bounded cancellable private-LAN discovery.
-- Staged Pages assets match their canonical SHIPDESK and LabelOnZeWay sources.
-
-## Validation still required
-
-- Real password-recovery email callback.
-- Mac/Xcode compilation from `App.xcworkspace`.
-- Physical iPhone printer-discovery, AirPrint, and POS80C tests.
-- Production recovery/export on the original browser/device after publication.
-
-## Publication status
-
-This is a local release candidate. It has not been published. Commit/push and GitHub Pages deployment require approval and an authenticated Git environment.
+- Canonical LabelOnZeWay workflow, password authentication, cloud synchronization, Operations Deck, Deep Rescue, and Claims Vault suites pass.
+- Android JavaScript, retained-workflow, native bridge, project-integrity, and Operations Deck suites pass.
+- iOS JavaScript and all 49 native/project checks pass.
+- Android Gradle compilation, unit tests, APK metadata, assets, signer, permissions, discovery implementation, and DEX validation are recorded in `RELEASE_MANIFEST.json`.
+- iOS still requires compilation/signing in macOS/Xcode and physical-device testing.
+- Live Supabase migration and authenticated two-staff verification remain operator tasks.

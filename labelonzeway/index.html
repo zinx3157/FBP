@@ -5,16 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>LabelOnZeWay — iPhone Web App</title>
 <meta name="description" content="LabelOnZeWay iPhone web app for mobile parcel labels, customers, manifest, payments, reports, AirPrint, and optional POS80C gateway printing.">
-<meta name="theme-color" content="#141a21">
+<meta name="theme-color" content="#0f766e">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="LabelOnZeWay">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#141a21;--paper:#e9ebee;--card:#fff;--orange:#ff5c1c;--blue:#1f4e8c;--green:#188a4c;--red:#c2372c;--line:#c9ced4;--mono:'IBM Plex Mono',monospace;--disp:'Archivo Black',sans-serif;--body:'Barlow',sans-serif;--lblh:210mm}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -152,6 +151,14 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 .modal.open{display:grid}
 .modal-box{background:#fff;border:2px solid var(--ink);border-radius:12px;width:min(560px,100%);max-height:90vh;overflow:auto;padding:22px}
 #m-preview .modal-box,#m-recon .modal-box{width:min(820px,100%)}
+#m-label-vault .modal-box{width:min(960px,100%)}
+.vault-note{font:600 11px/1.55 var(--mono);color:#4c5864;background:#fff8f3;border:1.5px solid #ffb28a;border-radius:8px;padding:9px 11px;margin:8px 0 12px}
+.vault-item{display:grid;grid-template-columns:minmax(200px,1.2fr) minmax(220px,1.6fr) auto;gap:12px;align-items:center;border:1.5px solid var(--line);border-left:5px solid var(--orange);border-radius:8px;padding:11px 12px;margin-top:8px;background:#fdfdfc}
+.vault-order{font:800 13px var(--mono);color:var(--blue)}
+.vault-meta{font:600 10.5px/1.55 var(--mono);color:#66727e;margin-top:3px;word-break:break-word}
+.vault-name{font:800 14px var(--body)}
+.vault-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:680px){.vault-item{grid-template-columns:1fr}.vault-actions{justify-content:flex-start}}
 .modal-box h3{font:17px var(--disp);margin-bottom:8px}
 .modal-x{float:right;border:none;background:none;font-size:20px;cursor:pointer;color:#66727e}
 .printer-box{border:1.5px solid var(--blue);border-radius:9px;background:#f4f7fc;margin-top:14px;padding:12px}
@@ -267,7 +274,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   #customer-secondary-tools{display:none}#customer-secondary-tools.open{display:flex}
   .photo-tools{margin-bottom:9px}.photo-tools>summary{min-height:44px;padding:9px 10px}.photo-tools-body{padding:0 8px 8px}#drop{min-height:108px;padding:10px}#ocr-zone{padding:8px;margin-top:8px}#ocr-note{display:none}
   #parcel-actions{position:sticky;bottom:calc(60px + env(safe-area-inset-bottom));z-index:24;background:#fff;border-top:1px solid var(--line);margin:10px -7px -7px!important;padding:8px 7px 7px;box-shadow:0 -5px 14px rgba(20,26,33,.08)}#parcel-actions .btn{padding:8px 6px;font-size:11px}
-  #card-preview.mobile-collapsed #live-preview-body{display:none}#card-preview.mobile-collapsed .card-head{margin-bottom:0}.pv-frame{width:calc(72mm*.50);height:min(calc(var(--lblh)*.50),52vh)}.pv-scale{transform:scale(.50)}
+  #card-preview.mobile-collapsed #live-preview-body{display:none!important}#card-preview.mobile-collapsed .card-head{margin-bottom:0}.pv-frame{width:calc(72mm*.50);height:min(calc(var(--lblh)*.50),52vh)}.pv-scale{transform:scale(.50)}
   .modal{padding:0;align-items:end}.modal-box{width:100%!important;max-height:92dvh;border-radius:14px 14px 0 0;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
   .batch-toolbar{width:100%;padding:9px;gap:8px}.batch-customer-all{grid-template-columns:1fr}.batch-customer-all label{grid-column:auto}.batch-customer-all .btn{width:100%;min-height:40px}.batch-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding-top:7px}.batch-options .chk{min-height:38px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:6px 8px;font-size:11px}.batch-primary-actions{grid-template-columns:1fr 1fr;gap:7px}.batch-primary-actions .btn{min-height:42px;padding:7px 5px;font-size:10px;line-height:1.15;box-shadow:none}.brow{display:grid;grid-template-columns:48px minmax(0,1fr);padding:9px;gap:8px}.b-main{display:contents}.b-status{align-self:center;margin:0;min-height:0}.b-chips{grid-column:1/-1;margin:0}.b-grid{grid-column:1/-1;grid-template-columns:1fr 1fr;gap:7px}.b-field>label{font-size:8px}.b-field.batch-customer{grid-column:1/-1}.b-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}.b-actions .btn{min-height:38px;padding:5px 3px;font-size:9px}.b-actions .batch-delete{grid-column:1/-1;min-height:42px;font-size:10px;font-weight:900;background:#fff4f3}.b-thumb{width:48px;height:48px}
   .mobile-manifest-list{display:flex;flex-direction:column;gap:6px}.tbl-wrap{display:none}.mobile-manifest-item{border:1.5px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}.mobile-manifest-item[open]{border-color:var(--blue)}.mobile-manifest-item.done{background:#f4fbf6}.mobile-manifest-item.mani-selected{box-shadow:inset 4px 0 0 var(--orange)}
@@ -280,6 +287,43 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   #toasts{bottom:calc(72px + env(safe-area-inset-bottom));width:calc(100% - 24px)}.toast{text-align:center}
 }
 @media (max-width:360px){.brand h1{font-size:12px}.brand .logo{display:none}select.profile{width:68px}.chip{padding:4px;font-size:8px}.row2.mobile-pair{gap:6px}}
+
+/* Google Stitch Proposal A — Operations Deck visual system. Business logic remains in the canonical app. */
+:root{--ink:#12202c;--paper:#f5f2eb;--card:#fffdf9;--orange:#0f8f83;--orange-d:#0b6f67;--blue:#173b56;--green:#0f8f66;--amber:#d99418;--red:#b8342b;--line:#d8d6cf;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;--disp:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--body:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:linear-gradient(180deg,#faf8f3 0,#f3efe7 100%);color:var(--ink)}
+#top{background:rgba(255,253,249,.97);color:var(--ink);border-bottom:1px solid #dedbd3;box-shadow:0 4px 20px rgba(18,32,44,.07)}
+.brand{border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;padding:0}.brand .logo{background:var(--orange);border-radius:50%;font:800 16px var(--disp);box-shadow:0 0 0 4px #d9efeb}.brand h1{font:850 20px var(--disp);letter-spacing:-.7px}.brand h1 em{color:var(--orange)}.brand small{color:#65727c;letter-spacing:1.3px}
+.chip,select.profile{background:#f1f3f1;color:var(--ink);border-color:#d7dad6}.chip b{color:var(--orange-d)}.chip.clock b{color:var(--blue)}
+.btn-ghost{background:#fffdf9;color:var(--blue);border-color:#cbd2d5}.btn-ghost:hover{border-color:var(--orange);color:var(--orange-d)}
+.hzd{height:4px;background:linear-gradient(90deg,var(--orange) 0 72%,var(--amber) 72% 86%,var(--ink) 86%)}
+#app{max-width:1440px;padding:18px;gap:14px}
+.card{border:1px solid #d7d5ce;border-radius:14px;box-shadow:0 7px 24px rgba(18,32,44,.07);background:var(--card);padding:17px}
+.card-head h2{font:850 14px var(--disp);letter-spacing:-.1px}.card-head h2::before{width:8px;height:18px;border:0;border-radius:99px;background:var(--orange)}
+.btn{border-color:#bdc7c9;border-radius:9px;box-shadow:none}.btn.orange{background:var(--orange);border-color:var(--orange);color:#fff}.btn.dark{background:var(--ink);border-color:var(--ink)}.btn.blue{background:var(--blue);border-color:var(--blue)}.btn.green{background:var(--green);border-color:var(--green)}.btn:not(:disabled):active{transform:translateY(1px);box-shadow:none}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(15,143,131,.13)}button:focus-visible{outline-color:rgba(15,143,131,.35)}
+.customer-status{background:#fff8e7;border-color:#edcf8b}.step-dot{background:var(--orange)}
+#card-home{grid-column:1/-1}.stitch-control-center{display:none}.ops-shell{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(290px,.75fr);gap:16px}.ops-overline{font:800 9px var(--mono);letter-spacing:1.4px;color:var(--orange-d);text-transform:uppercase}.ops-title{font:850 clamp(22px,3vw,34px)/1.08 var(--disp);letter-spacing:-1.2px;margin:5px 0 8px}.ops-sub{font:550 12px/1.5 var(--body);color:#64717b;max-width:66ch}.ops-status-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.ops-status{display:inline-flex;align-items:center;gap:6px;border:1px solid #d5d9d6;border-radius:999px;background:#fff;padding:6px 9px;font:750 9px var(--mono);color:#50606b}.ops-status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--amber)}.ops-status.ok::before{background:var(--green)}.ops-status.err::before{background:var(--red)}
+.ops-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ops-metric{border:1px solid #d9d8d1;border-radius:11px;background:#f8f7f2;padding:12px}.ops-metric small{display:block;font:750 8px var(--mono);letter-spacing:.7px;color:#6b767d;text-transform:uppercase}.ops-metric b{display:block;font:850 19px var(--disp);color:var(--ink);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ops-metric.pending{background:#fff7e5;border-color:#edcf8b}.ops-metric.pending b{color:#8c5b00}
+.ops-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.ops-action{border:1px solid #d5d7d1;border-radius:12px;background:#fff;padding:13px;text-align:left;cursor:pointer;color:var(--ink);min-height:98px}.ops-action.primary{background:var(--orange);border-color:var(--orange);color:#fff}.ops-action-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#e8f4f2;color:var(--orange-d);font-size:18px;margin-bottom:9px}.ops-action.primary .ops-action-icon{background:#ffffff26;color:#fff}.ops-action b{display:block;font:800 13px var(--disp)}.ops-action small{display:block;font:550 10px/1.35 var(--body);opacity:.75;margin-top:3px}
+.ops-panel{border:1px solid #d8d7d0;border-radius:12px;background:#fff;padding:12px}.ops-panel-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.ops-panel-head b{font:800 12px var(--disp)}.ops-panel-head button{margin-left:auto}.ops-recent{display:grid;gap:6px}.ops-recent-empty{font:600 11px/1.45 var(--body);color:#78828a;padding:9px 3px}.ops-recent-row{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:8px;align-items:center;border-top:1px solid #ebe9e3;padding:8px 2px}.ops-recent-row:first-child{border-top:0}.ops-order{font:800 9px var(--mono);color:var(--blue)}.ops-rec{min-width:0}.ops-rec b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.ops-rec small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:550 8.5px var(--mono);color:#707b83}.ops-money{font:800 9px var(--mono);color:var(--orange-d);white-space:nowrap}.local-notice{border-left:4px solid var(--amber);background:#fff7e6;padding:9px 10px;border-radius:7px;font:650 10px/1.45 var(--body);color:#6e531d;margin-top:9px}
+.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.control-block{border:1px solid #d8d7d0;border-radius:12px;background:#fff;padding:12px}.control-block.full{grid-column:1/-1}.control-k{font:800 8px var(--mono);letter-spacing:1px;color:#68747d;text-transform:uppercase}.control-title{font:800 14px var(--disp);margin:4px 0}.control-copy{font:550 10px/1.45 var(--body);color:#68747d}.control-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}.control-actions.two{grid-template-columns:1fr 1fr}.control-actions .btn{min-width:0;padding:8px 5px;font-size:10px;line-height:1.2}.control-status{display:flex;align-items:flex-start;gap:9px;border-top:1px solid #ebe9e3;padding:9px 0}.control-status:first-of-type{border-top:0}.control-status .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);margin-top:3px;flex:none}.control-status .dot.ok{background:var(--green)}.control-status .dot.err{background:var(--red)}.control-status b{display:block;font:800 11px var(--body)}.control-status small{display:block;font:550 9px/1.4 var(--mono);color:#68747d;margin-top:2px}
+.b-media{display:flex;flex-direction:column;gap:5px;align-items:center;flex:none}.b-select{display:flex;align-items:center;gap:4px;font:800 8px var(--mono);color:#64717a;cursor:pointer}.b-select input{width:17px;height:17px;accent-color:var(--orange)}.batch-delete-selected,.manifest-delete-selected{color:var(--red)!important;border-color:var(--red)!important;background:#fff5f3!important;font-weight:850!important}
+@media (max-width:1120px){.ops-shell{grid-template-columns:1fr}.ops-panel{min-height:0}}
+@media (max-width:780px){
+  body{background:#f6f3ed;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+  #top{min-height:58px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:rgba(255,253,249,.98)}.brand{min-height:44px}.brand h1{font-size:15px}.brand .logo{width:32px;height:32px;font-size:12px;box-shadow:0 0 0 3px #d9efeb}.chips{gap:5px}.chip{background:#edf4f2;border-color:#cfe1dd;color:var(--orange-d)}#cloud-sync-pill{display:none!important}select.profile{background:#f1f3f1;color:var(--ink);border-color:#d7dad6}
+  #mobile-context{top:calc(58px + env(safe-area-inset-top));background:#fffdf9;box-shadow:0 5px 14px rgba(18,32,44,.07);border-color:#dedbd3}#mobile-context button{min-height:44px;border-color:#b8c7c9;color:var(--blue);background:#fffdf9}#mobile-context button:last-child{border-color:#dba49f;color:var(--red)}
+  body[data-mobile-view="home"] #mobile-context,body[data-mobile-view="more"] #mobile-context{display:none}
+  #app{padding:8px 8px 12px;gap:8px}.card{padding:12px;border-radius:12px;box-shadow:0 5px 17px rgba(18,32,44,.06)}
+  #app>.stitch-control-center{display:none}body.mobile-ui-ready #app>.stitch-control-center.mobile-view-active{display:flex}
+  .ops-shell{display:block}.ops-title{font-size:24px;margin-top:4px}.ops-sub{font-size:11px}.ops-status-row{margin-top:9px}.ops-status{padding:5px 8px;font-size:8px}.ops-metrics{gap:6px;margin-top:12px}.ops-metric{padding:9px 8px}.ops-metric b{font-size:16px}.ops-actions{gap:7px;margin-top:9px}.ops-action{padding:10px;min-height:92px}.ops-action-icon{width:30px;height:30px;margin-bottom:7px}.ops-action b{font-size:11.5px}.ops-action small{font-size:9px}.ops-panel{margin-top:9px;padding:10px}
+  .control-grid{grid-template-columns:1fr;gap:8px}.control-block,.control-block.full{grid-column:auto;padding:11px}.control-actions{grid-template-columns:1fr}.control-actions.two{grid-template-columns:1fr 1fr}.control-actions .btn{min-height:44px;font-size:10px}.control-copy{font-size:10px}
+  #mobile-nav{background:#12202c;border-top:2px solid var(--orange);padding-top:4px}#mobile-nav button{color:#ccd5d9;font-family:var(--body);font-weight:700;letter-spacing:.2px}#mobile-nav button span{color:#61c9bd}#mobile-nav button[aria-current=true]{background:#173b38;color:#fff}#mobile-nav button[aria-current=true] span{color:#8fe0d6}
+  #parcel-actions{background:#fffdf9!important;border-color:#d8d6cf!important}.compact-action-menu>summary{background:#edf6f4;border-color:var(--orange);color:var(--orange-d)}
+  .customer-status .btn,.customer-link .btn{min-height:44px}
+}
+@media (max-width:340px){.row2.mobile-pair,.row2.mobile-pair.equal{grid-template-columns:1fr}}
+@media (max-width:390px){.ops-action small{display:none}.ops-action{min-height:76px}.control-actions.two{grid-template-columns:1fr}.ops-metric b{font-size:14px}}
 </style>
 <style id="pgLabel" disabled>@page{size:72mm auto;margin:0}</style>
 <style id="pgMan" disabled>@page{size:80mm auto;margin:0}</style>
@@ -288,8 +332,8 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 <body>
 <div id="fatal"></div>
 <header id="top">
-  <div class="brand"><div class="logo">LZ</div>
-    <div><h1>LABEL<em>ONZEWAY</em></h1><small>MOBILE SALES · LABELS · DISPATCH</small></div></div>
+  <button class="brand" data-act="showMobileView" data-arg="home" aria-label="Open Operations Deck home"><span class="logo">LZ</span>
+    <span><h1>LABEL<em>ONZEWAY</em></h1><small>OPERATIONS DECK · LABELS · DISPATCH</small></span></button>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
     <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
@@ -308,6 +352,36 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   <button data-act="cancelMobile" aria-label="Cancel current operation">CANCEL</button>
 </nav>
 <main id="app">
+  <section class="card stitch-home" id="card-home" data-mobile-view="home" aria-labelledby="ops-home-title">
+    <div class="ops-shell">
+      <div>
+        <div class="ops-overline">Operations Deck · live workspace</div>
+        <h2 class="ops-title" id="ops-home-title">Ready to dispatch.</h2>
+        <p class="ops-sub" id="ops-shop-name">Create a label, process a photo batch, or prepare today’s manifest without leaving the shared workflow.</p>
+        <div class="ops-status-row" aria-label="Workspace status">
+          <span class="ops-status" id="ops-cloud-chip">Cloud setup pending</span>
+          <span class="ops-status ok" id="ops-network-chip">Online</span>
+          <span class="ops-status" id="ops-printer-chip">System Print</span>
+        </div>
+        <div class="ops-metrics" aria-label="Today at a glance">
+          <div class="ops-metric"><small>Labels today</small><b id="ops-label-count">0</b></div>
+          <div class="ops-metric"><small>COD due</small><b id="ops-cod-total">Ar 0</b></div>
+          <div class="ops-metric pending"><small>Print queue</small><b id="ops-queue-count">0</b></div>
+        </div>
+        <div class="ops-actions" aria-label="Quick actions">
+          <button class="ops-action primary" data-act="startNewLabel"><span class="ops-action-icon">＋</span><b>New Label</b><small>Customer → parcel → print</small></button>
+          <button class="ops-action" data-act="showMobileView" data-arg="batch"><span class="ops-action-icon">▦</span><b>Batch</b><small>Scan and prepare many</small></button>
+          <button class="ops-action" data-act="showMobileView" data-arg="manifest"><span class="ops-action-icon">☷</span><b>Manifest</b><small>80 mm or A4 / PDF</small></button>
+        </div>
+      </div>
+      <aside class="ops-panel" aria-label="Recent labels">
+        <div class="ops-panel-head"><b>Recent labels</b><button class="btn sm" data-act="showMobileView" data-arg="manifest">VIEW ALL</button></div>
+        <div class="ops-recent" id="ops-recent-list"><div class="ops-recent-empty">No labels in the active manifest yet.</div></div>
+        <div class="local-notice">Printer settings and active print queues stay on this device. Shared business records can synchronize through the authorized company workspace.</div>
+      </aside>
+    </div>
+  </section>
+
   <section class="card" id="card-parcel">
     <div class="card-head"><h2>LABEL DETAILS</h2><span class="hint">price · delivery · print</span></div>
     <div class="customer-link" id="linked-customer">
@@ -387,7 +461,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
       <button class="btn sm mobile-only" data-act="toggleCustomerTools">••• MORE</button>
     </div>
     <div class="rec-toolbar" id="customer-secondary-tools">
-      <button class="btn sm" data-act="recoverOldAddressBooks">↻ Recover Old Books</button>
+      <button class="btn sm" data-act="recoverOldAddressBooks">↻ Deep Rescue</button>
       <button class="btn sm green" data-act="exportAddressBookCSV">⤓ Export CSV</button>
       <button class="btn sm" data-act="clickAbCsv">⤒ Import CSV</button>
       <button class="btn sm" data-act="downloadAddrTemplate">CSV Template</button>
@@ -436,6 +510,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
         <label class="btn sm blue" for="file" style="cursor:pointer">📷 2 · ADD PHOTOS</label>
         <button class="btn sm dark" data-act="printAllBatchLabels">🖨 3 · PRINT ALL</button>
         <button class="btn sm orange" data-act="addAllBatch">＋ ADD ALL TO MANIFEST</button>
+        <button class="btn sm batch-delete-selected" id="batch-delete-selected" data-act="deleteSelectedBatch" disabled>🗑 DELETE SELECTED LABELS (0)</button>
         <button class="btn sm" data-act="clearBatch" style="color:var(--red);border-color:var(--red)">✕ CLEAR BATCH</button>
       </div>
     </div>
@@ -452,6 +527,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
         <button class="btn sm green" data-act="printReport">📊 SALES REPORT</button>
         <button class="btn sm" data-act="closeDay">🌙 CLOSE DAY</button>
         <button class="btn sm" data-act="openArch">🗄 ARCHIVE</button>
+        <button class="btn sm" data-act="openLabelVault">🏷 CLAIM COPIES <span id="label-vault-count">0</span></button>
         <button class="btn sm" data-act="retryPrintQueue">↻ <span class="queue-count-label">QUEUE 0</span></button>
         <button class="btn sm" data-act="clearManifest" style="color:var(--red);border-color:var(--red)">✕ CLEAR</button>
       </div></details></div></div>
@@ -460,18 +536,56 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
       <span id="mani-selection-status">0 selected</span>
       <span style="flex:1"></span>
       <button class="btn sm orange" id="print-selected-labels" data-act="printSelectedLabels" disabled>🏷 PRINT SELECTED LABELS</button>
+      <button class="btn sm manifest-delete-selected" id="delete-selected-labels" data-act="deleteSelectedManifestLabels" disabled>🗑 DELETE LABELS</button>
       <button class="btn sm" id="clear-manifest-selection" data-act="clearManifestSelection" disabled>✕ Clear selection</button>
     </div>
     <div id="mani-body"></div>
     <div class="totals" id="totals"></div>
   </section>
+
+  <section class="card stitch-control-center" id="card-more" data-mobile-view="more" aria-labelledby="control-center-title">
+    <div class="card-head"><h2 id="control-center-title">CONTROL CENTER</h2><span class="hint">cloud · printing · profile · claims</span></div>
+    <div class="control-grid">
+      <div class="control-block">
+        <div class="control-k">Workspace status</div>
+        <div class="control-title">Shared operations</div>
+        <div class="control-status"><span class="dot" id="control-cloud-dot"></span><div><b id="control-cloud-title">Cloud setup pending</b><small id="control-cloud-copy">Local/offline records remain available.</small></div></div>
+        <div class="control-status"><span class="dot ok" id="control-network-dot"></span><div><b id="control-network-title">Device online</b><small>Offline changes queue safely and reconcile after connection returns.</small></div></div>
+        <div class="control-actions two"><button class="btn blue" data-act="openCloud">CLOUD &amp; STAFF</button><button class="btn" data-act="openSettings">PROFILE SETTINGS</button></div>
+      </div>
+      <div class="control-block">
+        <div class="control-k">Device-local printing</div>
+        <div class="control-title">Choose the print route</div>
+        <p class="control-copy" id="control-printer-copy">System Print is selected. Direct POS80C uses the saved network printer on this device.</p>
+        <div class="control-actions">
+          <button class="btn" data-act="quickSystemPrint">SYSTEM PRINT</button>
+          <button class="btn dark" data-act="quickDirectPrint">DIRECT POS80C</button>
+          <button class="btn orange" data-act="quickDetectPrinter">AUTO-DETECT POS80C</button>
+        </div>
+        <div class="local-notice">Printer IP, gateway preferences, and the active print queue are device-local and are not shared across staff devices.</div>
+      </div>
+      <div class="control-block full">
+        <div class="control-k">Operations &amp; recovery</div>
+        <div class="control-title">Keep the complete workflow close</div>
+        <div class="control-actions">
+          <button class="btn" data-act="openLabelVault">CLAIMS VAULT · <span id="control-vault-count">0</span></button>
+          <button class="btn" data-act="openArch">ARCHIVE &amp; REPORTS</button>
+          <button class="btn" data-act="retryPrintQueue">RETRY PRINT QUEUE</button>
+          <button class="btn green" data-act="exportAddressBookCSV">EXPORT CUSTOMERS</button>
+          <button class="btn" data-act="recoverOldAddressBooks">DEEP RESCUE</button>
+          <button class="btn" data-act="openSettings">BACKUP &amp; RESTORE</button>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
-<nav id="mobile-nav" aria-label="App sections">
-  <button data-act="startNewLabel" data-view="new" aria-current="true"><span>＋</span>NEW LABEL</button>
-  <button data-act="showMobileView" data-arg="batch" data-view="batch"><span>▦</span>BATCH</button>
-  <button data-act="showMobileView" data-arg="manifest" data-view="manifest"><span>☷</span>MANIFEST</button>
-  <button data-act="openSettings"><span>⚙</span>SETTINGS</button>
+<nav id="mobile-nav" aria-label="Primary operations">
+  <button data-act="showMobileView" data-arg="home" data-view="home" aria-current="false"><span>⌂</span>HOME</button>
+  <button data-act="startNewLabel" data-arg="new" data-view="new" aria-current="false"><span>＋</span>NEW LABEL</button>
+  <button data-act="showMobileView" data-arg="batch" data-view="batch" aria-current="false"><span>▦</span>BATCH</button>
+  <button data-act="showMobileView" data-arg="manifest" data-view="manifest" aria-current="false"><span>☷</span>MANIFEST</button>
+  <button data-act="showMobileView" data-arg="more" data-view="more" aria-current="false"><span>•••</span>MORE</button>
 </nav>
 
 <div id="print-root"></div>
@@ -583,7 +697,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   <h3>ADDRESS BOOK</h3>
   <input type="text" id="am-search" placeholder="🔎 Search…" oninput="renderAmList()" style="margin-bottom:8px">
   <div class="rec-toolbar" style="margin-bottom:8px">
-    <button class="btn sm" data-act="recoverOldAddressBooks">↻ Recover Old Books</button>
+    <button class="btn sm" data-act="recoverOldAddressBooks">↻ Deep Rescue</button>
     <button class="btn sm green" data-act="exportAddressBookCSV">⤓ Export CSV</button>
   </div>
   <div id="am-list" style="margin:4px 0 14px;max-height:300px;overflow:auto"></div>
@@ -605,6 +719,18 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   <div id="arch-list"></div>
 </div></div>
 
+<div class="modal" id="m-label-vault"><div class="modal-box">
+  <button class="modal-x" data-close="m-label-vault">✕</button>
+  <h3>🏷 LABEL CLAIMS VAULT</h3>
+  <div class="vault-note">Every generated label version is retained independently of the physical 1–20 copies setting, manifest, and daily archive. Removing, clearing, editing, closing, or deleting an archived day does not remove these copies. Claim copies synchronize in the shared company workspace and have no automatic expiry. Use Backup Data in Settings to keep an external copy too.</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input class="search" id="label-vault-search" placeholder="Search order, recipient, phone, address, date…" oninput="renderLabelVault()" style="flex:1;min-width:240px">
+    <button class="btn sm blue" data-act="downloadBackup">⬇ BACKUP ALL DATA</button>
+  </div>
+  <div id="label-vault-summary" class="muted" style="margin-top:9px"></div>
+  <div id="label-vault-list"></div>
+</div></div>
+
 <div class="modal" id="m-recon"><div class="modal-box">
   <button class="modal-x" data-close="m-recon">✕</button>
   <h3>🔄 RECONCILIATION — POD &amp; PAYMENT</h3>
@@ -624,7 +750,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
     <button class="btn" data-close="m-preview">Cancel</button></div>
 </div></div>
 
-<script src="cloud-sync.js?v=130-auth4"></script>
+<script src="cloud-sync.js?v=133-operations-deck1"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -639,7 +765,7 @@ var PID=localStorage.getItem('lz.profile')||'P1';
 if(!PROFILES.some(function(p){return p.id===PID})){PID=PROFILES[0].id;localStorage.setItem('lz.profile',PID);}
 function K(k){return PID+'.'+k}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error('Storage save failed',k,e);return false}}
 var LOCAL_DEVICE_ID=localStorage.getItem('lz.local.device')||('D'+Math.random().toString(36).slice(2,8).toUpperCase());localStorage.setItem('lz.local.device',LOCAL_DEVICE_ID);var localIdSeq=0;
 function uniqueId(prefix){localIdSeq=(localIdSeq+1)%46656;return prefix+Date.now().toString(36)+'-'+LOCAL_DEVICE_ID+'-'+localIdSeq.toString(36)}
 function switchProfile(id){localStorage.setItem('lz.profile',id);location.reload();}
@@ -664,12 +790,56 @@ var INITIAL_SHOP=load(K('shop'),{});if(window.LabelOnZeWayNative&&window.LabelOn
 var state={
   shop:Object.assign({},DEFAULT_SHOP,INITIAL_SHOP),
   addr:load(K('addr'),[]),manifest:load(K('mani'),[]),archive:load(K('arch'),[]),counter:load(K('ctr'),0),
+  labelVault:load(K('labels'),[]),
   img:null,imgOCR:null,imgBig:null,currentFile:null,editingAddr:null,batch:[],addrAssign:null,resumeBatch:false};
-var batchBusy=false,previewMode=null,noprixShown=false,scanActive=false,printChain=[],manifestSelection={};
-function persist(){try{save(K('shop'),state.shop);save(K('addr'),state.addr);save(K('mani'),state.manifest);save(K('ctr'),state.counter);save(K('arch'),state.archive);if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change')}catch(e){toast('⚠ Storage full — backup now!','err')}}
+if(!Array.isArray(state.labelVault))state.labelVault=[];
+var batchBusy=false,previewMode=null,previewClaimId=null,noprixShown=false,scanActive=false,printChain=[],batchSelection={},manifestSelection={};
+function persist(){var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
+  if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change');if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function money(v){var n=Number(v||0),sep=(state.shop.sep==null?' ':state.shop.sep);var p=Math.abs(n).toFixed(2).split('.');
-  return (n<0?'-':'')+(state.shop.currency?state.shop.currency+' ':'')+p[0].replace(/\B(?=(\d{3})+(?!\d))/g,sep)+(p[1]==='00'?'':','+p[1])}
+function moneyFor(v,shop){shop=shop||state.shop;var n=Number(v||0),sep=(shop.sep==null?' ':shop.sep);var p=Math.abs(n).toFixed(2).split('.');
+  return (n<0?'-':'')+(shop.currency?shop.currency+' ':'')+p[0].replace(/\B(?=(\d{3})+(?!\d))/g,sep)+(p[1]==='00'?'':','+p[1])}
+function money(v){return moneyFor(v,state.shop)}
+function cloneLabelRow(r){r=r||{};var rec=r.rec||{};return {id:String(r.id||''),oid:String(r.oid||''),name:String(r.name||''),qty:Number(r.qty)||1,
+    price:Number(r.price)||0,cod:Number(r.cod)||0,ship:Number(r.ship)||0,notes:String(r.notes||''),pay:String(r.pay||'COD'),
+    mmRef:String(r.mmRef||''),deliverAt:String(r.deliverAt||''),deliverTime:String(r.deliverTime||''),pod:!!r.pod,paid:!!r.paid,
+    received:Number(r.received)||0,addedAt:String(r.addedAt||new Date().toISOString()),done:!!r.done,
+    rec:{id:String(rec.id||''),name:String(rec.name||''),phone:String(rec.phone||''),area:String(rec.area||''),address:String(rec.address||''),note:String(rec.note||'')}};}
+function labelShopSnapshot(s){s=s||state.shop;return {name:String(s.name||''),tagline:String(s.tagline||''),phone:String(s.phone||''),currency:String(s.currency||''),
+    sep:s.sep==null?' ':String(s.sep),codLabel:String(s.codLabel||'COLLECT'),labelLen:Number(s.labelLen)||210,
+    thanks:String(s.thanks||''),printerDots:Number(s.printerDots)||576,printerThreshold:Number(s.printerThreshold)||180};}
+function labelFingerprint(row,shop){return JSON.stringify({row:row,shop:shop});}
+function labelOrderKey(row){return String(row.id||row.oid||'unknown')}
+function storeLabelCopies(rows,source,isPrint){if(!Array.isArray(rows)||!rows.length)return 0;var now=new Date().toISOString(),changed=0;
+  rows.forEach(function(input){if(!input)return;var row=cloneLabelRow(input),shop=labelShopSnapshot(input._labelShop||state.shop),fingerprint=labelFingerprint(row,shop),key=labelOrderKey(row);
+    var existing=state.labelVault.find(function(e){return e&&e.orderKey===key&&e.fingerprint===fingerprint});
+    if(existing){if(isPrint){existing.printCount=Math.max(0,Number(existing.printCount)||0)+1;existing.lastPrintedAt=now;existing.lastSource=source||'printed';changed++;}return;}
+    var version=state.labelVault.filter(function(e){return e&&e.orderKey===key}).length+1;
+    state.labelVault.unshift({id:uniqueId('lv'),orderKey:key,orderId:row.id,oid:row.oid,version:version,row:row,shop:shop,fingerprint:fingerprint,savedAt:now,source:source||'created',
+      printCount:isPrint?1:0,lastPrintedAt:isPrint?now:'',lastSource:source||'created'});changed++;});
+  if(changed){if(!save(K('labels'),state.labelVault))toast('⚠ Label copy is only in this session — storage is full. Download a backup now!','err');updateLabelVaultCount();if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('urgent');}
+  return changed;}
+function migrateExistingLabels(){var rows=state.manifest.slice();state.archive.forEach(function(day){if(day&&Array.isArray(day.rows))rows=rows.concat(day.rows)});
+  rows=rows.filter(function(r){var key=labelOrderKey(cloneLabelRow(r));return !state.labelVault.some(function(e){return e&&e.orderKey===key})});if(rows.length)storeLabelCopies(rows,'existing data migration',false);}
+function updateLabelVaultCount(){var el=getEl('label-vault-count');if(el)el.textContent=state.labelVault.length;}
+function claimRow(entry){if(!entry||!entry.row)return null;var row=cloneLabelRow(entry.row);row.copies=1;row._labelShop=labelShopSnapshot(entry.shop||state.shop);row._vaultId=entry.id;return row;}
+function openLabelVault(){renderLabelVault();var mo=getEl('m-label-vault');if(mo)mo.classList.add('open')}
+function renderLabelVault(){var box=getEl('label-vault-list'),sum=getEl('label-vault-summary');if(!box)return;var q=val('label-vault-search').trim().toLowerCase();
+  var list=state.labelVault.filter(function(e){if(!e||!e.row)return false;if(!q)return true;var r=e.row,rec=r.rec||{},date='';try{date=new Date(e.savedAt).toLocaleString()}catch(x){}
+    return [e.oid,e.orderId,e.version,rec.name,rec.phone,rec.area,rec.address,rec.note,r.pay,r.deliverAt,date].some(function(v){return String(v||'').toLowerCase().indexOf(q)>=0});});
+  if(sum)sum.textContent=list.length+' of '+state.labelVault.length+' retained label version'+(state.labelVault.length!==1?'s':'')+' · no automatic expiry';
+  if(!list.length){box.innerHTML='<div class="empty" style="padding:22px;font-size:12px"><b>'+(state.labelVault.length?'No matching labels':'No label copies yet')+'</b>'+(state.labelVault.length?'Try a different order number, name, phone, address, or date.':'Copies appear automatically when a parcel is created or a label is printed.')+'</div>';return}
+  box.innerHTML=list.map(function(e){var r=e.row,rec=r.rec||{},total=Number(r.cod||0)+Number(r.ship||0),printed=Math.max(0,Number(e.printCount)||0);
+    return '<div class="vault-item"><div><div class="vault-order">ORDER '+esc(e.oid||'—')+' · VERSION '+esc(e.version||1)+'</div>'+
+      '<div class="vault-meta">Saved '+esc(fmtDT(e.savedAt))+' · '+esc(e.source||'created')+'<br>'+(printed?('Printed / generated '+printed+' time'+(printed!==1?'s':'')+(e.lastPrintedAt?' · last '+esc(fmtDT(e.lastPrintedAt)):'')):'Not printed yet')+'</div></div>'+
+      '<div><div class="vault-name">'+esc(rec.name||'—')+' · '+esc(moneyFor(total,e.shop))+'</div>'+
+      '<div class="vault-meta">'+esc(rec.phone||'No phone')+' · '+esc([rec.address,rec.area].filter(Boolean).join(', ')||'No address')+(r.deliverAt?'<br>Deliver '+esc(fmtDeliverDate(r.deliverAt,r.deliverTime)):'')+'</div></div>'+
+      '<div class="vault-actions"><button class="btn sm" data-act="previewClaimLabel" data-arg="'+esc(e.id)+'">👁 VIEW</button>'+
+      '<button class="btn sm orange" data-act="printClaimLabel" data-arg="'+esc(e.id)+'">🖨 REPRINT ONE</button></div></div>';}).join('');}
+function previewClaimLabel(id){var e=state.labelVault.find(function(x){return x&&x.id===id}),row=claimRow(e);if(!row){toast('Saved label not found','err');return}
+  closeModal('m-label-vault');previewClaimId=id;showPreview('CLAIM COPY — ORDER '+(row.oid||'—')+' · VERSION '+(e.version||1),labelHTML(row),'claim',1.35,72);}
+function printClaimLabel(id){var e=state.labelVault.find(function(x){return x&&x.id===id}),row=claimRow(e);if(!row){toast('Saved label not found','err');return}
+  closeModal('m-preview');previewClaimId=null;printLabel(row);toast('Reprinting one preserved claim copy '+(row.oid||''),'ok');}
 function fmtDT(iso){var d=new Date(iso);return d.toLocaleDateString(undefined,{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
 function fmtDeliverDate(d,t){if(!d)return'';var dt=new Date(d+'T'+(t||'00:00'));
   if(isNaN(dt))return d;var s=dt.toLocaleDateString(undefined,{day:'2-digit',month:'short'});if(t)s+=' '+t;return s;}
@@ -687,22 +857,44 @@ function toast(msg,type){var t=document.createElement('div');t.className='toast 
 function renderStats(){var m=state.manifest;
   var c=getEl('stat-count');if(c)c.textContent=m.length;
   var sc=getEl('stat-cod');if(sc)sc.textContent=money(m.filter(function(r){return !r.done}).reduce(function(sum,r){return sum+Number(r.cod||0)+Number(r.ship||0)},0));
-  var md=getEl('mani-date');if(md)md.textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase();}
+  var md=getEl('mani-date');if(md)md.textContent=new Date().toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+  renderOperationsDeck();}
+function setOpsStatus(id,text,type){var el=getEl(id);if(!el)return;el.textContent=text;el.className='ops-status'+(type?' '+type:'');}
+function renderOperationsDeck(){
+  var m=state.manifest||[],open=m.filter(function(r){return !r.done}),cod=open.reduce(function(sum,r){return sum+Number(r.cod||0)+Number(r.ship||0)},0);
+  var count=getEl('ops-label-count'),total=getEl('ops-cod-total'),queueEl=getEl('ops-queue-count'),vault=getEl('control-vault-count');
+  if(count)count.textContent=m.length;if(total)total.textContent=money(cod);
+  var queue=getPrintQueue().reduce(function(n,j){return n+((j.rows&&j.rows.length)||0)},0);if(queueEl)queueEl.textContent=queue;if(vault)vault.textContent=state.labelVault.length;
+  var profile=PROFILES.find(function(p){return p.id===PID}),shopName=String(state.shop.name||profile&&profile.name||'Company workspace');
+  if(shopName==='YOUR PAGE NAME'&&profile)shopName=profile.name;
+  var shop=getEl('ops-shop-name');if(shop)shop.textContent=shopName+' · Create a label, process a photo batch, or prepare today’s manifest without leaving the shared workflow.';
+  var online=navigator.onLine!==false;setOpsStatus('ops-network-chip',online?'Online':'Offline',online?'ok':'err');
+  var networkDot=getEl('control-network-dot'),networkTitle=getEl('control-network-title');if(networkDot)networkDot.className='dot '+(online?'ok':'err');if(networkTitle)networkTitle.textContent=online?'Device online':'Device offline';
+  var cloudStatus={configured:false,signedIn:false,pending:0,workspaceName:''};try{if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.getStatus==='function')cloudStatus=window.LabelOnZeWayCloud.getStatus()}catch(e){}
+  var cloudText='Cloud setup pending',cloudCopy='Local/offline mode is active until Supabase setup is complete.',cloudType='';
+  if(cloudStatus.signedIn&&cloudStatus.workspaceId){cloudText=cloudStatus.pending?(cloudStatus.pending+' sync pending'):'Cloud synchronized';cloudCopy=(cloudStatus.workspaceName||'Shared company workspace')+(cloudStatus.pending?' · queued changes will reconcile.':' · authorized staff records are current.');cloudType=cloudStatus.pending?'':'ok'}
+  else if(cloudStatus.configured){cloudText='Cloud sign-in required';cloudCopy='Sign in with the staff account to open the shared company workspace.'}
+  setOpsStatus('ops-cloud-chip',cloudText,cloudType);var cloudDot=getEl('control-cloud-dot'),cloudTitle=getEl('control-cloud-title'),cloudCopyEl=getEl('control-cloud-copy');if(cloudDot)cloudDot.className='dot'+(cloudType==='ok'?' ok':'');if(cloudTitle)cloudTitle.textContent=cloudText;if(cloudCopyEl)cloudCopyEl.textContent=cloudCopy;
+  var direct=state.shop.printMode==='direct',printerText=direct?('Direct POS80C'+(state.shop.printerIp?' · '+state.shop.printerIp:'')):'System Print';setOpsStatus('ops-printer-chip',printerText,direct&&state.shop.printerIp?'ok':'');
+  var printerCopy=getEl('control-printer-copy');if(printerCopy)printerCopy.textContent=direct?('Direct POS80C is selected'+(state.shop.printerIp?' at '+state.shop.printerIp+':'+(state.shop.printerPort||9100):'. Auto-detect or enter a printer address')+'. Auto-cut after each label remains '+(state.shop.cutEach===false?'off':'on')+'.'):'System Print is selected. Direct POS80C uses the saved network printer on this device.';
+  var recent=getEl('ops-recent-list');if(recent){var rows=m.slice(-4).reverse();recent.innerHTML=rows.length?rows.map(function(r){var rec=r.rec||{};return '<div class="ops-recent-row"><span class="ops-order">#'+esc(r.oid||r.id||'—')+'</span><span class="ops-rec"><b>'+esc(rec.name||'Customer')+'</b><small>'+esc([rec.area,r.pay].filter(Boolean).join(' · ')||'Label ready')+'</small></span><span class="ops-money">'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</span></div>'}).join(''):'<div class="ops-recent-empty">No labels in the active manifest yet. Start with New Label or Batch.</div>'}
+}
+window.LabelOnZeWayRefreshOperationsDeck=renderOperationsDeck;
 
-var mobileView='new';
+var mobileView='home';
 function isMobileUI(){return !!(window.matchMedia&&window.matchMedia('(max-width:780px)').matches)}
 function updateMobileContext(){var t=getEl('mobile-context-title');if(!t)return;
-  t.textContent=mobileView==='manifest'?'MANIFEST':mobileView==='batch'?'BATCH LABELS':(getEl('card-recipient')&&getEl('card-recipient').classList.contains('mobile-collapsed')?'LABEL DETAILS':'CUSTOMER & LABEL');}
+  t.textContent=mobileView==='manifest'?'MANIFEST':mobileView==='batch'?'BATCH LABELS':mobileView==='more'?'CONTROL CENTER':mobileView==='home'?'OPERATIONS DECK':(getEl('card-recipient')&&getEl('card-recipient').classList.contains('mobile-collapsed')?'LABEL DETAILS':'CUSTOMER & LABEL');}
 function showMobileView(view){
-  view=(view==='batch'||view==='manifest')?view:'new';mobileView=view;
+  view=(view==='home'||view==='new'||view==='batch'||view==='manifest'||view==='more')?view:'home';mobileView=view;document.body.setAttribute('data-mobile-view',view);
   if(!isMobileUI()){
-    var target=getEl(view==='batch'?'card-batch':view==='manifest'?'card-manifest':'card-recipient');
+    var target=getEl(view==='home'?'card-home':view==='batch'?'card-batch':view==='manifest'?'card-manifest':view==='more'?'card-more':'card-recipient');
     if(target)target.scrollIntoView({behavior:'smooth',block:'start'});return;
   }
-  var active=view==='new'?['card-recipient','card-parcel','card-preview']:[view==='batch'?'card-batch':'card-manifest'];
+  var active=view==='home'?['card-home']:view==='new'?['card-recipient','card-parcel','card-preview']:view==='batch'?['card-batch']:view==='manifest'?['card-manifest']:['card-more'];
   document.querySelectorAll('#app>.card').forEach(function(card){card.classList.toggle('mobile-view-active',active.indexOf(card.id)>=0)});
   document.querySelectorAll('#mobile-nav [data-view]').forEach(function(btn){btn.setAttribute('aria-current',btn.getAttribute('data-view')===view?'true':'false')});
-  document.body.classList.add('mobile-ui-ready');updateMobileContext();window.scrollTo({top:0,behavior:'auto'});
+  document.body.classList.add('mobile-ui-ready');updateMobileContext();renderOperationsDeck();window.scrollTo({top:0,behavior:'auto'});
   if(view==='batch')renderBatch();if(view==='manifest')renderManifest();
 }
 function updateCustomerCoordination(){
@@ -750,6 +942,7 @@ function startNewLabel(silent){
 }
 function mobileGoBack(){
   var modal=document.querySelector('.modal.open');if(modal){if(modal.id==='m-settings')cancelPrinterDiscovery();if(modal.id==='m-print-fallback')failedPrintRows=null;closeModal(modal.id);return true}
+  if(mobileView==='home')return false;
   if(mobileView!=='new'){showMobileView('new');return true}
   var rc=getEl('card-recipient');if(rc&&rc.classList.contains('mobile-collapsed')){editRecipientStep();return true}
   var rf=getEl('rec-form');if(rf&&rf.classList.contains('open')){cancelRecForm();return true}
@@ -757,7 +950,7 @@ function mobileGoBack(){
 function mobileBack(){if(!mobileGoBack())toast('Already at the first step','ok')}
 function cancelMobile(){
   if(mobileView==='manifest'){clearManifestSelection();document.querySelectorAll('.mobile-manifest-item[open]').forEach(function(x){x.removeAttribute('open')});var mm=getEl('manifest-action-menu');if(mm)mm.removeAttribute('open');toast('Manifest selection cancelled','ok');return}
-  if(mobileView==='batch'){if(!state.batch.length){toast('No batch operation to cancel','ok');return}if(confirm('Cancel and clear the current batch?')){state.batch=[];renderBatch();toast('Batch cancelled','ok')}return}
+  if(mobileView==='batch'){if(!state.batch.length){toast('No batch operation to cancel','ok');return}if(confirm('Cancel and clear the current batch?')){state.batch=[];batchSelection={};renderBatch();toast('Batch cancelled','ok')}return}
   var dirty=!!(state.img||val('f-price')||val('f-cod')||currentRec()||(getEl('rec-form')&&getEl('rec-form').classList.contains('open')));
   if(dirty&&!confirm('Cancel this label and clear its unsaved details?'))return;resetCurrentLabelDraft();window.scrollTo({top:0,behavior:'smooth'});toast('Label cancelled','ok');}
 window.handleNativeBack=function(){return mobileGoBack()};
@@ -1150,15 +1343,20 @@ function exportAddressBookCSV(){
 function cleanLegacyText(value){return String(value==null?'':value).trim().replace(/\s+/g,' ')}
 function normalizeLegacyText(value){var s=cleanLegacyText(value).toLowerCase();try{s=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'')}catch(e){}return s}
 function normalizeLegacyPhone(value){return cleanLegacyText(value).replace(/\D/g,'')}
+function legacyField(raw,names){
+  for(var i=0;i<names.length;i++){var value=raw[names[i]];if(typeof value==='string'||typeof value==='number'){
+    value=cleanLegacyText(value);if(value)return value;}}
+  return'';}
 function legacyCustomer(raw){
   if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
-  var name=cleanLegacyText(raw.name||raw.fullName||raw.full_name||raw.nom||raw.customer||raw.client||[raw.firstName,raw.lastName].filter(Boolean).join(' '));
-  var phone=cleanLegacyText(raw.phone||raw.mobile||raw.tel||raw.telephone||raw.finday);
-  var area=cleanLegacyText(raw.area||raw.city||raw.ville||raw.zone||raw.district);
-  var address=cleanLegacyText(raw.address||raw.addr||raw.street||raw.adresse||raw.adiresy);
-  var note=cleanLegacyText(raw.note||raw.notes||raw.remark||raw.observation||raw.naoty);
+  var name=legacyField(raw,['name','fullName','full_name','nom','customer','client','customerName','customer_name','clientName','recipientName','recipient_name','receiverName','consigneeName']);
+  if(!name){var parts=[legacyField(raw,['firstName','first_name','prenom']),legacyField(raw,['lastName','last_name','surname'])].filter(Boolean);name=cleanLegacyText(parts.join(' '));}
+  var phone=legacyField(raw,['phone','mobile','tel','telephone','finday','contact','customerPhone','customer_phone','recipientPhone','recipient_phone','receiverPhone']);
+  var area=legacyField(raw,['area','city','ville','zone','district','quartier','locality','town']);
+  var address=legacyField(raw,['address','addr','street','adresse','adiresy','deliveryAddress','delivery_address','recipientAddress','recipient_address']);
+  var note=legacyField(raw,['note','notes','remark','remarks','observation','naoty','instructions']);
   if(!name&&!phone&&!area&&!address&&!note)return null;
-  return{id:cleanLegacyText(raw.id),name:name||'(Recovered customer)',phone:phone,area:area,address:address,note:note};}
+  return{id:legacyField(raw,['id','customerId','customer_id','contactId','contact_id']),name:name||'(Recovered customer)',phone:phone,area:area,address:address,note:note};}
 function sameLegacyCustomer(a,b){
   var ap=normalizeLegacyPhone(a.phone),bp=normalizeLegacyPhone(b.phone);
   if(ap&&bp&&ap.length>=7&&ap===bp)return true;
@@ -1166,29 +1364,66 @@ function sameLegacyCustomer(a,b){
   var al=normalizeLegacyText([a.address,a.area].filter(Boolean).join(' ')),bl=normalizeLegacyText([b.address,b.area].filter(Boolean).join(' '));
   if(al||bl)return !!al&&al===bl;
   return normalizeLegacyText(a.phone)===normalizeLegacyText(b.phone);}
+var rescueIdSequence=0;
+function rescueCustomerId(customers){var id;do{id='a'+Date.now().toString(36)+'-rescue-'+(++rescueIdSequence).toString(36)}while(customers.some(function(a){return String(a.id)===id}));return id;}
 function mergeLegacyCustomers(current,candidates){
   var merged=(Array.isArray(current)?current:[]).map(function(a){return Object.assign({},a)}),added=0,enriched=0,duplicates=0;
   (candidates||[]).forEach(function(candidate){var c=legacyCustomer(candidate);if(!c)return;
     var existing=merged.find(function(a){return sameLegacyCustomer(a,c)});
     if(existing){var changed=false;['name','phone','area','address','note'].forEach(function(k){if(!cleanLegacyText(existing[k])&&cleanLegacyText(c[k])){existing[k]=c[k];changed=true}});if(changed)enriched++;else duplicates++;return}
-    var id=c.id;if(!id||merged.some(function(a){return String(a.id)===id}))id=uniqueId('a');c.id=id;merged.push(c);added++;});
+    var id=c.id;if(!id||merged.some(function(a){return String(a.id)===id}))id=rescueCustomerId(merged);c.id=id;merged.push(c);added++;});
   return{customers:merged,added:added,enriched:enriched,duplicates:duplicates};}
+function rescueSourceKind(key){
+  var value=String(key||'').toLowerCase();
+  if(/(?:^|\.)addr$|address.?book|customers?|contacts?|recipients?/.test(value))return'address book';
+  if(/(?:^|\.)mani$|manifest|parcels?|orders?/.test(value))return'manifest / parcel records';
+  if(/(?:^|\.)arch$|archive|history/.test(value))return'archive';
+  if(/(?:^|\.)(?:labels|lbk)$|label.?vault|claim/.test(value))return'saved label copies';
+  if(/cloud|sync|pending|entities/.test(value))return'synchronization cache';
+  return'legacy browser JSON';}
+function rescueContactShape(raw,path,inArray){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return false;
+  var p=String(path||'').toLowerCase();
+  var identity=legacyField(raw,['name','fullName','full_name','nom','customer','client','customerName','customer_name','clientName','recipientName','recipient_name','receiverName','consigneeName','firstName','first_name','prenom']);
+  var phone=legacyField(raw,['phone','mobile','tel','telephone','finday','contact','customerPhone','customer_phone','recipientPhone','recipient_phone','receiverPhone']);
+  var location=legacyField(raw,['area','city','ville','zone','district','quartier','locality','town','address','addr','street','adresse','adiresy','deliveryAddress','delivery_address','recipientAddress','recipient_address']);
+  var positive=/(?:^|[.|\[])(?:addr|address.?book|customers?|contacts?|recipients?|recipient|receiver|consignee|client|manifest|mani|parcels?|orders?|archive|arch|history|labels?|label.?vault|lbk|claim|pending|sync|entities|payload)(?:[.|\[]|$)/i.test(p);
+  var negative=/(?:^|[.|\[])(?:shop|profile_settings|settings|config|printer)(?:[.|\[]|$)/i.test(p);
+  if(negative&&!/(?:customer|client|recipient|receiver|consignee|contact)/i.test(p))return false;
+  if(positive)return !!(identity||phone||location);
+  return !!(inArray&&identity&&(phone||location));}
 function collectOldAddressBooks(){
-  var keys={},profileLists=['sd.profiles','lz.profiles'];
-  profileLists.forEach(function(profileKey){var profiles=load(profileKey,[]);if(Array.isArray(profiles))profiles.forEach(function(p){if(p&&p.id)keys[String(p.id)+'.addr']=true})});
-  try{for(var i=0;i<localStorage.length;i++){var key=localStorage.key(i);if(key&&(/\.addr$/i.test(key)||/^(addr|addressbook|address_book|customers|contacts|recipients)$/i.test(key)))keys[key]=true}}catch(e){}
-  var contacts=[],sources=[];Object.keys(keys).sort().forEach(function(key){if(key===K('addr'))return;var list=load(key,null);if(!Array.isArray(list)||!list.length)return;
-    var valid=list.map(legacyCustomer).filter(Boolean);if(valid.length){sources.push({key:key,count:valid.length});contacts=contacts.concat(valid)}});
-  return{contacts:contacts,sources:sources};}
+  var contacts=[],sources=[],currentKey=K('addr'),scanned=0,nodeLimitHit=false;
+  var keys=[];try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k)keys.push(k)}}catch(e){}
+  keys.sort().forEach(function(key){
+    if(key===currentKey)return;
+    var parsed;try{var rawValue=localStorage.getItem(key);if(!rawValue)return;parsed=JSON.parse(rawValue)}catch(e){return}
+    if(!parsed||typeof parsed!=='object')return;
+    var sourceContacts=[],seen=typeof WeakSet==='function'?new WeakSet():null,nodes=0;
+    function walk(node,path,depth,inArray){
+      if(nodeLimitHit||node==null||typeof node!=='object'||depth>18)return;
+      if(++nodes>120000){nodeLimitHit=true;return}
+      if(seen){if(seen.has(node))return;seen.add(node)}
+      if(Array.isArray(node)){for(var a=0;a<node.length;a++)walk(node[a],path+'['+a+']',depth+1,true);return}
+      if(rescueContactShape(node,path,inArray)){var contact=legacyCustomer(node);if(contact)sourceContacts.push(contact)}
+      Object.keys(node).forEach(function(childKey){var child=node[childKey];if(child&&typeof child==='object')walk(child,path+'.'+childKey,depth+1,Array.isArray(child))});
+    }
+    walk(parsed,key,0,Array.isArray(parsed));scanned++;
+    if(sourceContacts.length){sources.push({key:key,kind:rescueSourceKind(key),count:sourceContacts.length});contacts=contacts.concat(sourceContacts)}
+  });
+  return{contacts:contacts,sources:sources,scanned:scanned,nodeLimitHit:nodeLimitHit};}
+function rescueSourceReport(sources){
+  var shown=sources.slice(0,12).map(function(source){return'• '+source.key+' ['+source.kind+'] — '+source.count+' record'+(source.count===1?'':'s')});
+  if(sources.length>shown.length)shown.push('• …and '+(sources.length-shown.length)+' more source'+(sources.length-shown.length===1?'':'s'));
+  return shown.join('\n');}
 function recoverOldAddressBooks(){
   var found=collectOldAddressBooks(),result=mergeLegacyCustomers(state.addr,found.contacts),sourceCount=found.sources.length;
-  if(!sourceCount){alert('No separate old address books were found in this browser. Your current book already contains '+state.addr.length+' customer'+(state.addr.length===1?'':'s')+'.\n\nOld Android/iPhone app storage and cleared browser data cannot be read from this page; use a JSON backup or CSV export from that installation.');return result}
-  var message='Found '+found.contacts.length+' customer record'+(found.contacts.length===1?'':'s')+' in '+sourceCount+' old address book'+(sourceCount===1?'':'s')+'.\n\n'+result.added+' new customer'+(result.added===1?'':'s')+' will be added';
-  if(result.enriched)message+=' and '+result.enriched+' existing customer'+(result.enriched===1?' will':'s will')+' receive missing details';
-  message+='. '+result.duplicates+' duplicate'+(result.duplicates===1?' was':'s were')+' safely ignored.\n\nCurrent customers will NOT be deleted. Continue?';
+  if(!sourceCount){alert('Deep Rescue scanned '+found.scanned+' JSON storage source'+(found.scanned===1?'':'s')+' in this browser, including old books, manifests, archives, saved labels, and synchronization queues.\n\nNo recoverable contact records remain in this storage container. Nothing was changed or deleted.\n\nKeep old apps installed and check every other browser/device, downloaded JSON backup, CSV, or shared cloud workspace.');return result}
+  var message='DEEP RESCUE PREVIEW — nothing has been changed\n\nFound '+found.contacts.length+' contact record'+(found.contacts.length===1?'':'s')+' in '+sourceCount+' surviving source'+(sourceCount===1?'':'s')+':\n'+rescueSourceReport(found.sources)+'\n\nMERGE RESULT\n• '+result.added+' new customer'+(result.added===1?'':'s')+'\n• '+result.enriched+' existing customer'+(result.enriched===1?'':'s')+' enriched\n• '+result.duplicates+' duplicate record'+(result.duplicates===1?'':'s')+' safely ignored\n\nCurrent customers and every source record will NOT be deleted or overwritten. A CSV rescue copy will download after the merge. Continue?';
+  if(found.nodeLimitHit)message+='\n\nNote: the safety scan limit was reached; run again after exporting the first recovery.';
   if(!confirm(message))return result;
-  state.addr=result.customers;persist();rebuildRecSelect();renderBatch();renderAmList();
-  toast('Recovered '+result.added+' customer'+(result.added===1?'':'s')+(result.enriched?' · enriched '+result.enriched:''),'ok');return result;}
+  state.addr=result.customers;save(K('addr'),state.addr);if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('urgent');rebuildRecSelect();renderBatch();renderAmList();exportAddressBookCSV();
+  toast('Deep Rescue: '+result.added+' added'+(result.enriched?' · '+result.enriched+' enriched':'')+' · CSV saved','ok');return result;}
 
 function recOptionsHTML(sel,ph,withNew){var byArea={};state.addr.forEach(function(a){(byArea[a.area||'Other']=byArea[a.area||'Other']||[]).push(a)});
   var html='<option value="">'+esc(ph||'— customer —')+'</option>';
@@ -1197,11 +1432,11 @@ function recOptionsHTML(sel,ph,withNew){var byArea={};state.addr.forEach(functio
     byArea[area].forEach(function(a){html+='<option value="'+a.id+'"'+(a.id===sel?' selected':'')+'>'+esc(a.name)+' — '+esc(a.phone)+'</option>'});
     html+='</optgroup>'});return html}
 function batchThumb(it){return it.img?('<img class="b-thumb" src="'+it.img+'">'):('<div class="b-thumb" style="background:#dfe3e7;display:grid;place-items:center;font-size:20px">📷</div>')}
-function renderBatch(){var box=getEl('batch-list');if(!box)return;var n=state.batch.length;
+function renderBatch(){var box=getEl('batch-list');if(!box)return;var n=state.batch.length,valid={};state.batch.forEach(function(it){valid[it.id]=true});Object.keys(batchSelection).forEach(function(id){if(!valid[id])delete batchSelection[id]});
   var bc=getEl('batch-count');if(bc)bc.textContent='('+n+' photo'+(n!==1?'s':'')+')';
-  if(!n){box.innerHTML='<div class="empty" style="padding:20px;font-size:12.5px"><b>Batch empty</b>Add several photos to start a clean batch.</div>';return}
+  if(!n){batchSelection={};box.innerHTML='<div class="empty" style="padding:20px;font-size:12.5px"><b>Batch empty</b>Add several photos to start a clean batch.</div>';updateBatchSelectionUI();return}
   box.innerHTML=state.batch.map(function(it){return '<div class="brow'+(it.err?' err':'')+'" id="brow-'+it.id+'">'+
-      batchThumb(it)+
+      '<div class="b-media"><label class="b-select"><input type="checkbox" '+(batchSelection[it.id]?'checked':'')+' onchange="setBatchSelected(\''+it.id+'\',this.checked)"> SELECT</label>'+batchThumb(it)+'</div>'+
       '<div class="b-main">'+
         '<div class="b-status" id="bs-'+it.id+'"></div>'+
         '<div class="b-chips" id="bc-'+it.id+'"></div>'+
@@ -1223,7 +1458,11 @@ function renderBatch(){var box=getEl('batch-list');if(!box)return;var n=state.ba
         '<button class="btn sm green" data-arg="'+it.id+'" data-act="addSingleBatch">＋ MANIFEST</button>'+
         '<button class="btn sm batch-delete" data-arg="'+it.id+'" data-act="removeBatch" style="color:var(--red);border-color:var(--red)">🗑 DELETE LABEL</button>'+
       '</div></div>';}).join('');
-  state.batch.forEach(renderBatchRow);}
+  updateBatchSelectionUI();state.batch.forEach(renderBatchRow);}
+function batchItemDescriptor(it){var idx=state.batch.indexOf(it)+1,rec=state.addr.find(function(a){return a.id===it.recId}),source=it.sourceOid?('order #'+it.sourceOid):(it.fileRef&&it.fileRef.name?it.fileRef.name:('photo '+idx));return 'Batch label '+idx+' — '+source+(rec&&rec.name?' — '+rec.name:'')}
+function updateBatchSelectionUI(){var selected=state.batch.filter(function(it){return !!batchSelection[it.id]}),btn=getEl('batch-delete-selected');if(btn){btn.disabled=!selected.length;btn.textContent='🗑 DELETE SELECTED LABELS ('+selected.length+')'}}
+function setBatchSelected(id,checked){if(checked)batchSelection[id]=true;else delete batchSelection[id];updateBatchSelectionUI()}
+function deleteSelectedBatch(){var selected=state.batch.filter(function(it){return !!batchSelection[it.id]});if(!selected.length){toast('Select one or more batch labels','err');return}var exact=selected.map(batchItemDescriptor).join('\n• ');if(!confirm('Delete these '+selected.length+' selected batch label'+(selected.length===1?'':'s')+'?\n\n• '+exact+'\n\nOnly the selected staged labels will be removed.'))return;var ids={};selected.forEach(function(it){ids[it.id]=true});state.batch=state.batch.filter(function(it){return !ids[it.id]});batchSelection={};renderBatch();toast(selected.length+' selected batch label'+(selected.length===1?'':'s')+' deleted','ok')}
 function renderBatchRow(it){var st=getEl('bs-'+it.id),ch=getEl('bc-'+it.id);if(!st)return;
   st.textContent=it.msg||'';
   st.style.color=it.status==='done'?'var(--green)':(it.status==='error'||it.status==='none')?'var(--red)':'var(--blue)';
@@ -1306,7 +1545,7 @@ function commitBatch(){
       rows.push(makeMergedRow(items,state.addr.find(function(a){return a.id===items[0].recId}),allocateOrderId()));});
   }
   rows.forEach(function(r){state.manifest.push(r)});
-  if(rows.length){persist();renderManifest();renderStats();}
+  if(rows.length){storeLabelCopies(rows,'created',false);persist();renderManifest();renderStats();}
   state.batch=remaining;
   renderBatch();
   return {rows:rows,skipped:skipped};}
@@ -1324,17 +1563,17 @@ function printAllBatchLabels(){
 function addSingleBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
-  state.manifest.push(makeRow(it,rec,allocateOrderId()));persist();renderManifest();renderStats();
+  var rowA=makeRow(it,rec,allocateOrderId());state.manifest.push(rowA);storeLabelCopies([rowA],'created',false);persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();toast('Added to manifest','ok');}
 function printSingleFromBatch(id){var it=state.batch.find(function(x){return x.id===id});if(!it)return;
   var rec=state.addr.find(function(a){return a.id===it.recId});
   if(!rec){it.err=true;renderBatchRow(it);toast('Choose a customer first','err');return}
   var rowM=makeRow(it,rec,allocateOrderId());
-  state.manifest.push(rowM);persist();renderManifest();renderStats();
+  state.manifest.push(rowM);storeLabelCopies([rowM],'created',false);persist();renderManifest();renderStats();
   state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch();
   toast(rowM.oid+' — printing label…','ok');setTimeout(function(){printLabel(rowM)},250);}
-function removeBatch(id){state.batch=state.batch.filter(function(x){return x.id!==id});renderBatch()}
-function clearBatch(){if(!state.batch.length)return;if(!confirm('Clear batch?'))return;state.batch=[];renderBatch()}
+function removeBatch(id){var item=state.batch.find(function(x){return x.id===id});if(!item)return;if(!confirm('Delete this staged label?\n\n'+batchItemDescriptor(item)))return;state.batch=state.batch.filter(function(x){return x.id!==id});delete batchSelection[id];renderBatch();toast('Batch label deleted','ok')}
+function clearBatch(){if(!state.batch.length)return;var exact=state.batch.map(batchItemDescriptor).join('\n• ');if(!confirm('Clear all '+state.batch.length+' batch labels?\n\n• '+exact))return;state.batch=[];batchSelection={};renderBatch()}
 
 function rebuildRecSelect(keep){var sel=getEl('rec-select');if(!sel)return;var prev=keep||sel.value;
   var q=(val('rec-search')).toLowerCase();
@@ -1382,6 +1621,7 @@ function renderAbList(){var box=getEl('ab-list');if(!box)return;
     '</div>';}).join('');}
 function useAddr(id){rebuildRecSelect(id);closeModal('m-addr');showMobileView('new');finishCustomerStep();toast('Customer linked to this label','ok');}
 function delAddr(id){if(!confirm('Delete this customer?'))return;
+  if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.markEntityDeleted==='function')window.LabelOnZeWayCloud.markEntityDeleted('customer',id,PID);
   state.addr=state.addr.filter(function(a){return a.id!==id});persist();
   if(getEl('rec-select').value===id)rebuildRecSelect();else rebuildRecSelect(getEl('rec-select').value);
   renderAmList();renderBatch();toast('Removed','ok');}
@@ -1423,7 +1663,7 @@ function addToManifest(printAfter){var qty=Math.max(1,parseInt(val('f-qty'))||1)
   var row={id:uniqueId('r'),oid:allocateOrderId(),name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
     pay:getEl('f-pay').value||'COD',mmRef:'',img:state.img||null,deliverAt:ddate,deliverTime:dtime,pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};
-  state.manifest.push(row);persist();renderManifest();renderStats();
+  state.manifest.push(row);storeLabelCopies([row],'created',false);persist();renderManifest();renderStats();
   startNewLabel(true);toast(row.oid+' saved — fresh New Label ready','ok');
   if(printAfter)setTimeout(function(){printLabel(row)},200);}
 function setMan(id,k,v){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;
@@ -1447,7 +1687,7 @@ function toBatch(id){
   var recId='';var digits=(r.rec.phone||'').replace(/\D/g,'');
   if(digits){var m1=state.addr.find(function(a){return (a.phone||'').replace(/\D/g,'')===digits});if(m1)recId=m1.id;}
   if(!recId&&r.rec.name){var m2=state.addr.find(function(a){return a.name===r.rec.name});if(m2)recId=m2.id;}
-  var it={id:'b'+Date.now()+Math.random().toString(36).slice(2,6),
+  var it={id:'b'+Date.now()+Math.random().toString(36).slice(2,6),sourceOid:r.oid||'',
     img:r.img||null,imgOCR:r.img||null,imgBig:null,fileRef:null,
     qty:r.qty||1,copies:r.copies||1,price:r.price||null,cod:r.cod||null,ship:r.ship||SHIP_RATES[0],shipManual:(r.ship!=null&&SHIP_RATES.indexOf(r.ship)<0),recId:recId,pay:r.pay||'COD',found:[],
     status:'none',contactDetected:false,msg:'↩ Returned from manifest — edit & re-add',err:false};
@@ -1475,7 +1715,10 @@ function updateManifestSelectionUI(){
   var all=getEl('mani-select-all');if(all){all.checked=total>0&&count===total;all.indeterminate=count>0&&count<total;all.disabled=!total;}
   var status=getEl('mani-selection-status');if(status)status.textContent=count+' selected'+(total?' of '+total:'');
   var printBtn=getEl('print-selected-labels');if(printBtn)printBtn.disabled=!count;
+  var deleteBtn=getEl('delete-selected-labels');if(deleteBtn){deleteBtn.disabled=!count;deleteBtn.textContent='🗑 DELETE LABELS ('+count+')'}
   var clearBtn=getEl('clear-manifest-selection');if(clearBtn)clearBtn.disabled=!count;}
+function manifestOrderDescriptor(r){return '#'+String(r.oid||r.id||'—')+' — '+String(r.rec&&r.rec.name||'Customer')}
+function deleteSelectedManifestLabels(){var rows=selectedManifestRows();if(!rows.length){toast('Select one or more manifest labels','err');return}var exact=rows.map(manifestOrderDescriptor).join('\n• ');if(!confirm('Delete these '+rows.length+' selected manifest label'+(rows.length===1?'':'s')+'?\n\n• '+exact+'\n\nTheir permanent claim copies will remain in the Claims Vault.'))return;var ids={};rows.forEach(function(r){ids[r.id]=true});state.manifest=state.manifest.filter(function(r){return !ids[r.id]});manifestSelection={};persist();renderManifest();renderStats();toast(rows.length+' selected label'+(rows.length===1?'':'s')+' deleted · claim copies retained','ok')}
 function printSelectedLabels(){
   var rows=selectedManifestRows();
   if(!rows.length){toast('Select at least one parcel from the manifest','err');return}
@@ -1541,10 +1784,10 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
     '<div class="tot"><small>TOTAL</small><b>'+money(totAll)+'</b></div>';
   updateManifestSelectionUI();}
 function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});r.done=!r.done;if(r.done)r.pod=true;persist();renderManifest();renderStats();}
-function removeRow(id){if(!confirm('Remove this parcel?'))return;
-  state.manifest=state.manifest.filter(function(x){return x.id!==id});persist();renderManifest();renderStats();toast('Removed','ok');}
+function removeRow(id){var row=state.manifest.find(function(x){return x.id===id});if(!row)return;if(!confirm('Delete this manifest label?\n\n'+manifestOrderDescriptor(row)+'\n\nIts permanent claim copy will remain in the Claims Vault.'))return;
+  state.manifest=state.manifest.filter(function(x){return x.id!==id});delete manifestSelection[id];persist();renderManifest();renderStats();toast('Label deleted · claim copy retained','ok');}
 function clearManifest(){if(!state.manifest.length){toast('Manifest empty','err');return}
-  if(!confirm('Clear WITHOUT archiving? Use Close day to keep a copy.'))return;
+  if(!confirm('Clear WITHOUT archiving? Permanent claim label copies will remain in the Claims Vault.'))return;
   state.manifest=[];persist();renderManifest();renderStats();toast('Cleared','ok');}
 function closeDay(){if(!state.manifest.length){toast('Manifest empty','err');return}
   if(!confirm('Close today\'s manifest ('+state.manifest.length+' parcels) and archive it?'))return;
@@ -1595,7 +1838,7 @@ function renderArch(){var box=getEl('arch-list');if(!box)return;
       '<button class="mini-btn del" data-arg="'+d.id+'" data-act="delArch">🗑</button></div>';}).join('');}
 function exportArchCSV(id){var d=state.archive.find(function(x){return x.id===id});
   if(d)exportRowsCSV(d.rows,'manifest-'+new Date(d.date).toISOString().slice(0,10)+'-archive.csv');}
-function delArch(id){if(!confirm('Delete this archived day?'))return;
+function delArch(id){if(!confirm('Delete this archived day? Permanent claim label copies will remain in the Claims Vault.'))return;
   state.archive=state.archive.filter(function(x){return x.id!==id});persist();renderArch();toast('Deleted','ok');}
 
 function exportRowsCSV(rows,fname){if(!rows.length){toast('Nothing to export','err');return}
@@ -1609,7 +1852,7 @@ function exportRowsCSV(rows,fname){if(!rows.length){toast('Nothing to export','e
   a.download=fname;a.click();toast('CSV downloaded','ok');}
 function exportCSV(){exportRowsCSV(state.manifest,'manifest-'+new Date().toISOString().slice(0,10)+'.csv')}
 
-function labelHTML(r){var s=state.shop,rec=r.rec||{};
+function labelHTML(r,shopOverride){var s=shopOverride||r._labelShop||state.shop,rec=r.rec||{};
   var codV=r.cod!==undefined?Number(r.cod||0):(parseFloat(val('f-cod')===''?val('f-price'):val('f-cod'))||0);
   var shipV=Number(r.ship!==undefined?r.ship:currentShip());
   var total=codV+shipV;
@@ -1627,9 +1870,9 @@ function labelHTML(r){var s=state.shop,rec=r.rec||{};
     '<div class="lbl-addr">'+esc([rec.address,rec.area].filter(Boolean).join(', '))+'</div>'+
     (rec.note?'<div class="lbl-note"> '+esc(rec.note)+'</div>':'')+'</div>'+
   '<div class="lbl-pay">'+
-    '<div><div class="lbl-k">'+esc(s.codLabel||'COLLECT')+'</div><div class="lbl-amt">'+money(total)+'</div></div>'+
-    '<div class="lbl-val"><span class="lbl-k">ITEM</span><br>'+money(codV)+'<br>'+
-      '<span class="lbl-k">LIVRAISON</span><br>'+money(shipV)+'<br>'+
+    '<div><div class="lbl-k">'+esc(s.codLabel||'COLLECT')+'</div><div class="lbl-amt">'+moneyFor(total,s)+'</div></div>'+
+    '<div class="lbl-val"><span class="lbl-k">ITEM</span><br>'+moneyFor(codV,s)+'<br>'+
+      '<span class="lbl-k">LIVRAISON</span><br>'+moneyFor(shipV,s)+'<br>'+
       '<span class="lbl-k">MODE</span><br>'+esc(r.pay||getEl('f-pay').value||'COD')+'</div></div>'+
   '<div class="lbl-foot">'+esc(s.thanks)+'</div>'+
 '</div>';}
@@ -1746,6 +1989,7 @@ function printManifest(){if(!state.manifest.length){toast('Manifest empty','err'
 function printA4(){if(!state.manifest.length){toast('Manifest empty','err');return}
   showPreview('MANIFEST — A4 / PDF',a4SheetHTML(),'a4',1.2,210);}
 function printPreviewNow(){
+  if(previewMode==='claim'&&previewClaimId){var claimId=previewClaimId;closeModal('m-preview');previewClaimId=null;printClaimLabel(claimId);return}
   if(!state.manifest.length){toast('Manifest empty','err');closeModal('m-preview');return}
   closeModal('m-preview');
   if(previewMode==='man')doPrint('manifest',manSheetHTML());
@@ -1762,7 +2006,7 @@ function applyLabelLen(){var len=Math.min(300,Math.max(100,Number(state.shop.lab
 var directPrintBusy=false,printerDiscoveryActive=false,printerDiscoveryRun=0,printerDiscoveryAbort=null,failedPrintRows=null,retryingPrintQueue=false;
 function getPrintQueue(){var q=load(K('printQueue'),[]);return Array.isArray(q)?q:[]}
 function updatePrintQueueUI(){var count=getPrintQueue().reduce(function(n,j){return n+((j.rows&&j.rows.length)||0)},0);
-  document.querySelectorAll('.queue-count-label').forEach(function(el){el.textContent='QUEUE '+count});}
+  document.querySelectorAll('.queue-count-label').forEach(function(el){el.textContent='QUEUE '+count});renderOperationsDeck();}
 function cleanRowsForQueue(rows){return rows.map(function(r){var copy=JSON.parse(JSON.stringify(r));delete copy.img;return copy})}
 function queueRowsForLater(rows,reason){if(!rows||!rows.length)return;var q=getPrintQueue();
   q.push({id:'pq'+Date.now(),createdAt:new Date().toISOString(),reason:reason||'Printer unavailable',rows:cleanRowsForQueue(rows)});
@@ -1857,8 +2101,8 @@ function printerConfig(useForm){var s=state.shop;
     cut:from('s-cut-type',s.printerCut||'partial'),
     cutEach:checked('s-cut-each',s.cutEach!==false)
   };}
-function setPrinterStatus(msg,type){var el=getEl('s-printer-status');if(!el)return;
-  el.textContent=msg;el.className='printer-status'+(type?' '+type:'');}
+function setPrinterStatus(msg,type){var el=getEl('s-printer-status');
+  if(el){el.textContent=msg;el.className='printer-status'+(type?' '+type:'')}renderOperationsDeck();}
 function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser'),platform=nativePlatform();
   if(mode==='direct')setPrinterStatus(platform?'Direct '+(platform==='ios'?'iPhone/iPad':'Android')+' printing selected — use Auto-Detect or the saved IP.':'Gateway mode selected — open LabelOnZeWay from the gateway local URL, then use Auto-Detect.','');
   else setPrinterStatus(platform==='android'?'Android system print selected — availability depends on installed print services.':'iPhone / iPad system print selected — uses the iOS print sheet and AirPrint.','ok');}
@@ -1954,7 +2198,7 @@ function canvasRule(ctx,y,x,width,dashed){ctx.save();ctx.strokeStyle='#000';ctx.
 function renderDirectLabelCanvas(r,c){var W=c.dots,H=4800,pad=Math.max(20,Math.round(W*.042)),inner=W-pad*2;
   var cv=document.createElement('canvas');cv.width=W;cv.height=H;var ctx=cv.getContext('2d');
   if(!ctx)throw new Error('Canvas rendering is unavailable in this browser');ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.fillStyle='#000';
-  var s=state.shop,rec=r.rec||{},y=18;
+  var s=r._labelShop||state.shop,rec=r.rec||{},y=18;
   y=drawCanvasText(ctx,String(s.name||'LABELONZEWAY').toUpperCase(),pad,y,inner,'800 31px Arial, sans-serif',35,'left',2);
   if(s.tagline)y=drawCanvasText(ctx,s.tagline,pad,y+1,inner,'700 17px Menlo, monospace',21,'left',2);
   if(s.phone)y=drawCanvasText(ctx,s.phone,pad,y,inner,'700 21px Menlo, monospace',25,'left',2);
@@ -1975,10 +2219,10 @@ function renderDirectLabelCanvas(r,c){var W=c.dots,H=4800,pad=Math.max(20,Math.r
   var codV=r.cod!==undefined?Number(r.cod||0):0,shipV=Number(r.ship||0),total=codV+shipV;
   var payTop=y,payH=126,leftW=Math.round(inner*.60);ctx.lineWidth=3;ctx.strokeRect(pad+1.5,payTop+1.5,inner-3,payH-3);
   drawCanvasText(ctx,s.codLabel||'COLLECT',pad+12,payTop+12,leftW-20,'700 16px Menlo, monospace',20,'left',2);
-  drawFittedText(ctx,money(total),pad+12,payTop+50,leftW-20,38,'800','left',22);
+  drawFittedText(ctx,moneyFor(total,s),pad+12,payTop+50,leftW-20,38,'800','left',22);
   var rx=pad+leftW,rw=inner-leftW-12,ry=payTop+12;
-  ry=drawCanvasText(ctx,'ITEM '+money(codV),rx,ry,rw,'700 17px Menlo, monospace',22,'right',2);
-  ry=drawCanvasText(ctx,'DELIVERY '+money(shipV),rx,ry+2,rw,'700 17px Menlo, monospace',22,'right',2);
+  ry=drawCanvasText(ctx,'ITEM '+moneyFor(codV,s),rx,ry,rw,'700 17px Menlo, monospace',22,'right',2);
+  ry=drawCanvasText(ctx,'DELIVERY '+moneyFor(shipV,s),rx,ry+2,rw,'700 17px Menlo, monospace',22,'right',2);
   drawCanvasText(ctx,'MODE '+String(r.pay||'COD'),rx,ry+2,rw,'700 16px Menlo, monospace',21,'right',2);
   y=payTop+payH+12;
   if(s.thanks)y=drawCanvasText(ctx,s.thanks,pad,y,inner,'700 19px Arial, sans-serif',24,'center',4);
@@ -2037,7 +2281,7 @@ function expandLabelCopies(rows){var out=[];(rows||[]).forEach(function(row){var
   for(var copyNo=1;copyNo<=count;copyNo++){var physical=Object.assign({},row,{copies:1,copyNo:copyNo,copyTotal:count});out.push(physical);}});return out}
 function physicalLabelCount(rows){return (rows||[]).reduce(function(n,row){return n+labelCopyCount(row)},0)}
 function doPrint(mode,html,rows,forceSystem){
-  if(mode==='label'&&Array.isArray(rows)&&rows.length){rows=expandLabelCopies(rows);html=rows.map(labelHTML).join('');}
+  if(mode==='label'&&Array.isArray(rows)&&rows.length){var isClaim=rows.some(function(r){return !!(r&&r._vaultId)});storeLabelCopies(rows,isClaim?'claim reprint':'printed / generated',true);rows=expandLabelCopies(rows);html=rows.map(labelHTML).join('');}
   if(!forceSystem&&mode==='label'&&state.shop.printMode==='direct'&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
   var pr=getEl('print-root');
   if(pr){
@@ -2065,7 +2309,7 @@ window.addEventListener('afterprint',function(){
       if(next==='manifest'&&state.manifest.length)doPrint('a4',a4SheetHTML());
       else if(next==='report'&&state.manifest.length)doPrint('a4',salesReportHTML());
     },400);}});
-function printLabel(row){var len=Math.min(300,Math.max(100,Number(state.shop.labelLen)||210));
+function printLabel(row){var labelShop=row._labelShop||state.shop,len=Math.min(300,Math.max(100,Number(labelShop.labelLen)||210));
   var html=labelHTML(row);var maxPx=len*96/25.4;
   if(measureLbl(html)>maxPx){html=html.replace('class="lbl"','class="lbl lbl-compact"');
     if(measureLbl(html)>maxPx)toast('⚠ Label very long — check address','err');}
@@ -2113,8 +2357,8 @@ function applyCurrency(){var c=state.shop.currency||'';
   ['cur-lbl-1','cur-lbl-2','cur-lbl-3'].forEach(function(id){var el=getEl(id);if(el)el.textContent=c});}
 function downloadBackup(){
   var profile=PROFILES.find(function(p){return p.id===PID})||{id:PID,name:PID};
-  var payload={app:'LABELONZEWAY',version:3,exportedAt:new Date().toISOString(),profile:profile,
-    data:{shop:state.shop,addr:state.addr,manifest:state.manifest,archive:state.archive,counter:state.counter},
+  var payload={app:'LABELONZEWAY',version:4,exportedAt:new Date().toISOString(),profile:profile,
+    data:{shop:state.shop,addr:state.addr,manifest:state.manifest,archive:state.archive,labelVault:state.labelVault,counter:state.counter},
     preferences:{auto:load(K('auto'),true),merge:load(K('merge'),true)}};
   var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
   var a=document.createElement('a');var url=URL.createObjectURL(blob);
@@ -2134,15 +2378,16 @@ function restoreBackup(file){
     save(K('addr'),Array.isArray(d.addr)?d.addr:[]);
     save(K('mani'),Array.isArray(d.manifest)?d.manifest:(Array.isArray(d.mani)?d.mani:[]));
     save(K('arch'),Array.isArray(d.archive)?d.archive:(Array.isArray(d.arch)?d.arch:[]));
+    save(K('labels'),Array.isArray(d.labelVault)?d.labelVault:(Array.isArray(d.labels)?d.labels:state.labelVault));
     save(K('ctr'),Math.max(0,Number(d.counter!=null?d.counter:d.ctr)||0));
     if(payload.preferences){save(K('auto'),payload.preferences.auto!==false);save(K('merge'),payload.preferences.merge!==false)}
-    state.shop=load(K('shop'),state.shop);state.addr=load(K('addr'),[]);state.manifest=load(K('mani'),[]);state.archive=load(K('arch'),[]);state.counter=load(K('ctr'),0);
+    state.shop=load(K('shop'),state.shop);state.addr=load(K('addr'),[]);state.manifest=load(K('mani'),[]);state.archive=load(K('arch'),[]);state.labelVault=load(K('labels'),[]);state.counter=load(K('ctr'),0);
     if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.captureNow(PID,true);
     toast('Backup restored — reloading…','ok');setTimeout(function(){location.reload()},500);
   }catch(e){console.error(e);toast(e.message||'Invalid backup file','err')}};
   rd.readAsText(file);}
-function resetAll(){if(!confirm('Erase ALL data for this profile? This also deletes its synchronized business records for authorized staff.'))return;
-  var finish=function(){['shop','addr','mani','ctr','arch','reconDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});location.reload()};
+function resetAll(){if(!confirm('Erase ALL data for this profile, including every retained claim label copy? This also deletes its synchronized business records for authorized staff.'))return;
+  var finish=function(){['shop','addr','mani','ctr','arch','labels','reconDate','lbk'].forEach(function(k){localStorage.removeItem(K(k))});location.reload()};
   if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.resetCurrentProfile==='function')window.LabelOnZeWayCloud.resetCurrentProfile().then(finish).catch(finish);else finish();}
 function closeModal(id){var e=getEl(id);if(e)e.classList.remove('open')}
 function renderProfileSel(){var s=getEl('profile-sel');if(!s)return;
@@ -2160,6 +2405,13 @@ function installApp(){
 function scrollSection(id){
   if(isMobileUI()){showMobileView(id==='card-batch'?'batch':id==='card-manifest'?'manifest':'new');return}
   var el=getEl(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function openCloud(){if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.open==='function'){window.LabelOnZeWayCloud.open();return}toast('Cloud controls are still loading','err')}
+function setQuickPrintMode(mode){state.shop.printMode=mode==='direct'?'direct':'browser';persist();renderOperationsDeck();
+  toast(state.shop.printMode==='direct'?'Direct POS80C selected on this device':'System Print selected on this device','ok');}
+function quickSystemPrint(){setQuickPrintMode('browser')}
+function quickDirectPrint(){setQuickPrintMode('direct')}
+function quickDetectPrinter(){setQuickPrintMode('direct');setPrinterStatus('Auto-detecting the network POS80C…','');
+  discoverPrinter({useForm:false,silent:false}).then(function(out){renderOperationsDeck();if(out&&out.ip)toast('Direct POS80C is ready at '+out.ip,'ok')});}
 function registerLabelOnZeWay(){
   if(nativePOS80Printer())return;
   if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
@@ -2180,10 +2432,11 @@ var ACTIONS={
   recoverOldAddressBooks:recoverOldAddressBooks, exportAddressBookCSV:exportAddressBookCSV,
   downloadAddrTemplate:downloadAddrTemplate, toggleAbList:toggleAbList,
   printCalibration:printCalibration, applyBatchRecAll:applyBatchRecAll,
-  printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, clearBatch:clearBatch,
+  printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, deleteSelectedBatch:deleteSelectedBatch, clearBatch:clearBatch,
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
-  closeDay:closeDay, openArch:openArch, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, clearManifestSelection:clearManifestSelection,
-  openRecon:openRecon, openSettings:openSettings, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
+  closeDay:closeDay, openArch:openArch, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, deleteSelectedManifestLabels:deleteSelectedManifestLabels, clearManifestSelection:clearManifestSelection,
+  openRecon:openRecon, openSettings:openSettings, openCloud:openCloud, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
+  quickSystemPrint:quickSystemPrint, quickDirectPrint:quickDirectPrint, quickDetectPrinter:quickDetectPrinter,
   showMobileView:showMobileView, startNewLabel:startNewLabel, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
   mobileBack:mobileBack, cancelMobile:cancelMobile,
   toggleCustomerTools:toggleCustomerTools, togglePreviewCard:togglePreviewCard,
@@ -2220,6 +2473,7 @@ document.addEventListener('change',function(e){
 function init(){
   try{document.querySelectorAll('button').forEach(function(b){if(!b.hasAttribute('type'))b.type='button'});}catch(e){fatal(e)}
   try{renderProfileSel();}catch(e){fatal(e)}
+  try{migrateExistingLabels();}catch(e){fatal(e)}
   try{applyCurrency();applyLabelLen();}catch(e){fatal(e)}
   try{bindUpload();}catch(e){fatal(e)}
   try{setPaymentMenu('f-pay','COD');}catch(e){fatal(e)}
@@ -2246,6 +2500,7 @@ function init(){
   setTimeout(function(){getOcrWorker().then(function(){toast('OCR engine ready (FR+EN)','ok')}).catch(function(){})},2000);
 }
 window.addEventListener('labelonzeway-native-ready',function(){configurePlatformUI();setTimeout(autoDetectSavedPrinter,250)});
+window.addEventListener('online',renderOperationsDeck);window.addEventListener('offline',renderOperationsDeck);
 init();
 </script>
 </body>

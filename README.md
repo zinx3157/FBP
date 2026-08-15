@@ -1,63 +1,43 @@
-# SHIPDESK + LabelOnZeWay — Web v1.3.0 ready package
+# SHIPDESK + LabelOnZeWay v1.3.3 — Operations Deck
 
-Direct repository-root release package for:
+GitHub Pages release package for:
 
 - SHIPDESK: <https://zinx3157.github.io/FBP/>
 - LabelOnZeWay: <https://zinx3157.github.io/FBP/labelonzeway/>
 - Repository: <https://github.com/zinx3157/FBP>
 
-This package matches the existing repository's root deployment layout. The public site contains application code only. Never commit customer exports, operational backups, reports, credentials, Supabase secret/service-role keys, or private printer configuration.
+## Operations Deck redesign
 
-## Release highlights
+Version 1.3.3 applies the saved Google Stitch **Proposal A — Operations Deck** design to the canonical LabelOnZeWay workflow on web/iPhone-web, Android, and iOS source. It adds explicit Home, New Label, Batch, Manifest, and More destinations while retaining the tested operational DOM and data flows.
 
-LabelOnZeWay 1.3.0 adds:
+The phone interface keeps safe-area handling, compact forms, accessible controls, Back/Cancel behavior, sticky editing/printing actions, customer coordination, 1–20 label copies, New Label after save, batch deletion, 80 mm and A4/PDF manifests, payments, reports, archive, backup, profiles, Claims Vault, Deep Rescue, and cloud controls.
 
-- non-destructive **Recover Old Books** with preview/confirmation and conservative merge;
-- direct address-book **Export CSV**;
-- secure password recovery/change flows;
-- Supabase authorized shared-workspace synchronization;
-- complete compact New Label, Batch, Manifest, reports, archives, profile, AirPrint/system print, and direct POS80C workflows.
+## Download and installation
 
-Root SHIPDESK also adds address-book CSV export. Printer settings and active/deferred print queues remain device-local.
+- Android APK: [`downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck.apk`](downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck.apk)
+- Android source: [`downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck_Source.zip`](downloads/LabelOnZeWay_Android_v1.3.3_Operations_Deck_Source.zip)
+- iOS/Xcode source: [`downloads/LabelOnZeWay_iOS_v1.3.3_Operations_Deck_Source.zip`](downloads/LabelOnZeWay_iOS_v1.3.3_Operations_Deck_Source.zip)
+- Hosted POS80C gateway: [`downloads/POS80C_Hosted_Print_Gateway.zip`](downloads/POS80C_Hosted_Print_Gateway.zip)
+- Browser/PWA instructions: [`install.html`](install.html)
 
-## Historical address-book recovery
+Install the Android APK **over the existing app** so its device-local data remains available. Do not uninstall or clear application/site storage before Deep Rescue, CSV export, and backup verification. The iOS native source still requires macOS, Xcode signing, installation, and physical-device testing.
 
-Recovery works only in the same Safari/Chrome browser profile and device where the records remain visible at the existing SHIPDESK URL.
+## Printing
 
-1. Do **not** clear website data, uninstall the existing web app, or overwrite the old book.
-2. Confirm the records remain visible at <https://zinx3157.github.io/FBP/>.
-3. After the release is deployed, open <https://zinx3157.github.io/FBP/labelonzeway/> in that same browser.
-4. Choose **Recover Old Books**, review the preview, and confirm the merge.
-5. Check the customer count and fields, then choose **Export CSV** and create a full backup.
+Direct ESC/POS output retains zero avoidable feed and one auto-cut after every selected physical label. The Android and iOS bridges include bounded, cancellable private-LAN POS80C discovery. Android system printing and iOS AirPrint remain available, as do offline print queues and device-local printer settings. The hosted gateway provides direct browser-to-POS80C printing from macOS and other desktop systems.
 
-Recovery scans discoverable legacy/current company books on the shared GitHub Pages origin, excludes the current book as a source, skips malformed or empty data, retains current customers, conservatively deduplicates/enriches records, and never deletes the historical source keys.
+## Claims and shared workspace
 
-## Direct POS80C gateway
+Every generated label receives a permanent electronic Claims Vault version independent of its physical copy count. Claim versions survive manifest/archive deletion and preserve the historical company identity. Authorized staff can synchronize the safe workflow through one Supabase company workspace; printer settings and active queues stay local.
 
-Download `downloads/POS80C_Hosted_Print_Gateway.zip`, run the gateway on a Mac or Windows computer that can reach the POS80C, then open:
+The implementation passes mock two-client synchronization tests. An authorized operator must still run the Supabase migration and verify separate staff logins against the deployed project:
 
-```text
-http://COMPUTER_LAN_IP:8765/labelonzeway/
-```
+- Existing project: `supabase/SUPABASE_CLAIMS_MIGRATION.sql`
+- New project: `supabase/SUPABASE_SETUP.sql`
+- Guide: `supabase/SUPABASE_SETUP.md`
 
-The bundle contains LabelOnZeWay 1.3.0. Direct output uses zero added feed by default and one cut after every physical label copy. AirPrint and normal system printing remain available.
+Never commit customer exports, backups, reports, staff credentials, private printer configuration, or Supabase secret/service-role keys.
 
-## Deployment
+## Publication
 
-This is a direct-root package. Replace the tracked files in the authenticated local clone of `zinx3157/FBP` with the contents of this folder, review the diff, commit, and push to `main`. Do not copy the enclosing `FBP_Web_v1.3.0_Ready` folder itself into the repository.
-
-After GitHub Pages deployment, verify both public URLs before running recovery. Do not remove any old browser data until CSV export and a full backup have been checked.
-
-## Local preview
-
-From this folder:
-
-```bash
-python3 -m http.server 8080
-```
-
-Then open <http://127.0.0.1:8080/>. Local-preview browser storage is separate and cannot recover production records stored at `https://zinx3157.github.io`.
-
-## Publication status
-
-This is an unpublished release candidate. Publication requires explicit approval and authenticated Git access.
+This directory is a fresh clone of `zinx3157/FBP` with the v1.3.3 release committed locally. Review `RELEASE_MANIFEST.json`, `CHECKSUMS.sha256`, and `DEPLOYMENT_CHECKLIST.md`, then push `main` through an authenticated GitHub session.

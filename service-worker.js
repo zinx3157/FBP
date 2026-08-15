@@ -1,4 +1,4 @@
-const CACHE = 'labelonzeway-ios-web-v130-auth4-address1';
+const CACHE = 'shipdesk-web-v133-operations-deck1';
 const APP_SHELL = [
   './',
   './index.html',
