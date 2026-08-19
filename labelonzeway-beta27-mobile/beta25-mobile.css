@@ -1,0 +1,40 @@
+/* Beta 2.5 — Stitch-approved Mobile Dispatch visual layer. */
+:root{--ios-blue:#0d9488;--ios-teal:var(--color-primary);--ios-mint:var(--color-primary-subtle);--ios-sky:var(--color-accent-blue-subtle)}
+html{background:var(--color-canvas-bg)}
+body{font-family:var(--font-family-sans);background:radial-gradient(circle at 12% 0,var(--color-primary-subtle),transparent 29%),var(--color-canvas-bg);color:var(--color-text-primary)}
+#top{background:var(--color-surface-glass)!important;border-color:var(--color-border-subtle)!important;color:var(--color-text-primary)!important}
+#top .brand,#top .brand h1,#top .brand small{color:var(--color-text-primary)!important}
+#app>.card{background:var(--color-surface-card);border:1px solid var(--color-border-subtle);box-shadow:var(--shadow-md);color:var(--color-text-primary)}
+#card-home{background:linear-gradient(135deg,var(--color-surface-card),var(--color-primary-subtle));border-color:var(--color-primary-border)}
+.ops-action.primary,.btn.orange{background:var(--color-primary)!important;border-color:var(--color-primary)!important;color:var(--color-primary-text)!important}
+.btn.dark{background:var(--color-surface-sidebar)!important;color:#f1f5f9!important}
+.customer-link,.customer-status,.photo-tools>summary,.batch-toolbar,.b22-manifest-filter{background:linear-gradient(135deg,var(--color-primary-subtle),var(--color-accent-blue-subtle))!important;border:1px solid var(--color-border-subtle)!important}
+input,select,textarea{background:var(--color-surface-input)!important;color:var(--color-text-primary)!important;border-color:var(--color-border-default)!important}
+input:focus,select:focus,textarea:focus{background:var(--color-surface-input-focus)!important;border-color:var(--color-border-focus)!important;box-shadow:var(--focus-ring)!important}
+#drop{background:linear-gradient(145deg,var(--color-primary-subtle),var(--color-accent-blue-subtle))!important;border-color:var(--color-primary-border)!important}
+.b2-scan-review{background:var(--color-surface-elevated)!important;border:1px solid var(--color-primary-border)!important}
+.b2-scan-state{background:var(--color-primary)!important;color:var(--color-primary-text)!important}
+.b2-detected-address{background:var(--color-primary-subtle)!important;border-left-color:var(--color-primary)!important}
+.brow,.mobile-manifest-item{background:var(--color-surface-card)!important;border-color:var(--color-border-default)!important}
+@media(max-width:780px){
+  body{padding-bottom:calc(92px + env(safe-area-inset-bottom));background:var(--color-canvas-bg)}
+  #top{border-radius:0 0 var(--radius-lg) var(--radius-lg)!important}
+  #app{padding:10px!important;gap:12px!important}
+  #app>.card{border-radius:var(--radius-lg);padding:14px}
+  #card-home .ops-title{font-size:1.9rem!important}
+  .ops-actions{grid-template-columns:1fr 1fr!important}
+  .ops-action.primary{grid-column:1/-1}
+  #drop{min-height:205px}
+  .b2-scan-review{margin-top:-52px!important;width:calc(100% - 16px)!important;box-shadow:var(--shadow-lg)!important}
+  #parcel-actions{bottom:calc(76px + env(safe-area-inset-bottom));background:var(--color-surface-glass)!important;border:1px solid var(--color-border-subtle);backdrop-filter:blur(20px)}
+  #mobile-nav{height:68px;margin:0 8px calc(7px + env(safe-area-inset-bottom));width:calc(100% - 16px);border-radius:var(--radius-lg);background:var(--color-surface-glass)!important;border:1px solid var(--color-border-subtle)!important;backdrop-filter:blur(22px)}
+  #mobile-nav button{color:var(--color-text-secondary)!important}
+  #mobile-nav button[aria-current="page"]{color:var(--color-primary)!important;background:var(--color-primary-subtle)!important}
+  #card-manifest{overflow:hidden}
+  #card-manifest table{display:none!important}
+  .mobile-manifest-item{border-radius:var(--radius-md)!important;box-shadow:var(--shadow-sm)}
+}
+html[data-theme="dark"]{color-scheme:dark;--color-canvas-bg:#14191d;--color-surface-base:#1a2025;--color-surface-card:#20282e;--color-surface-card-hover:#273139;--color-surface-elevated:#29343b;--color-surface-input:#181f24;--color-surface-input-focus:#202a30;--color-surface-glass:rgba(30,39,45,.91);--color-border-subtle:#2d3940;--color-border-default:#3a4850;--color-text-primary:#e6eef0;--color-text-secondary:#a9b8bd;--color-text-muted:#7d8e94;--color-primary:#46b9aa;--color-primary-hover:#67c8bc;--color-primary-text:#071b19;--color-primary-subtle:rgba(70,185,170,.13);--color-accent-blue-subtle:rgba(82,142,184,.11)}
+html[data-theme="dark"] body{background:radial-gradient(circle at 12% 0,rgba(70,185,170,.08),transparent 32%),var(--color-canvas-bg)}
+html[data-theme="dark"] #card-home{background:linear-gradient(135deg,#202a2f,#233638)}
+
