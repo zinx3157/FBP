@@ -1,4 +1,4 @@
-const CACHE = 'labelonzeway-beta26-mobile-v261';
+const CACHE = 'labelonzeway-beta26-mobile-v262';
 const APP_SHELL = [
   './',
   './index.html',
