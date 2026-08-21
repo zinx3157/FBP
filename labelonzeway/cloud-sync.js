@@ -671,6 +671,18 @@
   api.requestPasswordReset = requestPasswordReset;
   api.showChangePassword = function () { showPasswordForm('change'); };
   api.nextOrderIdentifier = nextOrderIdentifier;
+  // Beta 3 exposes only this reviewed RPC; the Supabase client and session stay private.
+  api.createTrackingLink = function (profileId, parcel) {
+    if (!client || !session) return Promise.reject(new Error('Sign in to the shared workspace first.'));
+    if (!workspaceId) return Promise.reject(new Error('Choose a shared workspace first.'));
+    return client.rpc('upsert_parcel_tracking', {
+      p_workspace_id: workspaceId, p_profile_id: String(profileId), p_parcel_id: String(parcel.id),
+      p_order_number: String(parcel.oid), p_status: String(parcel.deliveryStatus || 'ready')
+    }).then(function (result) {
+      if (result.error) throw result.error;
+      return result.data;
+    });
+  };
   api.resetCurrentProfile = resetCurrentProfile;
   api.isConfigured = configured;
   api.getStatus = function () { return { configured: configured(), signedIn: !!session, workspaceId: workspaceId, workspaceName: workspaceName, deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing }; };

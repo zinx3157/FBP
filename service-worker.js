@@ -1,53 +1,5 @@
-const CACHE = 'labelonzeway-ios-web-v130-auth4-address1';
-const APP_SHELL = [
-  './',
-  './index.html',
-  './cloud-sync.js?v=130-auth4',
-  './sync-config.json',
-  './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-192.png',
-  './icons/icon-maskable-512.png'
-];
-
-self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', event => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  if (url.pathname.includes('/api/')) return;
-
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req).then(response => {
-        const copy = response.clone();
-        caches.open(CACHE).then(cache => cache.put('./index.html', copy));
-        return response;
-      }).catch(() => caches.match('./index.html'))
-    );
-    return;
-  }
-
-  if (url.origin === self.location.origin) {
-    event.respondWith(
-      caches.match(req).then(cached => {
-        const network = fetch(req).then(response => {
-          if (response.ok) caches.open(CACHE).then(cache => cache.put(req, response.clone()));
-          return response;
-        }).catch(() => cached);
-        return cached || network;
-      })
-    );
-  }
-});
+const CACHE='labelonzeway-beta3-operator-first-1';
+const SHELL=['./','./index.html','./app/styles.css','./app/print.css','./app/app.js','./command/','./guided/','./rider/','./tracking/'];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.origin!==location.origin||u.pathname.includes('/api/'))return;if(e.request.mode==='navigate'){e.respondWith(fetch(e.request).then(r=>{caches.open(CACHE).then(c=>c.put(e.request,r.clone()));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));return}e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(r=>{if(r.ok)caches.open(CACHE).then(c=>c.put(e.request,r.clone()));return r})))})
