@@ -59,10 +59,10 @@ returns table(order_number text,status text,updated_at timestamptz,link_state te
  union all select null::text,null::text,null::timestamptz,case when exists(select 1 from token_row where revoked_at is not null) then 'revoked' when exists(select 1 from token_row where expires_at<=now()) then 'expired' else 'not_found' end
  where not exists(select 1 from token_row where revoked_at is null and expires_at>now());
 $$;
-revoke all on function public.upsert_parcel_tracking_projection(uuid,text,text,text,text) from public;
-revoke all on function public.generate_parcel_tracking_token(uuid,text,text,text,text) from public;
-revoke all on function public.revoke_parcel_tracking_token(uuid,text,text) from public;
-revoke all on function public.public_parcel_tracking(uuid) from public;
+revoke all on function public.upsert_parcel_tracking_projection(uuid,text,text,text,text) from public, anon, authenticated, service_role;
+revoke all on function public.generate_parcel_tracking_token(uuid,text,text,text,text) from public, anon, authenticated, service_role;
+revoke all on function public.revoke_parcel_tracking_token(uuid,text,text) from public, anon, authenticated, service_role;
+revoke all on function public.public_parcel_tracking(uuid) from public, anon, authenticated, service_role;
 grant execute on function public.upsert_parcel_tracking_projection(uuid,text,text,text,text) to authenticated;
 grant execute on function public.generate_parcel_tracking_token(uuid,text,text,text,text) to authenticated;
 grant execute on function public.revoke_parcel_tracking_token(uuid,text,text) to authenticated;
