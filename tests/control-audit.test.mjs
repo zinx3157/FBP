@@ -1,6 +1,10 @@
 import assert from'node:assert/strict';import{readFile}from'node:fs/promises';
-const app=await readFile(new URL('../app/app.js',import.meta.url),'utf8');
+const app=await readFile(new URL('../app/app.js',import.meta.url),'utf8'),styles=await readFile(new URL('../app/styles.css',import.meta.url),'utf8');
 for(const key of['data-save','data-save-print','data-ocr','data-batch-add-manifest','data-csv','data-print-one','data-pdf','data-png','data-share','data-duplicate','data-delete-parcel','data-book-export','data-book-import','data-book-backup','data-book-restore','data-find'])assert(app.includes(key),`missing visible control ${key}`);
 for(const handler of['saveParcel','ocrPhoto','addBatchParcel','manifestCsv','labelPdfBlob','labelPngBlob','shareFile','addressBookAction','tracking'])assert(app.includes(handler),`missing handler ${handler}`);
 for(const phrase of['copySecureLink','expires_at','no URL or expiry','Secure-link backend is not deployed','revoked','Network error'])assert(app.includes(phrase),`missing secure-link handling ${phrase}`);
+for(const field of['Pick ID','Customer','Address','Phone','COD','Payment','Last update','Delivery completed','Updating tracking','Tracking updated','Tracking sync pending'])assert(app.includes(field),`missing Rider field or sync state ${field}`);
+assert(app.includes("const riderTransitions={ready:['in_transit','exception'],in_transit:['delivered','exception'],exception:['in_transit','delivered'],delivered:[]}"),'Rider action matrix is incorrect');
+assert(app.includes("status==='delivered'?'<p class=\"rider-complete\">Delivery completed</p>'"),'Delivered Rider cards must not render transition actions');
+for(const selector of['.rider .rider-parcel{background:var(--rider-card);color:var(--rider-ink)','@media(prefers-color-scheme:dark){.rider{--rider-card:','#173247','.rider-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))'])assert(styles.includes(selector),`missing readable Rider styling ${selector}`);
 assert(!/coming soon|demo(?:nstration)?/i.test(app),'demo control text is forbidden');assert(!/(?:^|[\s<])id="/im.test(app),'dynamic app markup must not introduce fixed duplicate IDs');console.log('control audit passed');

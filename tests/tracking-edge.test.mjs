@@ -10,5 +10,11 @@ const preflightHeaders=new Set(allowHeaders.split(',').map(header=>header.trim()
 for(const header of['authorization','apikey','content-type','x-client-info'])assert(preflightHeaders.has(header),`Supabase JS browser preflight header not allowed: ${header}`);
 assert(!/Access-Control-Allow-Origin'\]\s*=\s*['"]\*/.test(edge),'production CORS origin must not be wildcarded');
 assert(!/service[_-]?role/i.test(edge),'edge must not use service role');
-for(const s of['Sign in to create a secure tracking link','public_parcel_tracking','expires_at','LabelOnZeWayBetaTracking','revoked','expired'])assert(adapter.includes(s),`adapter missing ${s}`);
+const statusUpdate=adapter.match(/async function updateStatus\([\s\S]*?(?=async function lookup)/)?.[0]||'';
+for(const text of["sessionClient('update tracking status')","c.rpc('upsert_parcel_tracking_projection'",'p_workspace_id:workspace_id','p_profile_id:profile_id','p_parcel_id:parcel.id','p_order_number:parcel.oid','p_status:status','Tracking sync pending: Network error','Tracking sync pending: Backend error','Sign in to ${action}'])assert((text==='Sign in to ${action}'?adapter:statusUpdate).includes(text),`tracking status update missing ${text}`);
+assert.deepEqual([...adapter.matchAll(/const publicStatus=\{([^}]+)\}/g)][0]?.[1].replaceAll("'",'').split(',').map(pair=>pair.trim()),['ready:ready','in_transit:in_transit','delivered:delivered','exception:exception'],'public status mapping is incorrect');
+assert.deepEqual([...statusUpdate.matchAll(/\.rpc\('([^']+)'/g)].map(match=>match[1]),['upsert_parcel_tracking_projection'],'status updates may call only the projection RPC');
+assert(!/customer|address|phone|cod|note/i.test(statusUpdate),'status updates must not expose private tracking fields');
+assert(!/generate|create-label-share|token/i.test(statusUpdate),'status updates must not generate or rotate tracking tokens');
+for(const s of['Sign in to ${action}','public_parcel_tracking','expires_at','LabelOnZeWayBetaTracking','revoked','expired'])assert(adapter.includes(s),`adapter missing ${s}`);
 console.log('tracking edge/adapter static tests passed');
