@@ -2,7 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const pagesOrigin='https://zinx3157.github.io';
 const allowed=new Set([pagesOrigin,'http://127.0.0.1:8765','http://localhost:8765','http://192.168.100.14:8765',...(Deno.env.get('ALLOWED_ORIGINS')||'').split(',').map(x=>x.trim()).filter(Boolean)]);
-const headers=(origin:string|null)=>{const h:Record<string,string>={'Content-Type':'application/json','Vary':'Origin'};if(origin&&allowed.has(origin)){h['Access-Control-Allow-Origin']=origin;h['Access-Control-Allow-Headers']='authorization, content-type';h['Access-Control-Allow-Methods']='POST, OPTIONS'}return h};
+const headers=(origin:string|null)=>{const h:Record<string,string>={'Content-Type':'application/json','Vary':'Origin'};if(origin&&allowed.has(origin)){h['Access-Control-Allow-Origin']=origin;h['Access-Control-Allow-Headers']='authorization, apikey, content-type, x-client-info';h['Access-Control-Allow-Methods']='POST, OPTIONS'}return h};
 const json=(body:unknown,status:number,origin:string|null)=>new Response(JSON.stringify(body),{status,headers:headers(origin)});
 
 Deno.serve(async req=>{const origin=req.headers.get('origin');if(origin&&!allowed.has(origin))return json({error:'origin_not_allowed'},403,origin);if(req.method==='OPTIONS')return new Response(null,{status:204,headers:headers(origin)});if(req.method!=='POST')return json({error:'method_not_allowed'},405,origin);
