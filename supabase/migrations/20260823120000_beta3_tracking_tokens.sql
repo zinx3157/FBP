@@ -30,35 +30,39 @@ create policy "tracking tokens are workspace staff only" on public.parcel_tracki
 create policy "tracking projections are workspace staff only" on public.parcel_tracking_projection for all to authenticated using (public.workspace_role(workspace_id) in ('admin','staff')) with check (public.workspace_role(workspace_id) in ('admin','staff'));
 
 create or replace function public.upsert_parcel_tracking_projection(p_workspace_id uuid,p_profile_id text,p_parcel_id text,p_order_number text,p_status text)
-returns void language plpgsql security definer set search_path=public as $$ begin
+returns void language plpgsql security definer set search_path='' as $$ begin
  if auth.uid() is null or coalesce(public.workspace_role(p_workspace_id),'') not in ('admin','staff') then raise exception 'not authorized'; end if;
  if p_status not in ('ready','in_transit','delivered','exception') then raise exception 'invalid status'; end if;
- insert into parcel_tracking_projection(workspace_id,profile_id,parcel_id,order_number,status,updated_at) values(p_workspace_id,p_profile_id,p_parcel_id,p_order_number,p_status,now()) on conflict(workspace_id,profile_id,parcel_id) do update set order_number=excluded.order_number,status=excluded.status,updated_at=excluded.updated_at;
+ insert into public.parcel_tracking_projection(workspace_id,profile_id,parcel_id,order_number,status,updated_at) values(p_workspace_id,p_profile_id,p_parcel_id,p_order_number,p_status,now()) on conflict(workspace_id,profile_id,parcel_id) do update set order_number=excluded.order_number,status=excluded.status,updated_at=excluded.updated_at;
 end $$;
 
 create or replace function public.generate_parcel_tracking_token(p_workspace_id uuid,p_profile_id text,p_parcel_id text,p_order_number text,p_status text)
-returns table(token uuid,expires_at timestamptz) language plpgsql security definer set search_path=public as $$ begin
+returns table(token uuid,expires_at timestamptz) language plpgsql security definer set search_path='' as $$ begin
  perform public.upsert_parcel_tracking_projection(p_workspace_id,p_profile_id,p_parcel_id,p_order_number,p_status);
  -- A fresh token replaces the old token; expired/revoked rows are never reactivated.
- delete from parcel_tracking_tokens where workspace_id=p_workspace_id and profile_id=p_profile_id and parcel_id=p_parcel_id;
- return query insert into parcel_tracking_tokens(workspace_id,profile_id,parcel_id) values(p_workspace_id,p_profile_id,p_parcel_id) returning parcel_tracking_tokens.token,parcel_tracking_tokens.expires_at;
+ delete from public.parcel_tracking_tokens where workspace_id=p_workspace_id and profile_id=p_profile_id and parcel_id=p_parcel_id;
+ return query insert into public.parcel_tracking_tokens(workspace_id,profile_id,parcel_id) values(p_workspace_id,p_profile_id,p_parcel_id) returning public.parcel_tracking_tokens.token,public.parcel_tracking_tokens.expires_at;
 end $$;
 
 create or replace function public.revoke_parcel_tracking_token(p_workspace_id uuid,p_profile_id text,p_parcel_id text)
-returns void language plpgsql security definer set search_path=public as $$ begin
+returns void language plpgsql security definer set search_path='' as $$ begin
  if auth.uid() is null or coalesce(public.workspace_role(p_workspace_id),'') not in ('admin','staff') then raise exception 'not authorized'; end if;
- update parcel_tracking_tokens set revoked_at=now() where workspace_id=p_workspace_id and profile_id=p_profile_id and parcel_id=p_parcel_id and revoked_at is null;
+ update public.parcel_tracking_tokens set revoked_at=now() where workspace_id=p_workspace_id and profile_id=p_profile_id and parcel_id=p_parcel_id and revoked_at is null;
 end $$;
 
 create or replace function public.public_parcel_tracking(p_token uuid)
-returns table(order_number text,status text,updated_at timestamptz,link_state text) language sql security definer set search_path=public as $$
- with token_row as (select workspace_id,profile_id,parcel_id,revoked_at,expires_at from parcel_tracking_tokens where token=p_token)
+returns table(order_number text,status text,updated_at timestamptz,link_state text) language sql security definer set search_path='' as $$
+ with token_row as (select workspace_id,profile_id,parcel_id,revoked_at,expires_at from public.parcel_tracking_tokens where token=p_token)
  select p.order_number,p.status,p.updated_at,case when t.revoked_at is not null then 'revoked' when t.expires_at<=now() then 'expired' else 'active' end
- from token_row t join parcel_tracking_projection p using(workspace_id,profile_id,parcel_id)
+ from token_row t join public.parcel_tracking_projection p using(workspace_id,profile_id,parcel_id)
  where t.revoked_at is null and t.expires_at>now()
  union all select null::text,null::text,null::timestamptz,case when exists(select 1 from token_row where revoked_at is not null) then 'revoked' when exists(select 1 from token_row where expires_at<=now()) then 'expired' else 'not_found' end
  where not exists(select 1 from token_row where revoked_at is null and expires_at>now());
 $$;
+revoke all on function public.upsert_parcel_tracking_projection(uuid,text,text,text,text) from public;
+revoke all on function public.generate_parcel_tracking_token(uuid,text,text,text,text) from public;
+revoke all on function public.revoke_parcel_tracking_token(uuid,text,text,text) from public;
+revoke all on function public.public_parcel_tracking(uuid) from public;
 grant execute on function public.upsert_parcel_tracking_projection(uuid,text,text,text,text) to authenticated;
 grant execute on function public.generate_parcel_tracking_token(uuid,text,text,text,text) to authenticated;
 grant execute on function public.revoke_parcel_tracking_token(uuid,text,text,text) to authenticated;
