@@ -2,7 +2,7 @@ const CACHE = 'labelonzeway-v135-cloud-tracking';
 const APP_SHELL = [
   './',
   './index.html',
-  './cloud-sync.js?v=133-operations-deck1',
+  './cloud-sync.js?v=135-cloud-tracking',
   './sync-config.json',
   './manifest.webmanifest',
   './tracking/',
@@ -43,11 +43,12 @@ self.addEventListener('fetch', event => {
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(req).then(cached => {
-        const network = fetch(req).then(response => {
-          if (response.ok) caches.open(CACHE).then(cache => cache.put(req, response.clone()));
+        if (cached) return cached;
+        return fetch(req).then(response => {
+          const copy = response.clone();
+          if (response.ok) caches.open(CACHE).then(cache => cache.put(req, copy)).catch(() => {});
           return response;
-        }).catch(() => cached);
-        return cached || network;
+        });
       })
     );
   }
