@@ -1,10 +1,10 @@
 {
   "allowed_origins": [
-    "https://USERNAME.github.io"
+    "https://zinx3157.github.io"
   ],
-  "pages_url": "https://USERNAME.github.io/REPOSITORY/",
+  "pages_url": "https://zinx3157.github.io/FBP/",
   "host": "0.0.0.0",
   "port": 8765,
-  "web_root": "..",
+  "web_root": ".",
   "open_browser": true
 }

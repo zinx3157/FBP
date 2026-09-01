@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "LabelOnZeWay for iPhone",
+  "name": "LabelOnZeWay Operations Deck",
   "short_name": "LabelOnZeWay",
-  "description": "APK-style iPhone web app for parcel labels, customers, manifest, payments, reports, AirPrint, and optional POS80C gateway printing.",
+  "description": "Mobile operations deck for parcel labels, batch processing, manifests, claims, shared workflows, system printing, and direct POS80C printing.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",
