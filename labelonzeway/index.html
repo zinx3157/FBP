@@ -519,7 +519,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
 
   <section class="card" id="card-manifest">
     <div class="card-head"><h2>MANIFEST</h2><span class="hint" id="mani-date"></span>
-      <div class="right manifest-tools"><details class="compact-action-menu" id="manifest-action-menu"><summary>PRINT &amp; MANIFEST MENU</summary><div class="action-menu-grid">
+      <div class="right manifest-tools"><details class="compact-action-menu" id="manifest-action-menu" open><summary>PRINT &amp; MANIFEST MENU</summary><div class="action-menu-grid">
         <button class="btn sm orange" data-act="startNewLabel">＋ NEW LABEL</button>
         <button class="btn sm" data-act="exportCSV">⤓ CSV</button>
         <button class="btn sm dark" data-act="printManifest">🧾 80 MM</button>
@@ -527,6 +527,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
         <button class="btn sm green" data-act="printReport">📊 SALES REPORT</button>
         <button class="btn sm" data-act="closeDay">🌙 CLOSE DAY</button>
         <button class="btn sm" data-act="openArch">🗄 ARCHIVE</button>
+        <button class="btn sm blue" data-act="syncTrackingNow">⌁ SYNC TRACKING</button>
         <button class="btn sm" data-act="openLabelVault">🏷 CLAIM COPIES <span id="label-vault-count">0</span></button>
         <button class="btn sm" data-act="retryPrintQueue">↻ <span class="queue-count-label">QUEUE 0</span></button>
         <button class="btn sm" data-act="clearManifest" style="color:var(--red);border-color:var(--red)">✕ CLEAR</button>
@@ -785,17 +786,30 @@ function addProfileFromSettings(){var input=getEl('s-new-profile'),feedback=getE
 
 var PAY_MODES=['Espèces','COD','MVola','Orange Money','Airtel Money','PAID (prepaid)','Bank / Other'];
 var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,qwenUrl:'',qwenModel:'qwen2.5-vl:7b',
-  printMode:'browser',printerIp:'192.168.100.173',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:0,printerThreshold:180,printerCut:'partial',cutEach:true};
+  printMode:'direct',printerIp:'192.168.100.73',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:0,printerThreshold:180,printerCut:'partial',cutEach:true};
 var INITIAL_SHOP=load(K('shop'),{});if(window.LabelOnZeWayNative&&window.LabelOnZeWayNative.isNative&&!Object.prototype.hasOwnProperty.call(INITIAL_SHOP,'printMode'))INITIAL_SHOP.printMode='direct';
 var state={
   shop:Object.assign({},DEFAULT_SHOP,INITIAL_SHOP),
   addr:load(K('addr'),[]),manifest:load(K('mani'),[]),archive:load(K('arch'),[]),counter:load(K('ctr'),0),
   labelVault:load(K('labels'),[]),
   img:null,imgOCR:null,imgBig:null,currentFile:null,editingAddr:null,batch:[],addrAssign:null,resumeBatch:false};
+if(location.protocol==='http:'&&(location.hostname==='192.168.100.14'||location.hostname==='127.0.0.1'||location.hostname==='localhost')){
+  state.shop.printMode='direct';state.shop.printerIp='192.168.100.73';state.shop.printerPort=9100;state.shop.bridgeUrl='auto';
+  save(K('shop'),state.shop);
+}
 if(!Array.isArray(state.labelVault))state.labelVault=[];
 var batchBusy=false,previewMode=null,previewClaimId=null,noprixShown=false,scanActive=false,printChain=[],batchSelection={},manifestSelection={};
-function persist(){var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
-  if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change');if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
+function trackingToken(){var bytes=new Uint8Array(18);try{crypto.getRandomValues(bytes);return 'trk_'+Array.prototype.map.call(bytes,function(b){return b.toString(16).padStart(2,'0')}).join('')}catch(e){return uniqueId('trk_')+Math.random().toString(36).slice(2)}}
+function trackingRows(){var rows=state.manifest.slice();state.archive.forEach(function(day){if(day&&Array.isArray(day.rows))rows=rows.concat(day.rows)});return rows}
+function ensureTrackingRecords(){var changed=false;trackingRows().forEach(function(r){if(!r||typeof r!=='object')return;if(!r.trackingToken){r.trackingToken=trackingToken();changed=true}if(!r.deliveryStatus){r.deliveryStatus=r.done?'delivered':'ready';changed=true}if(!r.statusUpdatedAt){r.statusUpdatedAt=r.addedAt||new Date().toISOString();changed=true}});if(changed){save(K('mani'),state.manifest);save(K('arch'),state.archive)}return changed}
+function trackingPublicRecords(){var seen={};return trackingRows().filter(function(r){if(!r||!r.trackingToken||seen[r.trackingToken])return false;seen[r.trackingToken]=true;return true}).map(function(r){var status=r.deliveryStatus||(r.done?'delivered':'ready'),milestone=status==='delivered'?'Delivered':status==='in_transit'?'In Transit':status==='exception'?'Exception':'Ready for Dispatch';return{token:r.trackingToken,public:{orderNumber:String(r.oid||r.id||''),status:status,milestone:milestone,deliveryProcessDate:String(r.deliverAt||''),lastUpdate:String(r.statusUpdatedAt||r.addedAt||''),podAvailable:!!r.pod}}})}
+function syncTrackingGateway(showResult){ensureTrackingRecords();var records=trackingPublicRecords(),local=fetch('/api/tracking/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({records:records})}).then(function(response){return response.json().then(function(body){if(!response.ok)throw new Error(body.error||('HTTP '+response.status));return body})});var cloud=window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.publishTrackingRecords==='function'?window.LabelOnZeWayCloud.publishTrackingRecords(records):Promise.reject(new Error('Cloud tracking is not signed in'));return Promise.allSettled([local,cloud]).then(function(results){var passed=results.filter(function(result){return result.status==='fulfilled'});if(!passed.length)throw(results[1].reason||results[0].reason||new Error('Tracking synchronization failed'));if(showResult)toast('Tracking synchronized · '+records.length+' parcel'+(records.length===1?'':'s')+(results[1].status==='fulfilled'?' · internet ready':' · LAN only'),'ok');return{records:records.length,cloud:results[1].status==='fulfilled'}}).catch(function(error){if(showResult)toast('Tracking sync failed: '+error.message,'err');console.warn('Tracking sync',error);throw error})}
+function syncTrackingNow(){syncTrackingGateway(true).catch(function(){})}
+function trackingUrlFor(row){if(!row||!row.trackingToken)throw new Error('Tracking link unavailable');var cloud=window.LabelOnZeWayCloud,base=cloud&&typeof cloud.publicTrackingBase==='function'?cloud.publicTrackingBase():'';return(base||location.origin+'/labelonzeway/tracking/').replace(/\/$/,'/')+'?token='+encodeURIComponent(row.trackingToken)}
+function copyTrackingLink(id){ensureTrackingRecords();var row=trackingRows().find(function(r){return r.id===id});if(!row){toast('Parcel not found','err');return}var url=trackingUrlFor(row);syncTrackingGateway(false).catch(function(){});if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){toast('Tracking link copied','ok')}).catch(function(){window.prompt('Copy tracking link:',url)})}else window.prompt('Copy tracking link:',url)}
+function openTrackingLink(id){ensureTrackingRecords();var row=trackingRows().find(function(r){return r.id===id});if(!row){toast('Parcel not found','err');return}syncTrackingGateway(false).catch(function(){});window.open(trackingUrlFor(row),'_blank','noopener')}
+function persist(){ensureTrackingRecords();var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
+  syncTrackingGateway(false).catch(function(){});if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change');if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function moneyFor(v,shop){shop=shop||state.shop;var n=Number(v||0),sep=(shop.sep==null?' ':shop.sep);var p=Math.abs(n).toFixed(2).split('.');
   return (n<0?'-':'')+(shop.currency?shop.currency+' ':'')+p[0].replace(/\B(?=(\d{3})+(?!\d))/g,sep)+(p[1]==='00'?'':','+p[1])}
@@ -1743,7 +1757,7 @@ function mobileManifestHTML(rows){return '<div class="mobile-manifest-list">'+ro
       '<div class="mobile-field"><label>MM REF</label><input value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></div>'+
     '</div><div class="mobile-manifest-actions">'+
       '<button class="btn dark" data-arg="'+r.id+'" data-act="printRow">🖨 PRINT</button><button class="btn" data-arg="'+r.id+'" data-act="toBatch">↩ BATCH</button>'+
-      '<button class="btn green" data-arg="'+r.id+'" data-act="toggleDone">✓ '+(r.done?'REOPEN':'DONE')+'</button><button class="btn" style="color:var(--red)" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
+      '<button class="btn green" data-arg="'+r.id+'" data-act="toggleDone">✓ '+(r.done?'REOPEN':'DONE')+'</button><button class="btn blue" data-arg="'+r.id+'" data-act="copyTrackingLink">⌁ TRACKING</button><button class="btn" style="color:var(--red)" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
     '</div></div></details>';}).join('')+'</div>'}
 function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=state.manifest;
   if(!m.length){body.innerHTML='<div class="empty"><b>No parcels yet</b>Add from the form or batch. All cells are editable; 🖨 reprints with amended values.</div>';var tt=getEl('totals');if(tt)tt.innerHTML='';updateManifestSelectionUI();return}
@@ -1769,6 +1783,7 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="printRow">🖨</button>'+
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="toBatch" style="border-color:var(--blue)">↩</button>'+
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="toggleDone">✓</button>'+
+        '<button class="mini-btn" title="Copy tracking link" data-arg="'+r.id+'" data-act="copyTrackingLink">⌁</button>'+
         '<button class="mini-btn del" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
       '</div></td></tr>';}).join('')+'</tbody></table></div>';
   var totAll=m.reduce(function(s,r){return s+Number(r.cod||0)+Number(r.ship||0)},0),
@@ -1783,7 +1798,7 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
     '<div class="tot hot"><small>TO COLLECT</small><b>'+money(totOpen)+'</b></div>'+
     '<div class="tot"><small>TOTAL</small><b>'+money(totAll)+'</b></div>';
   updateManifestSelectionUI();}
-function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});r.done=!r.done;if(r.done)r.pod=true;persist();renderManifest();renderStats();}
+function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});r.done=!r.done;r.deliveryStatus=r.done?'delivered':'ready';r.statusUpdatedAt=new Date().toISOString();if(r.done)r.pod=true;persist();renderManifest();renderStats();}
 function removeRow(id){var row=state.manifest.find(function(x){return x.id===id});if(!row)return;if(!confirm('Delete this manifest label?\n\n'+manifestOrderDescriptor(row)+'\n\nIts permanent claim copy will remain in the Claims Vault.'))return;
   state.manifest=state.manifest.filter(function(x){return x.id!==id});delete manifestSelection[id];persist();renderManifest();renderStats();toast('Label deleted · claim copy retained','ok');}
 function clearManifest(){if(!state.manifest.length){toast('Manifest empty','err');return}
@@ -2434,7 +2449,7 @@ var ACTIONS={
   printCalibration:printCalibration, applyBatchRecAll:applyBatchRecAll,
   printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, deleteSelectedBatch:deleteSelectedBatch, clearBatch:clearBatch,
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
-  closeDay:closeDay, openArch:openArch, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, deleteSelectedManifestLabels:deleteSelectedManifestLabels, clearManifestSelection:clearManifestSelection,
+  closeDay:closeDay, openArch:openArch, syncTrackingNow:syncTrackingNow, copyTrackingLink:copyTrackingLink, openTrackingLink:openTrackingLink, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, deleteSelectedManifestLabels:deleteSelectedManifestLabels, clearManifestSelection:clearManifestSelection,
   openRecon:openRecon, openSettings:openSettings, openCloud:openCloud, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
   quickSystemPrint:quickSystemPrint, quickDirectPrint:quickDirectPrint, quickDetectPrinter:quickDetectPrinter,
   showMobileView:showMobileView, startNewLabel:startNewLabel, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
@@ -2471,6 +2486,7 @@ document.addEventListener('change',function(e){
 });
 
 function init(){
+  try{ensureTrackingRecords();syncTrackingGateway(false).catch(function(){});}catch(e){console.warn(e)}
   try{document.querySelectorAll('button').forEach(function(b){if(!b.hasAttribute('type'))b.type='button'});}catch(e){fatal(e)}
   try{renderProfileSel();}catch(e){fatal(e)}
   try{migrateExistingLabels();}catch(e){fatal(e)}

@@ -1,10 +1,11 @@
-const CACHE = 'labelonzeway-v133-operations-deck1';
+const CACHE = 'labelonzeway-v135-cloud-tracking';
 const APP_SHELL = [
   './',
   './index.html',
   './cloud-sync.js?v=133-operations-deck1',
   './sync-config.json',
   './manifest.webmanifest',
+  './tracking/',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-192.png',
@@ -32,9 +33,9 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(req).then(response => {
         const copy = response.clone();
-        caches.open(CACHE).then(cache => cache.put('./index.html', copy));
+        caches.open(CACHE).then(cache => cache.put(req, copy));
         return response;
-      }).catch(() => caches.match('./index.html'))
+      }).catch(() => caches.match(req).then(found => found || caches.match('./index.html')))
     );
     return;
   }
