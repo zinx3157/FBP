@@ -62,6 +62,22 @@
   function configured() {
     return !!(config && /^https:\/\//i.test(config.supabaseUrl || '') && String(config.supabaseAnonKey || '').length > 20);
   }
+  function publicTrackingBase() {
+    var configuredUrl = String(config && config.publicTrackingUrl || '').trim();
+    if (configuredUrl) return configuredUrl.replace(/\/$/, '') + '/';
+    return 'https://zinx3157.github.io/FBP/labelonzeway/tracking/';
+  }
+  function publishTrackingRecords(records) {
+    if (!client || !session || !workspaceId) return Promise.reject(new Error('Sign in to Cloud before publishing internet tracking'));
+    var safeRecords = (Array.isArray(records) ? records : []).slice(0, 1000).map(function (record) {
+      var value = record && record.public || {};
+      return { token: String(record && record.token || ''), order_number: String(value.orderNumber || ''), status: String(value.status || 'ready'), milestone: String(value.milestone || ''), delivery_process_date: String(value.deliveryProcessDate || ''), last_update: String(value.lastUpdate || ''), pod_available: !!value.podAvailable };
+    }).filter(function (record) { return /^trk_[A-Za-z0-9_-]{20,}$/.test(record.token) && record.order_number; });
+    return client.rpc('publish_public_tracking', { p_workspace_id: workspaceId, p_records: safeRecords }).then(function (result) {
+      if (result.error) throw result.error;
+      return { records: Number(result.data || safeRecords.length), mode: 'cloud' };
+    });
+  }
   function currentProfileId() {
     return typeof window.PID === 'string' && window.PID ? window.PID : (localStorage.getItem(PROFILE_KEY) || 'P1');
   }
@@ -713,6 +729,8 @@
   api.showChangePassword = function () { showPasswordForm('change'); };
   api.nextOrderIdentifier = nextOrderIdentifier;
   api.resetCurrentProfile = resetCurrentProfile;
+  api.publishTrackingRecords = publishTrackingRecords;
+  api.publicTrackingBase = publicTrackingBase;
   api.isConfigured = configured;
   api.getStatus = function () { return { configured: configured(), signedIn: !!session, workspaceId: workspaceId, workspaceName: workspaceName, deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing }; };
   window.LabelOnZeWayCloud = api;
