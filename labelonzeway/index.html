@@ -803,6 +803,9 @@ function trackingToken(){var bytes=new Uint8Array(18);try{crypto.getRandomValues
 function trackingRows(){var rows=state.manifest.slice();state.archive.forEach(function(day){if(day&&Array.isArray(day.rows))rows=rows.concat(day.rows)});return rows}
 function ensureTrackingRecords(){var changed=false;trackingRows().forEach(function(r){if(!r||typeof r!=='object')return;if(!r.trackingToken){r.trackingToken=trackingToken();changed=true}if(!r.deliveryStatus){r.deliveryStatus=r.done?'delivered':'ready';changed=true}if(!r.statusUpdatedAt){r.statusUpdatedAt=r.addedAt||new Date().toISOString();changed=true}});if(changed){save(K('mani'),state.manifest);save(K('arch'),state.archive)}return changed}
 function trackingPublicRecords(){var seen={};return trackingRows().filter(function(r){if(!r||!r.trackingToken||seen[r.trackingToken])return false;seen[r.trackingToken]=true;return true}).map(function(r){var status=r.deliveryStatus||(r.done?'delivered':'ready'),milestone=status==='delivered'?'Delivered':status==='in_transit'?'In Transit':status==='exception'?'Exception':'Ready for Dispatch';return{token:r.trackingToken,public:{orderNumber:String(r.oid||r.id||''),status:status,milestone:milestone,deliveryProcessDate:String(r.deliverAt||''),lastUpdate:String(r.statusUpdatedAt||r.addedAt||''),podAvailable:!!r.pod}}})}
+function deliveryStatusOf(r){var status=String(r&&r.deliveryStatus||'');return['ready','in_transit','delivered','exception'].indexOf(status)>=0?status:(r&&r.done?'delivered':'ready')}
+function deliveryStatusLabel(status){return status==='in_transit'?'In Transit':status==='delivered'?'Delivered':status==='exception'?'Exception':'Ready for Dispatch'}
+function deliveryStatusOptionsHTML(r){var current=deliveryStatusOf(r);return['ready','in_transit','delivered','exception'].map(function(status){return'<option value="'+status+'"'+(status===current?' selected':'')+'>'+deliveryStatusLabel(status)+'</option>'}).join('')}
 function syncTrackingGateway(showResult){ensureTrackingRecords();var records=trackingPublicRecords(),local=fetch('/api/tracking/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({records:records})}).then(function(response){return response.json().then(function(body){if(!response.ok)throw new Error(body.error||('HTTP '+response.status));return body})});var cloud=window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.publishTrackingRecords==='function'?window.LabelOnZeWayCloud.publishTrackingRecords(records):Promise.reject(new Error('Cloud tracking is not signed in'));return Promise.allSettled([local,cloud]).then(function(results){var passed=results.filter(function(result){return result.status==='fulfilled'});if(!passed.length)throw(results[1].reason||results[0].reason||new Error('Tracking synchronization failed'));if(showResult)toast('Tracking synchronized · '+records.length+' parcel'+(records.length===1?'':'s')+(results[1].status==='fulfilled'?' · internet ready':' · LAN only'),'ok');return{records:records.length,cloud:results[1].status==='fulfilled'}}).catch(function(error){if(showResult)toast('Tracking sync failed: '+error.message,'err');console.warn('Tracking sync',error);throw error})}
 function syncTrackingNow(){syncTrackingGateway(true).catch(function(){})}
 function trackingUrlFor(row){if(!row||!row.trackingToken)throw new Error('Tracking link unavailable');var cloud=window.LabelOnZeWayCloud,base=cloud&&typeof cloud.publicTrackingBase==='function'?cloud.publicTrackingBase():'';return(base||location.origin+'/labelonzeway/tracking/').replace(/\/$/,'/')+'?token='+encodeURIComponent(row.trackingToken)}
@@ -1743,7 +1746,7 @@ function mobileManifestHTML(rows){return '<div class="mobile-manifest-list">'+ro
   return '<details class="mobile-manifest-item '+(r.done?'done ':'')+(manifestSelection[r.id]?'mani-selected':'')+'" data-id="'+esc(r.id)+'"><summary>'+
     '<input type="checkbox" class="mani-check mani-select" data-id="'+esc(r.id)+'" aria-label="Select order '+esc(r.oid)+'" '+(manifestSelection[r.id]?'checked':'')+' onclick="event.stopPropagation()" onchange="setManifestSelected(\''+r.id+'\',this.checked)">'+
     '<span class="mobile-order">#'+esc(r.oid)+'</span><span class="mobile-rec"><b>'+esc(r.rec.name)+'</b><small>'+esc(r.rec.phone||address||'No contact details')+'</small></span>'+
-    '<span class="mobile-amount">'+money(total)+'<small>'+(r.done?'DELIVERED':'PENDING')+'</small></span></summary>'+
+    '<span class="mobile-amount">'+money(total)+'<small>'+esc(deliveryStatusLabel(deliveryStatusOf(r)).toUpperCase())+'</small></span></summary>'+
     '<div class="mobile-manifest-edit"><div class="mobile-edit-grid">'+
       '<div class="mobile-field"><label>NAME</label><input value="'+esc(r.rec.name)+'" onchange="setMan(\''+r.id+'\',\'name\',this.value)"></div>'+
       '<div class="mobile-field"><label>PHONE</label><input type="tel" value="'+esc(r.rec.phone||'')+'" onchange="setMan(\''+r.id+'\',\'phone\',this.value)"></div>'+
@@ -1755,9 +1758,10 @@ function mobileManifestHTML(rows){return '<div class="mobile-manifest-list">'+ro
       '<div class="mobile-field"><label>LABEL COPIES</label><input type="number" min="1" max="20" inputmode="numeric" value="'+(r.copies||1)+'" onchange="setMan(\''+r.id+'\',\'copies\',this.value)"></div>'+
       '<div class="mobile-field"><label>PAYMENT</label><select onchange="setMan(\''+r.id+'\',\'pay\',this.value)">'+payOptionsHTML(r.pay||'COD')+'</select></div>'+
       '<div class="mobile-field"><label>MM REF</label><input value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></div>'+
+      '<div class="mobile-field span2"><label>DELIVERY STATUS</label><select onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+'</div>'+
     '</div><div class="mobile-manifest-actions">'+
       '<button class="btn dark" data-arg="'+r.id+'" data-act="printRow">🖨 PRINT</button><button class="btn" data-arg="'+r.id+'" data-act="toBatch">↩ BATCH</button>'+
-      '<button class="btn green" data-arg="'+r.id+'" data-act="toggleDone">✓ '+(r.done?'REOPEN':'DONE')+'</button><button class="btn blue" data-arg="'+r.id+'" data-act="copyTrackingLink">⌁ TRACKING</button><button class="btn" style="color:var(--red)" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
+      '<button class="btn blue" data-arg="'+r.id+'" data-act="copyTrackingLink">⌁ TRACKING</button><button class="btn" style="color:var(--red)" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
     '</div></div></details>';}).join('')+'</div>'}
 function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=state.manifest;
   if(!m.length){body.innerHTML='<div class="empty"><b>No parcels yet</b>Add from the form or batch. All cells are editable; 🖨 reprints with amended values.</div>';var tt=getEl('totals');if(tt)tt.innerHTML='';updateManifestSelectionUI();return}
@@ -1778,11 +1782,10 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
       '<td><input class="cell-in num" type="number" min="1" max="20" value="'+(r.copies||1)+'" onchange="setMan(\''+r.id+'\',\'copies\',this.value)"></td>'+
       '<td><input class="cell-in mono" value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></td>'+
       '<td><select class="cell-in mono" aria-label="Payment mode for order '+esc(r.oid)+'" onchange="setMan(\''+r.id+'\',\'pay\',this.value)">'+payOptionsHTML(r.pay||'COD')+'</select></td>'+
-      '<td>'+(r.done?(r.paid?'<span class="stamp paid">✓ PAID</span>':'<span class="stamp">✓ DELIVERED</span>'):'<span class="stamp pending">◷ PENDING</span>')+'</td>'+
+      '<td><select class="cell-in mono status-select" aria-label="Delivery status for order '+esc(r.oid)+'" onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+'</td>'+
       '<td><div class="mani-actions">'+
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="printRow">🖨</button>'+
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="toBatch" style="border-color:var(--blue)">↩</button>'+
-        '<button class="mini-btn" data-arg="'+r.id+'" data-act="toggleDone">✓</button>'+
         '<button class="mini-btn" title="Copy tracking link" data-arg="'+r.id+'" data-act="copyTrackingLink">⌁</button>'+
         '<button class="mini-btn del" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
       '</div></td></tr>';}).join('')+'</tbody></table></div>';
@@ -1798,7 +1801,8 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
     '<div class="tot hot"><small>TO COLLECT</small><b>'+money(totOpen)+'</b></div>'+
     '<div class="tot"><small>TOTAL</small><b>'+money(totAll)+'</b></div>';
   updateManifestSelectionUI();}
-function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});r.done=!r.done;r.deliveryStatus=r.done?'delivered':'ready';r.statusUpdatedAt=new Date().toISOString();if(r.done)r.pod=true;persist();renderManifest();renderStats();}
+function setDeliveryStatus(id,status,reason){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;status=String(status||'ready');if(['ready','in_transit','delivered','exception'].indexOf(status)<0)return;if(status==='exception'){reason=reason==null?window.prompt('Enter the delivery exception reason:',r.deliveryExceptionReason||''):reason;if(reason==null){renderManifest();return}reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');renderManifest();return}r.deliveryExceptionReason=reason}else r.deliveryExceptionReason='';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=new Date().toISOString();persist();renderManifest();renderStats();toast('Order '+String(r.oid||'')+' · '+deliveryStatusLabel(status),'ok')}
+function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});if(r)setDeliveryStatus(id,r.done?'ready':'delivered')}
 function removeRow(id){var row=state.manifest.find(function(x){return x.id===id});if(!row)return;if(!confirm('Delete this manifest label?\n\n'+manifestOrderDescriptor(row)+'\n\nIts permanent claim copy will remain in the Claims Vault.'))return;
   state.manifest=state.manifest.filter(function(x){return x.id!==id});delete manifestSelection[id];persist();renderManifest();renderStats();toast('Label deleted · claim copy retained','ok');}
 function clearManifest(){if(!state.manifest.length){toast('Manifest empty','err');return}
