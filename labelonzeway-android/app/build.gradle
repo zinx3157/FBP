@@ -10,13 +10,12 @@ android {
         applicationId 'com.labelonzeway.app'
         minSdk 26
         targetSdk 35
-        versionCode 151
-        versionName '151.0-uat'
+        versionCode 152
+        versionName '152.0-personal'
     }
 
     buildTypes {
         debug {
-            applicationIdSuffix '.uat'
             versionNameSuffix '-debug'
         }
         release {

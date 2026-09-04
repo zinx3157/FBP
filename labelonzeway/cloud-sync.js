@@ -15,7 +15,7 @@
   var BLOCK_PREFIX = 'lz.cloud.order-block.v1.';
   var LOCAL_SHOP_KEYS = [
     'printMode', 'printerIp', 'printerPort', 'bridgeUrl', 'printerDots',
-    'printerFeed', 'printerThreshold', 'printerCut', 'cutEach', 'qwenUrl', 'qwenModel'
+    'printerFeed', 'printerThreshold', 'printerCut', 'cutEach'
   ];
   var SYNC_TYPES = ['profile_settings', 'customer', 'parcel_active', 'archive_day', 'label_copy', 'counter_state'];
   var PUSH_BATCH_RECORDS = 200;

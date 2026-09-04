@@ -1,15 +1,13 @@
-const CACHE = 'labelonzeway-v135-cloud-tracking';
+const CACHE = 'labelonzeway-v152-personal-release';
 const APP_SHELL = [
   './',
   './index.html',
-  './cloud-sync.js?v=135-cloud-tracking',
+  './cloud-sync.js?v=152-release',
   './sync-config.json',
   './manifest.webmanifest',
   './tracking/',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-192.png',
-  './icons/icon-maskable-512.png'
+  './tracking-dashboard/',
+  './icon.svg'
 ];
 
 self.addEventListener('install', event => {

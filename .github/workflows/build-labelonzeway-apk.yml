@@ -1,4 +1,4 @@
-name: Build LabelOnZeWay UAT APK
+name: Build LabelOnZeWay Personal APK
 
 on:
   workflow_dispatch:
@@ -30,17 +30,17 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Build personal UAT APK
+      - name: Build personal APK
         working-directory: labelonzeway-android
         run: gradle --no-daemon assembleDebug
 
       - name: Rename APK
-        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-v151-UAT.apk
+        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-v152-Personal.apk
 
       - name: Publish APK for download
         uses: actions/upload-artifact@v4
         with:
-          name: LabelOnZeWay-v151-UAT-APK
-          path: LabelOnZeWay-v151-UAT.apk
+          name: LabelOnZeWay-v152-Personal-APK
+          path: LabelOnZeWay-v152-Personal.apk
           if-no-files-found: error
           retention-days: 30

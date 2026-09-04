@@ -3,17 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LabelOnZeWay — iPhone Web App</title>
+<title>LabelOnZeWay — Operations Deck</title>
 <meta name="description" content="LabelOnZeWay iPhone web app for mobile parcel labels, customers, manifest, payments, reports, AirPrint, and optional POS80C gateway printing.">
-<meta name="theme-color" content="#0f766e">
+<meta name="theme-color" content="#f7f9fc">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="LabelOnZeWay">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <style>
 :root{--ink:#141a21;--paper:#e9ebee;--card:#fff;--orange:#ff5c1c;--blue:#1f4e8c;--green:#188a4c;--red:#c2372c;--line:#c9ced4;--mono:'IBM Plex Mono',monospace;--disp:'Archivo Black',sans-serif;--body:'Barlow',sans-serif;--lblh:210mm}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -72,7 +71,7 @@ button:focus-visible{outline:3px solid rgba(255,92,28,.35);outline-offset:2px}
 .money-wrap{position:relative}
 .money-wrap span{position:absolute;left:11px;top:50%;transform:translateY(-50%);font:700 13px var(--mono);color:var(--orange-d)}
 .money-wrap input{padding-left:48px;font:700 16px var(--mono)}
-.batch-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;background:#fbfbfa;margin-bottom:6px}
+.batch-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid #2c464d;border-radius:8px;padding:10px 12px;background:#091720;color:#eafaf7;margin-bottom:6px}
 .batch-bar select{width:auto;min-width:200px}.batch-bar .chk{margin-top:0}
 .batch-toolbar{border:1.5px solid var(--line);border-radius:9px;background:#f8fafb;padding:11px;margin-bottom:10px;display:grid;gap:9px}
 .batch-customer-all{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:8px;align-items:end}.batch-customer-all label{grid-column:1/-1;font:800 9.5px var(--mono);letter-spacing:1px;color:#596672}.batch-customer-all select{min-width:0}
@@ -228,7 +227,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 #mobile-nav button{border:0;background:transparent;color:#dfe6ec;font:700 9px var(--mono);min-width:0;flex:1;padding:7px 2px;cursor:pointer}
 #mobile-nav button span{display:block;color:#ff8a55;font:800 20px/1 var(--body);margin-bottom:3px}
 #install-app-btn{border-color:var(--orange);color:#ffd0bb}
-.compact-action-menu>summary{display:none}.action-menu-grid{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.compact-action-menu>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;min-height:38px;border:1.5px solid var(--blue);border-radius:7px;padding:7px 11px;background:#0d282a;color:#75efdb;font:800 10px var(--mono);cursor:pointer}.compact-action-menu>summary::-webkit-details-marker{display:none}.compact-action-menu>summary::after{content:'▾';font-size:15px}.compact-action-menu[open]>summary::after{content:'▴'}.action-menu-grid{display:none;gap:6px;flex-wrap:wrap;justify-content:flex-end;margin-top:7px}.compact-action-menu[open] .action-menu-grid{display:flex}
 .discovery-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.discovery-controls .btn{flex:1}.discovery-spinner{display:none;width:17px;height:17px;border:2px solid #d7dee5;border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}.discovery-spinner.active{display:inline-block}@keyframes spin{to{transform:rotate(360deg)}}
 .printer-results{display:grid;gap:6px;margin-top:8px}.printer-result{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:#fff;font:700 11px var(--mono)}
 .print-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:9px 0}.print-method{border:1.5px solid var(--line);border-radius:8px;padding:9px;background:#fff;font-size:11px;line-height:1.35}.print-method b{display:block;color:var(--blue);margin-bottom:3px}.print-method small{display:block;color:#65717d;margin-top:3px}
@@ -280,7 +279,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   .mobile-manifest-list{display:flex;flex-direction:column;gap:6px}.tbl-wrap{display:none}.mobile-manifest-item{border:1.5px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}.mobile-manifest-item[open]{border-color:var(--blue)}.mobile-manifest-item.done{background:#f4fbf6}.mobile-manifest-item.mani-selected{box-shadow:inset 4px 0 0 var(--orange)}
   .mobile-manifest-item>summary{list-style:none;display:grid;grid-template-columns:24px 38px minmax(0,1fr) auto;align-items:center;gap:6px;padding:7px 8px;min-height:52px}.mobile-manifest-item>summary::-webkit-details-marker{display:none}.mobile-order{font:800 10px var(--mono);color:var(--blue)}.mobile-rec{min-width:0}.mobile-rec b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}.mobile-rec small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:500 9px var(--mono);color:#66727e}.mobile-amount{text-align:right;font:800 10px var(--mono);color:var(--orange-d)}.mobile-amount small{display:block;font-size:7.5px;color:#66727e}
   .mobile-manifest-edit{border-top:1px solid var(--line);padding:8px;background:#fbfbfa}.mobile-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mobile-edit-grid .span2{grid-column:1/-1}.mobile-field label{display:block;font:700 8px var(--mono);letter-spacing:.7px;color:#66727e;margin-bottom:2px}.mobile-manifest-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.mobile-manifest-actions .btn{min-width:0;min-height:36px;padding:5px 2px;font-size:8.5px;box-shadow:none}
-  #mani-select-bar{display:grid!important;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);align-items:center!important;padding:7px!important;gap:6px!important}#mani-select-bar>span[style]{display:none}#mani-select-bar .btn{min-height:38px;padding:6px 4px;font-size:9px}#mani-select-bar label{grid-column:span 2}#mani-selection-status{text-align:right;font:700 9px var(--mono)}.print-methods{grid-template-columns:1fr}.print-method{padding:8px}.print-fallback-actions{grid-template-columns:1fr}.printer-results{margin-top:6px}.advanced-printer input,.advanced-printer select{min-height:40px;font-size:14px}
+  #mani-select-bar{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center!important;padding:7px!important;gap:6px!important}#mani-select-bar>span[style]{display:none}#mani-select-bar .btn{min-width:0;width:100%;min-height:40px;padding:7px 5px;font-size:9px;line-height:1.2;white-space:normal;overflow-wrap:anywhere}#mani-select-bar label{grid-column:1;font-size:10px}#mani-selection-status{grid-column:2;text-align:right;font:700 9px var(--mono)}#print-selected-labels,#bulk-status-select,#bulk-status-apply,#clear-manifest-selection{grid-column:1/-1!important}#bulk-status-select{display:block;width:100%;min-width:0;max-width:100%;font-size:15px}#archive-selected-labels{grid-column:1}#delete-selected-labels{grid-column:2}.print-methods{grid-template-columns:1fr}.print-method{padding:8px}.print-fallback-actions{grid-template-columns:1fr}.printer-results{margin-top:6px}.advanced-printer input,.advanced-printer select{min-height:40px;font-size:14px}
   .totals{overflow-x:auto;flex-wrap:nowrap;margin:9px -2px 0;padding:2px 2px 6px;scrollbar-width:none}.totals::-webkit-scrollbar{display:none}.tot{min-width:104px;padding:7px 10px}.tot b{font-size:16px}
   #mobile-nav{position:fixed;left:0;right:0;bottom:0;z-index:55;display:flex;background:var(--ink);border-top:3px solid var(--orange);padding:3px 6px calc(3px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px rgba(0,0,0,.22)}
   #mobile-nav button[aria-current=true]{background:#25313c;border-radius:7px;color:#fff}#mobile-nav button[aria-current=true] span{color:#fff}
@@ -328,6 +327,149 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
 <style id="pgLabel" disabled>@page{size:72mm auto;margin:0}</style>
 <style id="pgMan" disabled>@page{size:80mm auto;margin:0}</style>
 <style id="pgA4" disabled>@page{size:A4 portrait;margin:11mm}</style>
+<style id="approved-operations-neon-theme">
+:root{--ink:#0b1520;--paper:#e9efef;--card:#fff;--orange:#ff6b3d;--orange-d:#d94720;--blue:#176b8f;--green:#13855f;--red:#bf3e35;--line:#c8d4d3;--neon:#2edfc1;--night:#08111b;--night2:#101c28}
+body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radial-gradient(rgba(11,21,32,.075) 1px,transparent 1.3px) 0 0/22px 22px,linear-gradient(180deg,#edf3f2,var(--paper) 360px)}
+#top{background:linear-gradient(110deg,var(--night),var(--night2));border-bottom:1px solid #2edfc15c;box-shadow:0 8px 28px #08111b2b}.brand .logo{background:var(--neon);color:#071612;clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);border-radius:0}.brand h1 em{color:var(--neon)}.brand small{color:#79b9ae}.chip,select.profile{background:#11232c;border-color:#31504d}.chip b,.chip.clock b{color:#68e8d2}.hzd{height:5px;background:linear-gradient(90deg,var(--neon) 0 42%,var(--orange) 42% 58%,var(--night) 58%)}
+.card{border-color:#9badaa;box-shadow:0 10px 28px #09151e12}.card-head h2::before{background:var(--neon);border-color:var(--ink);clip-path:polygon(18% 0,100% 0,82% 100%,0 100%)}.btn.orange{background:var(--orange)}.btn.blue{background:#176b8f}.btn.green{background:var(--green)}input:focus,select:focus,textarea:focus{border-color:#18bca1;box-shadow:0 0 0 3px #2edfc126}button:focus-visible{outline-color:#2edfc178}.mani-check,.chk input{accent-color:#18aa91}tbody tr.mani-selected{background:#e6faf6;box-shadow:inset 4px 0 0 var(--neon)}.oid{color:#126c86}.toast{background:var(--night);border-left-color:var(--neon)}
+.ops-action.primary,.ops-metric.active{border-color:#25bfa5}.ops-status.ok::before,.control-status .dot.ok{background:var(--neon)}#mobile-nav{background:var(--night)!important;border-top-color:var(--neon)!important}#mobile-nav button span{color:#5de4cf!important}#mobile-nav button[aria-current=true]{background:#163d3a!important}.compact-action-menu>summary{border-color:#24b89e!important;color:#106f61!important;background:#e6f7f4!important}
+@media screen{
+  :root{color-scheme:dark;--ink:#eefcf9;--paper:#060d15;--card:#0d1823;--line:#294048;--orange:#ff6b3d;--orange-d:#ff8b68;--blue:#39c9ee;--green:#2edfc1;--amber:#ffc857;--red:#ff7068;--neon:#2edfc1;--night:#040a10;--night2:#0b1822;--muted-neon:#8aa9a5}
+  html{background:#040a10}
+  body{color:var(--ink);background:radial-gradient(circle at 78% -8%,rgba(46,223,193,.18),transparent 31%),radial-gradient(circle at 12% 22%,rgba(57,201,238,.08),transparent 26%),linear-gradient(155deg,#040a10 0,#08131d 54%,#061018 100%);background-attachment:fixed}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(46,223,193,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(46,223,193,.025) 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(to bottom,#000,transparent 80%)}
+  #top{background:linear-gradient(105deg,rgba(4,10,16,.98),rgba(11,28,38,.98));border-bottom:1px solid rgba(46,223,193,.55);box-shadow:0 10px 38px rgba(0,0,0,.48),inset 0 -1px rgba(46,223,193,.16)}
+  .brand{color:#f5fffd}.brand .logo{background:linear-gradient(145deg,#7fffe8,var(--neon));box-shadow:0 0 0 1px #8affe9,0 0 22px rgba(46,223,193,.42)}.brand h1 em{color:#64f2dc;text-shadow:0 0 18px rgba(46,223,193,.38)}.brand small{color:#79aaa3}
+  .chip,select.profile{color:#eafffb;background:#0d202a;border-color:#315e5a;box-shadow:inset 0 0 16px rgba(46,223,193,.035)}.chip b,.chip.clock b{color:#72f4df}.btn-ghost{color:#cffff7;background:#0b1922;border-color:#315f5b}.btn-ghost:hover{color:#081510;background:var(--neon);border-color:var(--neon);box-shadow:0 0 20px rgba(46,223,193,.28)}
+  .hzd{height:4px;background:linear-gradient(90deg,#2edfc1 0 38%,#39c9ee 38% 54%,#ff6b3d 54% 66%,#111d28 66%);box-shadow:0 0 18px rgba(46,223,193,.28)}
+  .card,.ops-panel,.control-block,.ops-action,.ops-metric,.photo-tools,.advanced-printer,.vault-item,.modal-box{color:var(--ink);background:linear-gradient(150deg,rgba(16,30,42,.98),rgba(9,20,30,.98));border-color:#29424a;box-shadow:0 14px 34px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.025)}
+  .card{position:relative;overflow:visible}.card::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(46,223,193,.025)}
+  .card-head{border-bottom-color:#263b43}.card-head h2,.ops-panel-head b,.control-title,.ops-title{color:#f3fffd}.card-head h2::before{background:linear-gradient(#74ffe6,#22bca3);box-shadow:0 0 14px rgba(46,223,193,.45)}
+  .ops-overline,.control-k{color:#67e9d4}.ops-sub,.control-copy,.ops-recent-empty,.control-status small,.photo-summary-meta,.muted,.hint{color:#8fa7a8}.ops-status{color:#b8d1ce;background:#0a1720;border-color:#2b454b}.ops-status.ok{color:#bdfcf0;border-color:#267263;box-shadow:inset 0 0 14px rgba(46,223,193,.05)}
+  .ops-metric{background:#0a151f}.ops-metric small{color:#809b9c}.ops-metric b{color:#f2fffd}.ops-metric.pending{background:linear-gradient(145deg,#211a0b,#15150f);border-color:#765d22}.ops-metric.pending b{color:#ffd36c}.ops-metric.active{background:linear-gradient(145deg,#0b2727,#0a1b22);box-shadow:inset 0 0 25px rgba(46,223,193,.07),0 0 20px rgba(46,223,193,.05)}
+  .ops-action{background:#0c1823;color:#eefcf9;transition:border-color .18s,transform .18s,box-shadow .18s}.ops-action:hover{border-color:#3c8e83;box-shadow:0 12px 26px rgba(0,0,0,.32),0 0 20px rgba(46,223,193,.08);transform:translateY(-1px)}.ops-action.primary{color:#061411;background:linear-gradient(145deg,#65f1dc,#22bfa7);border-color:#70f8e3;box-shadow:0 10px 26px rgba(46,223,193,.17)}.ops-action-icon{color:#6ff4df;background:#112c30;border:1px solid #285c58}.ops-action.primary .ops-action-icon{color:#061411;background:rgba(4,18,17,.13);border-color:rgba(4,18,17,.16)}
+  .ops-recent-row,.control-status{border-color:#24363e}.ops-order,.oid{color:#5ddaf5}.ops-rec small{color:#81999b}.ops-money{color:#62ead3}.local-notice,.customer-status{color:#f1d99d;background:linear-gradient(135deg,#201a0d,#171710);border-color:#735d27;border-left-color:#ffc857}
+  input,select,textarea,.input,button.qty,input[type=file]{color:#effcf9;background:#08141d;border-color:#35505a}input::placeholder,textarea::placeholder{color:#6e878a}input:focus,select:focus,textarea:focus{color:#fff;background:#0a1821;border-color:#40d8bf;box-shadow:0 0 0 3px rgba(46,223,193,.13),0 0 20px rgba(46,223,193,.08)}select option{color:#effcf9;background:#0b1822}
+  .btn{color:#dff6f2;background:#101e28;border-color:#38505a;box-shadow:none}.btn:hover:not(:disabled){border-color:#4a8f86;background:#142832}.btn.orange{color:#fff;background:linear-gradient(135deg,#ff7952,#db4825);border-color:#ff8768;box-shadow:0 0 18px rgba(255,107,61,.12)}.btn.dark{color:#081511;background:linear-gradient(135deg,#6cf5df,#27c4aa);border-color:#78ffe7}.btn.blue{color:#06151a;background:linear-gradient(135deg,#65def5,#27aed1);border-color:#77e7fb}.btn.green{color:#061511;background:linear-gradient(135deg,#63eccf,#21b98f);border-color:#73f2d7}.btn:disabled{color:#698083;background:#101820;border-color:#27363d;opacity:.68}
+  .customer-link,.photo-card,.photo-summary,.manifest-toolbar,.manifest-select-tools,#parcel-actions,.batch-item,.recon-box,.archive-item,.vault-note{color:#dcefeb;background:#0a1720;border-color:#2c424a}.customer-link b,.batch-item b,.archive-item b{color:#f5fffd}.customer-status{background:#211b0f}.step-dot{color:#061511;background:var(--neon);box-shadow:0 0 12px rgba(46,223,193,.3)}
+  #drop{color:#91aaa8;background:#07131b;border-color:#31525a}.drop-active{background:#0b292a!important;border-color:var(--neon)!important}.ocr-zone,.contact-found,.sync-box{color:#dcefeb;background:#0b1922;border-color:#2b454b}
+  #preview-body{background:linear-gradient(145deg,#07111a,#0b1821);border-color:#38525a}.pv-frame{filter:drop-shadow(0 12px 20px rgba(0,0,0,.45))}.label,.manifest-print,.a4-report{color:#000;background:#fff}
+  table{color:#eaf8f5}thead th{color:#9af5e5;background:#07131c;border-color:#355259}tbody td{border-color:#253940}tbody tr{background:#0b1720}tbody tr:nth-child(even){background:#0d1b25}tbody tr:hover{background:#122832}tbody tr.mani-selected{background:#0e302d;box-shadow:inset 4px 0 var(--neon)}
+  .mani-status,.status-pill,.pill{color:#a7eee2;background:#0b2325;border-color:#2f6f65}.delivery-exception{color:#ff9b93;background:#2b1516;border-color:#7e3737}.payment-pill{color:#9ce5f4;background:#0b222d;border-color:#285b6b}
+  .modal{background:rgba(0,4,8,.76);backdrop-filter:blur(7px)}.modal-box{border-color:#3c5a61;box-shadow:0 24px 70px rgba(0,0,0,.62),0 0 36px rgba(46,223,193,.07)}.modal-head{border-color:#2d4149}.modal-head h2{color:#f4fffd}
+  details>summary{color:#bfe8e1}.advanced-printer>summary{color:#67e9d4}.compact-action-menu>summary{color:#75efdb!important;background:#0d282a!important;border-color:#31756a!important}
+  .toast{color:#effffb;background:#08141d;border-color:#2d4a4c;border-left-color:var(--neon);box-shadow:0 15px 34px rgba(0,0,0,.48),0 0 24px rgba(46,223,193,.1)}
+  #mobile-context{color:#e9faf6;background:#08151e;border-color:#284047;box-shadow:0 10px 28px rgba(0,0,0,.45)}#mobile-context button{color:#bff8ef;background:#0d1d27;border-color:#31545a}#mobile-context button:last-child{color:#ff9e97;border-color:#6e393a}
+  #mobile-nav{background:rgba(4,12,19,.98)!important;border-top:1px solid rgba(46,223,193,.65)!important;box-shadow:0 -10px 30px rgba(0,0,0,.38)}#mobile-nav button{color:#8ba19f}#mobile-nav button span{color:#5ce7d0!important}#mobile-nav button[aria-current=true]{color:#f3fffc;background:linear-gradient(180deg,#153d3a,#0e292c)!important;box-shadow:inset 0 2px #4fe4ce,0 0 22px rgba(46,223,193,.08)}
+  ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:#071119}::-webkit-scrollbar-thumb{background:#29434a;border:2px solid #071119;border-radius:999px}::-webkit-scrollbar-thumb:hover{background:#397067}
+}
+@media(max-width:780px){input[type=text],input[type=search],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{font-size:16px}.btn,.btn-ghost,.mini-btn{min-height:44px}.card{border-color:#b8c5c3}.brand .logo{width:36px;height:36px}.pv-frame{max-width:100%}}
+@media screen and (max-width:780px){body{background:radial-gradient(circle at 80% 0,rgba(46,223,193,.16),transparent 28%),linear-gradient(160deg,#040a10,#08151f 58%,#061018)}#top{background:rgba(4,12,18,.97)}.card{border-color:#29444b}.chip,select.profile{background:#0d2029;color:#dffff9;border-color:#315e58}#parcel-actions{background:#08151e!important;border-color:#2b4349!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+<style id="v140-address-cleanup">
+#am-select-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--card) 88%,var(--neon) 12%)}
+#am-select-tools .chk{margin:0}.am-select-count{font:700 10px var(--mono);color:var(--blue)}.am-check{width:18px;height:18px;flex:0 0 auto;accent-color:var(--neon)}
+.ab-item.address-selected{border-color:var(--neon);box-shadow:inset 3px 0 0 var(--neon)}
+#ab-inline-select-tools{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding:8px;border:1px solid #31535a;border-radius:8px;background:#0a1720}#ab-inline-select-tools.open{display:flex}#ab-inline-select-tools .chk{margin:0;color:#cce7e2}#ab-delete-selected{margin-left:auto;color:#ff8f87;border-color:#944844;background:#1b1518}.ab-item{color:#eefcf9!important;background:#0a1720!important;border-color:#2d454c!important}.ab-item .ab-name{color:#effffb!important}.ab-item .ab-meta{color:#a9c0bd!important}.ab-item .ab-area{color:#081411!important;background:#56dec8!important}.ab-item .mini-btn{color:#dff8f3!important;background:#10232d!important;border-color:#45616a!important}.ab-item .mini-btn.del{color:#ff9b93!important;border-color:#7e4442!important}
+@media(max-width:560px){#am-select-tools{align-items:stretch}#am-delete-selected{width:100%}}
+</style>
+<style id="v151-neon-flow">
+@media screen{
+  #mani-select-bar,.batch-toolbar,.batch-bar,.brow,.mobile-manifest-item,.mobile-manifest-edit,.tot,.empty,#rec-form,#drop,#ocr-zone,#contact-suggest,.printer-box,.printer-status,.advanced-printer-body,.print-method,.vault-note,.archive-toolbar,.archive-day,.archive-parcel{color:#eafaf7;background:#091720;border-color:#2c464d;box-shadow:none}
+  #mani-select-bar{border-left:4px solid var(--neon)}#mani-select-bar .chk,#mani-selection-status{color:#b8d8d3}.mobile-manifest-item>summary{background:#0b1b25}.mobile-manifest-edit{border-top-color:#294047}.tot small,.archive-meta,.archive-parcel-meta{color:#8eaaa7}.tot b,.archive-name,.archive-day-title{color:#f2fffd}.empty{color:#8fa9a6}.empty b{color:#effcf9}
+  .batch-options,.ops-recent-row,.archive-parcel{border-color:#263e45}.printer-help,.vault-note{color:#abc0bd}.printer-status.ok{color:#6cebd5;background:#0b2826;border-color:#2f7569}.printer-status.err{color:#ff9a92;background:#2b1517;border-color:#7b3d3d}
+  #mani-select-bar .btn:disabled,#mani-select-bar select:disabled,#ab-inline-select-tools .btn:disabled,#am-select-tools .btn:disabled{display:none}
+  .archive-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:8px;padding:10px;border:1px solid #2c464d;border-radius:10px;margin:8px 0 10px}.archive-day{border:1px solid #2c464d;border-radius:10px;margin-top:9px;overflow:hidden}.archive-day>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;list-style:none;padding:12px;cursor:pointer;background:#0c2029}.archive-day>summary::-webkit-details-marker{display:none}.archive-day>summary::after{content:'▾';color:var(--neon);font-size:16px}.archive-day[open]>summary::after{content:'▴'}.archive-day-title{font:800 13px var(--body)}.archive-day-meta{font:600 9px var(--mono);color:#8eaaa7;margin-top:3px}.archive-day-body{padding:8px}.archive-day-actions{display:flex;justify-content:flex-end;gap:7px;margin-bottom:7px}.archive-parcel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid #263e45;border-left:4px solid #2edfc1;border-radius:8px;padding:10px;margin-top:7px}.archive-order{font:800 11px var(--mono);color:#5edbf1}.archive-name{font:800 13px var(--body);margin-top:2px}.archive-parcel-meta{font:550 9px/1.45 var(--mono);margin-top:3px}.archive-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px}.archive-status{border:1px solid #3a786e;border-radius:999px;padding:4px 8px;font:800 8px var(--mono);color:#79f0dc;background:#0b2727;white-space:nowrap}.archive-status.exception{color:#ff9992;border-color:#7d3d3d;background:#2b1517}.archive-status.delivered{color:#8cf3c0;border-color:#3a7959}.archive-actions{display:flex;gap:5px}.archive-actions .btn{min-height:34px;padding:5px 7px;font-size:8px}
+}
+@media(max-width:620px){.archive-toolbar{grid-template-columns:1fr}.archive-parcel{grid-template-columns:1fr}.archive-side{align-items:flex-start}.archive-day-actions{justify-content:stretch}.archive-day-actions .btn{flex:1}.archive-actions{width:100%}.archive-actions .btn{flex:1}}
+</style>
+<style id="v151-zero-white-ui">
+/* Screen-only: eliminate white application surfaces without changing printed labels/PDFs. */
+@media screen{
+  :root{color-scheme:dark}
+  html,body,#app{background-color:#050c13!important}
+  #top,#mobile-context,#mobile-nav,
+  .card,.ops-panel,.control-block,.ops-action:not(.primary),.ops-metric,
+  .customer-link,.customer-status,.photo-tools,.photo-tools-body,
+  #drop,#ocr-zone,#ocr-text pre,#contact-suggest,#rec-form,
+  .batch-toolbar,.batch-bar,.brow,.batch-options,.batch-item,
+  #mani-select-bar,.manifest-toolbar,.manifest-select-tools,#parcel-actions,
+  .tbl-wrap,table,tbody tr,tbody tr:nth-child(even),td .cell-in,.dt-in,
+  .mobile-manifest-list,.mobile-manifest-item,.mobile-manifest-item>summary,.mobile-manifest-edit,
+  .tot,.empty,.pv-hint,.recon-box,.vault-note,.vault-item,
+  .printer-box,.printer-results,.printer-result,.print-method,.advanced-printer,.advanced-printer-body,
+  .modal-box,.archive-toolbar,.archive-day,.archive-day>summary,.archive-day-body,.archive-parcel,
+  #am-select-tools,#ab-inline-select-tools,.ab-item,#rec-form,
+  .mini-btn,.pchip,.local-notice{
+    color:#eafaf7!important;
+    background:#091720!important;
+    background-color:#091720!important;
+    border-color:#2c464d!important;
+  }
+  #mani-select-bar,.manifest-select-tools,#parcel-actions{
+    background:linear-gradient(135deg,#0b1d27,#08141d)!important;
+    box-shadow:inset 4px 0 0 var(--neon)!important;
+  }
+  input:not([type=checkbox]):not([type=radio]),select,textarea,.input,button.qty{
+    color:#effcf9!important;background:#07141d!important;border-color:#35505a!important;
+  }
+  input::placeholder,textarea::placeholder{color:#718b8d!important}
+  .btn:not(.orange):not(.blue):not(.green):not(.dark),.btn-ghost{
+    color:#dff6f2!important;background:#0d1d27!important;border-color:#38545c!important;
+  }
+  .btn:disabled{color:#60777a!important;background:#0b141b!important;border-color:#23343b!important}
+  .mobile-manifest-item.done{background:#0a211d!important}
+  tbody tr.mani-selected,.mobile-manifest-item.mani-selected,.ab-item.address-selected{
+    background:#0d2d2a!important;box-shadow:inset 4px 0 0 var(--neon)!important;
+  }
+  .brow.err,.printer-status.err,.archive-status.exception{
+    color:#ffaaa3!important;background:#291518!important;border-color:#784043!important;
+  }
+  .customer-status,.local-notice,.vault-note,.ops-metric.pending{
+    color:#f2d99c!important;background:#1c180e!important;border-color:#6c5728!important;
+  }
+  .compact-action-menu>summary{
+    color:#75efdb!important;background:#0b2427!important;border-color:#31756a!important;
+  }
+  .archive-day>summary{background:#0b2029!important}
+  .archive-status{background:#0a2726!important}
+  .modal{background:rgba(0,4,8,.86)!important}
+  /* Paper remains white so screen preview matches the physical/PDF output. */
+  .pv-frame,.lbl,.label,.man-sheet,.manifest-print,.a4sheet,.a4-report{
+    background:#fff!important;color:#000!important;
+  }
+}
+</style>
+<style id="v151-manifest-audit-fix">
+@media screen{
+  #card-manifest{background:linear-gradient(150deg,#101e2a,#08131d)!important}
+  #card-manifest #mani-select-bar.batch-bar{
+    color:#eafaf7!important;
+    background:#091720!important;
+    background-image:linear-gradient(135deg,#0b1d27,#08141d)!important;
+    border:1px solid #315159!important;
+    border-left:4px solid var(--neon)!important;
+    box-shadow:0 8px 22px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025)!important;
+  }
+  #card-manifest #mani-select-bar label,
+  #card-manifest #mani-selection-status{color:#c7e4df!important}
+  #card-manifest #mani-body,
+  #card-manifest .mobile-manifest-list,
+  #card-manifest .mobile-manifest-item,
+  #card-manifest .mobile-manifest-item>summary,
+  #card-manifest .mobile-manifest-edit,
+  #card-manifest .totals,
+  #card-manifest .tot,
+  #card-manifest .empty{background-color:#091720!important;color:#eafaf7!important}
+  .uat-version-chip{color:#061511!important;background:#66ead5!important;border-color:#79f5e1!important}
+  .confirmation-preview{min-height:190px;line-height:1.55;resize:vertical}
+  .confirmation-customer{margin:9px 0;padding:10px;border:1px solid #315159;border-radius:9px;background:#091720;color:#c7e4df}
+  .confirmation-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.confirmation-actions .btn{min-height:48px}
+  .confirm-action{border-color:#329b89!important;color:#8bf5e2!important}
+}
+@media(max-width:520px){.confirmation-actions{grid-template-columns:1fr}.mobile-manifest-actions .confirm-action{grid-column:1/-1}}
+</style>
 </head>
 <body>
 <div id="fatal"></div>
@@ -336,6 +478,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
     <span><h1>LABEL<em>ONZEWAY</em></h1><small>OPERATIONS DECK · LABELS · DISPATCH</small></span></button>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
+    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>v152</b></div>
     <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
     <div class="chip">📦 <b id="stat-count">0</b></div>
     <div class="chip">💰 <b id="stat-cod">0</b></div>
@@ -399,7 +542,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
       <div class="oz-t">🔍 READ PRICE
         <button class="btn sm" id="scan-btn" data-act="scanPrice" style="border-color:var(--blue);color:var(--blue);box-shadow:none">SCAN</button>
         <button class="btn sm blue" id="deep-btn" data-act="deepScan" style="box-shadow:none">◎ DEEP</button>
-        <button class="btn sm green" id="qwen-btn" data-act="qwenScan" style="box-shadow:none">🤖 QWEN</button>
       </div>
       <div id="ocr-bar"><i></i></div><div id="ocr-status"></div><div id="ocr-results"></div>
       <details id="ocr-text"><summary>▸ Show raw OCR text</summary><pre id="ocr-pre"></pre></details>
@@ -479,6 +621,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
     </div>
     <label class="f" style="margin-top:16px">Saved customers <span id="ab-count" style="color:var(--orange-d)"></span></label>
     <button class="btn sm wide" data-act="toggleAbList" style="box-shadow:none">▾ Show saved customers</button>
+    <div id="ab-inline-select-tools">
+      <label class="chk"><input type="checkbox" id="ab-select-all" onchange="toggleAllSavedAddresses(this.checked)"> Select all customers</label>
+      <span class="am-select-count" id="ab-selection-status">0 selected</span>
+      <button class="btn sm" id="ab-delete-selected" data-act="deleteSelectedAddresses" disabled>🗑 DELETE SELECTED</button>
+    </div>
     <div id="ab-list"></div>
     </div>
   </section>
@@ -519,7 +666,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
 
   <section class="card" id="card-manifest">
     <div class="card-head"><h2>MANIFEST</h2><span class="hint" id="mani-date"></span>
-      <div class="right manifest-tools"><details class="compact-action-menu" id="manifest-action-menu" open><summary>PRINT &amp; MANIFEST MENU</summary><div class="action-menu-grid">
+      <div class="right manifest-tools"><details class="compact-action-menu" id="manifest-action-menu"><summary>MANIFEST TOOLS</summary><div class="action-menu-grid">
         <button class="btn sm orange" data-act="startNewLabel">＋ NEW LABEL</button>
         <button class="btn sm" data-act="exportCSV">⤓ CSV</button>
         <button class="btn sm dark" data-act="printManifest">🧾 80 MM</button>
@@ -528,6 +675,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
         <button class="btn sm" data-act="closeDay">🌙 CLOSE DAY</button>
         <button class="btn sm" data-act="openArch">🗄 ARCHIVE</button>
         <button class="btn sm blue" data-act="syncTrackingNow">⌁ SYNC TRACKING</button>
+        <button class="btn sm blue" data-act="openTrackingDashboard">◎ TRACKING VIEW</button>
         <button class="btn sm" data-act="openLabelVault">🏷 CLAIM COPIES <span id="label-vault-count">0</span></button>
         <button class="btn sm" data-act="retryPrintQueue">↻ <span class="queue-count-label">QUEUE 0</span></button>
         <button class="btn sm" data-act="clearManifest" style="color:var(--red);border-color:var(--red)">✕ CLEAR</button>
@@ -537,6 +685,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
       <span id="mani-selection-status">0 selected</span>
       <span style="flex:1"></span>
       <button class="btn sm orange" id="print-selected-labels" data-act="printSelectedLabels" disabled>🏷 PRINT SELECTED LABELS</button>
+      <select id="bulk-status-select" aria-label="Status for selected parcels" disabled>
+        <option value="">UPDATE STATUS…</option>
+        <option value="ready">Ready for Dispatch</option>
+        <option value="in_transit">In Transit</option>
+        <option value="delivered">Delivered</option>
+        <option value="exception">Exception</option>
+      </select>
+      <button class="btn sm green" id="bulk-status-apply" data-act="applyBulkDeliveryStatus" disabled>APPLY STATUS</button>
+      <button class="btn sm blue" id="archive-selected-labels" data-act="archiveSelectedManifest" disabled>🗄 ARCHIVE SELECTED</button>
       <button class="btn sm manifest-delete-selected" id="delete-selected-labels" data-act="deleteSelectedManifestLabels" disabled>🗑 DELETE LABELS</button>
       <button class="btn sm" id="clear-manifest-selection" data-act="clearManifestSelection" disabled>✕ Clear selection</button>
     </div>
@@ -666,10 +823,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
     </div></details>
     <p class="printer-help" id="native-printer-note">For direct ESC/POS printing on iPhone, do not try to connect this public HTTPS page to an HTTP LAN gateway. Instead, start the gateway and open its local <code>http://…:8765/</code> LabelOnZeWay address in Safari. For this GitHub Pages URL, use iOS System Print.</p>
   </div>
-  <div style="border-top:2px dashed var(--line);margin-top:14px;padding-top:12px">
-    <p style="font:700 11px var(--mono);color:var(--green)">🤖 QWEN BACKEND (optional)</p>
-    <div class="row2"><div><label class="f">Qwen endpoint</label><input type="text" id="s-qwen-url" placeholder="http://localhost:11434/v1/chat/completions"></div>
-      <div><label class="f">Qwen model</label><input type="text" id="s-qwen-model" placeholder="qwen2.5-vl:7b"></div></div></div>
   <div style="display:flex;gap:8px;margin-top:16px">
     <button class="btn orange" data-act="saveSettings">Save</button>
     <button class="btn" data-close="m-settings">Cancel</button>
@@ -701,6 +854,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
     <button class="btn sm" data-act="recoverOldAddressBooks">↻ Deep Rescue</button>
     <button class="btn sm green" data-act="exportAddressBookCSV">⤓ Export CSV</button>
   </div>
+  <div id="am-select-tools">
+    <label class="chk"><input type="checkbox" id="am-select-all" onchange="toggleAllFilteredAddresses(this.checked)"> Select all shown</label>
+    <span class="am-select-count" id="am-selection-status">0 selected</span>
+    <span style="flex:1"></span>
+    <button class="btn sm" id="am-delete-selected" data-act="deleteSelectedAddresses" disabled style="color:var(--red);border-color:var(--red)">🗑 DELETE SELECTED</button>
+  </div>
   <div id="am-list" style="margin:4px 0 14px;max-height:300px;overflow:auto"></div>
   <div style="border-top:2px dashed var(--line);padding-top:12px">
     <p style="font:700 11px var(--mono);color:var(--blue)" id="am-form-title">ADD ADDRESS</p>
@@ -717,6 +876,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
 <div class="modal" id="m-arch"><div class="modal-box">
   <button class="modal-x" data-close="m-arch">✕</button>
   <h3>ARCHIVED DAYS</h3>
+  <div class="archive-toolbar">
+    <input type="search" id="arch-search" placeholder="Search order, customer, phone or address…" oninput="renderArch()">
+    <select id="arch-status-filter" onchange="renderArch()" aria-label="Filter archived parcels by milestone">
+      <option value="">All milestones</option><option value="ready">Ready for Dispatch</option><option value="in_transit">In Transit</option><option value="delivered">Delivered</option><option value="exception">Exception</option>
+    </select>
+  </div>
   <div id="arch-list"></div>
 </div></div>
 
@@ -751,7 +916,37 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
     <button class="btn" data-close="m-preview">Cancel</button></div>
 </div></div>
 
-<script src="cloud-sync.js?v=135-cloud-tracking"></script>
+<div class="modal" id="m-confirmation"><div class="modal-box">
+  <button class="modal-x" data-close="m-confirmation">✕</button>
+  <h3>CUSTOMER NOTIFICATION</h3>
+  <div class="confirmation-customer" id="confirmation-customer">Choose a parcel from the Manifest.</div>
+  <div class="row2">
+    <div><label class="f" for="confirmation-type">Message type</label><select id="confirmation-type" onchange="refreshCustomerMessage()">
+      <option value="confirmation">Order confirmation</option>
+      <option value="ready">Ready for dispatch</option>
+      <option value="in_transit">In transit</option>
+      <option value="reminder">Delivery reminder</option>
+      <option value="delivered">Delivered</option>
+      <option value="exception">Delivery exception</option>
+      <option value="payment">Payment reminder</option>
+      <option value="custom">Custom message</option>
+    </select></div>
+    <div><label class="f" for="confirmation-language">Language</label><select id="confirmation-language" onchange="refreshCustomerMessage()">
+      <option value="mg">Malagasy</option><option value="fr">Français</option><option value="en">English</option>
+    </select></div>
+  </div>
+  <label class="f" for="confirmation-message">Message</label>
+  <textarea class="confirmation-preview" id="confirmation-message" aria-label="Customer confirmation message"></textarea>
+  <div class="confirmation-actions">
+    <button class="btn green" data-act="sendConfirmationWhatsApp">WHATSAPP</button>
+    <button class="btn blue" data-act="sendConfirmationSMS">SMS</button>
+    <button class="btn" data-act="copyConfirmationMessage">COPY MESSAGE</button>
+    <button class="btn" data-close="m-confirmation">CANCEL</button>
+  </div>
+  <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
+</div></div>
+
+<script src="cloud-sync.js?v=152-release"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -785,7 +980,7 @@ function addProfileFromSettings(){var input=getEl('s-new-profile'),feedback=getE
   toast('Company profile created','ok');setTimeout(function(){location.reload()},250);}
 
 var PAY_MODES=['Espèces','COD','MVola','Orange Money','Airtel Money','PAID (prepaid)','Bank / Other'];
-var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,qwenUrl:'',qwenModel:'qwen2.5-vl:7b',
+var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,
   printMode:'direct',printerIp:'192.168.100.73',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:0,printerThreshold:180,printerCut:'partial',cutEach:true};
 var INITIAL_SHOP=load(K('shop'),{});if(window.LabelOnZeWayNative&&window.LabelOnZeWayNative.isNative&&!Object.prototype.hasOwnProperty.call(INITIAL_SHOP,'printMode'))INITIAL_SHOP.printMode='direct';
 var state={
@@ -798,7 +993,7 @@ if(location.protocol==='http:'&&(location.hostname==='192.168.100.14'||location.
   save(K('shop'),state.shop);
 }
 if(!Array.isArray(state.labelVault))state.labelVault=[];
-var batchBusy=false,previewMode=null,previewClaimId=null,noprixShown=false,scanActive=false,printChain=[],batchSelection={},manifestSelection={};
+var batchBusy=false,previewMode=null,previewClaimId=null,noprixShown=false,scanActive=false,printChain=[],batchSelection={},manifestSelection={},addressSelection={},confirmationRowId=null;
 function trackingToken(){var bytes=new Uint8Array(18);try{crypto.getRandomValues(bytes);return 'trk_'+Array.prototype.map.call(bytes,function(b){return b.toString(16).padStart(2,'0')}).join('')}catch(e){return uniqueId('trk_')+Math.random().toString(36).slice(2)}}
 function trackingRows(){var rows=state.manifest.slice();state.archive.forEach(function(day){if(day&&Array.isArray(day.rows))rows=rows.concat(day.rows)});return rows}
 function ensureTrackingRecords(){var changed=false;trackingRows().forEach(function(r){if(!r||typeof r!=='object')return;if(!r.trackingToken){r.trackingToken=trackingToken();changed=true}if(!r.deliveryStatus){r.deliveryStatus=r.done?'delivered':'ready';changed=true}if(!r.statusUpdatedAt){r.statusUpdatedAt=r.addedAt||new Date().toISOString();changed=true}});if(changed){save(K('mani'),state.manifest);save(K('arch'),state.archive)}return changed}
@@ -811,6 +1006,51 @@ function syncTrackingNow(){syncTrackingGateway(true).catch(function(){})}
 function trackingUrlFor(row){if(!row||!row.trackingToken)throw new Error('Tracking link unavailable');var cloud=window.LabelOnZeWayCloud,base=cloud&&typeof cloud.publicTrackingBase==='function'?cloud.publicTrackingBase():'';return(base||location.origin+'/labelonzeway/tracking/').replace(/\/$/,'/')+'?token='+encodeURIComponent(row.trackingToken)}
 function copyTrackingLink(id){ensureTrackingRecords();var row=trackingRows().find(function(r){return r.id===id});if(!row){toast('Parcel not found','err');return}var url=trackingUrlFor(row);syncTrackingGateway(false).catch(function(){});if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){toast('Tracking link copied','ok')}).catch(function(){window.prompt('Copy tracking link:',url)})}else window.prompt('Copy tracking link:',url)}
 function openTrackingLink(id){ensureTrackingRecords();var row=trackingRows().find(function(r){return r.id===id});if(!row){toast('Parcel not found','err');return}syncTrackingGateway(false).catch(function(){});window.open(trackingUrlFor(row),'_blank','noopener')}
+function confirmationPhone(row){return String(row&&row.rec&&row.rec.phone||'').trim()}
+function confirmationPhoneDigits(row){var raw=confirmationPhone(row),digits=raw.replace(/\D/g,'');if(!digits)return'';if(digits.indexOf('00')===0)digits=digits.slice(2);if(digits.charAt(0)==='0')digits='261'+digits.slice(1);return digits}
+function customerNotificationText(row,type,lang){ensureTrackingRecords();var rec=row.rec||{},name=String(rec.name||'Customer'),order=String(row.oid||row.id||''),shop=String(state.shop.name||'LabelOnZeWay'),amount=money(Number(row.cod||0)+Number(row.ship||0)),delivery=row.deliverAt?fmtDeliverDate(row.deliverAt,row.deliverTime):'',tracking=trackingUrlFor(row),reason=String(row.deliveryExceptionReason||'');type=String(type||'confirmation');lang=String(lang||'mg');
+  var data={name:name,order:order,shop:shop,amount:amount,delivery:delivery||'',tracking:tracking,reason:reason};
+  var templates={
+    mg:{
+      confirmation:'Salama {name},\n\nVoaray ary voamarina ny entanao laharana #{order} ao amin’ny {shop}.\nVola aloa: {amount}\nFanaterana: {delivery}\nAraho eto: {tracking}\n\nMisaotra tompoko.',
+      ready:'Salama {name},\n\nEfa vonona halefa ny entanao laharana #{order}.\nVola aloa: {amount}\nFanaterana: {delivery}\nAraho eto: {tracking}\n\nMisaotra tompoko.',
+      in_transit:'Salama {name},\n\nEfa eny an-dalana ny entanao laharana #{order}. Azafady, miomàna handray azy.\nVola aloa: {amount}\nAraho eto: {tracking}\n\nMisaotra tompoko.',
+      reminder:'Salama {name},\n\nAmpahatsiahivina fa {delivery} no hanaterana ny entanao laharana #{order}. Azafady, hamarino fa hisy olona afaka handray azy ary omano ny vola {amount}.\nAraho eto: {tracking}\n\nMisaotra tompoko.',
+      delivered:'Salama {name},\n\nVoamarina fa efa voatondra ny entanao laharana #{order}. Misaotra anao nisafidy ny {shop}.',
+      exception:'Salama {name},\n\nNisy olana tamin’ny fanaterana ny entanao laharana #{order}. {reason}\nAzafady, mifandraisa aminay mba handaminana ny fanaterana.\nAraho eto: {tracking}\n\nMiala tsiny ary misaotra tompoko.',
+      payment:'Salama {name},\n\nAmpahatsiahivina fa {amount} ny vola aloa amin’ny entana laharana #{order}. Azafady, omano izany amin’ny fotoana fanaterana.\nMisaotra tompoko.',
+      custom:'Salama {name},\n\nMomba ny entanao laharana #{order}:\n\n'
+    },
+    fr:{
+      confirmation:'Bonjour {name},\n\nVotre colis n°{order} auprès de {shop} est confirmé.\nMontant à payer : {amount}\nLivraison : {delivery}\nSuivi : {tracking}\n\nMerci.',
+      ready:'Bonjour {name},\n\nVotre colis n°{order} est prêt à être expédié.\nMontant à payer : {amount}\nLivraison : {delivery}\nSuivi : {tracking}\n\nMerci.',
+      in_transit:'Bonjour {name},\n\nVotre colis n°{order} est en cours de livraison. Merci de vous préparer à le recevoir.\nMontant à payer : {amount}\nSuivi : {tracking}',
+      reminder:'Bonjour {name},\n\nRappel : la livraison du colis n°{order} est prévue {delivery}. Merci de confirmer votre disponibilité et de préparer {amount}.\nSuivi : {tracking}',
+      delivered:'Bonjour {name},\n\nLa livraison du colis n°{order} est confirmée. Merci d’avoir choisi {shop}.',
+      exception:'Bonjour {name},\n\nUn problème est survenu pour la livraison du colis n°{order}. {reason}\nMerci de nous contacter afin de reprogrammer la livraison.\nSuivi : {tracking}',
+      payment:'Bonjour {name},\n\nRappel de paiement : {amount} est à régler pour le colis n°{order}. Merci de préparer ce montant pour la livraison.',
+      custom:'Bonjour {name},\n\nConcernant votre colis n°{order} :\n\n'
+    },
+    en:{
+      confirmation:'Hello {name},\n\nYour parcel #{order} with {shop} is confirmed.\nAmount to pay: {amount}\nDelivery: {delivery}\nTracking: {tracking}\n\nThank you.',
+      ready:'Hello {name},\n\nYour parcel #{order} is ready for dispatch.\nAmount to pay: {amount}\nDelivery: {delivery}\nTracking: {tracking}\n\nThank you.',
+      in_transit:'Hello {name},\n\nYour parcel #{order} is in transit. Please prepare to receive it.\nAmount to pay: {amount}\nTracking: {tracking}',
+      reminder:'Hello {name},\n\nReminder: parcel #{order} is scheduled for delivery {delivery}. Please confirm availability and prepare {amount}.\nTracking: {tracking}',
+      delivered:'Hello {name},\n\nDelivery of parcel #{order} is confirmed. Thank you for choosing {shop}.',
+      exception:'Hello {name},\n\nThere is a delivery issue with parcel #{order}. {reason}\nPlease contact us to rearrange delivery.\nTracking: {tracking}',
+      payment:'Hello {name},\n\nPayment reminder: {amount} is due for parcel #{order}. Please prepare this amount for delivery.',
+      custom:'Hello {name},\n\nRegarding parcel #{order}:\n\n'
+    }};
+  var text=(templates[lang]&&templates[lang][type])||templates.en.confirmation;if(!data.delivery)data.delivery=lang==='mg'?'Mbola hofaritana':lang==='fr'?'À confirmer':'To be confirmed';if(!data.reason)data.reason=lang==='mg'?'Hampahafantarinay anao ny antsipiriany.':lang==='fr'?'Nous vous communiquerons les détails.':'We will provide further details.';return text.replace(/\{(\w+)\}/g,function(_,key){return data[key]==null?'':data[key]})}
+function confirmationRow(){return trackingRows().find(function(r){return r&&r.id===confirmationRowId})||null}
+function refreshCustomerMessage(){var row=confirmationRow(),m=getEl('confirmation-message'),type=val('confirmation-type','confirmation'),lang=val('confirmation-language','mg');if(!row||!m)return;save(K('notifyLanguage'),lang);m.value=customerNotificationText(row,type,lang)}
+function openCustomerNotification(id,type){ensureTrackingRecords();var row=trackingRows().find(function(r){return r&&r.id===id});if(!row){toast('Parcel not found','err');return}if(!confirmationPhoneDigits(row)){toast('Add a customer phone number before sending a notification','err');return}confirmationRowId=row.id;var c=getEl('confirmation-customer'),s=getEl('confirmation-status'),typeEl=getEl('confirmation-type'),langEl=getEl('confirmation-language');if(c)c.textContent='#'+String(row.oid||row.id)+' · '+String(row.rec&&row.rec.name||'Customer')+' · '+confirmationPhone(row);if(typeEl)typeEl.value=type||'confirmation';if(langEl)langEl.value=load(K('notifyLanguage'),'mg');refreshCustomerMessage();if(s){s.textContent='Choose the message and language, then confirm sending in WhatsApp or Messages.';s.className='printer-status'}var modal=getEl('m-confirmation');if(modal)modal.classList.add('open');syncTrackingGateway(false).catch(function(){})}
+function openCustomerConfirmation(id){openCustomerNotification(id,'confirmation')}
+function recordConfirmationOpened(row,channel){row.confirmations=Array.isArray(row.confirmations)?row.confirmations:[];row.confirmations.push({channel:channel,type:val('confirmation-type','confirmation'),language:val('confirmation-language','mg'),status:'prepared',at:new Date().toISOString()});if(row.confirmations.length>30)row.confirmations=row.confirmations.slice(-30);persist()}
+function sendConfirmationWhatsApp(){var row=confirmationRow(),m=getEl('confirmation-message');if(!row||!m)return;var digits=confirmationPhoneDigits(row);recordConfirmationOpened(row,'whatsapp');window.open('https://wa.me/'+encodeURIComponent(digits)+'?text='+encodeURIComponent(m.value),'_blank','noopener');var s=getEl('confirmation-status');if(s){s.textContent='WhatsApp opened · confirmation marked as prepared';s.className='printer-status ok'}}
+function sendConfirmationSMS(){var row=confirmationRow(),m=getEl('confirmation-message');if(!row||!m)return;var digits=confirmationPhoneDigits(row),ios=/iPad|iPhone|iPod/.test(navigator.userAgent),sep=ios?'&':'?';recordConfirmationOpened(row,'sms');window.location.href='sms:+'+digits+sep+'body='+encodeURIComponent(m.value);var s=getEl('confirmation-status');if(s){s.textContent='Messages opened · confirmation marked as prepared';s.className='printer-status ok'}}
+function copyConfirmationMessage(){var m=getEl('confirmation-message');if(!m)return;var copied=function(){toast('Confirmation message copied','ok')};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(m.value).then(copied).catch(function(){m.select();document.execCommand('copy');copied()});else{m.select();document.execCommand('copy');copied()}}
+function openTrackingDashboard(){window.open(new URL('tracking-dashboard/',location.href).toString(),'_blank','noopener')}
 function persist(){ensureTrackingRecords();var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
   syncTrackingGateway(false).catch(function(){});if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change');if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -882,8 +1122,7 @@ function renderOperationsDeck(){
   var count=getEl('ops-label-count'),total=getEl('ops-cod-total'),queueEl=getEl('ops-queue-count'),vault=getEl('control-vault-count');
   if(count)count.textContent=m.length;if(total)total.textContent=money(cod);
   var queue=getPrintQueue().reduce(function(n,j){return n+((j.rows&&j.rows.length)||0)},0);if(queueEl)queueEl.textContent=queue;if(vault)vault.textContent=state.labelVault.length;
-  var profile=PROFILES.find(function(p){return p.id===PID}),shopName=String(state.shop.name||profile&&profile.name||'Company workspace');
-  if(shopName==='YOUR PAGE NAME'&&profile)shopName=profile.name;
+  var profile=PROFILES.find(function(p){return p.id===PID}),shopName=String(profile&&profile.name||state.shop.name||'Company workspace');
   var shop=getEl('ops-shop-name');if(shop)shop.textContent=shopName+' · Create a label, process a photo batch, or prepare today’s manifest without leaving the shared workflow.';
   var online=navigator.onLine!==false;setOpsStatus('ops-network-chip',online?'Online':'Offline',online?'ok':'err');
   var networkDot=getEl('control-network-dot'),networkTitle=getEl('control-network-title');if(networkDot)networkDot.className='dot '+(online?'ok':'err');if(networkTitle)networkTitle.textContent=online?'Device online':'Device offline';
@@ -894,7 +1133,7 @@ function renderOperationsDeck(){
   setOpsStatus('ops-cloud-chip',cloudText,cloudType);var cloudDot=getEl('control-cloud-dot'),cloudTitle=getEl('control-cloud-title'),cloudCopyEl=getEl('control-cloud-copy');if(cloudDot)cloudDot.className='dot'+(cloudType==='ok'?' ok':'');if(cloudTitle)cloudTitle.textContent=cloudText;if(cloudCopyEl)cloudCopyEl.textContent=cloudCopy;
   var direct=state.shop.printMode==='direct',printerText=direct?('Direct POS80C'+(state.shop.printerIp?' · '+state.shop.printerIp:'')):'System Print';setOpsStatus('ops-printer-chip',printerText,direct&&state.shop.printerIp?'ok':'');
   var printerCopy=getEl('control-printer-copy');if(printerCopy)printerCopy.textContent=direct?('Direct POS80C is selected'+(state.shop.printerIp?' at '+state.shop.printerIp+':'+(state.shop.printerPort||9100):'. Auto-detect or enter a printer address')+'. Auto-cut after each label remains '+(state.shop.cutEach===false?'off':'on')+'.'):'System Print is selected. Direct POS80C uses the saved network printer on this device.';
-  var recent=getEl('ops-recent-list');if(recent){var rows=m.slice(-4).reverse();recent.innerHTML=rows.length?rows.map(function(r){var rec=r.rec||{};return '<div class="ops-recent-row"><span class="ops-order">#'+esc(r.oid||r.id||'—')+'</span><span class="ops-rec"><b>'+esc(rec.name||'Customer')+'</b><small>'+esc([rec.area,r.pay].filter(Boolean).join(' · ')||'Label ready')+'</small></span><span class="ops-money">'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</span></div>'}).join(''):'<div class="ops-recent-empty">No labels in the active manifest yet. Start with New Label or Batch.</div>'}
+  var recent=getEl('ops-recent-list');if(recent){var rows=m.slice(-4).reverse();recent.innerHTML=rows.length?rows.map(function(r){var rec=r.rec||{},status=deliveryStatusLabel(r.deliveryStatus);return '<div class="ops-recent-row"><span class="ops-order">#'+esc(r.oid||r.id||'—')+'</span><span class="ops-rec"><b>'+esc(rec.name||'Customer')+'</b><small>'+esc([rec.area,r.pay,status].filter(Boolean).join(' · ')||'Label ready')+'</small></span><span class="ops-money">'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</span></div>'}).join(''):'<div class="ops-recent-empty">No labels in the active manifest yet. Start with New Label or Batch.</div>'}
 }
 window.LabelOnZeWayRefreshOperationsDeck=renderOperationsDeck;
 
@@ -1195,9 +1434,9 @@ function runScan(mode){
   if(!state.img){toast('Upload a photo first','err');return}
   if(scanActive){toast('Scan already running…','err');return}
   scanActive=true;
-  var btnF=getEl('scan-btn'),btnD=getEl('deep-btn'),btnQ=getEl('qwen-btn'),
+  var btnF=getEl('scan-btn'),btnD=getEl('deep-btn'),
       bar=getEl('ocr-bar'),fill=bar?bar.querySelector('i'):null,status=getEl('ocr-status'),det=getEl('ocr-text'),pre=getEl('ocr-pre');
-  if(btnF)btnF.disabled=true;if(btnD)btnD.disabled=true;if(btnQ)btnQ.disabled=true;
+  if(btnF)btnF.disabled=true;if(btnD)btnD.disabled=true;
   if(bar)bar.style.display='block';if(fill)fill.style.width='5%';
   if(status){status.style.display='block';status.textContent='Loading OCR engine…';}
   if(det)det.style.display='none';
@@ -1227,74 +1466,10 @@ function runScan(mode){
     if(fill)fill.style.width='100%';
   }).catch(function(e){clearTimeout(to);console.error(e);if(status)status.textContent='Scan failed: '+(e.message||'error');
     toast('Scan failed: '+e.message,'err');if(det)det.open=true;
-  }).finally(function(){if(btnF)btnF.disabled=false;if(btnD)btnD.disabled=false;if(btnQ)btnQ.disabled=false;scanActive=false;
+  }).finally(function(){if(btnF)btnF.disabled=false;if(btnD)btnD.disabled=false;scanActive=false;
     setTimeout(function(){if(bar)bar.style.display='none'},800);});
 }
 function syncCod(){var p=val('f-price');var c=getEl('f-cod');if(c)c.value=p}
-
-function preprocessImageForOcr(source){var img=new Image();
-  return new Promise(function(res,rej){img.onload=function(){res(img)};img.onerror=function(){rej(new Error('img load fail'))};
-    if(source instanceof File||source instanceof Blob)img.src=URL.createObjectURL(source);
-    else if(typeof source==='string')img.src=source;else rej(new Error('bad source'));}).then(function(img){
-    var longSide=Math.max(img.width,img.height),scale=Math.max(1,1200/longSide);
-    var w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
-    var canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-    var ctx=canvas.getContext('2d');ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,w,h);
-    var d=ctx.getImageData(0,0,w,h),p=d.data,mn=255,mx=0,i,g;
-    for(i=0;i<p.length;i+=4){g=0.299*p[i]+0.587*p[i+1]+0.114*p[i+2];if(g<mn)mn=g;if(g>mx)mx=g}
-    var rg=Math.max(1,mx-mn);
-    for(i=0;i<p.length;i+=4){g=Math.round(((0.299*p[i]+0.587*p[i+1]+0.114*p[i+2])-mn)/rg*255);p[i]=p[i+1]=p[i+2]=g;}
-    ctx.putImageData(d,0,0);return canvas.toDataURL('image/jpeg',0.92);});}
-function parseQwenResponse(text){var found=[];if(!text)return found;
-  var lines=text.split(/\r?\n/);
-  lines.forEach(function(line,i){if(!/pr[i1l]x|price|montant|total|amount|net|payer/i.test(line))return;
-    var combined=(line+' '+(lines[i+1]||'')).trim();
-    var nums=combined.match(/[0-9][0-9.,\s\u00a0\u202f]{0,14}[0-9]/g)||[];
-    nums.forEach(function(raw){var v=parseAmount(deconfuse(raw));if(isFinite(v)&&v>=10&&v<100000000)pushFound(found,v,12,'QWEN-PRIX')});});
-  return found}
-function resolveQwenTarget(){if(state.img)return{source:state.currentFile||state.imgBig||state.imgOCR||state.img,target:'single',itemId:null};
-  if(state.batch.length){var first=state.batch.find(function(b){return b.status==='waiting'})||state.batch[0];
-    if(!first)return null;return{source:first.fileRef||first.imgBig||first.imgOCR||first.img,target:'batch',itemId:first.id};}
-  return null}
-function qwenScan(){var qwenUrl=(state.shop.qwenUrl||'').trim(),qwenModel=(state.shop.qwenModel||'').trim();
-  if(!qwenUrl||!qwenModel){toast('Set Qwen endpoint & model in ⚙ Settings','err');return}
-  var tgt=resolveQwenTarget();if(!tgt){toast('Upload a photo first','err');return}
-  var btn=getEl('qwen-btn'),btnF=getEl('scan-btn'),btnD=getEl('deep-btn'),bar=getEl('ocr-bar'),fill=bar?bar.querySelector('i'):null,status=getEl('ocr-status'),det=getEl('ocr-text'),pre=getEl('ocr-pre');
-  if(btn)btn.disabled=true;if(btnF)btnF.disabled=true;if(btnD)btnD.disabled=true;
-  if(bar)bar.style.display='block';if(fill)fill.style.width='5%';
-  if(status){status.style.display='block';status.textContent='Preprocessing for Qwen…';}
-  if(det)det.style.display='none';
-  preprocessImageForOcr(tgt.source).then(function(perfectOcrImage){
-    if(fill)fill.style.width='30%';if(status)status.textContent='Calling '+qwenModel+' …';
-    var payload={model:qwenModel,messages:[{role:'user',content:[
-      {type:'text',text:'You are a precision data parser. The image may contain ROTATED text. Transcribe numeric fields exactly. If you see "PRIX", the price is the number RIGHT AFTER it. Return a Markdown table | Field | Value |. If no price, say "no price visible".'},
-      {type:'image_url',image_url:{url:perfectOcrImage}}]}],temperature:0.0,max_tokens:500};
-    if(fill)fill.style.width='55%';
-    return fetch(qwenUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-  }).then(function(resp){
-    if(!resp.ok)return resp.text().catch(function(){return''}).then(function(et){throw new Error('HTTP '+resp.status+' '+String(et).slice(0,100))});
-    return resp.json();
-  }).then(function(data){
-    var md=(data&&data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
-    if(fill)fill.style.width='85%';if(status)status.textContent='Parsing Qwen response…';
-    var found=parseQwenResponse(md);
-    if(pre)pre.textContent='── QWEN RAW ──\n'+md.trim();
-    if(det)det.style.display='block';
-    renderChips(found);maybeSuggestContact(md);if(fill)fill.style.width='100%';
-    if(found.length){var best=bestOf(found)[0];
-      if(tgt.target==='single'){var fp=getEl('f-price');if(fp)fp.value=best.v;syncCod();queuePreview();
-        if(status)status.textContent='✓ QWEN: best '+money(best.v)+' auto-filled';toast('QWEN: '+money(best.v),'ok');}
-      else{var it=state.batch.find(function(b){return b.id===tgt.itemId});
-        if(it){it.price=best.v;if(it.cod===null||it.cod==='')it.cod=best.v;it.found=found;it.status='done';
-          it.msg='✓ QWEN: '+money(best.v);var row=getEl('brow-'+it.id);
-          if(row){var inputs=row.querySelectorAll('input[type=number]');if(inputs[1])inputs[1].value=best.v;if(inputs[2]&&!inputs[2].value)inputs[2].value=best.v;}
-          renderBatchRow(it);}
-        if(status)status.textContent='✓ QWEN: best '+money(best.v);toast('QWEN applied','ok');}}
-    else{if(status)status.textContent='QWEN: no price — enter manually';if(det)det.open=true;toast('QWEN: no price','err');}
-  }).catch(function(e){console.error(e);var msg='QWEN failed: '+(e.message||'error');
-    if(/Failed to fetch|NetworkError|fetch failed/i.test(e.message||''))msg+=' — is the server running at '+qwenUrl+'?';
-    if(status)status.textContent=msg;toast(msg,'err');
-  }).finally(function(){if(btn)btn.disabled=false;if(btnF)btnF.disabled=false;if(btnD)btnD.disabled=false;setTimeout(function(){if(bar)bar.style.display='none'},800);});}
 
 function openNoPrix(){var o=getEl('noprix-one');if(o)o.style.display='none';var np=getEl('np-price');if(np)np.value='';var mo=getEl('m-noprix');if(mo)mo.classList.add('open')}
 function noprixUnit(){closeModal('m-noprix');toast('Fill each row manually','ok');
@@ -1625,33 +1800,39 @@ function readRecForm(p){var name=val(p+'name').trim(),phone=val(p+'phone').trim(
   if(!name){toast('Name required','err');return null}
   return{name:name,phone:phone,area:area,address:address,note:note};}
 function clearRecForm(){['r-name','r-phone','r-area','r-addr','r-note'].forEach(function(i){var e=getEl(i);if(e)e.value=''})}
-function toggleAbList(){var b=getEl('ab-list');if(b)b.classList.toggle('open');}
+function toggleAbList(){var b=getEl('ab-list'),tools=getEl('ab-inline-select-tools');if(!b)return;b.classList.toggle('open');if(tools)tools.classList.toggle('open',b.classList.contains('open'));renderAbList()}
 function renderAbList(){var box=getEl('ab-list');if(!box)return;
-  if(!state.addr.length){box.innerHTML='<div class="empty" style="padding:16px;font-size:12px">No customers yet.</div>';return}
-  box.innerHTML=state.addr.map(function(a){return '<div class="ab-item"><div class="ab-info">'+
+  if(!state.addr.length){box.innerHTML='<div class="empty" style="padding:16px;font-size:12px">No customers yet.</div>';updateAddressSelectionUI();return}
+  box.innerHTML=state.addr.map(function(a){return '<div class="ab-item'+(addressSelection[a.id]?' address-selected':'')+'"><input class="am-check" type="checkbox" aria-label="Select '+esc(a.name)+'" '+(addressSelection[a.id]?'checked':'')+' onchange="toggleAddressSelection(\''+a.id+'\',this.checked)"><div class="ab-info">'+
       '<div class="ab-name">'+esc(a.name)+'</div>'+
       '<div class="ab-meta">'+esc(a.phone)+' · '+esc(a.address)+'</div>'+
       (a.area?'<span class="ab-area">'+esc(a.area)+'</span>':'')+'</div>'+
       '<button class="mini-btn" data-arg="'+a.id+'" data-act="openAddrModal">✎</button>'+
       '<button class="mini-btn del" data-arg="'+a.id+'" data-act="delAddr">🗑</button>'+
       '<button class="mini-btn" data-arg="'+a.id+'" data-act="useAddr">→</button>'+
-    '</div>';}).join('');}
+    '</div>';}).join('');updateAddressSelectionUI();}
 function useAddr(id){rebuildRecSelect(id);closeModal('m-addr');showMobileView('new');finishCustomerStep();toast('Customer linked to this label','ok');}
 function delAddr(id){if(!confirm('Delete this customer?'))return;
   if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.markEntityDeleted==='function')window.LabelOnZeWayCloud.markEntityDeleted('customer',id,PID);
   state.addr=state.addr.filter(function(a){return a.id!==id});persist();
   if(getEl('rec-select').value===id)rebuildRecSelect();else rebuildRecSelect(getEl('rec-select').value);
   renderAmList();renderBatch();toast('Removed','ok');}
-function openAddrModal(editId){state.editingAddr=editId||null;renderAmList();prepAddrModal(editId);var mo=getEl('m-addr');if(mo)mo.classList.add('open')}
+function openAddrModal(editId){state.editingAddr=editId||null;addressSelection={};renderAmList();prepAddrModal(editId);var mo=getEl('m-addr');if(mo)mo.classList.add('open')}
+function filteredAddressRows(){var q=(val('am-search')).toLowerCase();return q?state.addr.filter(function(a){return[a.name,a.phone,a.area,a.address].some(function(v){return String(v||'').toLowerCase().indexOf(q)>=0})}):state.addr.slice()}
+function selectedAddressRows(){var valid={};state.addr.forEach(function(a){valid[a.id]=true});Object.keys(addressSelection).forEach(function(id){if(!valid[id])delete addressSelection[id]});return state.addr.filter(function(a){return!!addressSelection[a.id]})}
+function toggleAddressSelection(id,checked){if(checked)addressSelection[id]=true;else delete addressSelection[id];renderAmList();renderAbList()}
+function toggleAllFilteredAddresses(checked){filteredAddressRows().forEach(function(a){if(checked)addressSelection[a.id]=true;else delete addressSelection[a.id]});renderAmList()}
+function toggleAllSavedAddresses(checked){state.addr.forEach(function(a){if(checked)addressSelection[a.id]=true;else delete addressSelection[a.id]});renderAbList();renderAmList()}
+function updateAddressSelectionUI(){var rows=selectedAddressRows(),shown=filteredAddressRows(),all=getEl('am-select-all'),status=getEl('am-selection-status'),del=getEl('am-delete-selected'),inlineAll=getEl('ab-select-all'),inlineStatus=getEl('ab-selection-status'),inlineDel=getEl('ab-delete-selected');if(all){all.checked=!!shown.length&&shown.every(function(a){return!!addressSelection[a.id]});all.indeterminate=shown.some(function(a){return!!addressSelection[a.id]})&&!all.checked}if(inlineAll){inlineAll.checked=!!state.addr.length&&state.addr.every(function(a){return!!addressSelection[a.id]});inlineAll.indeterminate=state.addr.some(function(a){return!!addressSelection[a.id]})&&!inlineAll.checked}if(status)status.textContent=rows.length+' selected';if(inlineStatus)inlineStatus.textContent=rows.length+' selected';[del,inlineDel].forEach(function(button){if(button){button.disabled=!rows.length;button.textContent='🗑 DELETE SELECTED'+(rows.length?' ('+rows.length+')':'')}})}
+function deleteSelectedAddresses(){var rows=selectedAddressRows();if(!rows.length){toast('Select one or more customers','err');return}var names=rows.slice(0,12).map(function(a){return'• '+a.name+(a.phone?' — '+a.phone:'')}).join('\n');if(rows.length>12)names+='\n• … and '+(rows.length-12)+' more';if(!confirm('Delete '+rows.length+' selected customer'+(rows.length===1?'':'s')+' from the Address Book?\n\n'+names+'\n\nExisting parcel, archive and label records will be preserved.'))return;var ids={};rows.forEach(function(a){ids[a.id]=true;if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.markEntityDeleted==='function')window.LabelOnZeWayCloud.markEntityDeleted('customer',a.id,PID)});state.addr=state.addr.filter(function(a){return!ids[a.id]});state.batch.forEach(function(item){if(ids[item.recId]){item.recId='';item.err=true}});var current=getEl('rec-select')?getEl('rec-select').value:'';addressSelection={};persist();rebuildRecSelect(ids[current]?'':current);renderAmList();renderBatch();toast(rows.length+' customer'+(rows.length===1?'':'s')+' removed · parcel history preserved','ok')}
 function renderAmList(){var box=getEl('am-list');if(!box)return;
-  var q=(val('am-search')).toLowerCase();
-  var list=q?state.addr.filter(function(a){return[a.name,a.phone,a.area,a.address].some(function(v){return String(v||'').toLowerCase().indexOf(q)>=0})}):state.addr;
-  if(!list.length){box.innerHTML='<div class="empty" style="padding:14px;font-size:12px">'+(state.addr.length?'No match.':'Address book empty.')+'</div>';return}
-  box.innerHTML=list.map(function(a){return '<div class="ab-item"><div class="ab-info">'+
+  var list=filteredAddressRows();
+  if(!list.length){box.innerHTML='<div class="empty" style="padding:14px;font-size:12px">'+(state.addr.length?'No match.':'Address book empty.')+'</div>';updateAddressSelectionUI();return}
+  box.innerHTML=list.map(function(a){return '<div class="ab-item'+(addressSelection[a.id]?' address-selected':'')+'"><input class="am-check" type="checkbox" aria-label="Select '+esc(a.name)+'" '+(addressSelection[a.id]?'checked':'')+' onchange="toggleAddressSelection(\''+a.id+'\',this.checked)"><div class="ab-info">'+
       '<div class="ab-name">'+esc(a.name)+' <span style="font:500 11px var(--mono);color:#66727e">'+esc(a.phone)+'</span></div>'+
       '<div class="ab-meta">'+esc(a.area||'')+' '+(a.address?'· '+esc(a.address):'')+'</div></div>'+
       '<button class="mini-btn" data-arg="'+a.id+'" data-act="prepAddrModal">✎</button>'+
-      '<button class="mini-btn del" data-arg="'+a.id+'" data-act="delAddr">🗑</button></div>';}).join('');}
+      '<button class="mini-btn del" data-arg="'+a.id+'" data-act="delAddr">🗑</button></div>';}).join('');updateAddressSelectionUI();}
 function prepAddrModal(editId){state.editingAddr=editId||null;
   var a=state.addr.find(function(x){return x.id===editId})||{name:'',phone:'',area:'',address:'',note:''};
   var t=getEl('am-form-title');if(t)t.textContent=editId?'EDIT ADDRESS':(state.addrAssign?'NEW — assigns to selected photo':'ADD ADDRESS');
@@ -1682,7 +1863,8 @@ function addToManifest(printAfter){var qty=Math.max(1,parseInt(val('f-qty'))||1)
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};
   state.manifest.push(row);storeLabelCopies([row],'created',false);persist();renderManifest();renderStats();
   startNewLabel(true);toast(row.oid+' saved — fresh New Label ready','ok');
-  if(printAfter)setTimeout(function(){printLabel(row)},200);}
+  if(printAfter)setTimeout(function(){printLabel(row)},200);
+  else setTimeout(function(){openCustomerConfirmation(row.id)},350);}
 function setMan(id,k,v){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;
   if(k==='name')r.rec.name=v;
   else if(k==='phone')r.rec.phone=v;
@@ -1722,6 +1904,7 @@ function toggleManifestAll(checked){
   if(checked)state.manifest.forEach(function(r){manifestSelection[r.id]=true});
   updateManifestSelectionUI();}
 function clearManifestSelection(){manifestSelection={};updateManifestSelectionUI();}
+function updateBulkStatusControl(){var count=selectedManifestRows().length,sel=getEl('bulk-status-select'),apply=getEl('bulk-status-apply');if(sel)sel.disabled=!count;if(apply)apply.disabled=!count||!sel||!sel.value;}
 function updateManifestSelectionUI(){
   var valid={};state.manifest.forEach(function(r){valid[r.id]=true});
   Object.keys(manifestSelection).forEach(function(id){if(!valid[id])delete manifestSelection[id]});
@@ -1732,9 +1915,13 @@ function updateManifestSelectionUI(){
   var all=getEl('mani-select-all');if(all){all.checked=total>0&&count===total;all.indeterminate=count>0&&count<total;all.disabled=!total;}
   var status=getEl('mani-selection-status');if(status)status.textContent=count+' selected'+(total?' of '+total:'');
   var printBtn=getEl('print-selected-labels');if(printBtn)printBtn.disabled=!count;
+  var archiveBtn=getEl('archive-selected-labels');if(archiveBtn){archiveBtn.disabled=!count;archiveBtn.textContent='🗄 ARCHIVE SELECTED ('+count+')'}
   var deleteBtn=getEl('delete-selected-labels');if(deleteBtn){deleteBtn.disabled=!count;deleteBtn.textContent='🗑 DELETE LABELS ('+count+')'}
-  var clearBtn=getEl('clear-manifest-selection');if(clearBtn)clearBtn.disabled=!count;}
+  var clearBtn=getEl('clear-manifest-selection');if(clearBtn)clearBtn.disabled=!count;
+  updateBulkStatusControl();}
+function applyBulkDeliveryStatus(){var rows=selectedManifestRows(),sel=getEl('bulk-status-select'),status=sel?String(sel.value||''):'';if(!rows.length){toast('Select one or more parcels','err');return}if(['ready','in_transit','delivered','exception'].indexOf(status)<0){toast('Choose the new delivery status','err');return}var reason='';if(status==='exception'){reason=window.prompt('Enter one exception reason for all '+rows.length+' selected parcels:','');if(reason==null)return;reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');return}}if(!confirm('Update '+rows.length+' selected parcel'+(rows.length===1?'':'s')+' to “'+deliveryStatusLabel(status)+'”?'))return;var now=new Date().toISOString();rows.forEach(function(r){r.deliveryExceptionReason=status==='exception'?reason:'';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=now});manifestSelection={};if(sel)sel.value='';persist();renderManifest();renderStats();toast(rows.length+' parcel'+(rows.length===1?'':'s')+' updated to '+deliveryStatusLabel(status),'ok')}
 function manifestOrderDescriptor(r){return '#'+String(r.oid||r.id||'—')+' — '+String(r.rec&&r.rec.name||'Customer')}
+function archiveSelectedManifest(){var rows=selectedManifestRows();if(!rows.length){toast('Select one or more manifest parcels to archive','err');return}var exact=rows.map(manifestOrderDescriptor).join('\n• ');if(!confirm('Archive only these '+rows.length+' selected parcel'+(rows.length===1?'':'s')+'?\n\n• '+exact+'\n\nUnselected parcels will remain in the active Manifest. Tracking and Claims Vault copies will be preserved.'))return;var ids={};rows.forEach(function(r){ids[r.id]=true});state.archive.unshift({id:uniqueId('d'),date:new Date().toISOString(),rows:rows,kind:'selected'});if(state.archive.length>90)state.archive=state.archive.slice(0,90);state.manifest=state.manifest.filter(function(r){return !ids[r.id]});manifestSelection={};persist();renderManifest();renderStats();renderArch();toast(rows.length+' selected parcel'+(rows.length===1?'':'s')+' archived · unselected parcels retained','ok')}
 function deleteSelectedManifestLabels(){var rows=selectedManifestRows();if(!rows.length){toast('Select one or more manifest labels','err');return}var exact=rows.map(manifestOrderDescriptor).join('\n• ');if(!confirm('Delete these '+rows.length+' selected manifest label'+(rows.length===1?'':'s')+'?\n\n• '+exact+'\n\nTheir permanent claim copies will remain in the Claims Vault.'))return;var ids={};rows.forEach(function(r){ids[r.id]=true});state.manifest=state.manifest.filter(function(r){return !ids[r.id]});manifestSelection={};persist();renderManifest();renderStats();toast(rows.length+' selected label'+(rows.length===1?'':'s')+' deleted · claim copies retained','ok')}
 function printSelectedLabels(){
   var rows=selectedManifestRows();
@@ -1760,6 +1947,7 @@ function mobileManifestHTML(rows){return '<div class="mobile-manifest-list">'+ro
       '<div class="mobile-field"><label>MM REF</label><input value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></div>'+
       '<div class="mobile-field span2"><label>DELIVERY STATUS</label><select onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+'</div>'+
     '</div><div class="mobile-manifest-actions">'+
+      '<button class="btn confirm-action" data-arg="'+r.id+'" data-act="openCustomerConfirmation">✉ NOTIFY BY SMS / WHATSAPP</button>'+
       '<button class="btn dark" data-arg="'+r.id+'" data-act="printRow">🖨 PRINT</button><button class="btn" data-arg="'+r.id+'" data-act="toBatch">↩ BATCH</button>'+
       '<button class="btn blue" data-arg="'+r.id+'" data-act="copyTrackingLink">⌁ TRACKING</button><button class="btn" style="color:var(--red)" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
     '</div></div></details>';}).join('')+'</div>'}
@@ -1785,6 +1973,7 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
       '<td><select class="cell-in mono status-select" aria-label="Delivery status for order '+esc(r.oid)+'" onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+'</td>'+
       '<td><div class="mani-actions">'+
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="printRow">🖨</button>'+
+        '<button class="mini-btn confirm-action" title="Notify by SMS or WhatsApp" data-arg="'+r.id+'" data-act="openCustomerConfirmation">✉</button>'+
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="toBatch" style="border-color:var(--blue)">↩</button>'+
         '<button class="mini-btn" title="Copy tracking link" data-arg="'+r.id+'" data-act="copyTrackingLink">⌁</button>'+
         '<button class="mini-btn del" data-arg="'+r.id+'" data-act="removeRow">✕</button>'+
@@ -1801,7 +1990,7 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
     '<div class="tot hot"><small>TO COLLECT</small><b>'+money(totOpen)+'</b></div>'+
     '<div class="tot"><small>TOTAL</small><b>'+money(totAll)+'</b></div>';
   updateManifestSelectionUI();}
-function setDeliveryStatus(id,status,reason){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;status=String(status||'ready');if(['ready','in_transit','delivered','exception'].indexOf(status)<0)return;if(status==='exception'){reason=reason==null?window.prompt('Enter the delivery exception reason:',r.deliveryExceptionReason||''):reason;if(reason==null){renderManifest();return}reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');renderManifest();return}r.deliveryExceptionReason=reason}else r.deliveryExceptionReason='';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=new Date().toISOString();persist();renderManifest();renderStats();toast('Order '+String(r.oid||'')+' · '+deliveryStatusLabel(status),'ok')}
+function setDeliveryStatus(id,status,reason){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;status=String(status||'ready');if(['ready','in_transit','delivered','exception'].indexOf(status)<0)return;if(status==='exception'){reason=reason==null?window.prompt('Enter the delivery exception reason:',r.deliveryExceptionReason||''):reason;if(reason==null){renderManifest();return}reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');renderManifest();return}r.deliveryExceptionReason=reason}else r.deliveryExceptionReason='';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=new Date().toISOString();persist();renderManifest();renderStats();toast('Order '+String(r.oid||'')+' · '+deliveryStatusLabel(status),'ok');setTimeout(function(){openCustomerNotification(r.id,status)},250)}
 function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});if(r)setDeliveryStatus(id,r.done?'ready':'delivered')}
 function removeRow(id){var row=state.manifest.find(function(x){return x.id===id});if(!row)return;if(!confirm('Delete this manifest label?\n\n'+manifestOrderDescriptor(row)+'\n\nIts permanent claim copy will remain in the Claims Vault.'))return;
   state.manifest=state.manifest.filter(function(x){return x.id!==id});delete manifestSelection[id];persist();renderManifest();renderStats();toast('Label deleted · claim copy retained','ok');}
@@ -1849,12 +2038,12 @@ function maybeAutoRecon(){
 function openArch(){renderArch();var mo=getEl('m-arch');if(mo)mo.classList.add('open')}
 function renderArch(){var box=getEl('arch-list');if(!box)return;
   if(!state.archive.length){box.innerHTML='<div class="empty" style="padding:16px;font-size:12px">No archived days yet.</div>';return}
-  box.innerHTML=state.archive.map(function(d){var tot=d.rows.reduce(function(s,r){return s+Number(r.cod||0)+Number(r.ship||0)},0);
-    return '<div class="ab-item"><div class="ab-info">'+
-      '<div class="ab-name">'+new Date(d.date).toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+'</div>'+
-      '<div class="ab-meta">'+d.rows.length+' parcels · '+money(tot)+' · delivered '+d.rows.filter(function(r){return r.done}).length+'</div></div>'+
-      '<button class="mini-btn" data-arg="'+d.id+'" data-act="exportArchCSV">⤓</button>'+
-      '<button class="mini-btn del" data-arg="'+d.id+'" data-act="delArch">🗑</button></div>';}).join('');}
+  var q=(val('arch-search')||'').trim().toLowerCase(),statusFilter=val('arch-status-filter')||'',visible=[];
+  state.archive.forEach(function(d){var source=Array.isArray(d.rows)?d.rows:[],rows=source.filter(function(r){var rec=r.rec||{},status=deliveryStatusOf(r);if(statusFilter&&status!==statusFilter)return false;if(!q)return true;return[r.oid,r.id,rec.name,rec.phone,rec.area,rec.address,r.pay,deliveryStatusLabel(status)].some(function(v){return String(v||'').toLowerCase().indexOf(q)>=0})});if(rows.length)visible.push({day:d,rows:rows,totalRows:source.length})});
+  if(!visible.length){box.innerHTML='<div class="empty" style="padding:18px;font-size:12px"><b>No matching archived parcels</b>Change the search or milestone filter.</div>';return}
+  box.innerHTML=visible.map(function(entry,index){var d=entry.day,rows=entry.rows,tot=rows.reduce(function(s,r){return s+Number(r.cod||0)+Number(r.ship||0)},0),date=new Date(d.date),dateText=isNaN(date.getTime())?String(d.date||'Archived'):date.toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short',year:'numeric'}),open=(q||statusFilter||index===0)?' open':'';
+    var parcelHtml=rows.map(function(r){var rec=r.rec||{},status=deliveryStatusOf(r),exception=status==='exception'&&r.deliveryExceptionReason?'<br>Reason: '+esc(r.deliveryExceptionReason):'',address=[rec.address,rec.area].filter(Boolean).join(', ');return '<div class="archive-parcel"><div><div class="archive-order">#'+esc(r.oid||r.id||'—')+'</div><div class="archive-name">'+esc(rec.name||'Customer')+'</div><div class="archive-parcel-meta">'+esc(rec.phone||'No phone')+(address?' · '+esc(address):'')+'<br>Delivery: '+esc(fmtDeliverDate(r.deliverAt,r.deliverTime))+exception+'</div></div><div class="archive-side"><span class="archive-status '+esc(status)+'">'+esc(deliveryStatusLabel(status))+'</span><b>'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</b><div class="archive-actions"><button class="btn sm" data-act="copyTrackingLink" data-arg="'+esc(r.id)+'">COPY LINK</button><button class="btn sm blue" data-act="openTrackingLink" data-arg="'+esc(r.id)+'">OPEN TRACKING</button></div></div></div>'}).join('');
+    return '<details class="archive-day"'+open+'><summary><div><div class="archive-day-title">'+esc(dateText)+'</div><div class="archive-day-meta">'+rows.length+(rows.length!==entry.totalRows?' of '+entry.totalRows:'')+' parcels · '+esc(money(tot))+'</div></div></summary><div class="archive-day-body"><div class="archive-day-actions"><button class="btn sm" data-arg="'+esc(d.id)+'" data-act="exportArchCSV">DOWNLOAD CSV</button><button class="btn sm" style="color:var(--red);border-color:var(--red)" data-arg="'+esc(d.id)+'" data-act="delArch">DELETE ARCHIVE</button></div>'+parcelHtml+'</div></details>'}).join('');}
 function exportArchCSV(id){var d=state.archive.find(function(x){return x.id===id});
   if(d)exportRowsCSV(d.rows,'manifest-'+new Date(d.date).toISOString().slice(0,10)+'-archive.csv');}
 function delArch(id){if(!confirm('Delete this archived day? Permanent claim label copies will remain in the Claims Vault.'))return;
@@ -2351,7 +2540,7 @@ function openSettings(){var s=state.shop;
   getEl('s-cur').value=s.currency;getEl('s-sep').value=s.sep==null?' ':s.sep;
   getEl('s-codlbl').value=s.codLabel;getEl('s-len').value=s.labelLen||210;
   getEl('s-reconhour').value=s.reconHour==null?9:s.reconHour;
-  getEl('s-thanks').value=s.thanks;getEl('s-qwen-url').value=s.qwenUrl||'';getEl('s-qwen-model').value=s.qwenModel||'';
+  getEl('s-thanks').value=s.thanks;
   getEl('s-print-mode').value=s.printMode||'browser';getEl('s-printer-ip').value=s.printerIp||'';
   getEl('s-printer-port').value=s.printerPort||9100;getEl('s-bridge-url').value=s.bridgeUrl||'auto';
   getEl('s-printer-dots').value=s.printerDots||576;getEl('s-printer-feed').value=s.printerFeed==null?0:s.printerFeed;
@@ -2366,7 +2555,7 @@ function saveSettings(){var pc=printerConfig(true);Object.assign(state.shop,{
     codLabel:getEl('s-codlbl').value.trim()||'COLLECT',
     labelLen:Math.min(300,Math.max(100,parseInt(getEl('s-len').value)||210)),
     reconHour:Math.min(23,Math.max(0,parseInt(getEl('s-reconhour').value)||9)),
-    thanks:getEl('s-thanks').value.trim(),qwenUrl:getEl('s-qwen-url').value.trim(),qwenModel:getEl('s-qwen-model').value.trim(),
+    thanks:getEl('s-thanks').value.trim(),
     printMode:pc.mode,printerIp:pc.ip,printerPort:pc.port,bridgeUrl:pc.bridgeRaw||'auto',printerDots:pc.dots,
     printerFeed:pc.feed,printerThreshold:pc.threshold,printerCut:pc.cut,cutEach:pc.cutEach});
   persist();applyCurrency();applyLabelLen();renderManifest();renderPreview();renderBatch();
@@ -2443,7 +2632,7 @@ function autoDetectSavedPrinter(){var n=nativePOS80Printer(),c=printerConfig(fal
   }).catch(function(){discoverPrinter({silent:true,useForm:false}).catch(function(){})});}
 
 var ACTIONS={
-  scanPrice:scanPrice, deepScan:deepScan, qwenScan:qwenScan,
+  scanPrice:scanPrice, deepScan:deepScan,
   addToManifest:function(){addToManifest(false)}, savePrint:function(){addToManifest(true)},
   toggleRecForm:toggleRecForm, cancelRecForm:cancelRecForm, quickSaveRec:quickSaveRec,
   openAddrModal:function(arg){openAddrModal(arg==='sel'?getEl('rec-select').value:arg)},
@@ -2453,7 +2642,7 @@ var ACTIONS={
   printCalibration:printCalibration, applyBatchRecAll:applyBatchRecAll,
   printAllBatchLabels:printAllBatchLabels, addAllBatch:addAllBatch, deleteSelectedBatch:deleteSelectedBatch, clearBatch:clearBatch,
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
-  closeDay:closeDay, openArch:openArch, syncTrackingNow:syncTrackingNow, copyTrackingLink:copyTrackingLink, openTrackingLink:openTrackingLink, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, deleteSelectedManifestLabels:deleteSelectedManifestLabels, clearManifestSelection:clearManifestSelection,
+  closeDay:closeDay, openArch:openArch, archiveSelectedManifest:archiveSelectedManifest, applyBulkDeliveryStatus:applyBulkDeliveryStatus, syncTrackingNow:syncTrackingNow, openTrackingDashboard:openTrackingDashboard, copyTrackingLink:copyTrackingLink, openTrackingLink:openTrackingLink, openCustomerConfirmation:openCustomerConfirmation, sendConfirmationWhatsApp:sendConfirmationWhatsApp, sendConfirmationSMS:sendConfirmationSMS, copyConfirmationMessage:copyConfirmationMessage, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, deleteSelectedManifestLabels:deleteSelectedManifestLabels, clearManifestSelection:clearManifestSelection,
   openRecon:openRecon, openSettings:openSettings, openCloud:openCloud, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
   quickSystemPrint:quickSystemPrint, quickDirectPrint:quickDirectPrint, quickDetectPrinter:quickDetectPrinter,
   showMobileView:showMobileView, startNewLabel:startNewLabel, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
@@ -2473,7 +2662,7 @@ var ACTIONS={
   addSingleBatch:addSingleBatch, removeBatch:removeBatch,
   printRow:function(arg){var r=state.manifest.find(function(x){return x.id===arg});if(r)printLabel(r)},
   toBatch:toBatch, toggleDone:toggleDone, removeRow:removeRow,
-  useAddr:useAddr, delAddr:delAddr, exportArchCSV:exportArchCSV, delArch:delArch
+  useAddr:useAddr, delAddr:delAddr, deleteSelectedAddresses:deleteSelectedAddresses, exportArchCSV:exportArchCSV, delArch:delArch
 };
 document.addEventListener('click',function(e){
   var closeBtn=e.target.closest('[data-close]');
@@ -2487,6 +2676,7 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('change',function(e){
   if(e.target.id==='profile-sel'){switchProfile(e.target.value)}
+  if(e.target.id==='bulk-status-select'){updateBulkStatusControl()}
 });
 
 function init(){

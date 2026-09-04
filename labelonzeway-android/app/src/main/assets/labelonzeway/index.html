@@ -478,7 +478,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <span><h1>LABEL<em>ONZEWAY</em></h1><small>OPERATIONS DECK · LABELS · DISPATCH</small></span></button>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
-    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>UAT v151</b></div>
+    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>v152</b></div>
     <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
     <div class="chip">📦 <b id="stat-count">0</b></div>
     <div class="chip">💰 <b id="stat-cod">0</b></div>
@@ -946,7 +946,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
 </div></div>
 
-<script src="cloud-sync.js?v=151-launcher-fix"></script>
+<script src="cloud-sync.js?v=152-release"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -1133,7 +1133,7 @@ function renderOperationsDeck(){
   setOpsStatus('ops-cloud-chip',cloudText,cloudType);var cloudDot=getEl('control-cloud-dot'),cloudTitle=getEl('control-cloud-title'),cloudCopyEl=getEl('control-cloud-copy');if(cloudDot)cloudDot.className='dot'+(cloudType==='ok'?' ok':'');if(cloudTitle)cloudTitle.textContent=cloudText;if(cloudCopyEl)cloudCopyEl.textContent=cloudCopy;
   var direct=state.shop.printMode==='direct',printerText=direct?('Direct POS80C'+(state.shop.printerIp?' · '+state.shop.printerIp:'')):'System Print';setOpsStatus('ops-printer-chip',printerText,direct&&state.shop.printerIp?'ok':'');
   var printerCopy=getEl('control-printer-copy');if(printerCopy)printerCopy.textContent=direct?('Direct POS80C is selected'+(state.shop.printerIp?' at '+state.shop.printerIp+':'+(state.shop.printerPort||9100):'. Auto-detect or enter a printer address')+'. Auto-cut after each label remains '+(state.shop.cutEach===false?'off':'on')+'.'):'System Print is selected. Direct POS80C uses the saved network printer on this device.';
-  var recent=getEl('ops-recent-list');if(recent){var rows=m.slice(-4).reverse();recent.innerHTML=rows.length?rows.map(function(r){var rec=r.rec||{};return '<div class="ops-recent-row"><span class="ops-order">#'+esc(r.oid||r.id||'—')+'</span><span class="ops-rec"><b>'+esc(rec.name||'Customer')+'</b><small>'+esc([rec.area,r.pay].filter(Boolean).join(' · ')||'Label ready')+'</small></span><span class="ops-money">'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</span></div>'}).join(''):'<div class="ops-recent-empty">No labels in the active manifest yet. Start with New Label or Batch.</div>'}
+  var recent=getEl('ops-recent-list');if(recent){var rows=m.slice(-4).reverse();recent.innerHTML=rows.length?rows.map(function(r){var rec=r.rec||{},status=deliveryStatusLabel(r.deliveryStatus);return '<div class="ops-recent-row"><span class="ops-order">#'+esc(r.oid||r.id||'—')+'</span><span class="ops-rec"><b>'+esc(rec.name||'Customer')+'</b><small>'+esc([rec.area,r.pay,status].filter(Boolean).join(' · ')||'Label ready')+'</small></span><span class="ops-money">'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</span></div>'}).join(''):'<div class="ops-recent-empty">No labels in the active manifest yet. Start with New Label or Batch.</div>'}
 }
 window.LabelOnZeWayRefreshOperationsDeck=renderOperationsDeck;
 

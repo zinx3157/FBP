@@ -1,8 +1,8 @@
-const CACHE = 'labelonzeway-v151-neon-dispatch';
+const CACHE = 'labelonzeway-v152-personal-release';
 const APP_SHELL = [
   './',
   './index.html',
-  './cloud-sync.js?v=151-launcher-fix',
+  './cloud-sync.js?v=152-release',
   './sync-config.json',
   './manifest.webmanifest',
   './tracking/',
