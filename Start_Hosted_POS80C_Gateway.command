@@ -1,22 +1,39 @@
 #!/bin/bash
 set -u
-cd "$(dirname "$0")" || exit 1
+SERVICE_DIR="$(cd "$(dirname "$0")" && pwd)"
+REQUIRED_IP="192.168.100.14"
+PORT="8765"
 clear
-printf '%s\n' "SHIPDESK + LabelOnZeWay — Hosted POS80C Gateway"
-printf '%s\n' "================================================="
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "Python 3 is required. Install it from https://www.python.org/downloads/"
-  read -r -p "Press Return to close…"
-  exit 1
-fi
-if grep -q 'USERNAME.github.io' gateway-config.json 2>/dev/null; then
-  echo "One-time GitHub Pages address setup:"
-  python3 configure_gateway.py || { read -r -p "Press Return to close…"; exit 1; }
-  echo
-fi
-python3 -u hosted_pos80c_gateway.py
-status=$?
+echo "LabelOnZeWay v153 — Local + Cloud Print Bridge"
+echo "===================================================="
 echo
-printf 'Gateway stopped (status %s).\n' "$status"
-read -r -p "Press Return to close…"
-exit "$status"
+if ! /sbin/ifconfig | grep -Eq "inet[[:space:]]+$REQUIRED_IP([[:space:]]|$)"; then
+  echo "STOP: this Mac does not currently own $REQUIRED_IP."
+  echo
+  echo "Set the Mac Wi-Fi IPv4 address to $REQUIRED_IP, then run this launcher again."
+  echo "The iPhone URL cannot work while the Mac has a different IP address."
+  echo
+  echo "Press Return to close."
+  read -r
+  exit 2
+fi
+echo "Mac IP verified: $REQUIRED_IP"
+echo "iPhone app: http://$REQUIRED_IP:$PORT/labelonzeway/"
+echo "Gateway health: http://$REQUIRED_IP:$PORT/health"
+echo
+echo "Keep this Terminal window open while using the app or printing."
+if [ -f "$SERVICE_DIR/cloud-print-agent.json" ]; then
+  echo "Cloud Print agent: configured"
+else
+  echo "Cloud Print agent: NOT CONFIGURED — run SETUP-CLOUD-PRINT-AGENT.command once"
+fi
+echo "Press Control-C to stop the service."
+echo
+cd "$SERVICE_DIR" || exit 1
+python3 "$SERVICE_DIR/labelonzeway_local_service.py" "$PORT"
+STATUS=$?
+echo
+echo "Local production and print bridge stopped."
+echo "Press Return to close."
+read -r
+exit "$STATUS"

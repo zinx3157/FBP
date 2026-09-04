@@ -1,0 +1,7 @@
+{
+  "workspace_id": "PASTE-YOUR-WORKSPACE-UUID-HERE",
+  "email": "YOUR-CLOUD-STAFF-EMAIL",
+  "printer_ip": "192.168.100.73",
+  "printer_port": 9100,
+  "poll_seconds": 2
+}

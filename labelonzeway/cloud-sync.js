@@ -78,6 +78,35 @@
       return { records: Number(result.data || safeRecords.length), mode: 'cloud' };
     });
   }
+  function enqueueCloudPrintJob(job) {
+    if (!client || !session || !workspaceId) return Promise.reject(new Error('Sign in to Cloud before using Cloud Print'));
+    job = job && typeof job === 'object' ? job : {};
+    var encoded = String(job.data || '');
+    if (!encoded || encoded.length > 12 * 1024 * 1024) return Promise.reject(new Error('The print payload is empty or too large'));
+    var row = {
+      workspace_id: workspaceId,
+      profile_id: currentProfileId(),
+      created_by: session.user.id,
+      source_device: deviceId,
+      printer_ip: String(job.printer_ip || '192.168.100.73'),
+      printer_port: Math.min(65535, Math.max(1, Number(job.printer_port) || 9100)),
+      label_count: Math.min(100, Math.max(1, Number(job.labels) || 1)),
+      payload_base64: encoded,
+      status: 'queued'
+    };
+    return client.from('cloud_print_jobs').insert(row).select('id,status,created_at').single().then(function (result) {
+      if (result.error) throw result.error;
+      return result.data;
+    });
+  }
+  function cloudPrintJobStatus(jobId) {
+    if (!client || !session || !workspaceId || !jobId) return Promise.reject(new Error('Cloud Print is not connected'));
+    return client.from('cloud_print_jobs').select('id,status,error_message,printed_at,updated_at')
+      .eq('workspace_id', workspaceId).eq('id', jobId).single().then(function (result) {
+        if (result.error) throw result.error;
+        return result.data;
+      });
+  }
   function currentProfileId() {
     return typeof window.PID === 'string' && window.PID ? window.PID : (localStorage.getItem(PROFILE_KEY) || 'P1');
   }
@@ -730,6 +759,8 @@
   api.nextOrderIdentifier = nextOrderIdentifier;
   api.resetCurrentProfile = resetCurrentProfile;
   api.publishTrackingRecords = publishTrackingRecords;
+  api.enqueueCloudPrintJob = enqueueCloudPrintJob;
+  api.cloudPrintJobStatus = cloudPrintJobStatus;
   api.publicTrackingBase = publicTrackingBase;
   api.isConfigured = configured;
   api.getStatus = function () { return { configured: configured(), signedIn: !!session, workspaceId: workspaceId, workspaceName: workspaceName, deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing }; };

@@ -462,7 +462,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   #card-manifest .totals,
   #card-manifest .tot,
   #card-manifest .empty{background-color:#091720!important;color:#eafaf7!important}
-  .uat-version-chip{color:#061511!important;background:#66ead5!important;border-color:#79f5e1!important}
+  .uat-version-chip{color:#83e5d3!important;background:#123139!important;border-color:#2f7069!important;box-shadow:none!important}
   .confirmation-preview{min-height:190px;line-height:1.55;resize:vertical}
   .confirmation-customer{margin:9px 0;padding:10px;border:1px solid #315159;border-radius:9px;background:#091720;color:#c7e4df}
   .confirmation-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.confirmation-actions .btn{min-height:48px}
@@ -478,7 +478,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <span><h1>LABEL<em>ONZEWAY</em></h1><small>OPERATIONS DECK · LABELS · DISPATCH</small></span></button>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
-    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>v152</b></div>
+    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>v153</b></div>
     <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
     <div class="chip">📦 <b id="stat-count">0</b></div>
     <div class="chip">💰 <b id="stat-cod">0</b></div>
@@ -792,6 +792,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <select id="s-print-mode" onchange="updatePrinterSettingsUI()">
       <option value="browser">iPhone / iPad system print · AirPrint</option>
       <option value="direct">Direct ESC/POS · local Wi-Fi gateway</option>
+      <option value="cloud">Cloud Print · Mac POS80C agent</option>
     </select>
     <div class="row2 mobile-pair equal"><div><label class="f">POS80C IP address</label><input type="text" id="s-printer-ip" placeholder="Auto-detect or enter manually" inputmode="decimal"></div>
       <div><label class="f">Raw TCP port</label><input type="number" id="s-printer-port" min="1" max="65535" value="9100" inputmode="numeric"></div></div>
@@ -806,7 +807,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <div class="print-methods" aria-label="iPhone printing choices">
       <div class="print-method"><b>IOS SYSTEM PRINT</b>Open the Apple print sheet and select an available AirPrint printer.<small>No computer gateway is needed for AirPrint.</small></div>
       <div class="print-method"><b>HOME SCREEN APP</b>In Safari, tap Share, then <b>Add to Home Screen</b> for an APK-style full-screen layout.<small>Records stay on this iPhone.</small></div>
-      <div class="print-method"><b>DIRECT POS80C</b>Run the local gateway on a Mac/PC/Raspberry Pi, then open the local LabelOnZeWay address it displays.<small>Required because Safari cannot use raw TCP 9100.</small></div>
+      <div class="print-method"><b>CLOUD POS80C</b>Send securely from the GitHub iPhone app through your company workspace.<small>The Mac Cloud Print agent must remain open.</small></div>
     </div>
     <div style="display:flex;gap:7px;flex-wrap:wrap">
       <button class="btn sm blue" data-act="testPrinterBridge">TEST GATEWAY</button>
@@ -821,7 +822,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
       <label class="chk"><input type="checkbox" id="s-cut-each" checked> Auto-cut after every physical label copy</label>
       <button class="btn sm" id="download-gateway-btn" data-act="downloadPrinterBridge" style="margin-top:8px">DOWNLOAD WI-FI GATEWAY</button>
     </div></details>
-    <p class="printer-help" id="native-printer-note">For direct ESC/POS printing on iPhone, do not try to connect this public HTTPS page to an HTTP LAN gateway. Instead, start the gateway and open its local <code>http://…:8765/</code> LabelOnZeWay address in Safari. For this GitHub Pages URL, use iOS System Print.</p>
+    <p class="printer-help" id="native-printer-note">On the public GitHub iPhone app, select <b>Cloud Print</b>. The authenticated job is collected by the Mac agent and sent directly to the POS80C.</p>
   </div>
   <div style="display:flex;gap:8px;margin-top:16px">
     <button class="btn orange" data-act="saveSettings">Save</button>
@@ -946,7 +947,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
 </div></div>
 
-<script src="cloud-sync.js?v=152-release"></script>
+<script src="cloud-sync.js?v=153-cloud-print"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -1131,7 +1132,7 @@ function renderOperationsDeck(){
   if(cloudStatus.signedIn&&cloudStatus.workspaceId){cloudText=cloudStatus.pending?(cloudStatus.pending+' sync pending'):'Cloud synchronized';cloudCopy=(cloudStatus.workspaceName||'Shared company workspace')+(cloudStatus.pending?' · queued changes will reconcile.':' · authorized staff records are current.');cloudType=cloudStatus.pending?'':'ok'}
   else if(cloudStatus.configured){cloudText='Cloud sign-in required';cloudCopy='Sign in with the staff account to open the shared company workspace.'}
   setOpsStatus('ops-cloud-chip',cloudText,cloudType);var cloudDot=getEl('control-cloud-dot'),cloudTitle=getEl('control-cloud-title'),cloudCopyEl=getEl('control-cloud-copy');if(cloudDot)cloudDot.className='dot'+(cloudType==='ok'?' ok':'');if(cloudTitle)cloudTitle.textContent=cloudText;if(cloudCopyEl)cloudCopyEl.textContent=cloudCopy;
-  var direct=state.shop.printMode==='direct',printerText=direct?('Direct POS80C'+(state.shop.printerIp?' · '+state.shop.printerIp:'')):'System Print';setOpsStatus('ops-printer-chip',printerText,direct&&state.shop.printerIp?'ok':'');
+  var direct=state.shop.printMode==='direct',cloudPrint=state.shop.printMode==='cloud',printerText=cloudPrint?'Cloud POS80C':(direct?('Direct POS80C'+(state.shop.printerIp?' · '+state.shop.printerIp:'')):'System Print');setOpsStatus('ops-printer-chip',printerText,(cloudPrint||(direct&&state.shop.printerIp))?'ok':'');
   var printerCopy=getEl('control-printer-copy');if(printerCopy)printerCopy.textContent=direct?('Direct POS80C is selected'+(state.shop.printerIp?' at '+state.shop.printerIp+':'+(state.shop.printerPort||9100):'. Auto-detect or enter a printer address')+'. Auto-cut after each label remains '+(state.shop.cutEach===false?'off':'on')+'.'):'System Print is selected. Direct POS80C uses the saved network printer on this device.';
   var recent=getEl('ops-recent-list');if(recent){var rows=m.slice(-4).reverse();recent.innerHTML=rows.length?rows.map(function(r){var rec=r.rec||{},status=deliveryStatusLabel(r.deliveryStatus);return '<div class="ops-recent-row"><span class="ops-order">#'+esc(r.oid||r.id||'—')+'</span><span class="ops-rec"><b>'+esc(rec.name||'Customer')+'</b><small>'+esc([rec.area,r.pay,status].filter(Boolean).join(' · ')||'Label ready')+'</small></span><span class="ops-money">'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</span></div>'}).join(''):'<div class="ops-recent-empty">No labels in the active manifest yet. Start with New Label or Batch.</div>'}
 }
@@ -2312,7 +2313,8 @@ function printerConfig(useForm){var s=state.shop;
 function setPrinterStatus(msg,type){var el=getEl('s-printer-status');
   if(el){el.textContent=msg;el.className='printer-status'+(type?' '+type:'')}renderOperationsDeck();}
 function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser'),platform=nativePlatform();
-  if(mode==='direct')setPrinterStatus(platform?'Direct '+(platform==='ios'?'iPhone/iPad':'Android')+' printing selected — use Auto-Detect or the saved IP.':'Gateway mode selected — open LabelOnZeWay from the gateway local URL, then use Auto-Detect.','');
+  if(mode==='cloud')setPrinterStatus('Cloud Print selected — sign in to Cloud and keep the Mac print agent open.','ok');
+  else if(mode==='direct')setPrinterStatus(platform?'Direct '+(platform==='ios'?'iPhone/iPad':'Android')+' printing selected — use Auto-Detect or the saved IP.':'Gateway mode selected — open LabelOnZeWay from the gateway local URL, then use Auto-Detect.','');
   else setPrinterStatus(platform==='android'?'Android system print selected — availability depends on installed print services.':'iPhone / iPad system print selected — uses the iOS print sheet and AirPrint.','ok');}
 function localRequestAddressSpace(url){try{var h=new URL(url,location.href).hostname.toLowerCase();
   if(h==='localhost'||h==='127.0.0.1'||h==='::1')return'loopback';
@@ -2450,7 +2452,24 @@ function continuePrintChainAfterDirect(){if(!printChain.length)return;var next=p
     else if(next==='report'&&state.manifest.length)doPrint('a4',salesReportHTML());},400);}
 function sendDirectRows(rows,c){return Promise.resolve().then(function(){return buildDirectLabelBytes(rows,c)}).then(function(bytes){
   toast('Sending '+Number(bytes.length).toLocaleString()+' bytes to POS80C…','ok');return sendBridgeBytes(bytes,c,rows.length);});}
+function cloudEscposPrint(rows){var c=printerConfig(false),cloud=window.LabelOnZeWayCloud;
+  if(directPrintBusy){toast('A print job is already being prepared','err');return}
+  if(!cloud||typeof cloud.enqueueCloudPrintJob!=='function'){toast('Cloud Print is not ready','err');return}
+  var status=cloud.getStatus&&cloud.getStatus();if(!status||!status.signedIn||!status.workspaceId){toast('Sign in under Cloud & Staff before printing','err');if(cloud.open)cloud.open();return}
+  directPrintBusy=true;setPrinterStatus('Preparing secure Cloud Print job…','');
+  Promise.resolve().then(function(){return buildDirectLabelBytes(rows,c)}).then(function(bytes){
+    return cloud.enqueueCloudPrintJob({printer_ip:c.ip||'192.168.100.73',printer_port:c.port,labels:rows.length,data:bytesBase64(bytes)});
+  }).then(function(job){setPrinterStatus('✓ Cloud job queued · '+String(job.id).slice(0,8),'ok');toast('✓ Sent to Mac Cloud Print queue','ok');pollCloudPrintJob(job.id,0);continuePrintChainAfterDirect();
+  }).catch(function(e){var msg=e&&e.message?e.message:String(e);setPrinterStatus('Cloud Print failed: '+msg,'err');toast('Cloud Print failed — '+msg,'err');
+  }).finally(function(){directPrintBusy=false});}
+function pollCloudPrintJob(jobId,attempt){var cloud=window.LabelOnZeWayCloud;if(!cloud||attempt>30)return;
+  setTimeout(function(){cloud.cloudPrintJobStatus(jobId).then(function(job){
+    if(job.status==='printed'){setPrinterStatus('✓ Printed by Mac Cloud Print agent','ok');toast('✓ POS80C print confirmed','ok');return}
+    if(job.status==='failed'||job.status==='cancelled'){setPrinterStatus('Cloud Print '+job.status+': '+(job.error_message||'Unknown error'),'err');toast('Cloud Print '+job.status,'err');return}
+    pollCloudPrintJob(jobId,attempt+1);
+  }).catch(function(){pollCloudPrintJob(jobId,attempt+1)})},2000);}
 function directEscposPrint(rows){var c=printerConfig(false);
+  if(c.mode==='cloud'){cloudEscposPrint(rows);return}
   if(directPrintBusy){toast('A direct print job is already being sent','err');return}
   if(!c.ip){var noIp='No printer IP is set';toast(noIp,'err');openPrintFallback(rows,noIp);return}
   if(!nativePOS80Printer()&&!c.bridge){var noGateway='Safari requires the local LabelOnZeWay gateway URL for direct ESC/POS printing';toast(noGateway,'err');openPrintFallback(rows,noGateway);return}
@@ -2490,7 +2509,7 @@ function expandLabelCopies(rows){var out=[];(rows||[]).forEach(function(row){var
 function physicalLabelCount(rows){return (rows||[]).reduce(function(n,row){return n+labelCopyCount(row)},0)}
 function doPrint(mode,html,rows,forceSystem){
   if(mode==='label'&&Array.isArray(rows)&&rows.length){var isClaim=rows.some(function(r){return !!(r&&r._vaultId)});storeLabelCopies(rows,isClaim?'claim reprint':'printed / generated',true);rows=expandLabelCopies(rows);html=rows.map(labelHTML).join('');}
-  if(!forceSystem&&mode==='label'&&state.shop.printMode==='direct'&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
+  if(!forceSystem&&mode==='label'&&(state.shop.printMode==='direct'||state.shop.printMode==='cloud')&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
   var pr=getEl('print-root');
   if(pr){
     pr.className='';pr.innerHTML=html;
