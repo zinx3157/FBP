@@ -1,8 +1,8 @@
-const CACHE = 'labelonzeway-v152-personal-release';
+const CACHE = 'labelonzeway-v153-cloud-print-release';
 const APP_SHELL = [
   './',
   './index.html',
-  './cloud-sync.js?v=152-release',
+  './cloud-sync.js?v=153-cloud-print',
   './sync-config.json',
   './manifest.webmanifest',
   './tracking/',
