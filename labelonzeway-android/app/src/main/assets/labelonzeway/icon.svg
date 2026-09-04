@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="LabelOnZeWay">
+  <rect width="512" height="512" rx="96" fill="#08111b"/>
+  <path d="M104 96h80v240h176v80H104z" fill="#35e1c1"/>
+  <path d="M216 96h192v66L298 336h110v80H208v-66l111-174H216z" fill="#ff6b3d"/>
+</svg>
