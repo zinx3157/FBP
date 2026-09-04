@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "LabelOnZeWay Operations Deck",
+  "short_name": "LabelOnZeWay",
+  "description": "Mobile operations deck for parcel labels, batch processing, manifests, claims, shared workflows, system printing, and direct POS80C printing.",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#08111b",
+  "theme_color": "#08111b",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}],
+  "shortcuts": [
+    {"name":"New label","short_name":"New","url":"./#card-parcel"},
+    {"name":"Manifest","short_name":"Manifest","url":"./#card-manifest"}
+  ]
+}
