@@ -4,7 +4,7 @@ SERVICE_DIR="$(cd "$(dirname "$0")" && pwd)"
 REQUIRED_IP="192.168.100.14"
 PORT="8765"
 clear
-echo "LabelOnZeWay v153 — Local + Cloud Print Bridge"
+echo "LabelOnZeWay v154 — Local + Cloud Print Bridge"
 echo "===================================================="
 echo
 if ! /sbin/ifconfig | grep -Eq "inet[[:space:]]+$REQUIRED_IP([[:space:]]|$)"; then

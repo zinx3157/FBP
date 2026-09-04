@@ -247,11 +247,11 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 @media (max-width:780px){
   body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
   .mobile-only{display:inline-flex!important}
-  #top{padding:calc(7px + env(safe-area-inset-top)) 9px 7px;gap:7px;position:sticky;top:0;z-index:40;flex-wrap:nowrap;min-height:54px}
-  #mobile-context{display:grid;grid-template-columns:88px minmax(0,1fr) 88px;align-items:center;gap:6px;position:sticky;top:calc(54px + env(safe-area-inset-top));z-index:39;background:#fff;border-bottom:1px solid var(--line);padding:5px 8px;box-shadow:0 3px 9px rgba(20,26,33,.08)}#mobile-context button{min-height:36px;border:1.5px solid var(--blue);border-radius:7px;background:#fff;color:var(--blue);font:800 10px var(--mono);padding:5px 7px}#mobile-context button:last-child{border-color:var(--red);color:var(--red)}#mobile-context-title{text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:800 11px var(--mono);letter-spacing:.6px;color:var(--ink)}
-  .brand{width:auto;min-width:0;flex:1;gap:7px}.brand .logo{width:29px;height:29px;border-radius:6px;font-size:13px}.brand h1{font-size:14px;white-space:nowrap}.brand small{display:none}
-  .chips{width:auto;margin-left:0;gap:4px;justify-content:flex-end;flex-wrap:nowrap}.chip{padding:5px 6px;font-size:9px}.chip.clock{display:none}
-  select.profile{width:78px;max-width:78px;padding:5px 4px;font-size:9px}.btn-ghost{padding:7px 8px;font-size:10px}
+  #top{padding:calc(7px + env(safe-area-inset-top)) 9px 7px;gap:7px;position:relative;z-index:40;display:grid;grid-template-columns:minmax(0,1fr);min-height:54px}
+  #mobile-context{display:grid;grid-template-columns:88px minmax(0,1fr) 88px;align-items:center;gap:6px;position:sticky;top:0;z-index:39;background:#fff;border-bottom:1px solid var(--line);padding:5px 8px;box-shadow:0 3px 9px rgba(20,26,33,.08)}#mobile-context button{min-height:36px;border:1.5px solid var(--blue);border-radius:7px;background:#fff;color:var(--blue);font:800 10px var(--mono);padding:5px 7px}#mobile-context button:last-child{border-color:var(--red);color:var(--red)}#mobile-context-title{text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:800 11px var(--mono);letter-spacing:.6px;color:var(--ink)}
+  .brand{width:100%;min-width:0;gap:7px;justify-content:flex-start}.brand>span:last-child{min-width:0}.brand .logo{width:29px;height:29px;border-radius:6px;font-size:13px;flex:none}.brand h1{font-size:14px;white-space:nowrap;overflow:visible}.brand small{display:none}
+  .chips{width:100%;margin-left:0;gap:4px;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{padding:5px 7px;font-size:9px;flex:none}.chip.clock{display:none}
+  select.profile{width:112px;max-width:112px;padding:5px 6px;font-size:9px;flex:none}.btn-ghost{padding:7px 8px;font-size:10px}
   #add-profile-btn,#recon-btn,#install-app-btn,#top-settings-btn{display:none}
   .hzd{height:4px}
   #app{width:100%;max-width:100%;min-width:0;grid-template-columns:minmax(0,1fr);padding:8px;gap:9px;overflow-x:hidden}.card{min-width:0;padding:11px;border-radius:9px;box-shadow:2px 2px 0 rgba(20,26,33,.14)}
@@ -285,7 +285,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   #mobile-nav button[aria-current=true]{background:#25313c;border-radius:7px;color:#fff}#mobile-nav button[aria-current=true] span{color:#fff}
   #toasts{bottom:calc(72px + env(safe-area-inset-bottom));width:calc(100% - 24px)}.toast{text-align:center}
 }
-@media (max-width:360px){.brand h1{font-size:12px}.brand .logo{display:none}select.profile{width:68px}.chip{padding:4px;font-size:8px}.row2.mobile-pair{gap:6px}}
+@media (max-width:360px){.brand h1{font-size:13px}.brand .logo{width:26px;height:26px}select.profile{width:100px}.chip{padding:4px 6px;font-size:8px}.row2.mobile-pair{gap:6px}}
 
 /* Google Stitch Proposal A — Operations Deck visual system. Business logic remains in the canonical app. */
 :root{--ink:#12202c;--paper:#f5f2eb;--card:#fffdf9;--orange:#0f8f83;--orange-d:#0b6f67;--blue:#173b56;--green:#0f8f66;--amber:#d99418;--red:#b8342b;--line:#d8d6cf;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;--disp:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--body:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -478,7 +478,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <span><h1>LABEL<em>ONZEWAY</em></h1><small>OPERATIONS DECK · LABELS · DISPATCH</small></span></button>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
-    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>v153</b></div>
+    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>v154</b></div>
     <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
     <div class="chip">📦 <b id="stat-count">0</b></div>
     <div class="chip">💰 <b id="stat-cod">0</b></div>
@@ -717,6 +717,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
         <p class="control-copy" id="control-printer-copy">System Print is selected. Direct POS80C uses the saved network printer on this device.</p>
         <div class="control-actions">
           <button class="btn" data-act="quickSystemPrint">SYSTEM PRINT</button>
+          <button class="btn blue" data-act="quickCloudPrint">CLOUD PRINT · MAC POS80C</button>
           <button class="btn dark" data-act="quickDirectPrint">DIRECT POS80C</button>
           <button class="btn orange" data-act="quickDetectPrinter">AUTO-DETECT POS80C</button>
         </div>
@@ -947,7 +948,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
 </div></div>
 
-<script src="cloud-sync.js?v=153-cloud-print"></script>
+<script src="cloud-sync.js?v=154-cloud-print"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -2633,9 +2634,10 @@ function scrollSection(id){
   if(isMobileUI()){showMobileView(id==='card-batch'?'batch':id==='card-manifest'?'manifest':'new');return}
   var el=getEl(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 function openCloud(){if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.open==='function'){window.LabelOnZeWayCloud.open();return}toast('Cloud controls are still loading','err')}
-function setQuickPrintMode(mode){state.shop.printMode=mode==='direct'?'direct':'browser';persist();renderOperationsDeck();
-  toast(state.shop.printMode==='direct'?'Direct POS80C selected on this device':'System Print selected on this device','ok');}
+function setQuickPrintMode(mode){state.shop.printMode=mode==='direct'?'direct':mode==='cloud'?'cloud':'browser';persist();renderOperationsDeck();
+  toast(state.shop.printMode==='direct'?'Direct POS80C selected on this device':state.shop.printMode==='cloud'?'Cloud Print · Mac POS80C selected':'System Print selected on this device','ok');}
 function quickSystemPrint(){setQuickPrintMode('browser')}
+function quickCloudPrint(){setQuickPrintMode('cloud')}
 function quickDirectPrint(){setQuickPrintMode('direct')}
 function quickDetectPrinter(){setQuickPrintMode('direct');setPrinterStatus('Auto-detecting the network POS80C…','');
   discoverPrinter({useForm:false,silent:false}).then(function(out){renderOperationsDeck();if(out&&out.ip)toast('Direct POS80C is ready at '+out.ip,'ok')});}
@@ -2663,7 +2665,7 @@ var ACTIONS={
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
   closeDay:closeDay, openArch:openArch, archiveSelectedManifest:archiveSelectedManifest, applyBulkDeliveryStatus:applyBulkDeliveryStatus, syncTrackingNow:syncTrackingNow, openTrackingDashboard:openTrackingDashboard, copyTrackingLink:copyTrackingLink, openTrackingLink:openTrackingLink, openCustomerConfirmation:openCustomerConfirmation, sendConfirmationWhatsApp:sendConfirmationWhatsApp, sendConfirmationSMS:sendConfirmationSMS, copyConfirmationMessage:copyConfirmationMessage, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, deleteSelectedManifestLabels:deleteSelectedManifestLabels, clearManifestSelection:clearManifestSelection,
   openRecon:openRecon, openSettings:openSettings, openCloud:openCloud, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
-  quickSystemPrint:quickSystemPrint, quickDirectPrint:quickDirectPrint, quickDetectPrinter:quickDetectPrinter,
+  quickSystemPrint:quickSystemPrint, quickCloudPrint:quickCloudPrint, quickDirectPrint:quickDirectPrint, quickDetectPrinter:quickDetectPrinter,
   showMobileView:showMobileView, startNewLabel:startNewLabel, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
   mobileBack:mobileBack, cancelMobile:cancelMobile,
   toggleCustomerTools:toggleCustomerTools, togglePreviewCard:togglePreviewCard,

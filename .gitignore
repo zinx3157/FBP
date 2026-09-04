@@ -1,2 +1,10 @@
 
 cloud-print-agent.json
+# LabelOnZeWay device-local and runtime files
+.DS_Store
+*.log
+*.icloud
+gateway-config.local*.json
+tracking-public.json
+__pycache__/
+*.pyc
