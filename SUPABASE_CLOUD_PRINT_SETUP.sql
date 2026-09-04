@@ -1,4 +1,4 @@
--- LabelOnZeWay v153 Cloud Print queue
+-- LabelOnZeWay v154 Cloud Print queue (unchanged schema; safe to run again)
 -- Run once in Supabase Dashboard > SQL Editor.
 
 create extension if not exists pgcrypto;

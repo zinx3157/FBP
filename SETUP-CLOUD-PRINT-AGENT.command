@@ -2,7 +2,7 @@
 set -u
 BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="$BASE_DIR/cloud-print-agent.json"
-echo "LabelOnZeWay v153 — Cloud Print Agent Setup"
+echo "LabelOnZeWay v154 — Cloud Print Agent Setup"
 echo "============================================"
 echo
 read -r -p "Cloud staff email: " EMAIL

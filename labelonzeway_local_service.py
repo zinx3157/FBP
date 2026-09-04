@@ -28,7 +28,7 @@ from urllib.request import Request, urlopen
 GATEWAY_HOST = "0.0.0.0"
 GATEWAY_PORT = 8765
 MAX_BODY = 64 * 1024 * 1024
-VERSION = "v153-cloud-print"
+VERSION = "v154-cloud-print-autostart"
 APP_DIR = Path(__file__).resolve().parent / "labelonzeway"
 TRACKING_FILE = Path(__file__).resolve().parent / "tracking-public.json"
 SYNC_CONFIG_FILE = APP_DIR / "sync-config.json"
