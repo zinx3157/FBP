@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LabelOnZeWay V2.0.0 — Operations Deck</title>
-<meta name="description" content="LabelOnZeWay iPhone web app for mobile parcel labels, customers, manifest, payments, reports, AirPrint, and optional POS80C gateway printing.">
+<title>LabelOnZeWay V2.0.1 — Operations Deck</title>
+<meta name="description" content="LabelOnZeWay V2.0.1 operations deck for parcel labels, cloud synchronization, and POS80C printing.">
 <meta name="theme-color" content="#08111b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -150,6 +150,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 .modal{position:fixed;inset:0;background:rgba(14,18,23,.6);display:none;place-items:center;z-index:60;padding:20px}
 .modal.open{display:grid}
 .modal-box{background:#fff;border:2px solid var(--ink);border-radius:12px;width:min(560px,100%);max-height:90vh;overflow:auto;padding:22px}
+#m-settings .modal-box{width:min(820px,100%);max-height:calc(100dvh - 32px);overscroll-behavior:contain}
 #m-preview .modal-box,#m-recon .modal-box{width:min(820px,100%)}
 #m-label-vault .modal-box{width:min(960px,100%)}
 .vault-note{font:600 11px/1.55 var(--mono);color:#4c5864;background:#fff8f3;border:1.5px solid #ffb28a;border-radius:8px;padding:9px 11px;margin:8px 0 12px}
@@ -470,7 +471,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   .confirm-action{border-color:#329b89!important;color:#8bf5e2!important}
 }
 @media(max-width:520px){.confirmation-actions{grid-template-columns:1fr}.mobile-manifest-actions .confirm-action{grid-column:1/-1}}
-/* V2.0.0 — Operations Board × Neon Dispatch */
+/* V2.0.1 — Operations Board × Neon Dispatch */
 @media screen{
   #top{min-height:72px;padding:10px 18px;gap:14px;position:sticky;top:0;z-index:80;backdrop-filter:blur(18px)}
   #top .chips{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
@@ -498,7 +499,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <span><h1>LABEL<em>ONZEWAY</em></h1><small>OPERATIONS DECK · LABELS · DISPATCH</small></span></button>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
-    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>V2.0.0</b></div>
+    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>V2.0.1</b></div>
     <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
     <div class="chip">📦 <b id="stat-count">0</b></div>
     <div class="chip">💰 <b id="stat-cod">0</b></div>
@@ -824,14 +825,18 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     </div>
     <div id="printer-discovery-results" class="printer-results" aria-live="polite"></div>
     <label class="f" for="s-bridge-url">Local gateway URL</label><input type="text" id="s-bridge-url" placeholder="auto when opened from the local gateway">
-    <label class="f" for="s-gateway-key">Gateway pairing key</label><input type="password" id="s-gateway-key" autocomplete="off" placeholder="Shown by the V2.0.0 installer">
+    <label class="f" for="s-gateway-key">Gateway pairing key</label><input type="password" id="s-gateway-key" autocomplete="off" placeholder="Shown by the V2.0.1 installer">
     <div id="s-printer-status" class="printer-status">iPhone system print is ready</div>
     <div class="print-methods" aria-label="iPhone printing choices">
       <div class="print-method"><b>IOS SYSTEM PRINT</b>Open the Apple print sheet and select an available AirPrint printer.<small>No computer gateway is needed for AirPrint.</small></div>
       <div class="print-method"><b>HOME SCREEN APP</b>In Safari, tap Share, then <b>Add to Home Screen</b> for an APK-style full-screen layout.<small>Records stay on this iPhone.</small></div>
       <div class="print-method"><b>CLOUD POS80C</b>Send securely from the GitHub iPhone app through your company workspace.<small>The Mac Cloud Print agent must remain open.</small></div>
     </div>
-    <div style="display:flex;gap:7px;flex-wrap:wrap">
+    <div class="cloud-print-action" style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+      <button class="btn orange" data-act="enableCloudPrint">☁ ENABLE CLOUD PRINT</button>
+      <span class="printer-help" style="margin:0">One tap selects Cloud Print and opens Cloud &amp; Staff sign-in.</span>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
       <button class="btn sm blue" data-act="testPrinterBridge">TEST GATEWAY</button>
       <button class="btn sm orange" data-act="testPrinterCut">PRINT + CUT TEST</button>
       <button class="btn sm" data-act="retryPrintQueue">↻ RETRY QUEUED</button>
@@ -2579,6 +2584,7 @@ function printCalibration(){var len=Math.min(300,Math.max(100,Number(state.shop.
       'END OF TEST · '+len+' MM</div></div>';
   doPrint('label',html);toast('Printing calibration','ok');}
 
+function enableCloudPrint(){var mode=getEl('s-print-mode');if(mode)mode.value='cloud';updatePrinterSettingsUI();saveSettings();openCloud();toast('Cloud Print enabled · sign in to Cloud & Staff','ok');}
 function openSettings(){var s=state.shop;
   var newProfile=getEl('s-new-profile'),profileFeedback=getEl('s-profile-feedback');if(newProfile)newProfile.value='';if(profileFeedback){profileFeedback.textContent='Profiles are stored on this phone.';profileFeedback.className='printer-status'}
   getEl('s-name').value=s.name;getEl('s-tag').value=s.tagline;getEl('s-phone').value=s.phone;
@@ -2697,7 +2703,7 @@ var ACTIONS={
   saveSuggestedContact:saveSuggestedContact, dismissSuggest:dismissSuggest,
   noprixUnit:noprixUnit, noprixOne:noprixOne, applyOnePrice:applyOnePrice,
   saveSettings:saveSettings, resetAll:resetAll, downloadBackup:downloadBackup,
-  testPrinterBridge:testPrinterBridge, testPrinterCut:testPrinterCut, downloadPrinterBridge:downloadPrinterBridge,
+  testPrinterBridge:testPrinterBridge, testPrinterCut:testPrinterCut, downloadPrinterBridge:downloadPrinterBridge, enableCloudPrint:enableCloudPrint,
   discoverPrinter:function(){discoverPrinter({useForm:true,silent:false}).catch(function(){})},cancelPrinterDiscovery:cancelPrinterDiscovery,
   retryPrintQueue:retryPrintQueue,clearPrintQueue:clearPrintQueue,detectAndRetryPrint:detectAndRetryPrint,
   systemPrintFallback:systemPrintFallback,queueFailedPrint:queueFailedPrint,cancelPrintFallback:cancelPrintFallback,

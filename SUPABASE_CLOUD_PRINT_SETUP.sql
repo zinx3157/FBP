@@ -1,4 +1,4 @@
--- LabelOnZeWay V2.0.0 Cloud Print safety migration (idempotent).
+-- LabelOnZeWay V2.0.1 Cloud Print safety migration (idempotent).
 create extension if not exists pgcrypto;
 create table if not exists public.cloud_print_jobs (
  id uuid primary key default gen_random_uuid(), workspace_id uuid not null references public.workspaces(id) on delete cascade,

@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "LabelOnZeWay V2.0.0 Operations Deck",
+  "name": "LabelOnZeWay V2.0.1 Operations Deck",
   "short_name": "LabelOnZeWay",
-  "description": "V2.0.0 operations deck for parcel labels, manifests, milestone history, shared workflows and controlled POS80C printing.",
+  "description": "V2.0.1 operations deck for parcel labels, manifests, milestone history, shared workflows and controlled POS80C printing.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",
