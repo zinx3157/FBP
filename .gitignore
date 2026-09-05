@@ -8,3 +8,4 @@ gateway-config.local*.json
 tracking-public.json
 __pycache__/
 *.pyc
+gateway-security.json
