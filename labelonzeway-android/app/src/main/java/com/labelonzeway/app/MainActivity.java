@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String APP_URL =
-            "https://appassets.androidplatform.net/assets/labelonzeway/index.html?v=152-personal";
+            "https://appassets.androidplatform.net/assets/labelonzeway/index.html?v=2.0.1-personal";
 
     private WebView webView;
     private ValueCallback<Uri[]> pendingFiles;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         settings.setSupportMultipleWindows(false);
-        settings.setUserAgentString(settings.getUserAgentString() + " LabelOnZeWayAndroid/152");
+        settings.setUserAgentString(settings.getUserAgentString() + " LabelOnZeWayAndroid/201");
 
         WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
