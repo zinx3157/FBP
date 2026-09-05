@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>LabelOnZeWay — Operations Deck</title>
-<meta name="description" content="LabelOnZeWay iPhone web app for mobile parcel labels, customers, manifest, payments, reports, AirPrint, and optional POS80C gateway printing.">
-<meta name="theme-color" content="#f7f9fc">
+<title>LabelOnZeWay V2.0.1 — Operations Deck</title>
+<meta name="description" content="LabelOnZeWay V2.0.1 operations deck for parcel labels, cloud synchronization, and POS80C printing.">
+<meta name="theme-color" content="#08111b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -13,6 +13,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
 <style>
 :root{--ink:#141a21;--paper:#e9ebee;--card:#fff;--orange:#ff5c1c;--blue:#1f4e8c;--green:#188a4c;--red:#c2372c;--line:#c9ced4;--mono:'IBM Plex Mono',monospace;--disp:'Archivo Black',sans-serif;--body:'Barlow',sans-serif;--lblh:210mm}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -149,6 +150,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 .modal{position:fixed;inset:0;background:rgba(14,18,23,.6);display:none;place-items:center;z-index:60;padding:20px}
 .modal.open{display:grid}
 .modal-box{background:#fff;border:2px solid var(--ink);border-radius:12px;width:min(560px,100%);max-height:90vh;overflow:auto;padding:22px}
+#m-settings .modal-box{width:min(820px,100%);max-height:calc(100dvh - 32px);overscroll-behavior:contain}
 #m-preview .modal-box,#m-recon .modal-box{width:min(820px,100%)}
 #m-label-vault .modal-box{width:min(960px,100%)}
 .vault-note{font:600 11px/1.55 var(--mono);color:#4c5864;background:#fff8f3;border:1.5px solid #ffb28a;border-radius:8px;padding:9px 11px;margin:8px 0 12px}
@@ -247,11 +249,11 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
 @media (max-width:780px){
   body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
   .mobile-only{display:inline-flex!important}
-  #top{padding:calc(7px + env(safe-area-inset-top)) 9px 7px;gap:7px;position:sticky;top:0;z-index:40;flex-wrap:nowrap;min-height:54px}
-  #mobile-context{display:grid;grid-template-columns:88px minmax(0,1fr) 88px;align-items:center;gap:6px;position:sticky;top:calc(54px + env(safe-area-inset-top));z-index:39;background:#fff;border-bottom:1px solid var(--line);padding:5px 8px;box-shadow:0 3px 9px rgba(20,26,33,.08)}#mobile-context button{min-height:36px;border:1.5px solid var(--blue);border-radius:7px;background:#fff;color:var(--blue);font:800 10px var(--mono);padding:5px 7px}#mobile-context button:last-child{border-color:var(--red);color:var(--red)}#mobile-context-title{text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:800 11px var(--mono);letter-spacing:.6px;color:var(--ink)}
-  .brand{width:auto;min-width:0;flex:1;gap:7px}.brand .logo{width:29px;height:29px;border-radius:6px;font-size:13px}.brand h1{font-size:14px;white-space:nowrap}.brand small{display:none}
-  .chips{width:auto;margin-left:0;gap:4px;justify-content:flex-end;flex-wrap:nowrap}.chip{padding:5px 6px;font-size:9px}.chip.clock{display:none}
-  select.profile{width:78px;max-width:78px;padding:5px 4px;font-size:9px}.btn-ghost{padding:7px 8px;font-size:10px}
+  #top{padding:calc(7px + env(safe-area-inset-top)) 9px 7px;gap:7px;position:relative;z-index:40;display:grid;grid-template-columns:minmax(0,1fr);min-height:54px}
+  #mobile-context{display:grid;grid-template-columns:88px minmax(0,1fr) 88px;align-items:center;gap:6px;position:sticky;top:0;z-index:39;background:#fff;border-bottom:1px solid var(--line);padding:5px 8px;box-shadow:0 3px 9px rgba(20,26,33,.08)}#mobile-context button{min-height:36px;border:1.5px solid var(--blue);border-radius:7px;background:#fff;color:var(--blue);font:800 10px var(--mono);padding:5px 7px}#mobile-context button:last-child{border-color:var(--red);color:var(--red)}#mobile-context-title{text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:800 11px var(--mono);letter-spacing:.6px;color:var(--ink)}
+  .brand{width:100%;min-width:0;gap:7px;justify-content:flex-start}.brand>span:last-child{min-width:0}.brand .logo{width:29px;height:29px;border-radius:6px;font-size:13px;flex:none}.brand h1{font-size:14px;white-space:nowrap;overflow:visible}.brand small{display:none}
+  .chips{width:100%;margin-left:0;gap:4px;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{padding:5px 7px;font-size:9px;flex:none}.chip.clock{display:none}
+  select.profile{width:112px;max-width:112px;padding:5px 6px;font-size:9px;flex:none}.btn-ghost{padding:7px 8px;font-size:10px}
   #add-profile-btn,#recon-btn,#install-app-btn,#top-settings-btn{display:none}
   .hzd{height:4px}
   #app{width:100%;max-width:100%;min-width:0;grid-template-columns:minmax(0,1fr);padding:8px;gap:9px;overflow-x:hidden}.card{min-width:0;padding:11px;border-radius:9px;box-shadow:2px 2px 0 rgba(20,26,33,.14)}
@@ -285,7 +287,7 @@ tbody tr.mani-selected{background:#fff0e8;box-shadow:inset 4px 0 0 var(--orange)
   #mobile-nav button[aria-current=true]{background:#25313c;border-radius:7px;color:#fff}#mobile-nav button[aria-current=true] span{color:#fff}
   #toasts{bottom:calc(72px + env(safe-area-inset-bottom));width:calc(100% - 24px)}.toast{text-align:center}
 }
-@media (max-width:360px){.brand h1{font-size:12px}.brand .logo{display:none}select.profile{width:68px}.chip{padding:4px;font-size:8px}.row2.mobile-pair{gap:6px}}
+@media (max-width:360px){.brand h1{font-size:13px}.brand .logo{width:26px;height:26px}select.profile{width:100px}.chip{padding:4px 6px;font-size:8px}.row2.mobile-pair{gap:6px}}
 
 /* Google Stitch Proposal A — Operations Deck visual system. Business logic remains in the canonical app. */
 :root{--ink:#12202c;--paper:#f5f2eb;--card:#fffdf9;--orange:#0f8f83;--orange-d:#0b6f67;--blue:#173b56;--green:#0f8f66;--amber:#d99418;--red:#b8342b;--line:#d8d6cf;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;--disp:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--body:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -462,13 +464,32 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   #card-manifest .totals,
   #card-manifest .tot,
   #card-manifest .empty{background-color:#091720!important;color:#eafaf7!important}
-  .uat-version-chip{color:#061511!important;background:#66ead5!important;border-color:#79f5e1!important}
+  .uat-version-chip{color:#b9fff3!important;background:#17343d!important;border-color:#3e8176!important;box-shadow:none!important}
   .confirmation-preview{min-height:190px;line-height:1.55;resize:vertical}
   .confirmation-customer{margin:9px 0;padding:10px;border:1px solid #315159;border-radius:9px;background:#091720;color:#c7e4df}
   .confirmation-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.confirmation-actions .btn{min-height:48px}
   .confirm-action{border-color:#329b89!important;color:#8bf5e2!important}
 }
 @media(max-width:520px){.confirmation-actions{grid-template-columns:1fr}.mobile-manifest-actions .confirm-action{grid-column:1/-1}}
+/* V2.0.1 — Operations Board × Neon Dispatch */
+@media screen{
+  #top{min-height:72px;padding:10px 18px;gap:14px;position:sticky;top:0;z-index:80;backdrop-filter:blur(18px)}
+  #top .chips{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+  #top .btn-ghost{min-height:40px}.brand{min-width:250px}.brand h1{font-size:20px}.card{border-radius:16px}
+  .ops-action,.control-block,.mobile-manifest-item{transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .ops-action:hover,.control-block:hover{transform:translateY(-1px);border-color:#3b746d;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+  .milestone-history{margin-top:7px;padding:7px 9px;border-left:3px solid var(--neon);background:#07131b;border-radius:6px;color:#a8c9c4;font:650 9px/1.55 var(--mono)}
+  .milestone-history b{color:#eafffb}
+}
+@media screen and (min-width:781px){#card-more{display:block!important;grid-column:1/-1}.control-grid{grid-template-columns:1fr 1fr}.control-block.full{grid-column:1/-1}}
+@media screen and (max-width:780px){
+  #top{min-height:64px;padding:calc(7px + env(safe-area-inset-top)) 9px 7px;display:grid;grid-template-columns:minmax(150px,1fr) auto}
+  .brand{min-width:0;width:auto}.brand h1{font-size:14px;letter-spacing:-.4px}.brand .logo{width:30px;height:34px}
+  #top .chips{min-width:0;gap:5px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}#top .chips::-webkit-scrollbar{display:none}
+  #top .btn-ghost,#top .clock{display:none}.uat-version-chip{min-width:58px;justify-content:center}.chip{min-height:36px}
+  .ops-shell{gap:14px}.ops-title{font-size:clamp(32px,10vw,46px)}.ops-actions{grid-template-columns:1fr 1fr}.ops-action.primary{grid-column:1/-1}
+  .control-grid{grid-template-columns:1fr}.control-block.full{grid-column:auto}.mobile-manifest-item{border-radius:14px}
+}
 </style>
 </head>
 <body>
@@ -478,7 +499,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <span><h1>LABEL<em>ONZEWAY</em></h1><small>OPERATIONS DECK · LABELS · DISPATCH</small></span></button>
   <div class="chips">
     <select class="profile" id="profile-sel" data-act="profile"></select>
-    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>v152</b></div>
+    <div class="chip uat-version-chip" aria-label="Loaded application version"><b>V2.0.1</b></div>
     <button class="btn-ghost" id="add-profile-btn" data-act="addProfile">+ PROFILE</button>
     <div class="chip">📦 <b id="stat-count">0</b></div>
     <div class="chip">💰 <b id="stat-cod">0</b></div>
@@ -717,6 +738,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
         <p class="control-copy" id="control-printer-copy">System Print is selected. Direct POS80C uses the saved network printer on this device.</p>
         <div class="control-actions">
           <button class="btn" data-act="quickSystemPrint">SYSTEM PRINT</button>
+          <button class="btn blue" data-act="quickCloudPrint">CLOUD PRINT · MAC POS80C</button>
           <button class="btn dark" data-act="quickDirectPrint">DIRECT POS80C</button>
           <button class="btn orange" data-act="quickDetectPrinter">AUTO-DETECT POS80C</button>
         </div>
@@ -792,6 +814,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <select id="s-print-mode" onchange="updatePrinterSettingsUI()">
       <option value="browser">iPhone / iPad system print · AirPrint</option>
       <option value="direct">Direct ESC/POS · local Wi-Fi gateway</option>
+      <option value="cloud">Cloud Print · Mac POS80C agent</option>
     </select>
     <div class="row2 mobile-pair equal"><div><label class="f">POS80C IP address</label><input type="text" id="s-printer-ip" placeholder="Auto-detect or enter manually" inputmode="decimal"></div>
       <div><label class="f">Raw TCP port</label><input type="number" id="s-printer-port" min="1" max="65535" value="9100" inputmode="numeric"></div></div>
@@ -801,14 +824,19 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
       <button class="btn sm" id="cancel-discovery-btn" data-act="cancelPrinterDiscovery" style="display:none;color:var(--red);border-color:var(--red)">CANCEL SCAN</button>
     </div>
     <div id="printer-discovery-results" class="printer-results" aria-live="polite"></div>
-    <label class="f">Local gateway URL</label><input type="text" id="s-bridge-url" placeholder="auto when opened from the local gateway">
+    <label class="f" for="s-bridge-url">Local gateway URL</label><input type="text" id="s-bridge-url" placeholder="auto when opened from the local gateway">
+    <label class="f" for="s-gateway-key">Gateway pairing key</label><input type="password" id="s-gateway-key" autocomplete="off" placeholder="Shown by the V2.0.1 installer">
     <div id="s-printer-status" class="printer-status">iPhone system print is ready</div>
     <div class="print-methods" aria-label="iPhone printing choices">
       <div class="print-method"><b>IOS SYSTEM PRINT</b>Open the Apple print sheet and select an available AirPrint printer.<small>No computer gateway is needed for AirPrint.</small></div>
       <div class="print-method"><b>HOME SCREEN APP</b>In Safari, tap Share, then <b>Add to Home Screen</b> for an APK-style full-screen layout.<small>Records stay on this iPhone.</small></div>
-      <div class="print-method"><b>DIRECT POS80C</b>Run the local gateway on a Mac/PC/Raspberry Pi, then open the local LabelOnZeWay address it displays.<small>Required because Safari cannot use raw TCP 9100.</small></div>
+      <div class="print-method"><b>CLOUD POS80C</b>Send securely from the GitHub iPhone app through your company workspace.<small>The Mac Cloud Print agent must remain open.</small></div>
     </div>
-    <div style="display:flex;gap:7px;flex-wrap:wrap">
+    <div class="cloud-print-action" style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+      <button class="btn orange" data-act="enableCloudPrint">☁ ENABLE CLOUD PRINT</button>
+      <span class="printer-help" style="margin:0">One tap selects Cloud Print and opens Cloud &amp; Staff sign-in.</span>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
       <button class="btn sm blue" data-act="testPrinterBridge">TEST GATEWAY</button>
       <button class="btn sm orange" data-act="testPrinterCut">PRINT + CUT TEST</button>
       <button class="btn sm" data-act="retryPrintQueue">↻ RETRY QUEUED</button>
@@ -821,7 +849,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
       <label class="chk"><input type="checkbox" id="s-cut-each" checked> Auto-cut after every physical label copy</label>
       <button class="btn sm" id="download-gateway-btn" data-act="downloadPrinterBridge" style="margin-top:8px">DOWNLOAD WI-FI GATEWAY</button>
     </div></details>
-    <p class="printer-help" id="native-printer-note">For direct ESC/POS printing on iPhone, do not try to connect this public HTTPS page to an HTTP LAN gateway. Instead, start the gateway and open its local <code>http://…:8765/</code> LabelOnZeWay address in Safari. For this GitHub Pages URL, use iOS System Print.</p>
+    <p class="printer-help" id="native-printer-note">On the public GitHub iPhone app, select <b>Cloud Print</b>. The authenticated job is collected by the Mac agent and sent directly to the POS80C.</p>
   </div>
   <div style="display:flex;gap:8px;margin-top:16px">
     <button class="btn orange" data-act="saveSettings">Save</button>
@@ -946,7 +974,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
 </div></div>
 
-<script src="cloud-sync.js?v=152-release"></script>
+<script src="cloud-sync.js?v=2.0.0"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -981,7 +1009,7 @@ function addProfileFromSettings(){var input=getEl('s-new-profile'),feedback=getE
 
 var PAY_MODES=['Espèces','COD','MVola','Orange Money','Airtel Money','PAID (prepaid)','Bank / Other'];
 var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone:'+261 00 000 000',currency:'Ar',sep:' ',codLabel:'COLLECT ON DELIVERY',labelLen:210,thanks:'Misaotra betsaka ! Merci pour votre commande !',reconHour:9,
-  printMode:'direct',printerIp:'192.168.100.73',printerPort:9100,bridgeUrl:'auto',printerDots:576,printerFeed:0,printerThreshold:180,printerCut:'partial',cutEach:true};
+  printMode:'direct',printerIp:'192.168.100.73',printerPort:9100,bridgeUrl:'auto',gatewayKey:'',printerDots:576,printerFeed:0,printerThreshold:180,printerCut:'partial',cutEach:true};
 var INITIAL_SHOP=load(K('shop'),{});if(window.LabelOnZeWayNative&&window.LabelOnZeWayNative.isNative&&!Object.prototype.hasOwnProperty.call(INITIAL_SHOP,'printMode'))INITIAL_SHOP.printMode='direct';
 var state={
   shop:Object.assign({},DEFAULT_SHOP,INITIAL_SHOP),
@@ -996,12 +1024,14 @@ if(!Array.isArray(state.labelVault))state.labelVault=[];
 var batchBusy=false,previewMode=null,previewClaimId=null,noprixShown=false,scanActive=false,printChain=[],batchSelection={},manifestSelection={},addressSelection={},confirmationRowId=null;
 function trackingToken(){var bytes=new Uint8Array(18);try{crypto.getRandomValues(bytes);return 'trk_'+Array.prototype.map.call(bytes,function(b){return b.toString(16).padStart(2,'0')}).join('')}catch(e){return uniqueId('trk_')+Math.random().toString(36).slice(2)}}
 function trackingRows(){var rows=state.manifest.slice();state.archive.forEach(function(day){if(day&&Array.isArray(day.rows))rows=rows.concat(day.rows)});return rows}
-function ensureTrackingRecords(){var changed=false;trackingRows().forEach(function(r){if(!r||typeof r!=='object')return;if(!r.trackingToken){r.trackingToken=trackingToken();changed=true}if(!r.deliveryStatus){r.deliveryStatus=r.done?'delivered':'ready';changed=true}if(!r.statusUpdatedAt){r.statusUpdatedAt=r.addedAt||new Date().toISOString();changed=true}});if(changed){save(K('mani'),state.manifest);save(K('arch'),state.archive)}return changed}
+function ensureTrackingRecords(){var changed=false;trackingRows().forEach(function(r){if(!r||typeof r!=='object')return;if(!r.trackingToken){r.trackingToken=trackingToken();changed=true}if(!r.deliveryStatus){r.deliveryStatus=r.done?'delivered':'ready';changed=true}if(!r.statusUpdatedAt){r.statusUpdatedAt=r.addedAt||new Date().toISOString();changed=true}if(!Array.isArray(r.milestoneHistory)){r.milestoneHistory=[{status:r.deliveryStatus,at:r.statusUpdatedAt,reason:r.deliveryExceptionReason||'',source:'migration'}];changed=true}});if(changed){save(K('mani'),state.manifest);save(K('arch'),state.archive)}return changed}
 function trackingPublicRecords(){var seen={};return trackingRows().filter(function(r){if(!r||!r.trackingToken||seen[r.trackingToken])return false;seen[r.trackingToken]=true;return true}).map(function(r){var status=r.deliveryStatus||(r.done?'delivered':'ready'),milestone=status==='delivered'?'Delivered':status==='in_transit'?'In Transit':status==='exception'?'Exception':'Ready for Dispatch';return{token:r.trackingToken,public:{orderNumber:String(r.oid||r.id||''),status:status,milestone:milestone,deliveryProcessDate:String(r.deliverAt||''),lastUpdate:String(r.statusUpdatedAt||r.addedAt||''),podAvailable:!!r.pod}}})}
 function deliveryStatusOf(r){var status=String(r&&r.deliveryStatus||'');return['ready','in_transit','delivered','exception'].indexOf(status)>=0?status:(r&&r.done?'delivered':'ready')}
 function deliveryStatusLabel(status){return status==='in_transit'?'In Transit':status==='delivered'?'Delivered':status==='exception'?'Exception':'Ready for Dispatch'}
 function deliveryStatusOptionsHTML(r){var current=deliveryStatusOf(r);return['ready','in_transit','delivered','exception'].map(function(status){return'<option value="'+status+'"'+(status===current?' selected':'')+'>'+deliveryStatusLabel(status)+'</option>'}).join('')}
-function syncTrackingGateway(showResult){ensureTrackingRecords();var records=trackingPublicRecords(),local=fetch('/api/tracking/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({records:records})}).then(function(response){return response.json().then(function(body){if(!response.ok)throw new Error(body.error||('HTTP '+response.status));return body})});var cloud=window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.publishTrackingRecords==='function'?window.LabelOnZeWayCloud.publishTrackingRecords(records):Promise.reject(new Error('Cloud tracking is not signed in'));return Promise.allSettled([local,cloud]).then(function(results){var passed=results.filter(function(result){return result.status==='fulfilled'});if(!passed.length)throw(results[1].reason||results[0].reason||new Error('Tracking synchronization failed'));if(showResult)toast('Tracking synchronized · '+records.length+' parcel'+(records.length===1?'':'s')+(results[1].status==='fulfilled'?' · internet ready':' · LAN only'),'ok');return{records:records.length,cloud:results[1].status==='fulfilled'}}).catch(function(error){if(showResult)toast('Tracking sync failed: '+error.message,'err');console.warn('Tracking sync',error);throw error})}
+function appendMilestone(r,status,at,reason,source){r.milestoneHistory=Array.isArray(r.milestoneHistory)?r.milestoneHistory:[];var last=r.milestoneHistory[r.milestoneHistory.length-1];if(last&&last.status===status&&last.reason===(reason||''))return;r.milestoneHistory.push({status:status,at:at,reason:reason||'',source:source||'operator'})}
+function milestoneHistoryHTML(r){var h=Array.isArray(r.milestoneHistory)?r.milestoneHistory:[];return '<details class="milestone-history"><summary><b>MILESTONE HISTORY · '+h.length+'</b></summary>'+h.map(function(e){return '<div>'+esc(fmtDT(e.at||''))+' · '+esc(deliveryStatusLabel(e.status))+(e.reason?' · '+esc(e.reason):'')+'</div>'}).join('')+'</details>'}
+function syncTrackingGateway(showResult){ensureTrackingRecords();var records=trackingPublicRecords(),isLocal=location.protocol==='http:'&&location.port==='8765',key=state.shop.gatewayKey||'';var local=isLocal?fetch('/api/tracking/sync',{method:'POST',headers:{'Content-Type':'application/json','X-LabelOnZeWay-Key':key},body:JSON.stringify({records:records})}).then(function(response){return response.json().then(function(body){if(!response.ok)throw new Error(body.error||('HTTP '+response.status));return body})}):Promise.resolve({skipped:true});var api=window.LabelOnZeWayCloud,status=api&&api.getStatus&&api.getStatus();var cloud=api&&status&&status.signedIn&&typeof api.publishTrackingRecords==='function'?api.publishTrackingRecords(records):Promise.resolve({skipped:true});return Promise.allSettled([local,cloud]).then(function(results){var passed=results.filter(function(result){return result.status==='fulfilled'});if(!passed.length)throw(results[1].reason||results[0].reason||new Error('Tracking synchronization failed'));if(showResult)toast('Tracking synchronized · '+records.length+' parcel'+(records.length===1?'':'s')+(status&&status.signedIn?' · internet ready':' · device only'),'ok');return{records:records.length,cloud:!!(status&&status.signedIn)}}).catch(function(error){if(showResult)toast('Tracking sync failed: '+error.message,'err');throw error})}
 function syncTrackingNow(){syncTrackingGateway(true).catch(function(){})}
 function trackingUrlFor(row){if(!row||!row.trackingToken)throw new Error('Tracking link unavailable');var cloud=window.LabelOnZeWayCloud,base=cloud&&typeof cloud.publicTrackingBase==='function'?cloud.publicTrackingBase():'';return(base||location.origin+'/labelonzeway/tracking/').replace(/\/$/,'/')+'?token='+encodeURIComponent(row.trackingToken)}
 function copyTrackingLink(id){ensureTrackingRecords();var row=trackingRows().find(function(r){return r.id===id});if(!row){toast('Parcel not found','err');return}var url=trackingUrlFor(row);syncTrackingGateway(false).catch(function(){});if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){toast('Tracking link copied','ok')}).catch(function(){window.prompt('Copy tracking link:',url)})}else window.prompt('Copy tracking link:',url)}
@@ -1131,7 +1161,7 @@ function renderOperationsDeck(){
   if(cloudStatus.signedIn&&cloudStatus.workspaceId){cloudText=cloudStatus.pending?(cloudStatus.pending+' sync pending'):'Cloud synchronized';cloudCopy=(cloudStatus.workspaceName||'Shared company workspace')+(cloudStatus.pending?' · queued changes will reconcile.':' · authorized staff records are current.');cloudType=cloudStatus.pending?'':'ok'}
   else if(cloudStatus.configured){cloudText='Cloud sign-in required';cloudCopy='Sign in with the staff account to open the shared company workspace.'}
   setOpsStatus('ops-cloud-chip',cloudText,cloudType);var cloudDot=getEl('control-cloud-dot'),cloudTitle=getEl('control-cloud-title'),cloudCopyEl=getEl('control-cloud-copy');if(cloudDot)cloudDot.className='dot'+(cloudType==='ok'?' ok':'');if(cloudTitle)cloudTitle.textContent=cloudText;if(cloudCopyEl)cloudCopyEl.textContent=cloudCopy;
-  var direct=state.shop.printMode==='direct',printerText=direct?('Direct POS80C'+(state.shop.printerIp?' · '+state.shop.printerIp:'')):'System Print';setOpsStatus('ops-printer-chip',printerText,direct&&state.shop.printerIp?'ok':'');
+  var direct=state.shop.printMode==='direct',cloudPrint=state.shop.printMode==='cloud',printerText=cloudPrint?'Cloud POS80C':(direct?('Direct POS80C'+(state.shop.printerIp?' · '+state.shop.printerIp:'')):'System Print');setOpsStatus('ops-printer-chip',printerText,(cloudPrint||(direct&&state.shop.printerIp))?'ok':'');
   var printerCopy=getEl('control-printer-copy');if(printerCopy)printerCopy.textContent=direct?('Direct POS80C is selected'+(state.shop.printerIp?' at '+state.shop.printerIp+':'+(state.shop.printerPort||9100):'. Auto-detect or enter a printer address')+'. Auto-cut after each label remains '+(state.shop.cutEach===false?'off':'on')+'.'):'System Print is selected. Direct POS80C uses the saved network printer on this device.';
   var recent=getEl('ops-recent-list');if(recent){var rows=m.slice(-4).reverse();recent.innerHTML=rows.length?rows.map(function(r){var rec=r.rec||{},status=deliveryStatusLabel(r.deliveryStatus);return '<div class="ops-recent-row"><span class="ops-order">#'+esc(r.oid||r.id||'—')+'</span><span class="ops-rec"><b>'+esc(rec.name||'Customer')+'</b><small>'+esc([rec.area,r.pay,status].filter(Boolean).join(' · ')||'Label ready')+'</small></span><span class="ops-money">'+esc(money(Number(r.cod||0)+Number(r.ship||0)))+'</span></div>'}).join(''):'<div class="ops-recent-empty">No labels in the active manifest yet. Start with New Label or Batch.</div>'}
 }
@@ -1707,16 +1737,17 @@ function applyBatchRecAll(){var v=getEl('batch-rec-all').value;if(!v){toast('Cho
 function makeRow(it,rec,oid){var price=Number(it.price)||0;
   return {id:uniqueId('r'),oid:oid,name:'',qty:it.qty||1,copies:Math.min(20,Math.max(1,parseInt(it.copies)||1)),price:price,
     cod:it.cod===null||it.cod===''?price:Number(it.cod),ship:Number(it.ship)||0,notes:'',
-    pay:it.pay||'COD',mmRef:'',img:it.img||null,deliverAt:it.deliverAt||dPlus1Date(),deliverTime:it.deliverTime||'',pod:false,paid:false,received:0,
+    pay:it.pay||'COD',mmRef:'',img:null,photoProcessed:!!it.img,deliverAt:it.deliverAt||dPlus1Date(),deliverTime:it.deliverTime||'',pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};}
 function makeMergedRow(items,rec,oid){
   var qty=items.reduce(function(s,p){return s+(p.qty||1)},0);
   var price=items.reduce(function(s,p){return s+(Number(p.price)||0)*(p.qty||1)},0);
   var cod=items.reduce(function(s,p){return s+(p.cod===null||p.cod===''?(Number(p.price)||0):(Number(p.cod)||0))},0);
-  var ship=items.reduce(function(s,p){return s+(Number(p.ship)||0)},0);
+  /* One consolidated customer parcel receives one delivery fee, not one fee per photo. */
+  var ship=items.reduce(function(s,p){return Math.max(s,Number(p.ship)||0)},0);
   var copies=items.reduce(function(n,p){return Math.max(n,Math.min(20,Math.max(1,parseInt(p.copies)||1)))},1);
   return {id:uniqueId('r'),oid:oid,name:'',qty:qty,copies:copies,price:price,cod:cod,ship:ship,notes:'',
-    pay:items[0].pay||'COD',mmRef:'',img:items[0].img||null,deliverAt:dPlus1Date(),deliverTime:'',pod:false,paid:false,received:0,
+    pay:items[0].pay||'COD',mmRef:'',img:null,photoProcessed:items.some(function(p){return!!p.img}),deliverAt:dPlus1Date(),deliverTime:'',pod:false,paid:false,received:0,
     rec:Object.assign({},rec),addedAt:new Date().toISOString(),done:false};}
 function commitBatch(){
   var mg=getEl('f-merge');var merge=mg?mg.checked:true;
@@ -1868,7 +1899,7 @@ function addToManifest(printAfter){var qty=Math.max(1,parseInt(val('f-qty'))||1)
 function setMan(id,k,v){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;
   if(k==='name')r.rec.name=v;
   else if(k==='phone')r.rec.phone=v;
-  else if(k==='address')r.rec.address=v;
+  else if(k==='address'){r.rec.address=v;r.rec.area='';}
   else if(k==='cod')r.cod=parseFloat(v)||0;
   else if(k==='copies')r.copies=Math.min(20,Math.max(1,parseInt(v)||1));
   else if(k==='pay')r.pay=PAY_MODES.indexOf(v)>=0?v:'COD';
@@ -1919,9 +1950,9 @@ function updateManifestSelectionUI(){
   var deleteBtn=getEl('delete-selected-labels');if(deleteBtn){deleteBtn.disabled=!count;deleteBtn.textContent='🗑 DELETE LABELS ('+count+')'}
   var clearBtn=getEl('clear-manifest-selection');if(clearBtn)clearBtn.disabled=!count;
   updateBulkStatusControl();}
-function applyBulkDeliveryStatus(){var rows=selectedManifestRows(),sel=getEl('bulk-status-select'),status=sel?String(sel.value||''):'';if(!rows.length){toast('Select one or more parcels','err');return}if(['ready','in_transit','delivered','exception'].indexOf(status)<0){toast('Choose the new delivery status','err');return}var reason='';if(status==='exception'){reason=window.prompt('Enter one exception reason for all '+rows.length+' selected parcels:','');if(reason==null)return;reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');return}}if(!confirm('Update '+rows.length+' selected parcel'+(rows.length===1?'':'s')+' to “'+deliveryStatusLabel(status)+'”?'))return;var now=new Date().toISOString();rows.forEach(function(r){r.deliveryExceptionReason=status==='exception'?reason:'';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=now});manifestSelection={};if(sel)sel.value='';persist();renderManifest();renderStats();toast(rows.length+' parcel'+(rows.length===1?'':'s')+' updated to '+deliveryStatusLabel(status),'ok')}
+function applyBulkDeliveryStatus(){var rows=selectedManifestRows(),sel=getEl('bulk-status-select'),status=sel?String(sel.value||''):'';if(!rows.length){toast('Select one or more parcels','err');return}if(['ready','in_transit','delivered','exception'].indexOf(status)<0){toast('Choose the new delivery status','err');return}var reason='';if(status==='exception'){reason=window.prompt('Enter one exception reason for all '+rows.length+' selected parcels:','');if(reason==null)return;reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');return}}if(!confirm('Update '+rows.length+' selected parcel'+(rows.length===1?'':'s')+' to “'+deliveryStatusLabel(status)+'”?'))return;var now=new Date().toISOString();rows.forEach(function(r){r.deliveryExceptionReason=status==='exception'?reason:'';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=now;appendMilestone(r,status,now,reason,'bulk')});manifestSelection={};if(sel)sel.value='';persist();renderManifest();renderStats();toast(rows.length+' parcel'+(rows.length===1?'':'s')+' updated to '+deliveryStatusLabel(status),'ok')}
 function manifestOrderDescriptor(r){return '#'+String(r.oid||r.id||'—')+' — '+String(r.rec&&r.rec.name||'Customer')}
-function archiveSelectedManifest(){var rows=selectedManifestRows();if(!rows.length){toast('Select one or more manifest parcels to archive','err');return}var exact=rows.map(manifestOrderDescriptor).join('\n• ');if(!confirm('Archive only these '+rows.length+' selected parcel'+(rows.length===1?'':'s')+'?\n\n• '+exact+'\n\nUnselected parcels will remain in the active Manifest. Tracking and Claims Vault copies will be preserved.'))return;var ids={};rows.forEach(function(r){ids[r.id]=true});state.archive.unshift({id:uniqueId('d'),date:new Date().toISOString(),rows:rows,kind:'selected'});if(state.archive.length>90)state.archive=state.archive.slice(0,90);state.manifest=state.manifest.filter(function(r){return !ids[r.id]});manifestSelection={};persist();renderManifest();renderStats();renderArch();toast(rows.length+' selected parcel'+(rows.length===1?'':'s')+' archived · unselected parcels retained','ok')}
+function archiveSelectedManifest(){var rows=selectedManifestRows();if(!rows.length){toast('Select one or more manifest parcels to archive','err');return}var exact=rows.map(manifestOrderDescriptor).join('\n• ');if(!confirm('Archive only these '+rows.length+' selected parcel'+(rows.length===1?'':'s')+'?\n\n• '+exact+'\n\nUnselected parcels will remain in the active Manifest. Tracking and Claims Vault copies will be preserved.'))return;var ids={};rows.forEach(function(r){ids[r.id]=true});state.archive.unshift({id:uniqueId('d'),date:new Date().toISOString(),rows:rows,kind:'selected'});state.manifest=state.manifest.filter(function(r){return !ids[r.id]});manifestSelection={};persist();renderManifest();renderStats();renderArch();toast(rows.length+' selected parcel'+(rows.length===1?'':'s')+' archived · unselected parcels retained','ok')}
 function deleteSelectedManifestLabels(){var rows=selectedManifestRows();if(!rows.length){toast('Select one or more manifest labels','err');return}var exact=rows.map(manifestOrderDescriptor).join('\n• ');if(!confirm('Delete these '+rows.length+' selected manifest label'+(rows.length===1?'':'s')+'?\n\n• '+exact+'\n\nTheir permanent claim copies will remain in the Claims Vault.'))return;var ids={};rows.forEach(function(r){ids[r.id]=true});state.manifest=state.manifest.filter(function(r){return !ids[r.id]});manifestSelection={};persist();renderManifest();renderStats();toast(rows.length+' selected label'+(rows.length===1?'':'s')+' deleted · claim copies retained','ok')}
 function printSelectedLabels(){
   var rows=selectedManifestRows();
@@ -1945,7 +1976,7 @@ function mobileManifestHTML(rows){return '<div class="mobile-manifest-list">'+ro
       '<div class="mobile-field"><label>LABEL COPIES</label><input type="number" min="1" max="20" inputmode="numeric" value="'+(r.copies||1)+'" onchange="setMan(\''+r.id+'\',\'copies\',this.value)"></div>'+
       '<div class="mobile-field"><label>PAYMENT</label><select onchange="setMan(\''+r.id+'\',\'pay\',this.value)">'+payOptionsHTML(r.pay||'COD')+'</select></div>'+
       '<div class="mobile-field"><label>MM REF</label><input value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></div>'+
-      '<div class="mobile-field span2"><label>DELIVERY STATUS</label><select onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+'</div>'+
+      '<div class="mobile-field span2"><label>DELIVERY STATUS</label><select onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+milestoneHistoryHTML(r)+'</div>'+
     '</div><div class="mobile-manifest-actions">'+
       '<button class="btn confirm-action" data-arg="'+r.id+'" data-act="openCustomerConfirmation">✉ NOTIFY BY SMS / WHATSAPP</button>'+
       '<button class="btn dark" data-arg="'+r.id+'" data-act="printRow">🖨 PRINT</button><button class="btn" data-arg="'+r.id+'" data-act="toBatch">↩ BATCH</button>'+
@@ -1970,7 +2001,7 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
       '<td><input class="cell-in num" type="number" min="1" max="20" value="'+(r.copies||1)+'" onchange="setMan(\''+r.id+'\',\'copies\',this.value)"></td>'+
       '<td><input class="cell-in mono" value="'+esc(r.mmRef||'')+'" onchange="setMMRef(\''+r.id+'\',this.value)"></td>'+
       '<td><select class="cell-in mono" aria-label="Payment mode for order '+esc(r.oid)+'" onchange="setMan(\''+r.id+'\',\'pay\',this.value)">'+payOptionsHTML(r.pay||'COD')+'</select></td>'+
-      '<td><select class="cell-in mono status-select" aria-label="Delivery status for order '+esc(r.oid)+'" onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+'</td>'+
+      '<td><select class="cell-in mono status-select" aria-label="Delivery status for order '+esc(r.oid)+'" onchange="setDeliveryStatus(\''+r.id+'\',this.value)">'+deliveryStatusOptionsHTML(r)+'</select>'+(deliveryStatusOf(r)==='exception'&&r.deliveryExceptionReason?'<small class="error">'+esc(r.deliveryExceptionReason)+'</small>':'')+milestoneHistoryHTML(r)+'</td>'+
       '<td><div class="mani-actions">'+
         '<button class="mini-btn" data-arg="'+r.id+'" data-act="printRow">🖨</button>'+
         '<button class="mini-btn confirm-action" title="Notify by SMS or WhatsApp" data-arg="'+r.id+'" data-act="openCustomerConfirmation">✉</button>'+
@@ -1990,7 +2021,7 @@ function renderManifest(){var body=getEl('mani-body');if(!body)return;var m=stat
     '<div class="tot hot"><small>TO COLLECT</small><b>'+money(totOpen)+'</b></div>'+
     '<div class="tot"><small>TOTAL</small><b>'+money(totAll)+'</b></div>';
   updateManifestSelectionUI();}
-function setDeliveryStatus(id,status,reason){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;status=String(status||'ready');if(['ready','in_transit','delivered','exception'].indexOf(status)<0)return;if(status==='exception'){reason=reason==null?window.prompt('Enter the delivery exception reason:',r.deliveryExceptionReason||''):reason;if(reason==null){renderManifest();return}reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');renderManifest();return}r.deliveryExceptionReason=reason}else r.deliveryExceptionReason='';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=new Date().toISOString();persist();renderManifest();renderStats();toast('Order '+String(r.oid||'')+' · '+deliveryStatusLabel(status),'ok');setTimeout(function(){openCustomerNotification(r.id,status)},250)}
+function setDeliveryStatus(id,status,reason){var r=state.manifest.find(function(x){return x.id===id});if(!r)return;status=String(status||'ready');if(['ready','in_transit','delivered','exception'].indexOf(status)<0)return;if(status==='exception'){reason=reason==null?window.prompt('Enter the delivery exception reason:',r.deliveryExceptionReason||''):reason;if(reason==null){renderManifest();return}reason=String(reason).trim();if(!reason){toast('Exception reason is required','err');renderManifest();return}r.deliveryExceptionReason=reason}else r.deliveryExceptionReason='';r.deliveryStatus=status;r.done=status==='delivered';r.statusUpdatedAt=new Date().toISOString();appendMilestone(r,status,r.statusUpdatedAt,r.deliveryExceptionReason||'','operator');persist();renderManifest();renderStats();toast('Order '+String(r.oid||'')+' · '+deliveryStatusLabel(status),'ok');setTimeout(function(){openCustomerNotification(r.id,status)},250)}
 function toggleDone(id){var r=state.manifest.find(function(x){return x.id===id});if(r)setDeliveryStatus(id,r.done?'ready':'delivered')}
 function removeRow(id){var row=state.manifest.find(function(x){return x.id===id});if(!row)return;if(!confirm('Delete this manifest label?\n\n'+manifestOrderDescriptor(row)+'\n\nIts permanent claim copy will remain in the Claims Vault.'))return;
   state.manifest=state.manifest.filter(function(x){return x.id!==id});delete manifestSelection[id];persist();renderManifest();renderStats();toast('Label deleted · claim copy retained','ok');}
@@ -2000,7 +2031,6 @@ function clearManifest(){if(!state.manifest.length){toast('Manifest empty','err'
 function closeDay(){if(!state.manifest.length){toast('Manifest empty','err');return}
   if(!confirm('Close today\'s manifest ('+state.manifest.length+' parcels) and archive it?'))return;
   state.archive.unshift({id:uniqueId('d'),date:new Date().toISOString(),rows:state.manifest});
-  if(state.archive.length>90)state.archive=state.archive.slice(0,90);
   state.manifest=[];persist();renderManifest();renderStats();toast('Archived','ok');}
 
 function reconList(){return state.manifest.filter(function(r){return r.done&&!r.paid})}
@@ -2302,7 +2332,7 @@ function printerConfig(useForm){var s=state.shop;
     mode:from('s-print-mode',s.printMode||'browser'),
     ip:String(from('s-printer-ip',s.printerIp||'')).trim(),
     port:Math.min(65535,Math.max(1,parseInt(from('s-printer-port',s.printerPort||9100))||9100)),
-    bridge:bridge.replace(/\/+$/,''),bridgeRaw:bridgeRaw,
+    bridge:bridge.replace(/\/+$/,''),bridgeRaw:bridgeRaw,gatewayKey:String(from('s-gateway-key',s.gatewayKey||'')).trim(),
     dots:Math.min(640,Math.max(384,parseInt(from('s-printer-dots',s.printerDots||576))||576)),
     feed:Math.min(255,Math.max(0,parseInt(from('s-printer-feed',s.printerFeed==null?0:s.printerFeed))||0)),
     threshold:Math.min(254,Math.max(1,parseInt(from('s-printer-threshold',s.printerThreshold||180))||180)),
@@ -2312,7 +2342,8 @@ function printerConfig(useForm){var s=state.shop;
 function setPrinterStatus(msg,type){var el=getEl('s-printer-status');
   if(el){el.textContent=msg;el.className='printer-status'+(type?' '+type:'')}renderOperationsDeck();}
 function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser'),platform=nativePlatform();
-  if(mode==='direct')setPrinterStatus(platform?'Direct '+(platform==='ios'?'iPhone/iPad':'Android')+' printing selected — use Auto-Detect or the saved IP.':'Gateway mode selected — open LabelOnZeWay from the gateway local URL, then use Auto-Detect.','');
+  if(mode==='cloud')setPrinterStatus('Cloud Print selected — sign in to Cloud and keep the Mac print agent open.','ok');
+  else if(mode==='direct')setPrinterStatus(platform?'Direct '+(platform==='ios'?'iPhone/iPad':'Android')+' printing selected — use Auto-Detect or the saved IP.':'Gateway mode selected — open LabelOnZeWay from the gateway local URL, then use Auto-Detect.','');
   else setPrinterStatus(platform==='android'?'Android system print selected — availability depends on installed print services.':'iPhone / iPad system print selected — uses the iOS print sheet and AirPrint.','ok');}
 function localRequestAddressSpace(url){try{var h=new URL(url,location.href).hostname.toLowerCase();
   if(h==='localhost'||h==='127.0.0.1'||h==='::1')return'loopback';
@@ -2369,7 +2400,7 @@ function bytesBase64(bytes){var chunks=[],size=32768;
 function sendBridgeBytes(bytes,c,labelCount){var encoded=bytesBase64(bytes),nativePrinter=nativePOS80Printer();
   if(nativePrinter)return nativePrinter.print({printer_ip:c.ip,printer_port:c.port,labels:labelCount||0,data:encoded});
   return fetchWithTimeout(c.bridge+'/print',{
-    method:'POST',headers:{'Content-Type':'application/json'},
+    method:'POST',headers:{'Content-Type':'application/json','X-LabelOnZeWay-Key':c.gatewayKey||''},
     body:JSON.stringify({printer_ip:c.ip,printer_port:c.port,labels:labelCount||0,data:encoded})
   },45000).then(checkedBridgeJSON);}
 function testPrinterCut(){var c=printerConfig(true);
@@ -2450,7 +2481,26 @@ function continuePrintChainAfterDirect(){if(!printChain.length)return;var next=p
     else if(next==='report'&&state.manifest.length)doPrint('a4',salesReportHTML());},400);}
 function sendDirectRows(rows,c){return Promise.resolve().then(function(){return buildDirectLabelBytes(rows,c)}).then(function(bytes){
   toast('Sending '+Number(bytes.length).toLocaleString()+' bytes to POS80C…','ok');return sendBridgeBytes(bytes,c,rows.length);});}
+function cloudEscposPrint(rows){var c=printerConfig(false),cloud=window.LabelOnZeWayCloud;
+  if(directPrintBusy){toast('A print job is already being prepared','err');return}
+  if(!cloud||typeof cloud.enqueueCloudPrintJob!=='function'){toast('Cloud Print is not ready','err');return}
+  var status=cloud.getStatus&&cloud.getStatus();if(!status||!status.signedIn||!status.workspaceId){toast('Sign in under Cloud & Staff before printing','err');if(cloud.open)cloud.open();return}
+  directPrintBusy=true;setPrinterStatus('Preparing secure Cloud Print job…','');
+  Promise.resolve().then(function(){return buildDirectLabelBytes(rows,c)}).then(function(bytes){
+    return cloud.enqueueCloudPrintJob({printer_ip:c.ip||'192.168.100.73',printer_port:c.port,labels:rows.length,data:bytesBase64(bytes)});
+  }).then(function(job){setPrinterStatus('✓ Cloud job queued · '+String(job.id).slice(0,8),'ok');toast('✓ Sent to Mac Cloud Print queue','ok');pollCloudPrintJob(job.id,0);continuePrintChainAfterDirect();
+  }).catch(function(e){var msg=e&&e.message?e.message:String(e);setPrinterStatus('Cloud Print failed: '+msg,'err');toast('Cloud Print failed — '+msg,'err');
+  }).finally(function(){directPrintBusy=false});}
+function pollCloudPrintJob(jobId,attempt){var cloud=window.LabelOnZeWayCloud;if(!cloud)return;if(attempt>150){setPrinterStatus('Cloud Print is still pending · job '+String(jobId).slice(0,8)+' · check the Mac agent','err');return}
+  setTimeout(function(){cloud.cloudPrintJobStatus(jobId).then(function(job){
+    if(job.status==='printed'){setPrinterStatus('✓ Sent successfully to POS80C · '+String(job.id).slice(0,8),'ok');toast('✓ Sent successfully to POS80C','ok');return}
+    if(job.status==='uncertain'){setPrinterStatus('⚠ Print result uncertain · do not retry automatically · '+String(job.id).slice(0,8),'err');toast('Print needs operator verification','err');return}
+    if(job.status==='sending'){setPrinterStatus('Sending to POS80C · '+String(job.id).slice(0,8),'');pollCloudPrintJob(jobId,attempt+1);return}
+    if(job.status==='failed'||job.status==='cancelled'){setPrinterStatus('Cloud Print '+job.status+': '+(job.error_message||'Unknown error'),'err');toast('Cloud Print '+job.status,'err');return}
+    pollCloudPrintJob(jobId,attempt+1);
+  }).catch(function(){pollCloudPrintJob(jobId,attempt+1)})},2000);}
 function directEscposPrint(rows){var c=printerConfig(false);
+  if(c.mode==='cloud'){cloudEscposPrint(rows);return}
   if(directPrintBusy){toast('A direct print job is already being sent','err');return}
   if(!c.ip){var noIp='No printer IP is set';toast(noIp,'err');openPrintFallback(rows,noIp);return}
   if(!nativePOS80Printer()&&!c.bridge){var noGateway='Safari requires the local LabelOnZeWay gateway URL for direct ESC/POS printing';toast(noGateway,'err');openPrintFallback(rows,noGateway);return}
@@ -2490,7 +2540,7 @@ function expandLabelCopies(rows){var out=[];(rows||[]).forEach(function(row){var
 function physicalLabelCount(rows){return (rows||[]).reduce(function(n,row){return n+labelCopyCount(row)},0)}
 function doPrint(mode,html,rows,forceSystem){
   if(mode==='label'&&Array.isArray(rows)&&rows.length){var isClaim=rows.some(function(r){return !!(r&&r._vaultId)});storeLabelCopies(rows,isClaim?'claim reprint':'printed / generated',true);rows=expandLabelCopies(rows);html=rows.map(labelHTML).join('');}
-  if(!forceSystem&&mode==='label'&&state.shop.printMode==='direct'&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
+  if(!forceSystem&&mode==='label'&&(state.shop.printMode==='direct'||state.shop.printMode==='cloud')&&Array.isArray(rows)&&rows.length){directEscposPrint(rows);return}
   var pr=getEl('print-root');
   if(pr){
     pr.className='';pr.innerHTML=html;
@@ -2534,6 +2584,7 @@ function printCalibration(){var len=Math.min(300,Math.max(100,Number(state.shop.
       'END OF TEST · '+len+' MM</div></div>';
   doPrint('label',html);toast('Printing calibration','ok');}
 
+function enableCloudPrint(){var mode=getEl('s-print-mode');if(mode)mode.value='cloud';updatePrinterSettingsUI();saveSettings();openCloud();toast('Cloud Print enabled · sign in to Cloud & Staff','ok');}
 function openSettings(){var s=state.shop;
   var newProfile=getEl('s-new-profile'),profileFeedback=getEl('s-profile-feedback');if(newProfile)newProfile.value='';if(profileFeedback){profileFeedback.textContent='Profiles are stored on this phone.';profileFeedback.className='printer-status'}
   getEl('s-name').value=s.name;getEl('s-tag').value=s.tagline;getEl('s-phone').value=s.phone;
@@ -2542,7 +2593,7 @@ function openSettings(){var s=state.shop;
   getEl('s-reconhour').value=s.reconHour==null?9:s.reconHour;
   getEl('s-thanks').value=s.thanks;
   getEl('s-print-mode').value=s.printMode||'browser';getEl('s-printer-ip').value=s.printerIp||'';
-  getEl('s-printer-port').value=s.printerPort||9100;getEl('s-bridge-url').value=s.bridgeUrl||'auto';
+  getEl('s-printer-port').value=s.printerPort||9100;getEl('s-bridge-url').value=s.bridgeUrl||'auto';getEl('s-gateway-key').value=s.gatewayKey||'';
   getEl('s-printer-dots').value=s.printerDots||576;getEl('s-printer-feed').value=s.printerFeed==null?0:s.printerFeed;
   getEl('s-printer-threshold').value=s.printerThreshold||180;getEl('s-cut-type').value=s.printerCut||'partial';
   getEl('s-cut-each').checked=s.cutEach!==false;updatePrinterSettingsUI();updatePrintQueueUI();
@@ -2556,7 +2607,7 @@ function saveSettings(){var pc=printerConfig(true);Object.assign(state.shop,{
     labelLen:Math.min(300,Math.max(100,parseInt(getEl('s-len').value)||210)),
     reconHour:Math.min(23,Math.max(0,parseInt(getEl('s-reconhour').value)||9)),
     thanks:getEl('s-thanks').value.trim(),
-    printMode:pc.mode,printerIp:pc.ip,printerPort:pc.port,bridgeUrl:pc.bridgeRaw||'auto',printerDots:pc.dots,
+    printMode:pc.mode,printerIp:pc.ip,printerPort:pc.port,bridgeUrl:pc.bridgeRaw||'auto',gatewayKey:pc.gatewayKey||'',printerDots:pc.dots,
     printerFeed:pc.feed,printerThreshold:pc.threshold,printerCut:pc.cut,cutEach:pc.cutEach});
   persist();applyCurrency();applyLabelLen();renderManifest();renderPreview();renderBatch();
   closeModal('m-settings');toast('Settings saved','ok');}
@@ -2614,9 +2665,10 @@ function scrollSection(id){
   if(isMobileUI()){showMobileView(id==='card-batch'?'batch':id==='card-manifest'?'manifest':'new');return}
   var el=getEl(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 function openCloud(){if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.open==='function'){window.LabelOnZeWayCloud.open();return}toast('Cloud controls are still loading','err')}
-function setQuickPrintMode(mode){state.shop.printMode=mode==='direct'?'direct':'browser';persist();renderOperationsDeck();
-  toast(state.shop.printMode==='direct'?'Direct POS80C selected on this device':'System Print selected on this device','ok');}
+function setQuickPrintMode(mode){state.shop.printMode=mode==='direct'?'direct':mode==='cloud'?'cloud':'browser';persist();renderOperationsDeck();
+  toast(state.shop.printMode==='direct'?'Direct POS80C selected on this device':state.shop.printMode==='cloud'?'Cloud Print · Mac POS80C selected':'System Print selected on this device','ok');}
 function quickSystemPrint(){setQuickPrintMode('browser')}
+function quickCloudPrint(){setQuickPrintMode('cloud')}
 function quickDirectPrint(){setQuickPrintMode('direct')}
 function quickDetectPrinter(){setQuickPrintMode('direct');setPrinterStatus('Auto-detecting the network POS80C…','');
   discoverPrinter({useForm:false,silent:false}).then(function(out){renderOperationsDeck();if(out&&out.ip)toast('Direct POS80C is ready at '+out.ip,'ok')});}
@@ -2644,14 +2696,14 @@ var ACTIONS={
   exportCSV:exportCSV, printManifest:printManifest, printA4:printA4, printReport:printReport, printPreviewNow:printPreviewNow,
   closeDay:closeDay, openArch:openArch, archiveSelectedManifest:archiveSelectedManifest, applyBulkDeliveryStatus:applyBulkDeliveryStatus, syncTrackingNow:syncTrackingNow, openTrackingDashboard:openTrackingDashboard, copyTrackingLink:copyTrackingLink, openTrackingLink:openTrackingLink, openCustomerConfirmation:openCustomerConfirmation, sendConfirmationWhatsApp:sendConfirmationWhatsApp, sendConfirmationSMS:sendConfirmationSMS, copyConfirmationMessage:copyConfirmationMessage, openLabelVault:openLabelVault, previewClaimLabel:previewClaimLabel, printClaimLabel:printClaimLabel, clearManifest:clearManifest, printSelectedLabels:printSelectedLabels, deleteSelectedManifestLabels:deleteSelectedManifestLabels, clearManifestSelection:clearManifestSelection,
   openRecon:openRecon, openSettings:openSettings, openCloud:openCloud, addProfile:addProfile, addProfileFromSettings:addProfileFromSettings, installApp:installApp, scrollSection:scrollSection,
-  quickSystemPrint:quickSystemPrint, quickDirectPrint:quickDirectPrint, quickDetectPrinter:quickDetectPrinter,
+  quickSystemPrint:quickSystemPrint, quickCloudPrint:quickCloudPrint, quickDirectPrint:quickDirectPrint, quickDetectPrinter:quickDetectPrinter,
   showMobileView:showMobileView, startNewLabel:startNewLabel, editRecipientStep:editRecipientStep, toggleRecipientStep:toggleRecipientStep,
   mobileBack:mobileBack, cancelMobile:cancelMobile,
   toggleCustomerTools:toggleCustomerTools, togglePreviewCard:togglePreviewCard,
   saveSuggestedContact:saveSuggestedContact, dismissSuggest:dismissSuggest,
   noprixUnit:noprixUnit, noprixOne:noprixOne, applyOnePrice:applyOnePrice,
   saveSettings:saveSettings, resetAll:resetAll, downloadBackup:downloadBackup,
-  testPrinterBridge:testPrinterBridge, testPrinterCut:testPrinterCut, downloadPrinterBridge:downloadPrinterBridge,
+  testPrinterBridge:testPrinterBridge, testPrinterCut:testPrinterCut, downloadPrinterBridge:downloadPrinterBridge, enableCloudPrint:enableCloudPrint,
   discoverPrinter:function(){discoverPrinter({useForm:true,silent:false}).catch(function(){})},cancelPrinterDiscovery:cancelPrinterDiscovery,
   retryPrintQueue:retryPrintQueue,clearPrintQueue:clearPrintQueue,detectAndRetryPrint:detectAndRetryPrint,
   systemPrintFallback:systemPrintFallback,queueFailedPrint:queueFailedPrint,cancelPrintFallback:cancelPrintFallback,
@@ -2681,7 +2733,7 @@ document.addEventListener('change',function(e){
 
 function init(){
   try{ensureTrackingRecords();syncTrackingGateway(false).catch(function(){});}catch(e){console.warn(e)}
-  try{document.querySelectorAll('button').forEach(function(b){if(!b.hasAttribute('type'))b.type='button'});}catch(e){fatal(e)}
+  try{document.querySelectorAll('button').forEach(function(b){if(!b.hasAttribute('type'))b.type='button';if(!b.getAttribute('aria-label')&&!String(b.textContent||'').trim())b.setAttribute('aria-label','Action')});document.querySelectorAll('input,select,textarea').forEach(function(el){if(el.getAttribute('aria-label')||el.getAttribute('aria-labelledby'))return;var label=el.id&&document.querySelector('label[for="'+el.id+'"]');if(label)return;var parent=el.closest('label');if(parent)return;var previous=el.previousElementSibling;if(previous&&previous.tagName==='LABEL')el.setAttribute('aria-label',String(previous.textContent||'Field').trim())});}catch(e){fatal(e)}
   try{renderProfileSel();}catch(e){fatal(e)}
   try{migrateExistingLabels();}catch(e){fatal(e)}
   try{applyCurrency();applyLabelLen();}catch(e){fatal(e)}
