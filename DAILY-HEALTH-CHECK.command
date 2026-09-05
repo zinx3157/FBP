@@ -3,7 +3,7 @@ set -u
 BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="$BASE_DIR/gateway-config.json"
 FAILED=0
-echo "LabelOnZeWay V2.0.0 — Daily Health Check"
+echo "LabelOnZeWay V2.0.1 — Daily Health Check"
 echo "========================================="
 if curl -fsS --max-time 3 http://127.0.0.1:8765/health >/dev/null; then echo "[PASS] Gateway"; else echo "[FAIL] Gateway"; FAILED=1; fi
 IP="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("printer_ip","192.168.100.73"))' "$CONFIG" 2>/dev/null || echo 192.168.100.73)"

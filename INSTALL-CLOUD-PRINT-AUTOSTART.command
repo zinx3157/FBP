@@ -10,7 +10,7 @@ LOG_DIR="$HOME/Library/Logs"
 PYTHON="$(command -v python3 || true)"
 
 clear
-echo "LabelOnZeWay V2.0.0 — Install Cloud Print Auto-Start"
+echo "LabelOnZeWay V2.0.1 — Install Cloud Print Auto-Start"
 echo "=================================================="
 echo
 if [ -z "$PYTHON" ] || [ ! -f "$SERVICE" ] || [ ! -f "$CONFIG" ]; then
