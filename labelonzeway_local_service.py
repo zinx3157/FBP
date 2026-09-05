@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
+import hmac
 import ipaddress
 import json
 import mimetypes
@@ -27,13 +29,36 @@ from urllib.request import Request, urlopen
 
 GATEWAY_HOST = "0.0.0.0"
 GATEWAY_PORT = 8765
-MAX_BODY = 64 * 1024 * 1024
-VERSION = "v154-cloud-print-autostart"
+MAX_BODY = 16 * 1024 * 1024
+VERSION = "V2.0.0"
 APP_DIR = Path(__file__).resolve().parent / "labelonzeway"
 TRACKING_FILE = Path(__file__).resolve().parent / "tracking-public.json"
 SYNC_CONFIG_FILE = APP_DIR / "sync-config.json"
 CLOUD_AGENT_CONFIG_FILE = Path(__file__).resolve().parent / "cloud-print-agent.json"
 TRACKING_LOCK = threading.Lock()
+GATEWAY_CONFIG_FILE = Path(__file__).resolve().parent / "gateway-config.json"
+GATEWAY_SECURITY_FILE = Path(__file__).resolve().parent / "gateway-security.json"
+
+
+def gateway_config() -> dict:
+    try:
+        value = json.loads(GATEWAY_CONFIG_FILE.read_text(encoding="utf-8"))
+        value = value if isinstance(value, dict) else {}
+    except (OSError, ValueError, TypeError):
+        value = {}
+    try:
+        secure = json.loads(GATEWAY_SECURITY_FILE.read_text(encoding="utf-8"))
+        if isinstance(secure, dict):
+            value.update(secure)
+    except (OSError, ValueError, TypeError):
+        pass
+    return value
+
+
+def allowed_printer() -> tuple[str, int]:
+    config = gateway_config()
+    return (str(config.get("printer_ip", "192.168.100.73")).strip(),
+            int(config.get("printer_port", 9100)))
 
 mimetypes.add_type("application/manifest+json", ".webmanifest")
 mimetypes.add_type("application/javascript", ".js")
@@ -45,6 +70,9 @@ def resolved_private(host: str, port: int) -> tuple[str, int]:
         raise ValueError("Enter the printer IP address")
     if not 1 <= int(port) <= 65535:
         raise ValueError("Printer port must be between 1 and 65535")
+    configured_host, configured_port = allowed_printer()
+    if host != configured_host or int(port) != configured_port:
+        raise ValueError(f"Printer target is not authorized; configured target is {configured_host}:{configured_port}")
     try:
         infos = socket.getaddrinfo(host, int(port), type=socket.SOCK_STREAM)
     except socket.gaierror as exc:
@@ -152,6 +180,7 @@ class CloudPrintAgent:
                 if not self.access_token:
                     self.login()
                     self.rpc("requeue_stale_cloud_print_jobs", {"p_workspace_id": self.workspace_id})
+                    self.rpc("purge_old_cloud_print_jobs", {"p_workspace_id": self.workspace_id})
                 job = self.claim()
                 if not job:
                     self.stop_event.wait(self.poll_seconds)
@@ -163,11 +192,18 @@ class CloudPrintAgent:
                         raise ValueError("Empty or oversized cloud print payload")
                     host = str(job.get("printer_ip") or self.default_ip)
                     port = int(job.get("printer_port") or self.default_port)
+                    # Move to a non-retryable state before bytes leave this Mac. If the
+                    # final cloud update fails, an operator sees "uncertain" instead of
+                    # the agent printing the same physical label again.
+                    self.rpc("mark_cloud_print_sending", {"p_job_id": job_id})
                     send_to_printer(host, port, payload)
-                    self.update_job(job_id, {"status": "printed", "printed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "error_message": ""})
+                    self.rpc("complete_cloud_print_job", {"p_job_id": job_id, "p_error": ""})
                     print(f"Cloud Print completed {job_id}: {len(payload):,} bytes to {host}:{port}")
                 except Exception as exc:
-                    self.update_job(job_id, {"status": "failed", "error_message": str(exc)[:1000]})
+                    try:
+                        self.rpc("fail_cloud_print_job", {"p_job_id": job_id, "p_error": str(exc)[:1000]})
+                    except Exception:
+                        pass
                     print(f"Cloud Print failed {job_id}: {exc}")
             except Exception as exc:
                 print(f"Cloud Print paused: {exc}")
@@ -256,12 +292,19 @@ class GatewayHandler(BaseHTTPRequestHandler):
             return False
         return False
 
+    def authorized(self) -> bool:
+        secret = str(gateway_config().get("gateway_secret", "")).strip()
+        if not secret:
+            return False
+        supplied = str(self.headers.get("X-LabelOnZeWay-Key", "")).strip()
+        return hmac.compare_digest(supplied, secret)
+
     def cors(self) -> None:
         origin = self.headers.get("Origin")
         self.send_header("Access-Control-Allow-Origin", origin if origin else "*")
         self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-LabelOnZeWay-Key")
         self.send_header("Access-Control-Allow-Private-Network", "true")
 
     def json_response(self, status: int, data: dict) -> None:
@@ -371,6 +414,9 @@ class GatewayHandler(BaseHTTPRequestHandler):
             self.json_response(403, {"ok": False, "error": "Origin not allowed"})
             return
         request_path = urlparse(self.path).path
+        if not self.authorized():
+            self.json_response(401, {"ok": False, "error": "Gateway pairing key required"})
+            return
         if request_path == "/api/tracking/sync":
             try:
                 length = int(self.headers.get("Content-Length", "0"))

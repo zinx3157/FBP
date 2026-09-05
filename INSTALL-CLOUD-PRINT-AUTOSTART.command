@@ -10,7 +10,7 @@ LOG_DIR="$HOME/Library/Logs"
 PYTHON="$(command -v python3 || true)"
 
 clear
-echo "LabelOnZeWay v154 — Install Cloud Print Auto-Start"
+echo "LabelOnZeWay V2.0.0 — Install Cloud Print Auto-Start"
 echo "=================================================="
 echo
 if [ -z "$PYTHON" ] || [ ! -f "$SERVICE" ] || [ ! -f "$CONFIG" ]; then
@@ -21,6 +21,11 @@ if [ -z "$PYTHON" ] || [ ! -f "$SERVICE" ] || [ ! -f "$CONFIG" ]; then
 fi
 
 mkdir -p "$HOME/Library/LaunchAgents" "$LOG_DIR"
+for OLD_LOG in "$LOG_DIR/LabelOnZeWay-CloudPrint.log" "$LOG_DIR/LabelOnZeWay-CloudPrint-error.log"; do
+  if [ -f "$OLD_LOG" ] && [ "$(stat -f%z "$OLD_LOG" 2>/dev/null || echo 0)" -gt 5242880 ]; then
+    mv "$OLD_LOG" "$OLD_LOG.previous"
+  fi
+done
 cat > "$PLIST" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -29,7 +34,8 @@ cat > "$PLIST" <<EOF
   <key>ProgramArguments</key><array><string>$PYTHON</string><string>$SERVICE</string><string>8765</string></array>
   <key>WorkingDirectory</key><string>$BASE_DIR</string>
   <key>RunAtLoad</key><true/>
-  <key>KeepAlive</key><true/>
+  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
+  <key>ProcessType</key><string>Background</string>
   <key>ThrottleInterval</key><integer>10</integer>
   <key>StandardOutPath</key><string>$LOG_DIR/LabelOnZeWay-CloudPrint.log</string>
   <key>StandardErrorPath</key><string>$LOG_DIR/LabelOnZeWay-CloudPrint-error.log</string>
@@ -42,7 +48,15 @@ OLD_PID="$(lsof -tiTCP:8765 -sTCP:LISTEN 2>/dev/null | head -1 || true)"
 if [ -n "$OLD_PID" ]; then kill "$OLD_PID" 2>/dev/null || true; sleep 1; fi
 launchctl bootstrap "gui/$UID" "$PLIST"
 launchctl kickstart -k "gui/$UID/$LABEL"
-sleep 2
+for TRY in 1 2 3 4 5 6 7 8; do
+  if curl -fsS --max-time 2 http://127.0.0.1:8765/health >/dev/null 2>&1; then HEALTHY=1; break; fi
+  sleep 1
+done
+if [ "${HEALTHY:-0}" != "1" ]; then
+  echo "AUTO-START INSTALLATION: FAILED — health endpoint did not start"
+  tail -n 20 "$LOG_DIR/LabelOnZeWay-CloudPrint-error.log" 2>/dev/null || true
+  exit 3
+fi
 
 echo "AUTO-START INSTALLATION: PASS"
 echo "The Mac agent now starts automatically after you sign in to this Mac."

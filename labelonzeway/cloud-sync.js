@@ -14,7 +14,7 @@
   var PENDING_KEY = 'lz.cloud.pending.v1';
   var BLOCK_PREFIX = 'lz.cloud.order-block.v1.';
   var LOCAL_SHOP_KEYS = [
-    'printMode', 'printerIp', 'printerPort', 'bridgeUrl', 'printerDots',
+    'printMode', 'printerIp', 'printerPort', 'bridgeUrl', 'gatewayKey', 'printerDots',
     'printerFeed', 'printerThreshold', 'printerCut', 'cutEach'
   ];
   var SYNC_TYPES = ['profile_settings', 'customer', 'parcel_active', 'archive_day', 'label_copy', 'counter_state'];
@@ -83,6 +83,7 @@
     job = job && typeof job === 'object' ? job : {};
     var encoded = String(job.data || '');
     if (!encoded || encoded.length > 12 * 1024 * 1024) return Promise.reject(new Error('The print payload is empty or too large'));
+    var idempotencyKey = String(job.idempotency_key || (deviceId + '-' + Date.now() + '-' + Math.random().toString(36).slice(2))).slice(0, 160);
     var row = {
       workspace_id: workspaceId,
       profile_id: currentProfileId(),
@@ -92,11 +93,13 @@
       printer_port: Math.min(65535, Math.max(1, Number(job.printer_port) || 9100)),
       label_count: Math.min(100, Math.max(1, Number(job.labels) || 1)),
       payload_base64: encoded,
+      idempotency_key: idempotencyKey,
       status: 'queued'
     };
     return client.from('cloud_print_jobs').insert(row).select('id,status,created_at').single().then(function (result) {
-      if (result.error) throw result.error;
-      return result.data;
+      if (!result.error) return result.data;
+      if (String(result.error.code || '') !== '23505') throw result.error;
+      return client.from('cloud_print_jobs').select('id,status,created_at').eq('workspace_id',workspaceId).eq('idempotency_key',idempotencyKey).single().then(function(existing){if(existing.error)throw existing.error;return existing.data});
     });
   }
   function cloudPrintJobStatus(jobId) {
@@ -121,6 +124,18 @@
   function safeShop(shop) {
     var output = Object.assign({}, shop || {});
     LOCAL_SHOP_KEYS.forEach(function (key) { delete output[key]; });
+    return output;
+  }
+  function withoutPhotos(value) {
+    if (Array.isArray(value)) return value.map(withoutPhotos);
+    if (!value || typeof value !== 'object') return value;
+    var output = {};
+    Object.keys(value).forEach(function (key) {
+      if (/^(photo|photos|image|images|dataUrl|imageData)$/i.test(key)) return;
+      var item = value[key];
+      if (typeof item === 'string' && /^data:image\//i.test(item)) return;
+      output[key] = withoutPhotos(item);
+    });
     return output;
   }
   function hasMeaningfulLocalData(profileId) {
@@ -150,13 +165,13 @@
       if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'customer', entity_id: String(record.id), payload: record });
     });
     (Array.isArray(parcels) ? parcels : []).forEach(function (record) {
-      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'parcel_active', entity_id: String(record.id), payload: record });
+      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'parcel_active', entity_id: String(record.id), payload: withoutPhotos(record) });
     });
     (Array.isArray(archives) ? archives : []).forEach(function (record) {
-      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'archive_day', entity_id: String(record.id), payload: record });
+      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'archive_day', entity_id: String(record.id), payload: withoutPhotos(record) });
     });
     (Array.isArray(labels) ? labels : []).forEach(function (record) {
-      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'label_copy', entity_id: String(record.id), payload: record });
+      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'label_copy', entity_id: String(record.id), payload: withoutPhotos(record) });
     });
     entities.push({ profile_id: profileId, entity_type: 'counter_state', entity_id: profileId, payload: { value: Math.max(0, Number(counter) || 0) } });
     return entities;
@@ -334,10 +349,11 @@
 
   function pullRemote() {
     if (!client || !session || !workspaceId) return Promise.resolve([]);
-    var pageSize = 1000, all = [];
+    var pageSize = 1000, all = [],metaBefore=loadMeta(),since=metaBefore.lastPull&&Date.parse(metaBefore.lastPull)?new Date(Date.parse(metaBefore.lastPull)-300000).toISOString():'';
     function page(from) {
-      return client.from('sync_entities').select('workspace_id,profile_id,entity_type,entity_id,payload,modified_at,deleted_at,device_id')
-        .eq('workspace_id', workspaceId).order('modified_at', { ascending: true }).range(from, from + pageSize - 1).then(function (result) {
+      var query=client.from('sync_entities').select('workspace_id,profile_id,entity_type,entity_id,payload,modified_at,deleted_at,device_id').eq('workspace_id', workspaceId);
+      if(since)query=query.gt('modified_at',since);
+      return query.order('modified_at', { ascending: true }).range(from, from + pageSize - 1).then(function (result) {
           if (result.error) throw result.error;
           var rows = result.data || []; all = all.concat(rows);
           return rows.length === pageSize ? page(from + pageSize) : all;
@@ -345,7 +361,7 @@
     }
     return page(0).then(function (rows) {
       applyRemote(rows);
-      var meta = loadMeta(); meta.lastPull = new Date().toISOString(); saveMeta(meta);
+      var meta = loadMeta();if(rows.length)meta.lastPull=rows[rows.length-1].modified_at;else if(!meta.lastPull)meta.lastPull=new Date().toISOString();saveMeta(meta);
       return rows;
     });
   }
