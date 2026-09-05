@@ -1,8 +1,8 @@
-const CACHE = 'labelonzeway-v152-personal-release';
+const CACHE = 'labelonzeway-v2.0.1';
 const APP_SHELL = [
   './',
   './index.html',
-  './cloud-sync.js?v=152-release',
+  './cloud-sync.js?v=2.0.0',
   './sync-config.json',
   './manifest.webmanifest',
   './tracking/',
@@ -49,5 +49,13 @@ self.addEventListener('fetch', event => {
         });
       })
     );
+    return;
+  }
+  if (/^(cdn\.jsdelivr\.net|unpkg\.com|tessdata\.projectnaptha\.com)$/.test(url.hostname)) {
+    event.respondWith(caches.match(req).then(cached => cached || fetch(req).then(response => {
+      const copy = response.clone();
+      caches.open(CACHE).then(cache => cache.put(req, copy)).catch(() => {});
+      return response;
+    })));
   }
 });
