@@ -1,0 +1,45 @@
+name: Build LabelOnZeWay Installable Repair APK
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build-labelonzeway-installable-repair.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Make repair build independently installable
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('labelonzeway-android/app/build.gradle')
+          s=p.read_text()
+          s=s.replace("applicationId 'com.labelonzeway.app'", "applicationId 'com.labelonzeway.app.v201repair'")
+          s=s.replace('versionCode 152', 'versionCode 202')
+          s=s.replace("versionName '152.0-personal'", "versionName '2.0.1-daily-cloud-repair'")
+          p.write_text(s)
+          PY
+      - name: Build APK
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon clean assembleDebug
+      - name: Package APK
+        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V2.0.1-Installable-Repair.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-V2.0.1-Installable-Repair
+          path: LabelOnZeWay-V2.0.1-Installable-Repair.apk
+          retention-days: 30
