@@ -36,6 +36,9 @@
   var syncing = false;
   var suppressCapture = false;
   var lastResult = '';
+  /* LZ_TRUTHFUL_SYNC_STATUS_V1 */
+  var lastSuccessfulSyncAt = '';
+  var lastSyncError = '';
   var deviceId = getDeviceId();
   var PASSWORD_RESET_REDIRECT = HOST.passwordResetRedirect || 'https://zinx3157.github.io/FBP/labelonzeway/?lz_action=password-recovery';
   var recoveryIntent = hasPasswordRecoveryIntent();
@@ -496,8 +499,20 @@ function syncNow(manual) {
       .then(function () { return captureProfile(currentProfileId(), false); })
       .then(flushPending)
       .then(pullRemote)
-      .then(function () { lastResult = new Date().toISOString(); setStatus('Cloud synchronized at ' + new Date().toLocaleTimeString(), 'ok'); return ensureCounterAndBlock(); })
-      .catch(function (error) { console.warn('LabelOnZeWay cloud sync', error); setStatus('Cloud sync paused: ' + (error.message || error), 'error'); return false; })
+      .then(function () { return ensureCounterAndBlock(); })
+      .then(function () {
+        lastSuccessfulSyncAt = new Date().toISOString();
+        lastSyncError = '';
+        lastResult = lastSuccessfulSyncAt;
+        setStatus('Cloud synchronized at ' + new Date(lastSuccessfulSyncAt).toLocaleTimeString(), 'ok');
+        return true;
+      })
+      .catch(function (error) {
+        console.warn('LabelOnZeWay cloud sync', error);
+        lastSyncError = String(error && error.message || error || 'Unknown cloud error');
+        setStatus('Cloud sync paused: ' + lastSyncError, 'error');
+        return false;
+      })
       .finally(function () { syncing = false; updateUI(); });
   }
 
@@ -663,8 +678,10 @@ function readConfig() {
   function updateUI() {
     var pill = document.getElementById('cloud-sync-pill'); if (!pill) return;
     var pending = workspaceId ? pendingForWorkspace().length : 0, editingPassword = !!passwordFormMode;
-    pill.className = 'btn-ghost' + (!editingPassword && pending ? ' pending' : (!editingPassword && session && workspaceId ? ' ok' : ''));
-    pill.textContent = editingPassword ? '☁ PASSWORD' : (session && workspaceId ? ('☁ ' + (pending ? pending + ' PENDING' : 'SYNCED')) : '☁ SIGN IN');
+    var trulySynced = !!(session && workspaceId && lastSuccessfulSyncAt && !lastSyncError && !syncing && pending === 0);
+    pill.className = 'btn-ghost' + (!editingPassword && pending ? ' pending' : (!editingPassword && trulySynced ? ' ok' : ''));
+    pill.textContent = editingPassword ? '☁ PASSWORD' : (!session || !workspaceId ? '☁ SIGN IN' : (syncing ? '☁ SYNCING…' : (pending ? ('☁ ' + pending + ' PENDING') : (trulySynced ? '☁ SYNCED' : (lastSyncError ? '☁ SYNC ERROR' : '☁ VERIFYING')))));
+    pill.title = session && workspaceId ? ((session.user && session.user.email ? session.user.email : 'signed in') + ' · ' + (workspaceName || workspaceId) + ' · ' + currentProfileId() + (lastSuccessfulSyncAt ? ' · last verified ' + new Date(lastSuccessfulSyncAt).toLocaleString() : '')) : 'Cloud sign-in required';
     var login = document.getElementById('cloud-login'), signed = document.getElementById('cloud-session'), passwordForm = document.getElementById('cloud-password-form');
     if (login) login.style.display = editingPassword || session ? 'none' : '';
     if (signed) signed.style.display = !editingPassword && session ? '' : 'none';
@@ -824,7 +841,7 @@ function readConfig() {
   api.publicTrackingBase = publicTrackingBase;
   api.isConfigured = configured;
   /* LZ_CLOUD_IDENTITY_STATUS_V1 */
-  api.getStatus = function () { return { configured: configured(), signedIn: !!session, userEmail: session && session.user ? String(session.user.email || '') : '', workspaceId: workspaceId, workspaceName: workspaceName, profileId: currentProfileId(), deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing }; };
+  api.getStatus = function () { return { configured: configured(), signedIn: !!session, userEmail: session && session.user ? String(session.user.email || '') : '', workspaceId: workspaceId, workspaceName: workspaceName, profileId: currentProfileId(), deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing, lastSuccessfulSyncAt: lastSuccessfulSyncAt, lastSyncError: lastSyncError, verified: !!(session && workspaceId && lastSuccessfulSyncAt && !lastSyncError && pendingForWorkspace().length === 0 && !syncing) }; };
   window.LabelOnZeWayCloud = api;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
 }());

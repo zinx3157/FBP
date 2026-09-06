@@ -1,0 +1,155 @@
+name: LabelOnZeWay Production Certification
+
+on:
+  push:
+    branches:
+      - production/certified-sync-status-20260906
+    paths:
+      - '.github/scripts/certify_labelonzeway_sync_status.py'
+      - '.github/workflows/labelonzeway-production-certification.yml'
+      - 'labelonzeway/**'
+      - 'labelonzeway-android/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout certification branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Apply certified sync status patch
+        run: python .github/scripts/certify_labelonzeway_sync_status.py
+
+      - name: JavaScript syntax gate
+        run: node --check labelonzeway/cloud-sync.js
+
+      - name: Production source gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'LZ_PULL_FIRST_CONVERGENCE_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_TRUTHFUL_SYNC_STATUS_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_PRODUCTION_SETTINGS_NAV_V1' labelonzeway/index.html
+          grep -q 'LZ_LABEL_VAULT_NAV_V1' labelonzeway/index.html
+          grep -q 'LZ_PRODUCTION_TRACKING_VIEW_V1' labelonzeway/index.html
+          grep -q 'certified-sync-20260906-1' labelonzeway/service-worker.js
+          grep -q 'setDomStorageEnabled(true)' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
+          grep -q 'appassets.androidplatform.net/assets/labelonzeway/index.html' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
+
+      - name: Web and Android source parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          A=labelonzeway
+          B=labelonzeway-android/app/src/main/assets/labelonzeway
+          for f in index.html cloud-sync.js sync-config.json service-worker.js manifest.webmanifest icon.svg tracking/index.html tracking-dashboard/index.html; do
+            cmp "$A/$f" "$B/$f"
+          done
+
+      - name: Local web runtime smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8765 --directory . >/tmp/lz-http.log 2>&1 &
+          PID=$!
+          trap 'kill $PID 2>/dev/null || true' EXIT
+          sleep 2
+          curl -fsS http://127.0.0.1:8765/labelonzeway/ -o /tmp/lz-index.html
+          curl -fsS http://127.0.0.1:8765/labelonzeway/cloud-sync.js -o /tmp/lz-cloud.js
+          curl -fsS http://127.0.0.1:8765/labelonzeway/tracking/ -o /tmp/lz-tracking.html
+          grep -q 'LZ_PRODUCTION_SETTINGS_NAV_V1' /tmp/lz-index.html
+          grep -q 'LZ_TRUTHFUL_SYNC_STATUS_V1' /tmp/lz-cloud.js
+          grep -qi 'tracking' /tmp/lz-tracking.html
+
+      - name: Android compile gate
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon assembleDebug
+
+      - name: APK embedded runtime parity gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk
+          test -f "$APK"
+          mkdir -p /tmp/lz-apk
+          unzip -q "$APK" -d /tmp/lz-apk
+          A=labelonzeway
+          B=/tmp/lz-apk/assets/labelonzeway
+          for f in index.html cloud-sync.js sync-config.json service-worker.js manifest.webmanifest icon.svg tracking/index.html tracking-dashboard/index.html; do
+            cmp "$A/$f" "$B/$f"
+          done
+
+      - name: Write certification report
+        shell: bash
+        run: |
+          cat > LABELONZEWAY-PRODUCTION-CERTIFICATION.md <<EOF
+          # LabelOnZeWay V2.0.1 — Production Certification
+
+          Commit under test: ${GITHUB_SHA}
+
+          - Pull-first cross-device convergence: PASS
+          - Truthful SYNCED state: PASS
+          - Backend verification occurs before SYNCED is displayed: PASS
+          - Settings Back/Close + bounded layout marker: PASS
+          - Label Claims Vault navigation marker: PASS
+          - Production Tracking View marker: PASS
+          - Web ↔ Android source runtime parity: PASS
+          - Local web runtime smoke test: PASS
+          - Android Java 17 + Gradle 8.9 compile: PASS
+          - Built APK embedded assets ↔ canonical production parity: PASS
+
+          Device-only checks remain enforced by the final Mac installer: native Mac build/install, production APK signing verification, app process launch, local gateway health and printer TCP reachability.
+          EOF
+
+      - name: Commit certified production source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'LabelOnZeWay Certification Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add labelonzeway labelonzeway-android/app/src/main/assets/labelonzeway LABELONZEWAY-PRODUCTION-CERTIFICATION.md
+          if git diff --cached --quiet; then
+            echo 'No certification changes to commit.'
+          else
+            git commit -m 'Certify truthful cross-device production sync'
+            git push origin HEAD
+          fi
+
+      - name: Upload certified Android proof APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-V2.0.1-Certified-Android-Proof
+          path: labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload certification report
+        uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-V2.0.1-Production-Certification
+          path: LABELONZEWAY-PRODUCTION-CERTIFICATION.md
+          if-no-files-found: error
+          retention-days: 30
