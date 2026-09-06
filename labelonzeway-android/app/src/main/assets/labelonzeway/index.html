@@ -974,7 +974,7 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
 </div></div>
 
-<script src="cloud-sync.js?v=2.0.0"></script>
+<script src="cloud-sync.js?v=2.0.1-daily"></script>
 <script>
 "use strict";
 function getEl(id){return document.getElementById(id)}
@@ -1013,7 +1013,7 @@ var DEFAULT_SHOP={name:'YOUR PAGE NAME',tagline:'LABELONZEWAY MOBILE SHOP',phone
 var INITIAL_SHOP=load(K('shop'),{});if(window.LabelOnZeWayNative&&window.LabelOnZeWayNative.isNative&&!Object.prototype.hasOwnProperty.call(INITIAL_SHOP,'printMode'))INITIAL_SHOP.printMode='direct';
 var state={
   shop:Object.assign({},DEFAULT_SHOP,INITIAL_SHOP),
-  addr:load(K('addr'),[]),manifest:load(K('mani'),[]),archive:load(K('arch'),[]),counter:load(K('ctr'),0),
+  addr:load(K('addr'),[]),manifest:load(K('mani'),[]),archive:load(K('arch'),[]),counter:load(K('ctr'),0),counterDate:load(K('ctrDate'),''),
   labelVault:load(K('labels'),[]),
   img:null,imgOCR:null,imgBig:null,currentFile:null,editingAddr:null,batch:[],addrAssign:null,resumeBatch:false};
 if(location.protocol==='http:'&&(location.hostname==='192.168.100.14'||location.hostname==='127.0.0.1'||location.hostname==='localhost')){
@@ -1081,7 +1081,7 @@ function sendConfirmationWhatsApp(){var row=confirmationRow(),m=getEl('confirmat
 function sendConfirmationSMS(){var row=confirmationRow(),m=getEl('confirmation-message');if(!row||!m)return;var digits=confirmationPhoneDigits(row),ios=/iPad|iPhone|iPod/.test(navigator.userAgent),sep=ios?'&':'?';recordConfirmationOpened(row,'sms');window.location.href='sms:+'+digits+sep+'body='+encodeURIComponent(m.value);var s=getEl('confirmation-status');if(s){s.textContent='Messages opened · confirmation marked as prepared';s.className='printer-status ok'}}
 function copyConfirmationMessage(){var m=getEl('confirmation-message');if(!m)return;var copied=function(){toast('Confirmation message copied','ok')};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(m.value).then(copied).catch(function(){m.select();document.execCommand('copy');copied()});else{m.select();document.execCommand('copy');copied()}}
 function openTrackingDashboard(){window.open(new URL('tracking-dashboard/',location.href).toString(),'_blank','noopener')}
-function persist(){ensureTrackingRecords();var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
+function persist(){ensureTrackingRecords();var ok=[save(K('shop'),state.shop),save(K('addr'),state.addr),save(K('mani'),state.manifest),save(K('ctr'),state.counter),save(K('ctrDate'),state.counterDate||''),save(K('arch'),state.archive),save(K('labels'),state.labelVault)].every(Boolean);
   syncTrackingGateway(false).catch(function(){});if(window.LabelOnZeWayCloud)window.LabelOnZeWayCloud.capture('change');if(!ok)toast('⚠ Storage full — download a backup now!','err');return ok;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function moneyFor(v,shop){shop=shop||state.shop;var n=Number(v||0),sep=(shop.sep==null?' ':shop.sep);var p=Math.abs(n).toFixed(2).split('.');
@@ -1130,11 +1130,14 @@ function printClaimLabel(id){var e=state.labelVault.find(function(x){return x&&x
 function fmtDT(iso){var d=new Date(iso);return d.toLocaleDateString(undefined,{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
 function fmtDeliverDate(d,t){if(!d)return'';var dt=new Date(d+'T'+(t||'00:00'));
   if(isNaN(dt))return d;var s=dt.toLocaleDateString(undefined,{day:'2-digit',month:'short'});if(t)s+=' '+t;return s;}
-function nextOid(n){return String(n).padStart(4,'0')}
+function orderDateKey(d){d=d||new Date();var p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())}
+function orderDateToken(d){d=d||new Date();return String(d.getDate())+String(d.getMonth()+1)+String(d.getFullYear()).slice(-2)}
+function ensureDailyCounter(){var today=orderDateKey(new Date());if(String(state.counterDate||'')!==today){state.counter=0;state.counterDate=today;save(K('ctr'),0);save(K('ctrDate'),today)}return today}
+function nextOid(n){ensureDailyCounter();return orderDateToken(new Date())+'-'+String(Math.max(0,Number(n)||0))}
 function allocateOrderId(){
-  var cloud=window.LabelOnZeWayCloud,oid=cloud&&typeof cloud.nextOrderIdentifier==='function'?cloud.nextOrderIdentifier(PID):null;
-  if(oid){var numeric=/^\d+$/.test(oid)?parseInt(oid,10):0;state.counter=numeric?Math.max(Number(state.counter)||0,numeric):(Number(state.counter)||0)+1;return oid}
-  state.counter=(Number(state.counter)||0)+1;return nextOid(state.counter);
+  var today=ensureDailyCounter(),cloud=window.LabelOnZeWayCloud,oid=cloud&&typeof cloud.nextOrderIdentifier==='function'?cloud.nextOrderIdentifier(PID,today):null;
+  if(oid){var m=String(oid).match(/-(\d+)$/);if(m)state.counter=Math.max(Number(state.counter)||0,Number(m[1])||0);save(K('ctr'),state.counter);save(K('ctrDate'),today);return oid}
+  state.counter=(Number(state.counter)||0)+1;save(K('ctr'),state.counter);save(K('ctrDate'),today);return nextOid(state.counter);
 }
 function dPlus1Date(){var d=new Date();d.setDate(d.getDate()+1);
   var p=function(n){return String(n).padStart(2,'0')};
@@ -2114,7 +2117,7 @@ function labelHTML(r,shopOverride){var s=shopOverride||r._labelShop||state.shop,
       '<span class="lbl-k">MODE</span><br>'+esc(r.pay||getEl('f-pay').value||'COD')+'</div></div>'+
   '<div class="lbl-foot">'+esc(s.thanks)+'</div>'+
 '</div>';}
-function liveRow(){return{oid:nextOid(state.counter+1),
+function liveRow(){ensureDailyCounter();return{oid:nextOid(state.counter+1),
     qty:parseInt(val('f-qty'))||1,copies:Math.min(20,Math.max(1,parseInt(val('f-copies'))||1)),
     cod:val('f-cod')===''?((parseFloat(val('f-price'))||0)):(parseFloat(val('f-cod'))||0),
     ship:currentShip(),pay:getEl('f-pay').value||'COD',mmRef:'',

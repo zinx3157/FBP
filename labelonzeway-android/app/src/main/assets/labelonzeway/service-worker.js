@@ -1,8 +1,8 @@
-const CACHE = 'labelonzeway-v2.0.1';
+const CACHE = 'labelonzeway-v2.0.1-daily-20260906';
 const APP_SHELL = [
   './',
   './index.html',
-  './cloud-sync.js?v=2.0.0',
+  './cloud-sync.js?v=2.0.1-daily',
   './sync-config.json',
   './manifest.webmanifest',
   './tracking/',

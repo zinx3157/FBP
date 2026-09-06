@@ -156,6 +156,7 @@
     var archives = active ? window.state.archive : storageValue(profileId, 'arch', []);
     var labels = active ? window.state.labelVault : storageValue(profileId, 'labels', []);
     var counter = active ? window.state.counter : storageValue(profileId, 'ctr', 0);
+    var counterDate = active ? (window.state.counterDate || '') : storageValue(profileId, 'ctrDate', '');
     var entities = [];
     currentProfiles().forEach(function (profile) {
       entities.push({ profile_id: profile.id, entity_type: 'profile', entity_id: profile.id, payload: { id: profile.id, name: profile.name || profile.id } });
@@ -173,7 +174,7 @@
     (Array.isArray(labels) ? labels : []).forEach(function (record) {
       if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'label_copy', entity_id: String(record.id), payload: withoutPhotos(record) });
     });
-    entities.push({ profile_id: profileId, entity_type: 'counter_state', entity_id: profileId, payload: { value: Math.max(0, Number(counter) || 0) } });
+    entities.push({ profile_id: profileId, entity_type: 'counter_state', entity_id: profileId, payload: { date: String(counterDate || ''), value: Math.max(0, Number(counter) || 0) } });
     return entities;
   }
   function metaKey() { return 'lz.cloud.meta.v1.' + workspaceId; }
@@ -403,41 +404,55 @@
       return sent;
     });
   }
-  function ensureCounterAndBlock() {
-    if (!client || !session || !workspaceId) return Promise.resolve();
-    var profileId = currentProfileId(), counter = window.state ? Math.max(0, Number(window.state.counter) || 0) : 0;
-    return client.rpc('ensure_order_counter_at_least', { p_workspace_id: workspaceId, p_profile_id: profileId, p_minimum: counter })
-      .then(function (result) { if (result.error) throw result.error; return reserveOrderBlock(profileId, false); });
+  function dailyDateKey(value) {
+  var d = value instanceof Date ? value : (value ? new Date(String(value) + (String(value).length === 10 ? 'T12:00:00' : '')) : new Date());
+  if (isNaN(d.getTime())) d = new Date();
+  var p = function (n) { return String(n).padStart(2, '0'); };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function dailyDateToken(value) {
+  var key = /^\d{4}-\d{2}-\d{2}$/.test(String(value || '')) ? String(value) : dailyDateKey(value);
+  var parts = key.split('-');
+  return String(Number(parts[2])) + String(Number(parts[1])) + String(parts[0]).slice(-2);
+}
+function ensureCounterAndBlock() {
+  if (!client || !session || !workspaceId) return Promise.resolve();
+  var profileId = currentProfileId(), dateKey = dailyDateKey(new Date());
+  if (window.state && String(window.state.counterDate || '') !== dateKey) { window.state.counter = 0; window.state.counterDate = dateKey; localStorage.setItem(profileKey(profileId, 'ctr'), '0'); localStorage.setItem(profileKey(profileId, 'ctrDate'), JSON.stringify(dateKey)); }
+  var counter = window.state ? Math.max(0, Number(window.state.counter) || 0) : 0;
+  return client.rpc('ensure_daily_order_counter_at_least', { p_workspace_id: workspaceId, p_profile_id: profileId, p_counter_date: dateKey, p_minimum: counter })
+    .then(function (result) { if (result.error) throw result.error; return reserveOrderBlock(profileId, false, dateKey); });
+}
+function reserveOrderBlock(profileId, force, dateKey) {
+  if (!client || !session || !workspaceId || navigator.onLine === false) return Promise.resolve(null);
+  dateKey = dateKey || dailyDateKey(new Date());
+  var key = BLOCK_PREFIX + workspaceId + '.' + profileId + '.' + dateKey, block = safeParse(localStorage.getItem(key), null);
+  if (!force && block && Number(block.next) <= Number(block.end) && Number(block.end) - Number(block.next) >= 4) return Promise.resolve(block);
+  return client.rpc('reserve_daily_order_numbers', { p_workspace_id: workspaceId, p_profile_id: profileId, p_counter_date: dateKey, p_block_size: 25 }).then(function (result) {
+    if (result.error) throw result.error;
+    var row = Array.isArray(result.data) ? result.data[0] : result.data;
+    if (!row) throw new Error('No daily order-number block returned');
+    var reserved = { next: Number(row.block_start), end: Number(row.block_end), date: dateKey, reservedAt: new Date().toISOString() };
+    localStorage.setItem(key, JSON.stringify(reserved));
+    return reserved;
+  });
+}
+function nextOrderIdentifier(profileId, dateKey) {
+  if (!configured() || !workspaceId) return null;
+  profileId = profileId || currentProfileId(); dateKey = dateKey || dailyDateKey(new Date());
+  var key = BLOCK_PREFIX + workspaceId + '.' + profileId + '.' + dateKey, block = safeParse(localStorage.getItem(key), null);
+  if (block && Number(block.next) <= Number(block.end)) {
+    var number = Number(block.next); block.next = number + 1; localStorage.setItem(key, JSON.stringify(block));
+    if (Number(block.end) - Number(block.next) < 5 && navigator.onLine !== false) reserveOrderBlock(profileId, false, dateKey).catch(function () {});
+    return dailyDateToken(dateKey) + '-' + number;
   }
-  function reserveOrderBlock(profileId, force) {
-    if (!client || !session || !workspaceId || navigator.onLine === false) return Promise.resolve(null);
-    var key = BLOCK_PREFIX + workspaceId + '.' + profileId, block = safeParse(localStorage.getItem(key), null);
-    if (!force && block && Number(block.next) <= Number(block.end) && Number(block.end) - Number(block.next) >= 4) return Promise.resolve(block);
-    return client.rpc('reserve_order_numbers', { p_workspace_id: workspaceId, p_profile_id: profileId, p_block_size: 25 }).then(function (result) {
-      if (result.error) throw result.error;
-      var row = Array.isArray(result.data) ? result.data[0] : result.data;
-      if (!row) throw new Error('No order-number block returned');
-      var reserved = { next: Number(row.block_start), end: Number(row.block_end), reservedAt: new Date().toISOString() };
-      localStorage.setItem(key, JSON.stringify(reserved));
-      return reserved;
-    });
-  }
-  function nextOrderIdentifier(profileId) {
-    if (!configured() || !workspaceId) return null;
-    profileId = profileId || currentProfileId();
-    var key = BLOCK_PREFIX + workspaceId + '.' + profileId, block = safeParse(localStorage.getItem(key), null);
-    if (block && Number(block.next) <= Number(block.end)) {
-      var number = Number(block.next); block.next = number + 1; localStorage.setItem(key, JSON.stringify(block));
-      if (Number(block.end) - Number(block.next) < 5 && navigator.onLine !== false) reserveOrderBlock(profileId, false).catch(function () {});
-      return String(number).padStart(4, '0');
-    }
-    var sequenceKey = 'lz.cloud.offline-seq.v1.' + profileId;
-    var sequence = Number(localStorage.getItem(sequenceKey) || 0) + 1;
-    localStorage.setItem(sequenceKey, String(sequence));
-    return 'OFF-' + deviceId.replace(/^dev-/, '').slice(0, 6).toUpperCase() + '-' + Date.now().toString(36).toUpperCase() + '-' + sequence.toString(36).toUpperCase();
-  }
+  var sequenceKey = 'lz.cloud.offline-seq.v2.' + profileId + '.' + dateKey;
+  var sequence = Number(localStorage.getItem(sequenceKey) || 0) + 1;
+  localStorage.setItem(sequenceKey, String(sequence));
+  return dailyDateToken(dateKey) + '-' + sequence;
+}
 
-  function syncNow(manual) {
+function syncNow(manual) {
     if (syncing) return Promise.resolve(false);
     if (!client || !session || !workspaceId) { if (manual) openPanel(); return Promise.resolve(false); }
     if (navigator.onLine === false) { setStatus('Offline — business changes are safely queued on this device.', 'pending'); return Promise.resolve(false); }
@@ -454,22 +469,26 @@
   }
 
   function loadSupabaseLibrary() {
-    if (window.supabase && window.supabase.createClient) return Promise.resolve(window.supabase);
-    return new Promise(function (resolve, reject) {
-      var script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-      script.crossOrigin = 'anonymous';
-      script.onload = function () { window.supabase && window.supabase.createClient ? resolve(window.supabase) : reject(new Error('Supabase library did not load')); };
-      script.onerror = function () { reject(new Error('Could not load the secure cloud library')); };
+  if (window.supabase && window.supabase.createClient) return Promise.resolve(window.supabase);
+  var urls = ['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js','https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js'];
+  return new Promise(function (resolve, reject) {
+    function attempt(i) {
+      if (i >= urls.length) { reject(new Error('Could not load the secure cloud library')); return; }
+      var script = document.createElement('script'); script.src = urls[i]; script.crossOrigin = 'anonymous';
+      script.onload = function () { if (window.supabase && window.supabase.createClient) resolve(window.supabase); else attempt(i + 1); };
+      script.onerror = function () { attempt(i + 1); };
       document.head.appendChild(script);
-    });
-  }
-  function readConfig() {
-    return fetch(CONFIG_PATH, { cache: 'no-store' }).then(function (response) {
-      if (!response.ok) throw new Error('sync-config.json not found');
-      return response.json();
-    }).catch(function () { return { supabaseUrl: '', supabaseAnonKey: '' }; });
-  }
+    }
+    attempt(0);
+  });
+}
+function readConfig() {
+  var fallback = { supabaseUrl: 'https://cqgdzfgjacsgpfdtbhdo.supabase.co', supabaseAnonKey: 'sb_publishable_pZ8QNQuPvPX_5kkMzpo7BA_7PsVWwWu', publicTrackingUrl: 'https://zinx3157.github.io/FBP/labelonzeway/tracking/' };
+  return fetch(CONFIG_PATH, { cache: 'no-store' }).then(function (response) {
+    if (!response.ok) throw new Error('sync-config.json not found');
+    return response.json();
+  }).then(function (loaded) { return Object.assign({}, fallback, loaded || {}); }).catch(function () { return fallback; });
+}
   function hasPasswordRecoveryIntent() {
     var search = String(window.location && window.location.search || '');
     var hash = String(window.location && window.location.hash || '');
