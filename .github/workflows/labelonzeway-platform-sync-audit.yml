@@ -18,11 +18,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Patch cross-device profile and sync recovery
+      - name: Patch cross-device profile recovery and align runtimes
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re, shutil, hashlib, json, datetime
+          import re, shutil, hashlib, datetime
 
           web = Path('labelonzeway')
           idx = web / 'index.html'
@@ -30,110 +30,103 @@ jobs:
           sw = web / 'service-worker.js'
 
           s = idx.read_text(encoding='utf-8')
-
-          # Export current runtime state explicitly and add one canonical profile UI refresh.
           marker = '/* LZ_PROFILE_UI_REFRESH_V2 */'
           if marker not in s:
               needle = 'var deferredInstallPrompt=null;'
               if needle not in s:
                   raise SystemExit('index marker not found')
-              patch = r'''/* LZ_PROFILE_UI_REFRESH_V2 */
-function refreshProfileUIFromCloud(){
-  try{renderProfileSel()}catch(e){}
-  try{applyCurrency();applyLabelLen()}catch(e){}
-  try{renderPreview();renderAddr();renderManifest();renderStats();updatePrinterSettingsUI()}catch(e){}
-  try{var modal=getEl('m-settings');if(modal&&modal.classList.contains('open'))openSettings()}catch(e){}
-}
-window.PROFILES=PROFILES;window.PID=PID;window.state=state;window.DEFAULT_SHOP=DEFAULT_SHOP;
-window.renderProfileSel=renderProfileSel;window.refreshProfileUIFromCloud=refreshProfileUIFromCloud;
-'''
+              patch = '\n'.join([
+                  '/* LZ_PROFILE_UI_REFRESH_V2 */',
+                  'function refreshProfileUIFromCloud(){',
+                  '  try{renderProfileSel()}catch(e){}',
+                  '  try{applyCurrency();applyLabelLen()}catch(e){}',
+                  '  try{renderPreview();renderAddr();renderManifest();renderStats();updatePrinterSettingsUI()}catch(e){}',
+                  "  try{var modal=getEl('m-settings');if(modal&&modal.classList.contains('open'))openSettings()}catch(e){}",
+                  '}',
+                  'window.PROFILES=PROFILES;window.PID=PID;window.state=state;window.DEFAULT_SHOP=DEFAULT_SHOP;',
+                  'window.renderProfileSel=renderProfileSel;window.refreshProfileUIFromCloud=refreshProfileUIFromCloud;'
+              ])
               s = s.replace(needle, patch + '\n' + needle, 1)
           idx.write_text(s, encoding='utf-8')
 
           c = cloud.read_text(encoding='utf-8')
-
-          # Add local-presence / profile-completeness guards so stale metadata cannot block rehydration.
           helper_marker = '/* LZ_CROSS_DEVICE_REHYDRATION_V2 */'
           if helper_marker not in c:
               needle = '  function fingerprint(payload, deleted) {'
               if needle not in c:
                   raise SystemExit('cloud helper marker not found')
-              helper = r'''  /* LZ_CROSS_DEVICE_REHYDRATION_V2 */
-  function profileSettingsScore(value) {
-    value = value && typeof value === 'object' ? value : {};
-    var fields = ['name','tagline','phone','currency','codLabel','thanks'];
-    return fields.reduce(function(score,key){
-      var v=String(value[key] == null ? '' : value[key]).trim();
-      if(!v || v==='YOUR PAGE NAME' || v==='Company 1' || v==='+261 00 000 000' || v==='LABELONZEWAY MOBILE SHOP') return score;
-      return score+1;
-    },0);
-  }
-  function localEntityPresent(record) {
-    var pid=record.profile_id, id=String(record.entity_id||'');
-    if(record.entity_type==='profile') return currentProfiles().some(function(p){return String(p.id)===id});
-    if(record.entity_type==='profile_settings') return profileSettingsScore(storageValue(pid,'shop',{}))>0;
-    if(record.entity_type==='counter_state') return localStorage.getItem(profileKey(pid,'ctr'))!==null;
-    var suffix=record.entity_type==='customer'?'addr':record.entity_type==='parcel_active'?'mani':record.entity_type==='archive_day'?'arch':record.entity_type==='label_copy'?'labels':'';
-    if(!suffix) return false;
-    var list=storageValue(pid,suffix,[]);
-    return Array.isArray(list)&&list.some(function(item){return item&&String(item.id)===id});
-  }
-'''
+              helper = '\n'.join([
+                  '  /* LZ_CROSS_DEVICE_REHYDRATION_V2 */',
+                  '  function profileSettingsScore(value) {',
+                  "    value = value && typeof value === 'object' ? value : {};",
+                  "    var fields = ['name','tagline','phone','currency','codLabel','thanks'];",
+                  '    return fields.reduce(function(score,key){',
+                  "      var v=String(value[key] == null ? '' : value[key]).trim();",
+                  "      if(!v || v==='YOUR PAGE NAME' || v==='Company 1' || v==='+261 00 000 000' || v==='LABELONZEWAY MOBILE SHOP') return score;",
+                  '      return score+1;',
+                  '    },0);',
+                  '  }',
+                  '  function localEntityPresent(record) {',
+                  "    var pid=record.profile_id, id=String(record.entity_id||'');",
+                  "    if(record.entity_type==='profile') return currentProfiles().some(function(p){return String(p.id)===id});",
+                  "    if(record.entity_type==='profile_settings') return profileSettingsScore(storageValue(pid,'shop',{}))>0;",
+                  "    if(record.entity_type==='counter_state') return localStorage.getItem(profileKey(pid,'ctr'))!==null;",
+                  "    var suffix=record.entity_type==='customer'?'addr':record.entity_type==='parcel_active'?'mani':record.entity_type==='archive_day'?'arch':record.entity_type==='label_copy'?'labels':'';",
+                  '    if(!suffix) return false;',
+                  '    var list=storageValue(pid,suffix,[]);',
+                  '    return Array.isArray(list)&&list.some(function(item){return item&&String(item.id)===id});',
+                  '  }'
+              ])
               c = c.replace(needle, helper + '\n' + needle, 1)
 
-          # If metadata says an entity was synced but the local entity is actually missing, allow cloud to rehydrate it.
-          old = """        if (localInfo) {\n          var localTime = String(localInfo.modified_at || ''), localDevice = String(localInfo.device_id || '');\n          if (localTime > remoteTime || (localTime === remoteTime && localDevice >= remoteDevice)) return;\n        }"""
-          new = """        var localPresent = localEntityPresent(record);\n        var remoteProfileMoreComplete = record.entity_type === 'profile_settings' && profileSettingsScore(record.payload || {}) > profileSettingsScore(storageValue(record.profile_id, 'shop', {}));\n        if (localInfo && localPresent && !remoteProfileMoreComplete) {\n          var localTime = String(localInfo.modified_at || ''), localDevice = String(localInfo.device_id || '');\n          if (localTime > remoteTime || (localTime === remoteTime && localDevice >= remoteDevice)) return;\n        }"""
+          old = "        if (localInfo) {\n          var localTime = String(localInfo.modified_at || ''), localDevice = String(localInfo.device_id || '');\n          if (localTime > remoteTime || (localTime === remoteTime && localDevice >= remoteDevice)) return;\n        }"
+          new = "        var localPresent = localEntityPresent(record);\n        var remoteProfileMoreComplete = record.entity_type === 'profile_settings' && profileSettingsScore(record.payload || {}) > profileSettingsScore(storageValue(record.profile_id, 'shop', {}));\n        if (localInfo && localPresent && !remoteProfileMoreComplete) {\n          var localTime = String(localInfo.modified_at || ''), localDevice = String(localInfo.device_id || '');\n          if (localTime > remoteTime || (localTime === remoteTime && localDevice >= remoteDevice)) return;\n        }"
           if old in c:
               c = c.replace(old, new, 1)
           elif 'var localPresent = localEntityPresent(record);' not in c:
-              raise SystemExit('localInfo conflict block not found')
+              raise SystemExit('localInfo block not found')
 
-          # Refresh UI immediately when cloud profile settings land.
           old = "localStorage.setItem(profileKey(profileId, 'shop'), JSON.stringify(window.state.shop));\n            changed = true;"
           new = "localStorage.setItem(profileKey(profileId, 'shop'), JSON.stringify(window.state.shop));\n            if (typeof window.refreshProfileUIFromCloud === 'function') window.refreshProfileUIFromCloud();\n            changed = true;"
           if old in c:
               c = c.replace(old, new, 1)
 
-          # Replace workspace-global pull cursor with a per-profile cursor. This is the root fix for
-          # profiles such as LUZDM being listed but their settings/labels being skipped on another device.
           start = c.find('  function pullRemote() {')
           end = c.find('  function utf8Size(value) {', start)
           if start < 0 or end < 0:
               raise SystemExit('pullRemote block not found')
-          pull = r'''  function pullRemote() {
-    if (!client || !session || !workspaceId) return Promise.resolve([]);
-    var profileId=currentProfileId(),pageSize=1000,all=[],metaBefore=loadMeta(),pullMap=metaBefore.lastPullByProfile||{},lastProfilePull=pullMap[profileId]||'',since=lastProfilePull&&Date.parse(lastProfilePull)?new Date(Date.parse(lastProfilePull)-300000).toISOString():'';
-    function page(from) {
-      var query=client.from('sync_entities').select('workspace_id,profile_id,entity_type,entity_id,payload,modified_at,deleted_at,device_id').eq('workspace_id', workspaceId);
-      if(since)query=query.gt('modified_at',since);
-      return query.order('modified_at',{ascending:true}).range(from,from+pageSize-1).then(function(result){
-        if(result.error)throw result.error;
-        var rows=Array.isArray(result.data)?result.data:[];all=all.concat(rows);
-        return rows.length===pageSize?page(from+pageSize):all;
-      });
-    }
-    return page(0).then(function(rows){
-      applyRemote(rows);
-      var meta=loadMeta();meta.lastPullByProfile=meta.lastPullByProfile||{};
-      if(rows.length)meta.lastPullByProfile[profileId]=rows[rows.length-1].modified_at;
-      else if(!meta.lastPullByProfile[profileId])meta.lastPullByProfile[profileId]=new Date().toISOString();
-      saveMeta(meta);return rows;
-    });
-  }
-'''
-          c = c[:start] + pull + '\n' + c[end:]
+          pull = '\n'.join([
+              '  function pullRemote() {',
+              '    if (!client || !session || !workspaceId) return Promise.resolve([]);',
+              "    var profileId=currentProfileId(),pageSize=1000,all=[],metaBefore=loadMeta(),pullMap=metaBefore.lastPullByProfile||{},lastProfilePull=pullMap[profileId]||'',since=lastProfilePull&&Date.parse(lastProfilePull)?new Date(Date.parse(lastProfilePull)-300000).toISOString():'';",
+              '    function page(from) {',
+              "      var query=client.from('sync_entities').select('workspace_id,profile_id,entity_type,entity_id,payload,modified_at,deleted_at,device_id').eq('workspace_id', workspaceId);",
+              "      if(since)query=query.gt('modified_at',since);",
+              "      return query.order('modified_at',{ascending:true}).range(from,from+pageSize-1).then(function(result){",
+              '        if(result.error)throw result.error;',
+              '        var rows=Array.isArray(result.data)?result.data:[];all=all.concat(rows);',
+              '        return rows.length===pageSize?page(from+pageSize):all;',
+              '      });',
+              '    }',
+              '    return page(0).then(function(rows){',
+              '      applyRemote(rows);',
+              '      var meta=loadMeta();meta.lastPullByProfile=meta.lastPullByProfile||{};',
+              '      if(rows.length)meta.lastPullByProfile[profileId]=rows[rows.length-1].modified_at;',
+              '      else if(!meta.lastPullByProfile[profileId])meta.lastPullByProfile[profileId]=new Date().toISOString();',
+              '      saveMeta(meta);return rows;',
+              '    });',
+              '  }'
+          ])
+          c = c[:start] + pull + '\n\n' + c[end:]
           cloud.write_text(c, encoding='utf-8')
 
-          # Cache bump for iPhone/PWA.
           t = sw.read_text(encoding='utf-8')
           t = re.sub(r"const CACHE = '[^']+';", "const CACHE = 'labelonzeway-v2.0.1-platform-sync-20260906-2';", t, count=1)
           sw.write_text(t, encoding='utf-8')
 
-          # Canonical production web assets are the source of truth for Android packaged web assets.
           android = Path('labelonzeway-android/app/src/main/assets/labelonzeway')
-          common_files = ['index.html','cloud-sync.js','sync-config.json','service-worker.js','manifest.webmanifest','icon.svg']
-          for name in common_files:
+          common = ['index.html','cloud-sync.js','sync-config.json','service-worker.js','manifest.webmanifest','icon.svg']
+          for name in common:
               src=web/name; dst=android/name
               if src.exists():
                   dst.parent.mkdir(parents=True,exist_ok=True)
@@ -144,53 +137,52 @@ window.renderProfileSel=renderProfileSel;window.refreshProfileUIFromCloud=refres
                   if dst.exists(): shutil.rmtree(dst)
                   shutil.copytree(src,dst)
 
-          # Generate auditable hash manifest proving web and APK assets are identical.
           rows=[]
-          ok=True
-          for name in common_files:
+          for name in common:
               a=web/name; b=android/name
-              if not a.exists() or not b.exists():
-                  rows.append((name,'MISSING','MISSING',False));ok=False;continue
-              ha=hashlib.sha256(a.read_bytes()).hexdigest();hb=hashlib.sha256(b.read_bytes()).hexdigest()
-              same=ha==hb;ok=ok and same;rows.append((name,ha,hb,same))
+              ha=hashlib.sha256(a.read_bytes()).hexdigest() if a.exists() else 'MISSING'
+              hb=hashlib.sha256(b.read_bytes()).hexdigest() if b.exists() else 'MISSING'
+              rows.append((name,ha,hb,ha==hb and ha!='MISSING'))
+          ok=all(r[3] for r in rows)
           report=['# LabelOnZeWay Platform Alignment Audit','',f'Generated: {datetime.datetime.now(datetime.timezone.utc).isoformat()}','',
                   'Canonical runtime: `labelonzeway/` (iPhone Web/PWA).','',
-                  '| Asset | iPhone/Web SHA256 | Android packaged SHA256 | Match |','|---|---|---|---|']
+                  '| Asset | Web SHA256 | Android SHA256 | Match |','|---|---|---|---|']
           report += [f'| `{n}` | `{ha}` | `{hb}` | {"YES" if same else "NO"} |' for n,ha,hb,same in rows]
-          report += ['', '## Cross-device sync controls', '',
-                     '- Per-profile cloud pull cursor: ENABLED.',
-                     '- Missing local entities rehydrate from cloud even when stale metadata exists: ENABLED.',
-                     '- More-complete remote company/profile settings recover incomplete local profile settings: ENABLED.',
-                     '- Cloud profile settings trigger immediate UI refresh: ENABLED.',
-                     '- Android packaged web runtime copied from canonical iPhone/Web runtime: ENABLED.',
-                     '- Mac native runtime must be refreshed from this canonical runtime using the companion Mac repair script because the native Tauri project is local to the Mac and is not stored in this repository.',
-                     '',f'Overall web ↔ Android common-asset alignment: **{"PASS" if ok else "FAIL"}**']
+          report += ['', '## Cross-device controls', '',
+                     '- Per-profile cloud pull cursor: ENABLED',
+                     '- Missing local entities rehydrate from cloud: ENABLED',
+                     '- More-complete remote company/profile settings recover incomplete local settings: ENABLED',
+                     '- Cloud profile settings refresh the visible UI immediately: ENABLED',
+                     '- iPhone notification panel default-closed patch retained: ENABLED',
+                     '- Android packaged common runtime copied from canonical Web runtime: ENABLED',
+                     '- Mac native Tauri runtime is local-only and requires the companion Mac sync/rebuild script.',
+                     '',f'Web ↔ Android common runtime: **{"PASS" if ok else "FAIL"}**']
           Path('LABELONZEWAY-PLATFORM-AUDIT.md').write_text('\n'.join(report)+'\n',encoding='utf-8')
-          if not ok: raise SystemExit('web/android alignment failed')
+          if not ok:
+              raise SystemExit('web/android runtime mismatch')
           PY
 
-      - name: Verify production fixes
+      - name: Verify aligned production runtime
         run: |
           grep -q 'LZ_CROSS_DEVICE_REHYDRATION_V2' labelonzeway/cloud-sync.js
           grep -q 'lastPullByProfile' labelonzeway/cloud-sync.js
           grep -q 'LZ_PROFILE_UI_REFRESH_V2' labelonzeway/index.html
           grep -q 'LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1' labelonzeway/index.html
-          grep -q 'labelonzeway-v2.0.1-platform-sync-20260906-2' labelonzeway/service-worker.js
+          grep -q 'platform-sync-20260906-2' labelonzeway/service-worker.js
           cmp labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
           cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
           cmp labelonzeway/sync-config.json labelonzeway-android/app/src/main/assets/labelonzeway/sync-config.json
           cmp labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
 
-      - name: Commit synchronized platform runtime and audit
+      - name: Commit synchronized runtime
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add labelonzeway labelonzeway-android/app/src/main/assets/labelonzeway LABELONZEWAY-PLATFORM-AUDIT.md
-          git commit -m 'Synchronize LabelOnZeWay web Android and recover profile data' || true
+          git commit -m 'Synchronize LabelOnZeWay platforms and recover profile data' || true
           git push
 
-      - name: Build independently installable synchronized APK
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
@@ -199,7 +191,7 @@ window.renderProfileSel=renderProfileSel;window.refreshProfileUIFromCloud=refres
         with:
           gradle-version: '8.9'
 
-      - name: Prepare synchronized repair APK identity
+      - name: Build synchronized installable APK
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -210,13 +202,10 @@ window.renderProfileSel=renderProfileSel;window.refreshProfileUIFromCloud=refres
           s=s.replace("versionName '152.0-personal'", "versionName '2.0.1-platform-sync'")
           p.write_text(s)
           PY
-
-      - name: Build synchronized APK
-        working-directory: labelonzeway-android
-        run: gradle --no-daemon clean assembleDebug
-
-      - name: Package synchronized APK
-        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V2.0.1-PlatformSync.apk
+          cd labelonzeway-android
+          gradle --no-daemon clean assembleDebug
+          cd ..
+          cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V2.0.1-PlatformSync.apk
 
       - uses: actions/upload-artifact@v4
         with:
