@@ -1,0 +1,66 @@
+name: LabelOnZeWay Label Vault Navigation Fix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-label-vault-navigation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch production label vault navigation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, shutil
+
+          web=Path('labelonzeway')
+          idx=web/'index.html'
+          sw=web/'service-worker.js'
+          s=idx.read_text(encoding='utf-8')
+
+          marker='<!-- LZ_LABEL_VAULT_NAV_V1 -->'
+          if marker not in s:
+              needle='<div class="modal" id="m-label-vault"><div class="modal-box">\n  <button class="modal-x" data-close="m-label-vault">✕</button>\n  <h3>🏷 LABEL CLAIMS VAULT</h3>'
+              repl='<div class="modal" id="m-label-vault"><div class="modal-box label-vault-box">\n  <!-- LZ_LABEL_VAULT_NAV_V1 -->\n  <div class="label-vault-nav"><button class="btn sm" data-close="m-label-vault">← BACK TO OPERATIONS</button><span class="label-vault-title">🏷 LABEL CLAIMS VAULT</span><button class="btn sm dark" data-close="m-label-vault">✕ CLOSE</button></div>\n  <h3 class="label-vault-heading">🏷 LABEL CLAIMS VAULT</h3>'
+              if needle not in s:
+                  raise SystemExit('Label vault modal marker not found')
+              s=s.replace(needle,repl,1)
+
+              css='''\n<style id="label-vault-nav-v1">\n#m-label-vault .label-vault-box{position:relative;max-height:92vh;overflow:auto;padding-top:0}\n#m-label-vault .label-vault-nav{position:sticky;top:0;z-index:8;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:12px 2px 10px;margin:0 0 12px;background:linear-gradient(180deg,#0d1a24 75%,rgba(13,26,36,.94));border-bottom:1px solid #2a454d}\n#m-label-vault .label-vault-title{text-align:center;font:800 13px var(--body);letter-spacing:.04em;color:#dffaf5}\n#m-label-vault .label-vault-heading{margin-top:2px}\n@media(max-width:700px){#m-label-vault .label-vault-nav{grid-template-columns:1fr 1fr}.label-vault-title{display:none}.label-vault-nav .btn{width:100%}}\n</style>\n'''
+              pos=s.rfind('</body>')
+              if pos<0: raise SystemExit('body close not found')
+              s=s[:pos]+css+s[pos:]
+
+          idx.write_text(s,encoding='utf-8')
+
+          w=sw.read_text(encoding='utf-8')
+          w=re.sub(r"const CACHE = '[^']+';","const CACHE = 'labelonzeway-v2.0.1-production-vault-nav-20260906-1';",w,count=1)
+          sw.write_text(w,encoding='utf-8')
+
+          android=Path('labelonzeway-android/app/src/main/assets/labelonzeway')
+          shutil.copy2(idx,android/'index.html')
+          shutil.copy2(sw,android/'service-worker.js')
+          PY
+      - name: Verify production patch
+        run: |
+          grep -q 'LZ_LABEL_VAULT_NAV_V1' labelonzeway/index.html
+          grep -q 'BACK TO OPERATIONS' labelonzeway/index.html
+          grep -q 'vault-nav-20260906-1' labelonzeway/service-worker.js
+          cmp labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          cmp labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+      - name: Commit production patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add labelonzeway/index.html labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+          git commit -m 'Add persistent back and close controls to production label vault' || true
+          git push
