@@ -486,7 +486,14 @@ function syncNow(manual) {
     // Pull first so a device that was offline learns remote tombstones before a
     // stale local snapshot can recreate deleted records. Genuine offline edits
     // are timestamped in the pending queue by persist()/capture().
+    /* LZ_PULL_FIRST_CONVERGENCE_V1
+     * Always learn the current cloud state before taking a fresh local snapshot.
+     * Pending offline edits are already timestamped and are protected by applyRemote().
+     * This prevents a stale Mac/Android startup snapshot from being queued with a new
+     * timestamp and overwriting the other device before the first pull completes.
+     */
     return pullRemote()
+      .then(function () { return captureProfile(currentProfileId(), false); })
       .then(flushPending)
       .then(pullRemote)
       .then(function () { lastResult = new Date().toISOString(); setStatus('Cloud synchronized at ' + new Date().toLocaleTimeString(), 'ok'); return ensureCounterAndBlock(); })
@@ -594,12 +601,8 @@ function readConfig() {
       workspaceName = (workspaces.find(function (item) { return item.id === workspaceId; }) || workspaces[0]).name;
       localStorage.setItem(WORKSPACE_KEY, workspaceId);
       updateUI(); subscribeRealtime();
-      var profileId = currentProfileId(), meta = loadMeta();
-      var profileReconciled = !!(meta.items && meta.items[profileId + '|profile_settings|' + profileId]);
-      if (!profileReconciled && !hasMeaningfulLocalData(profileId)) {
-        return pullRemote().then(function () { return captureProfile(profileId, false); }).then(function () { return syncNow(false); });
-      }
-      return captureProfile(profileId, false).then(function () { return syncNow(false); });
+      /* LZ_STARTUP_PULL_FIRST_V1 */
+      return syncNow(false);
     }).catch(function (error) { setStatus('Could not load workspace: ' + (error.message || error), 'error'); updateUI(); });
   }
   function subscribeRealtime() {
@@ -647,12 +650,8 @@ function readConfig() {
     document.getElementById('cloud-workspace').addEventListener('change', function (event) {
       workspaceId = event.target.value; workspaceName = (workspaces.find(function (item) { return item.id === workspaceId; }) || {}).name || '';
       localStorage.setItem(WORKSPACE_KEY, workspaceId); subscribeRealtime();
-      var profileId = currentProfileId(), meta = loadMeta();
-      var profileReconciled = !!(meta.items && meta.items[profileId + '|profile_settings|' + profileId]);
-      var ready = (!profileReconciled && !hasMeaningfulLocalData(profileId))
-        ? pullRemote().then(function () { return captureProfile(profileId, false); })
-        : captureProfile(profileId, false);
-      ready.then(function () { syncNow(false); }); updateUI();
+      /* LZ_WORKSPACE_SWITCH_PULL_FIRST_V1 */
+      syncNow(false); updateUI();
     });
   }
   function setStatus(text, type) {
@@ -824,7 +823,8 @@ function readConfig() {
   api.cloudPrintJobStatus = cloudPrintJobStatus;
   api.publicTrackingBase = publicTrackingBase;
   api.isConfigured = configured;
-  api.getStatus = function () { return { configured: configured(), signedIn: !!session, workspaceId: workspaceId, workspaceName: workspaceName, deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing }; };
+  /* LZ_CLOUD_IDENTITY_STATUS_V1 */
+  api.getStatus = function () { return { configured: configured(), signedIn: !!session, userEmail: session && session.user ? String(session.user.email || '') : '', workspaceId: workspaceId, workspaceName: workspaceName, profileId: currentProfileId(), deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing }; };
   window.LabelOnZeWayCloud = api;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
 }());

@@ -325,6 +325,27 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
 }
 @media (max-width:340px){.row2.mobile-pair,.row2.mobile-pair.equal{grid-template-columns:1fr}}
 @media (max-width:390px){.ops-action small{display:none}.ops-action{min-height:76px}.control-actions.two{grid-template-columns:1fr}.ops-metric b{font-size:14px}}
+
+/* LZ_PRODUCTION_SETTINGS_LAYOUT_V1 */
+#m-settings{padding:24px;align-items:center}
+#m-settings .settings-box{width:min(860px,calc(100vw - 48px));max-height:min(86vh,780px);overflow:auto;overscroll-behavior:contain;padding:0 20px 20px;scrollbar-gutter:stable;border-color:#304957;background:#071721;color:#eaf7f7}
+#m-settings .settings-sticky-nav{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin:0 -20px 16px;padding:14px 20px;background:rgba(7,23,33,.98);border-bottom:1px solid #294650;box-shadow:0 8px 18px rgba(0,0,0,.2)}
+#m-settings .settings-sticky-nav h3{margin:0;text-align:center;font:800 14px var(--mono);letter-spacing:1.1px;color:#eaf7f7}
+#m-settings .settings-sticky-nav .btn{box-shadow:none;white-space:nowrap;background:#0b2630;color:#dff;border-color:#476976}
+#m-settings .printer-box{border-color:#2c4b56;background:#081b24}
+#m-settings .printer-title,#m-settings label.f,#m-settings .hint{color:#a8c5ca}
+#m-settings input,#m-settings select,#m-settings textarea{background:#0b222b;color:#edfafa;border-color:#365763}
+#m-settings input:focus,#m-settings select:focus,#m-settings textarea:focus{border-color:#5ed6de;box-shadow:0 0 0 3px rgba(94,214,222,.13)}
+#m-settings .row2{gap:12px}
+@media (max-width:700px){
+  #m-settings{padding:0;align-items:stretch}
+  #m-settings .settings-box{width:100%;max-height:100dvh;min-height:100dvh;border-radius:0;border-left:0;border-right:0;padding:0 14px 18px}
+  #m-settings .settings-sticky-nav{grid-template-columns:1fr auto;margin:0 -14px 14px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px}
+  #m-settings .settings-sticky-nav h3{grid-column:1/-1;grid-row:1;text-align:left;font-size:12px;opacity:.8}
+  #m-settings .settings-sticky-nav .btn:first-child{grid-column:1;grid-row:2;justify-self:start}
+  #m-settings .settings-sticky-nav .btn:last-child{grid-column:2;grid-row:2;justify-self:end}
+}
+
 </style>
 <style id="pgLabel" disabled>@page{size:72mm auto;margin:0}</style>
 <style id="pgMan" disabled>@page{size:80mm auto;margin:0}</style>
@@ -785,9 +806,13 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
     <button class="btn orange wide" style="margin-top:10px" data-act="applyOnePrice">APPLY TO ALL</button></div>
 </div></div>
 
-<div class="modal" id="m-settings"><div class="modal-box">
-  <button class="modal-x" data-close="m-settings">✕</button>
-  <h3>SETTINGS</h3>
+<div class="modal" id="m-settings"><div class="modal-box settings-box">
+  <!-- LZ_PRODUCTION_SETTINGS_NAV_V1 -->
+  <div class="settings-sticky-nav">
+    <button class="btn sm" type="button" data-close="m-settings">← BACK TO OPERATIONS</button>
+    <h3>SETTINGS</h3>
+    <button class="btn sm" type="button" data-close="m-settings">✕ CLOSE</button>
+  </div>
   <div class="printer-box" id="profile-create-box">
     <div class="printer-title">🏢 COMPANY PROFILES</div>
     <p class="printer-help">Create a separate company workspace directly in the app. The current profile's data stays separate.</p>
