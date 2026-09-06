@@ -1,4 +1,4 @@
-const CACHE = 'labelonzeway-v2.0.1-ios-notify-20260906-1';
+const CACHE = 'labelonzeway-v2.0.1-platform-sync-20260906-2';
 const APP_SHELL = [
   './',
   './index.html',

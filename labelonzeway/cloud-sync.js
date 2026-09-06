@@ -184,6 +184,26 @@
   function savePending(pending) { localStorage.setItem(PENDING_KEY, JSON.stringify(pending)); updateUI(); }
   function entityKey(row) { return row.workspace_id + '|' + row.profile_id + '|' + row.entity_type + '|' + row.entity_id; }
   function localEntityKey(row) { return row.profile_id + '|' + row.entity_type + '|' + row.entity_id; }
+  /* LZ_CROSS_DEVICE_REHYDRATION_V2 */
+  function profileSettingsScore(value) {
+    value = value && typeof value === 'object' ? value : {};
+    var fields = ['name','tagline','phone','currency','codLabel','thanks'];
+    return fields.reduce(function(score,key){
+      var v=String(value[key] == null ? '' : value[key]).trim();
+      if(!v || v==='YOUR PAGE NAME' || v==='Company 1' || v==='+261 00 000 000' || v==='LABELONZEWAY MOBILE SHOP') return score;
+      return score+1;
+    },0);
+  }
+  function localEntityPresent(record) {
+    var pid=record.profile_id, id=String(record.entity_id||'');
+    if(record.entity_type==='profile') return currentProfiles().some(function(p){return String(p.id)===id});
+    if(record.entity_type==='profile_settings') return profileSettingsScore(storageValue(pid,'shop',{}))>0;
+    if(record.entity_type==='counter_state') return localStorage.getItem(profileKey(pid,'ctr'))!==null;
+    var suffix=record.entity_type==='customer'?'addr':record.entity_type==='parcel_active'?'mani':record.entity_type==='archive_day'?'arch':record.entity_type==='label_copy'?'labels':'';
+    if(!suffix) return false;
+    var list=storageValue(pid,suffix,[]);
+    return Array.isArray(list)&&list.some(function(item){return item&&String(item.id)===id});
+  }
   function fingerprint(payload, deleted) {
     var text = JSON.stringify(payload == null ? null : payload);
     var first = 2166136261, second = 5381;
@@ -293,7 +313,9 @@
           var queuedTime = String(queued.modified_at || ''), queuedDevice = String(queued.device_id || '');
           if (queuedTime > remoteTime || (queuedTime === remoteTime && queuedDevice >= remoteDevice)) return;
         }
-        if (localInfo) {
+        var localPresent = localEntityPresent(record);
+        var remoteProfileMoreComplete = record.entity_type === 'profile_settings' && profileSettingsScore(record.payload || {}) > profileSettingsScore(storageValue(record.profile_id, 'shop', {}));
+        if (localInfo && localPresent && !remoteProfileMoreComplete) {
           var localTime = String(localInfo.modified_at || ''), localDevice = String(localInfo.device_id || '');
           if (localTime > remoteTime || (localTime === remoteTime && localDevice >= remoteDevice)) return;
         }
@@ -315,6 +337,7 @@
             if (deleted) window.state.shop = Object.assign({}, window.DEFAULT_SHOP || {}, localOnly);
             else window.state.shop = Object.assign({}, window.state.shop, safeShop(record.payload || {}), localOnly);
             localStorage.setItem(profileKey(profileId, 'shop'), JSON.stringify(window.state.shop));
+            if (typeof window.refreshProfileUIFromCloud === 'function') window.refreshProfileUIFromCloud();
             changed = true;
           } else if (record.entity_type === 'customer') {
             window.state.addr = mergeById(window.state.addr, record, deleted);
@@ -350,22 +373,25 @@
 
   function pullRemote() {
     if (!client || !session || !workspaceId) return Promise.resolve([]);
-    var pageSize = 1000, all = [],metaBefore=loadMeta(),since=metaBefore.lastPull&&Date.parse(metaBefore.lastPull)?new Date(Date.parse(metaBefore.lastPull)-300000).toISOString():'';
+    var profileId=currentProfileId(),pageSize=1000,all=[],metaBefore=loadMeta(),pullMap=metaBefore.lastPullByProfile||{},lastProfilePull=pullMap[profileId]||'',since=lastProfilePull&&Date.parse(lastProfilePull)?new Date(Date.parse(lastProfilePull)-300000).toISOString():'';
     function page(from) {
       var query=client.from('sync_entities').select('workspace_id,profile_id,entity_type,entity_id,payload,modified_at,deleted_at,device_id').eq('workspace_id', workspaceId);
       if(since)query=query.gt('modified_at',since);
-      return query.order('modified_at', { ascending: true }).range(from, from + pageSize - 1).then(function (result) {
-          if (result.error) throw result.error;
-          var rows = result.data || []; all = all.concat(rows);
-          return rows.length === pageSize ? page(from + pageSize) : all;
-        });
+      return query.order('modified_at',{ascending:true}).range(from,from+pageSize-1).then(function(result){
+        if(result.error)throw result.error;
+        var rows=Array.isArray(result.data)?result.data:[];all=all.concat(rows);
+        return rows.length===pageSize?page(from+pageSize):all;
+      });
     }
-    return page(0).then(function (rows) {
+    return page(0).then(function(rows){
       applyRemote(rows);
-      var meta = loadMeta();if(rows.length)meta.lastPull=rows[rows.length-1].modified_at;else if(!meta.lastPull)meta.lastPull=new Date().toISOString();saveMeta(meta);
-      return rows;
+      var meta=loadMeta();meta.lastPullByProfile=meta.lastPullByProfile||{};
+      if(rows.length)meta.lastPullByProfile[profileId]=rows[rows.length-1].modified_at;
+      else if(!meta.lastPullByProfile[profileId])meta.lastPullByProfile[profileId]=new Date().toISOString();
+      saveMeta(meta);return rows;
     });
   }
+
   function utf8Size(value) {
     var text = JSON.stringify(value);
     try { return new Blob([text]).size; } catch (e) { return unescape(encodeURIComponent(text)).length; }

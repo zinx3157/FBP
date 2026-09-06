@@ -974,6 +974,20 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
 </div></div>
 
+<!-- LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1 -->
+<script>
+(function(){
+  'use strict';
+  function closeCustomerNotificationOnPageResume(){
+    var modal=document.getElementById('m-confirmation');
+    if(modal)modal.classList.remove('open');
+  }
+  closeCustomerNotificationOnPageResume();
+  document.addEventListener('DOMContentLoaded',closeCustomerNotificationOnPageResume,{once:true});
+  window.addEventListener('pageshow',closeCustomerNotificationOnPageResume);
+  window.addEventListener('pagehide',closeCustomerNotificationOnPageResume);
+})();
+</script>
 <script src="cloud-sync.js?v=2.0.1-daily"></script>
 <script>
 "use strict";
@@ -2655,6 +2669,15 @@ function closeModal(id){var e=getEl(id);if(e)e.classList.remove('open')}
 function renderProfileSel(){var s=getEl('profile-sel');if(!s)return;
   s.innerHTML=PROFILES.map(function(p){return '<option value="'+p.id+'"'+(p.id===PID?' selected':'')+'>'+esc(p.name)+'</option>'}).join('');}
 
+/* LZ_PROFILE_UI_REFRESH_V2 */
+function refreshProfileUIFromCloud(){
+  try{renderProfileSel()}catch(e){}
+  try{applyCurrency();applyLabelLen()}catch(e){}
+  try{renderPreview();renderAddr();renderManifest();renderStats();updatePrinterSettingsUI()}catch(e){}
+  try{var modal=getEl('m-settings');if(modal&&modal.classList.contains('open'))openSettings()}catch(e){}
+}
+window.PROFILES=PROFILES;window.PID=PID;window.state=state;window.DEFAULT_SHOP=DEFAULT_SHOP;
+window.renderProfileSel=renderProfileSel;window.refreshProfileUIFromCloud=refreshProfileUIFromCloud;
 var deferredInstallPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredInstallPrompt=e;var b=getEl('install-app-btn');if(b)b.style.display='';});
 window.addEventListener('appinstalled',function(){deferredInstallPrompt=null;toast('LabelOnZeWay installed','ok');var b=getEl('install-app-btn');if(b)b.style.display='none';});
