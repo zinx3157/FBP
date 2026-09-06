@@ -913,9 +913,10 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div id="arch-list"></div>
 </div></div>
 
-<div class="modal" id="m-label-vault"><div class="modal-box">
-  <button class="modal-x" data-close="m-label-vault">✕</button>
-  <h3>🏷 LABEL CLAIMS VAULT</h3>
+<div class="modal" id="m-label-vault"><div class="modal-box label-vault-box">
+  <!-- LZ_LABEL_VAULT_NAV_V1 -->
+  <div class="label-vault-nav"><button class="btn sm" data-close="m-label-vault">← BACK TO OPERATIONS</button><span class="label-vault-title">🏷 LABEL CLAIMS VAULT</span><button class="btn sm dark" data-close="m-label-vault">✕ CLOSE</button></div>
+  <h3 class="label-vault-heading">🏷 LABEL CLAIMS VAULT</h3>
   <div class="vault-note">Every generated label version is retained independently of the physical 1–20 copies setting, manifest, and daily archive. Removing, clearing, editing, closing, or deleting an archived day does not remove these copies. Claim copies synchronize in the shared company workspace and have no automatic expiry. Use Backup Data in Settings to keep an external copy too.</div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
     <input class="search" id="label-vault-search" placeholder="Search order, recipient, phone, address, date…" oninput="renderLabelVault()" style="flex:1;min-width:240px">
@@ -2810,5 +2811,13 @@ init();
 <!-- LZ_PRODUCTION_TRACKING_VIEW_V1 -->
 <div class="modal" id="m-tracking-view"><div class="modal-box" style="max-width:980px"><div class="modal-head"><div><b>TRACKING VIEW</b><small id="tracking-view-summary">Current profile</small></div><button class="x" data-act="closeModal" data-arg="m-tracking-view">×</button></div><div class="row2" style="margin-bottom:12px"><div><label class="f" for="tracking-view-search">Search</label><input id="tracking-view-search" type="search" placeholder="Order, customer, phone or area"></div><div><label class="f" for="tracking-view-filter">Status</label><select id="tracking-view-filter"><option value="all">All statuses</option><option value="ready">Ready for Dispatch</option><option value="in_transit">In Transit</option><option value="delivered">Delivered</option><option value="exception">Exception</option></select></div></div><div id="tracking-view-rows" class="tracking-view-list"></div></div></div>
 <style>#m-tracking-view .modal-box{width:min(980px,96vw);max-height:90vh;overflow:auto}.tracking-view-list{display:grid;gap:8px}.tracking-view-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(150px,.7fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:9px;padding:10px;background:#0d1a24}.tracking-view-row small{display:block;margin-top:3px;color:#8da5a1}.tracking-view-actions{display:flex;gap:7px;flex-wrap:wrap}.delivery-badge{display:inline-block;border:1px solid currentColor;border-radius:999px;padding:4px 8px;font-weight:800}.delivery-badge.ready{color:#63d9ef}.delivery-badge.in_transit{color:#f3bd68}.delivery-badge.delivered{color:#54dfa8}.delivery-badge.exception{color:#ff8278}@media(max-width:700px){.tracking-view-row{grid-template-columns:1fr}.tracking-view-actions .btn{flex:1}.row2{grid-template-columns:1fr!important}}</style>
+
+<style id="label-vault-nav-v1">
+#m-label-vault .label-vault-box{position:relative;max-height:92vh;overflow:auto;padding-top:0}
+#m-label-vault .label-vault-nav{position:sticky;top:0;z-index:8;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:12px 2px 10px;margin:0 0 12px;background:linear-gradient(180deg,#0d1a24 75%,rgba(13,26,36,.94));border-bottom:1px solid #2a454d}
+#m-label-vault .label-vault-title{text-align:center;font:800 13px var(--body);letter-spacing:.04em;color:#dffaf5}
+#m-label-vault .label-vault-heading{margin-top:2px}
+@media(max-width:700px){#m-label-vault .label-vault-nav{grid-template-columns:1fr 1fr}.label-vault-title{display:none}.label-vault-nav .btn{width:100%}}
+</style>
 </body>
 </html>
