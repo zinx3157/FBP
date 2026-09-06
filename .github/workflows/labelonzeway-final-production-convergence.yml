@@ -1,0 +1,127 @@
+name: LabelOnZeWay Final Production Convergence
+
+on:
+  push:
+    branches:
+      - production/final-convergence-20260906
+    paths:
+      - '.github/scripts/finalize_labelonzeway_production.py'
+      - '.github/workflows/labelonzeway-final-production-convergence.yml'
+      - 'labelonzeway/**'
+      - 'labelonzeway-android/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit-fix-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout audited branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Apply one-source production convergence patch
+        run: python .github/scripts/finalize_labelonzeway_production.py
+
+      - name: JavaScript syntax gate
+        run: node --check labelonzeway/cloud-sync.js
+
+      - name: Production marker and parity gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'LZ_PULL_FIRST_CONVERGENCE_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_STARTUP_PULL_FIRST_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_WORKSPACE_SWITCH_PULL_FIRST_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_PRODUCTION_SETTINGS_NAV_V1' labelonzeway/index.html
+          grep -q 'LZ_PRODUCTION_SETTINGS_LAYOUT_V1' labelonzeway/index.html
+          grep -q 'LZ_LABEL_VAULT_NAV_V1' labelonzeway/index.html
+          grep -q 'LZ_PRODUCTION_TRACKING_VIEW_V1' labelonzeway/index.html
+          cmp labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+          cmp labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+          cmp labelonzeway/sync-config.json labelonzeway-android/app/src/main/assets/labelonzeway/sync-config.json
+          cmp labelonzeway/tracking/index.html labelonzeway-android/app/src/main/assets/labelonzeway/tracking/index.html
+          cmp labelonzeway/tracking-dashboard/index.html labelonzeway-android/app/src/main/assets/labelonzeway/tracking-dashboard/index.html
+
+      - name: Android compile gate
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon clean assembleDebug
+
+      - name: Write production audit record
+        shell: bash
+        run: |
+          cat > LABELONZEWAY-FINAL-PRODUCTION-CONVERGENCE-AUDIT.md <<'EOF'
+          # LabelOnZeWay V2.0.1 — Final Production Convergence Audit
+
+          This is a production hardening audit, not UAT.
+
+          ## Root cause corrected
+
+          The cloud engine previously captured the current local profile before the first startup/workspace reconciliation. That could queue a stale device snapshot with a fresh timestamp before the pull-first `syncNow()` sequence ran. A Mac and Android installation could therefore keep reasserting different local snapshots instead of deterministically converging.
+
+          ## Production correction
+
+          - Startup is now pull-first.
+          - Workspace switching is now pull-first.
+          - `syncNow()` now performs: pull remote -> capture reconciled local state -> flush pending -> pull remote.
+          - Existing pending offline mutations remain protected by the existing timestamp/device conflict checks.
+          - Cloud status API now exposes signed-in email, workspace and active profile for device identity diagnostics.
+          - Settings has persistent Back to Operations and Close controls with a bounded, scroll-safe desktop layout.
+          - Existing Label Claims Vault persistent navigation is retained.
+          - Existing production Tracking View hardening is retained.
+          - Canonical Web and packaged Android runtime assets are byte-identical after the patch.
+
+          ## Automated gates
+
+          - Python production patcher: PASS
+          - JavaScript syntax (`cloud-sync.js`): PASS
+          - Required production markers: PASS
+          - Web/Android asset parity: PASS
+          - Android debug compile with Java 17 + Gradle 8.9: PASS
+
+          ## Deployment rule
+
+          `labelonzeway/` remains the only canonical business runtime. Android packages those exact assets. The native Mac build must refresh its `dist/` from those same canonical files before rebuilding; native printer adapter/gateway code remains Mac-local.
+          EOF
+
+      - name: Commit audited production source to branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add labelonzeway labelonzeway-android/app/src/main/assets/labelonzeway LABELONZEWAY-FINAL-PRODUCTION-CONVERGENCE-AUDIT.md
+          if git diff --cached --quiet; then
+            echo 'No generated runtime changes to commit.'
+          else
+            git commit -m 'Converge production sync and Mac settings runtime'
+            git push origin HEAD:production/final-convergence-20260906
+          fi
+
+      - name: Upload Android debug proof artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-Final-Convergence-Debug-Proof
+          path: labelonzeway-android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
