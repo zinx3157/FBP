@@ -1,0 +1,205 @@
+name: Fix LabelOnZeWay daily counter and Android cloud
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fix-labelonzeway-daily.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Patch production and Android assets
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, shutil
+
+          web = Path('labelonzeway')
+          android = Path('labelonzeway-android/app/src/main/assets/labelonzeway')
+          index = web/'index.html'
+          cloud = web/'cloud-sync.js'
+          sw = web/'service-worker.js'
+
+          def save(path, text):
+              old = path.read_text()
+              if old != text:
+                  path.write_text(text)
+                  print('patched', path)
+              else:
+                  print('already current', path)
+
+          s = index.read_text()
+          s = s.replace("counter:load(K('ctr'),0),", "counter:load(K('ctr'),0),counterDate:load(K('ctrDate'),''),")
+          s = s.replace("save(K('ctr'),state.counter),save(K('arch'),state.archive)", "save(K('ctr'),state.counter),save(K('ctrDate'),state.counterDate||''),save(K('arch'),state.archive)")
+          pat = re.compile(r"function nextOid\(n\)\{return String\(n\)\.padStart\(4,'0'\)\}\nfunction allocateOrderId\(\)\{\n  var cloud=window\.LabelOnZeWayCloud,oid=cloud&&typeof cloud\.nextOrderIdentifier==='function'\?cloud\.nextOrderIdentifier\(PID\):null;\n  if\(oid\)\{var numeric=/\^\\d\+\$/\.test\(oid\)\?parseInt\(oid,10\):0;state\.counter=numeric\?Math\.max\(Number\(state\.counter\)\|\|0,numeric\):\(Number\(state\.counter\)\|\|0\)\+1;return oid\}\n  state\.counter=\(Number\(state\.counter\)\|\|0\)\+1;return nextOid\(state\.counter\);\n\}")
+          repl = """function orderDateKey(d){d=d||new Date();var p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())}
+          function orderDateToken(d){d=d||new Date();return String(d.getDate())+String(d.getMonth()+1)+String(d.getFullYear()).slice(-2)}
+          function ensureDailyCounter(){var today=orderDateKey(new Date());if(String(state.counterDate||'')!==today){state.counter=0;state.counterDate=today;save(K('ctr'),0);save(K('ctrDate'),today)}return today}
+          function nextOid(n){ensureDailyCounter();return orderDateToken(new Date())+'-'+String(Math.max(0,Number(n)||0))}
+          function allocateOrderId(){
+            var today=ensureDailyCounter(),cloud=window.LabelOnZeWayCloud,oid=cloud&&typeof cloud.nextOrderIdentifier==='function'?cloud.nextOrderIdentifier(PID,today):null;
+            if(oid){var m=String(oid).match(/-(\\d+)$/);if(m)state.counter=Math.max(Number(state.counter)||0,Number(m[1])||0);save(K('ctr'),state.counter);save(K('ctrDate'),today);return oid}
+            state.counter=(Number(state.counter)||0)+1;save(K('ctr'),state.counter);save(K('ctrDate'),today);return nextOid(state.counter);
+          }"""
+          s, n = pat.subn(lambda m: repl, s, count=1)
+          if n == 0 and 'function orderDateKey(' not in s:
+              raise SystemExit('legacy counter block not found')
+          s = s.replace("function liveRow(){return{oid:nextOid(state.counter+1),", "function liveRow(){ensureDailyCounter();return{oid:nextOid(state.counter+1),")
+          s = s.replace("cloud-sync.js?v=2.0.0", "cloud-sync.js?v=2.0.1-daily")
+          save(index, s)
+
+          c = cloud.read_text()
+          c = c.replace("var counter = active ? window.state.counter : storageValue(profileId, 'ctr', 0);", "var counter = active ? window.state.counter : storageValue(profileId, 'ctr', 0);\n    var counterDate = active ? (window.state.counterDate || '') : storageValue(profileId, 'ctrDate', '');")
+          c = c.replace("payload: { value: Math.max(0, Number(counter) || 0) }", "payload: { date: String(counterDate || ''), value: Math.max(0, Number(counter) || 0) }")
+          c = c.replace("""          } else if (record.entity_type === 'counter_state') {
+            window.state.counter = deleted ? 0 : Math.max(Number(window.state.counter) || 0, Number(record.payload && record.payload.value) || 0);
+            localStorage.setItem(profileKey(profileId, 'ctr'), JSON.stringify(window.state.counter)); changed = true;
+          }""", """          } else if (record.entity_type === 'counter_state') {
+            var remoteDate = String(record.payload && record.payload.date || ''), localDate = String(window.state.counterDate || '');
+            var todayDate = dailyDateKey(new Date());
+            if (deleted) { window.state.counter = 0; window.state.counterDate = todayDate; }
+            else if (remoteDate && remoteDate === localDate) window.state.counter = Math.max(Number(window.state.counter) || 0, Number(record.payload && record.payload.value) || 0);
+            else if (remoteDate && (!localDate || remoteDate > localDate)) { window.state.counterDate = remoteDate; window.state.counter = Math.max(0, Number(record.payload && record.payload.value) || 0); }
+            localStorage.setItem(profileKey(profileId, 'ctr'), JSON.stringify(window.state.counter));
+            localStorage.setItem(profileKey(profileId, 'ctrDate'), JSON.stringify(window.state.counterDate || todayDate)); changed = true;
+          }""")
+
+          block_pat = re.compile(r"  function ensureCounterAndBlock\(\) \{.*?\n  \}\n\n  function syncNow\(manual\)", re.S)
+          block_repl = """  function dailyDateKey(value) {
+            var d = value instanceof Date ? value : (value ? new Date(String(value) + (String(value).length === 10 ? 'T12:00:00' : '')) : new Date());
+            if (isNaN(d.getTime())) d = new Date();
+            var p = function (n) { return String(n).padStart(2, '0'); };
+            return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+          }
+          function dailyDateToken(value) {
+            var key = /^\\d{4}-\\d{2}-\\d{2}$/.test(String(value || '')) ? String(value) : dailyDateKey(value);
+            var parts = key.split('-');
+            return String(Number(parts[2])) + String(Number(parts[1])) + String(parts[0]).slice(-2);
+          }
+          function ensureCounterAndBlock() {
+            if (!client || !session || !workspaceId) return Promise.resolve();
+            var profileId = currentProfileId(), dateKey = dailyDateKey(new Date());
+            if (window.state && String(window.state.counterDate || '') !== dateKey) { window.state.counter = 0; window.state.counterDate = dateKey; localStorage.setItem(profileKey(profileId, 'ctr'), '0'); localStorage.setItem(profileKey(profileId, 'ctrDate'), JSON.stringify(dateKey)); }
+            var counter = window.state ? Math.max(0, Number(window.state.counter) || 0) : 0;
+            return client.rpc('ensure_daily_order_counter_at_least', { p_workspace_id: workspaceId, p_profile_id: profileId, p_counter_date: dateKey, p_minimum: counter })
+              .then(function (result) { if (result.error) throw result.error; return reserveOrderBlock(profileId, false, dateKey); });
+          }
+          function reserveOrderBlock(profileId, force, dateKey) {
+            if (!client || !session || !workspaceId || navigator.onLine === false) return Promise.resolve(null);
+            dateKey = dateKey || dailyDateKey(new Date());
+            var key = BLOCK_PREFIX + workspaceId + '.' + profileId + '.' + dateKey, block = safeParse(localStorage.getItem(key), null);
+            if (!force && block && Number(block.next) <= Number(block.end) && Number(block.end) - Number(block.next) >= 4) return Promise.resolve(block);
+            return client.rpc('reserve_daily_order_numbers', { p_workspace_id: workspaceId, p_profile_id: profileId, p_counter_date: dateKey, p_block_size: 25 }).then(function (result) {
+              if (result.error) throw result.error;
+              var row = Array.isArray(result.data) ? result.data[0] : result.data;
+              if (!row) throw new Error('No daily order-number block returned');
+              var reserved = { next: Number(row.block_start), end: Number(row.block_end), date: dateKey, reservedAt: new Date().toISOString() };
+              localStorage.setItem(key, JSON.stringify(reserved));
+              return reserved;
+            });
+          }
+          function nextOrderIdentifier(profileId, dateKey) {
+            if (!configured() || !workspaceId) return null;
+            profileId = profileId || currentProfileId(); dateKey = dateKey || dailyDateKey(new Date());
+            var key = BLOCK_PREFIX + workspaceId + '.' + profileId + '.' + dateKey, block = safeParse(localStorage.getItem(key), null);
+            if (block && Number(block.next) <= Number(block.end)) {
+              var number = Number(block.next); block.next = number + 1; localStorage.setItem(key, JSON.stringify(block));
+              if (Number(block.end) - Number(block.next) < 5 && navigator.onLine !== false) reserveOrderBlock(profileId, false, dateKey).catch(function () {});
+              return dailyDateToken(dateKey) + '-' + number;
+            }
+            var sequenceKey = 'lz.cloud.offline-seq.v2.' + profileId + '.' + dateKey;
+            var sequence = Number(localStorage.getItem(sequenceKey) || 0) + 1;
+            localStorage.setItem(sequenceKey, String(sequence));
+            return dailyDateToken(dateKey) + '-' + sequence;
+          }
+
+          function syncNow(manual)"""
+          c, n = block_pat.subn(lambda m: block_repl, c, count=1)
+          if n == 0 and 'reserve_daily_order_numbers' not in c:
+              raise SystemExit('legacy cloud counter block not found')
+
+          read_pat = re.compile(r"  function readConfig\(\) \{\n    return fetch\(CONFIG_PATH, \{ cache: 'no-store' \}\)\.then\(function \(response\) \{\n      if \(!response\.ok\) throw new Error\('sync-config\.json not found'\);\n      return response\.json\(\);\n    \}\)\.catch\(function \(\) \{ return \{ supabaseUrl: '', supabaseAnonKey: '' \}; \}\);\n  \}")
+          read_repl = """  function readConfig() {
+            var fallback = { supabaseUrl: 'https://cqgdzfgjacsgpfdtbhdo.supabase.co', supabaseAnonKey: 'sb_publishable_pZ8QNQuPvPX_5kkMzpo7BA_7PsVWwWu', publicTrackingUrl: 'https://zinx3157.github.io/FBP/labelonzeway/tracking/' };
+            return fetch(CONFIG_PATH, { cache: 'no-store' }).then(function (response) {
+              if (!response.ok) throw new Error('sync-config.json not found');
+              return response.json();
+            }).then(function (loaded) { return Object.assign({}, fallback, loaded || {}); }).catch(function () { return fallback; });
+          }"""
+          c = read_pat.sub(lambda m: read_repl, c, count=1)
+
+          lib_pat = re.compile(r"  function loadSupabaseLibrary\(\) \{.*?\n  \}\n  function readConfig", re.S)
+          lib_repl = """  function loadSupabaseLibrary() {
+            if (window.supabase && window.supabase.createClient) return Promise.resolve(window.supabase);
+            var urls = ['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js','https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js'];
+            return new Promise(function (resolve, reject) {
+              function attempt(i) {
+                if (i >= urls.length) { reject(new Error('Could not load the secure cloud library')); return; }
+                var script = document.createElement('script'); script.src = urls[i]; script.crossOrigin = 'anonymous';
+                script.onload = function () { if (window.supabase && window.supabase.createClient) resolve(window.supabase); else attempt(i + 1); };
+                script.onerror = function () { attempt(i + 1); };
+                document.head.appendChild(script);
+              }
+              attempt(0);
+            });
+          }
+          function readConfig"""
+          c = lib_pat.sub(lambda m: lib_repl, c, count=1)
+          save(cloud, c)
+
+          w = sw.read_text()
+          w = re.sub(r"const CACHE = '[^']+';", "const CACHE = 'labelonzeway-v2.0.1-daily-20260906';", w, count=1)
+          w = w.replace("./cloud-sync.js?v=2.0.0", "./cloud-sync.js?v=2.0.1-daily")
+          save(sw, w)
+
+          android.mkdir(parents=True, exist_ok=True)
+          for name in ['index.html','cloud-sync.js','sync-config.json','service-worker.js']:
+              shutil.copy2(web/name, android/name)
+              print('synced', android/name)
+          PY
+
+      - name: Commit and deploy GitHub Pages source
+        shell: bash
+        run: |
+          git config user.name 'LabelOnZeWay Build Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add labelonzeway labelonzeway-android/app/src/main/assets/labelonzeway
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit.'
+          else
+            git commit -m 'Deploy daily counter and Android cloud bootstrap fix'
+            git push origin main
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build fixed APK
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon assembleDebug
+
+      - name: Package fixed APK
+        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V2.0.1-DailyCounter-CloudFix.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-V2.0.1-DailyCounter-CloudFix
+          path: LabelOnZeWay-V2.0.1-DailyCounter-CloudFix.apk
+          retention-days: 30
