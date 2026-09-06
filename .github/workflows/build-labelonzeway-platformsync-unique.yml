@@ -1,0 +1,63 @@
+name: Build LabelOnZeWay PlatformSync Unique APK
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build-labelonzeway-platformsync-unique.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Force unique Android package identity
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('labelonzeway-android/app/build.gradle')
+          s=p.read_text(encoding='utf-8')
+          s,n=re.subn(r"applicationId\s+['\"][^'\"]+['\"]", "applicationId 'com.labelonzeway.platformsync'", s, count=1)
+          if n != 1:
+              raise SystemExit('Could not replace applicationId exactly once')
+          s=re.sub(r'versionCode\s+\d+', 'versionCode 204', s, count=1)
+          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.0.1-platform-sync-unique'", s, count=1)
+          p.write_text(s,encoding='utf-8')
+          print(p.read_text(encoding='utf-8'))
+          PY
+          grep -q "applicationId 'com.labelonzeway.platformsync'" labelonzeway-android/app/build.gradle
+
+      - name: Verify synchronized runtime markers
+        run: |
+          grep -q 'LZ_CROSS_DEVICE_REHYDRATION_V2' labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+          grep -q 'lastPullByProfile' labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+          grep -q 'LZ_PROFILE_UI_REFRESH_V2' labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          grep -q 'LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1' labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+
+      - name: Build APK
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon clean assembleDebug
+
+      - name: Package APK
+        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V2.0.1-PlatformSync-Unique.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-V2.0.1-PlatformSync-Unique
+          path: LabelOnZeWay-V2.0.1-PlatformSync-Unique.apk
+          retention-days: 30
