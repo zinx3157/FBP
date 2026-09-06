@@ -1,0 +1,69 @@
+name: Fix iOS notification modal default state
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-ios-notification-default.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch iOS notification default state
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          index = Path('labelonzeway/index.html')
+          s = index.read_text(encoding='utf-8')
+
+          marker = '<!-- LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1 -->'
+          patch = r'''<!-- LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1 -->
+          <script>
+          (function(){
+            'use strict';
+            function closeCustomerNotificationOnPageResume(){
+              var modal=document.getElementById('m-confirmation');
+              if(modal)modal.classList.remove('open');
+            }
+            closeCustomerNotificationOnPageResume();
+            document.addEventListener('DOMContentLoaded',closeCustomerNotificationOnPageResume,{once:true});
+            window.addEventListener('pageshow',closeCustomerNotificationOnPageResume);
+            window.addEventListener('pagehide',closeCustomerNotificationOnPageResume);
+          })();
+          </script>'''
+
+          if marker not in s:
+              needle = '<script src="cloud-sync.js?v=2.0.1-daily"></script>'
+              if needle not in s:
+                  raise SystemExit('cloud-sync script marker not found')
+              s = s.replace(needle, patch + '\n' + needle, 1)
+
+          index.write_text(s, encoding='utf-8')
+
+          sw = Path('labelonzeway/service-worker.js')
+          t = sw.read_text(encoding='utf-8')
+          t = t.replace("labelonzeway-v2.0.1-daily-20260906", "labelonzeway-v2.0.1-ios-notify-20260906-1")
+          sw.write_text(t, encoding='utf-8')
+          PY
+
+      - name: Verify patch
+        run: |
+          grep -q 'LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1' labelonzeway/index.html
+          grep -q 'labelonzeway-v2.0.1-ios-notify-20260906-1' labelonzeway/service-worker.js
+
+      - name: Commit production fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add labelonzeway/index.html labelonzeway/service-worker.js
+          git commit -m 'Keep iOS SMS WhatsApp notification closed by default'
+          git push
