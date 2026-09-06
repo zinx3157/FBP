@@ -974,6 +974,20 @@ body{background:radial-gradient(circle at 82% 0,#2edfc11d,transparent 28%),radia
   <div class="printer-status" id="confirmation-status">Choose the message and language, then confirm sending in WhatsApp or Messages.</div>
 </div></div>
 
+<!-- LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1 -->
+<script>
+(function(){
+  'use strict';
+  function closeCustomerNotificationOnPageResume(){
+    var modal=document.getElementById('m-confirmation');
+    if(modal)modal.classList.remove('open');
+  }
+  closeCustomerNotificationOnPageResume();
+  document.addEventListener('DOMContentLoaded',closeCustomerNotificationOnPageResume,{once:true});
+  window.addEventListener('pageshow',closeCustomerNotificationOnPageResume);
+  window.addEventListener('pagehide',closeCustomerNotificationOnPageResume);
+})();
+</script>
 <script src="cloud-sync.js?v=2.0.1-daily"></script>
 <script>
 "use strict";
