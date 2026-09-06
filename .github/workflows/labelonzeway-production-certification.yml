@@ -77,9 +77,12 @@ jobs:
           PID=$!
           trap 'kill $PID 2>/dev/null || true' EXIT
           sleep 2
-          curl -fsS http://127.0.0.1:8765/labelonzeway/ | grep -q 'LZ_PRODUCTION_SETTINGS_NAV_V1'
-          curl -fsS http://127.0.0.1:8765/labelonzeway/cloud-sync.js | grep -q 'LZ_TRUTHFUL_SYNC_STATUS_V1'
-          curl -fsS http://127.0.0.1:8765/labelonzeway/tracking/ | grep -qi 'tracking'
+          curl -fsS http://127.0.0.1:8765/labelonzeway/ -o /tmp/lz-index.html
+          curl -fsS http://127.0.0.1:8765/labelonzeway/cloud-sync.js -o /tmp/lz-cloud.js
+          curl -fsS http://127.0.0.1:8765/labelonzeway/tracking/ -o /tmp/lz-tracking.html
+          grep -q 'LZ_PRODUCTION_SETTINGS_NAV_V1' /tmp/lz-index.html
+          grep -q 'LZ_TRUTHFUL_SYNC_STATUS_V1' /tmp/lz-cloud.js
+          grep -qi 'tracking' /tmp/lz-tracking.html
 
       - name: Android compile gate
         working-directory: labelonzeway-android
