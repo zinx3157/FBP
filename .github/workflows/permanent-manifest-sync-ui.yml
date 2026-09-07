@@ -2,7 +2,7 @@ name: LabelOnZeWay permanent manifest sync UI
 on:
   workflow_dispatch:
   push:
-    branches: [production/permanent-fix-20260907]
+    branches: [main]
     paths:
       - '.github/scripts/permanent_manifest_sync_ui.py'
       - '.github/workflows/permanent-manifest-sync-ui.yml'
@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: production/permanent-fix-20260907
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -47,5 +47,5 @@ jobs:
           git add labelonzeway labelonzeway-android/app/src/main/assets/labelonzeway
           if ! git diff --cached --quiet; then
             git commit -m 'Use one manifest store and repair desktop modal navigation'
-            git push origin HEAD:production/permanent-fix-20260907
+            git push origin HEAD:main
           fi
