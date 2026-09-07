@@ -12,6 +12,44 @@
   var DEVICE_KEY = 'lz.cloud.device.v1';
   var WORKSPACE_KEY = 'lz.cloud.workspace.v1';
   var PENDING_KEY = 'lz.cloud.pending.v1';
+  /* LZ_FINAL_MANUAL_LOGIN_LOG_V1 */
+  var LOG_KEY = 'lz.cloud.diaglog.v1';
+  var LOG_MAX = 800;
+  var manualLoginArmed = false;
+  function safeLogDetails(value){
+    try { return JSON.parse(JSON.stringify(value == null ? {} : value, function(k,v){ return /password|token|secret|authorization|anonkey|apikey/i.test(String(k)) ? '[redacted]' : v; })); }
+    catch(e){ return { note: String(value || '') }; }
+  }
+  function readDiagnosticLog(){ return safeParse(localStorage.getItem(LOG_KEY), []); }
+  function diagnosticLog(event, details){
+    var rows = readDiagnosticLog();
+    rows.push({ at: new Date().toISOString(), event: String(event || 'event'), details: safeLogDetails(details) });
+    if(rows.length > LOG_MAX) rows = rows.slice(rows.length - LOG_MAX);
+    localStorage.setItem(LOG_KEY, JSON.stringify(rows));
+    renderDiagnostics();
+  }
+  function diagnosticSnapshot(){
+    return {
+      userEmail: session && session.user ? String(session.user.email || '') : '',
+      workspaceId: workspaceId || '', workspaceName: workspaceName || '',
+      profileId: currentProfileId(), profileSyncId: profileSyncId(currentProfileId()),
+      deviceId: deviceId, pending: workspaceId ? pendingForWorkspace().length : 0, syncing: !!syncing,
+      lastSuccessfulSyncAt: lastSuccessfulSyncAt || '', lastSyncError: lastSyncError || '',
+      online: navigator.onLine !== false
+    };
+  }
+  function renderDiagnostics(){
+    var el = document.getElementById('cloud-diagnostics-text');
+    if(el) el.textContent = JSON.stringify(diagnosticSnapshot(), null, 2);
+  }
+  function exportDiagnosticLog(){
+    var payload = { exportedAt: new Date().toISOString(), snapshot: diagnosticSnapshot(), log: readDiagnosticLog() };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'LabelOnZeWay-sync-log-' + new Date().toISOString().replace(/[:.]/g,'-') + '.json';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url)},1000);
+  }
+  function clearDiagnosticLog(){ localStorage.removeItem(LOG_KEY); diagnosticLog('log-cleared', diagnosticSnapshot()); }
   var BLOCK_PREFIX = 'lz.cloud.order-block.v1.';
   var LOCAL_SHOP_KEYS = [
     'printMode', 'printerIp', 'printerPort', 'bridgeUrl', 'gatewayKey', 'printerDots',
@@ -415,7 +453,7 @@
       });
     }
     return page(0).then(function(rows){
-      applyRemote(rows);
+      applyRemote(rows); diagnosticLog('pull-complete', {rows:rows.length, profileId:profileId, profileSyncId:profileSyncId(profileId)});
       var meta=loadMeta();meta.lastPullByProfile=meta.lastPullByProfile||{};
       if(rows.length)meta.lastPullByProfile[profileId]=rows[rows.length-1].modified_at;
       else if(!meta.lastPullByProfile[profileId])meta.lastPullByProfile[profileId]=new Date().toISOString();
@@ -458,6 +496,7 @@
       });
     }, Promise.resolve()).then(function () {
       if (plan.rejected.length) throw new Error(plan.rejected.length + ' synchronized record' + (plan.rejected.length === 1 ? ' is' : 's are') + ' larger than the 8 MB safety limit and remain safely queued');
+      diagnosticLog('push-complete', {sent:sent, remaining:pendingForWorkspace().length});
       return sent;
     });
   }
@@ -513,6 +552,7 @@ function syncNow(manual) {
     if (syncing) return Promise.resolve(false);
     if (!client || !session || !workspaceId) { if (manual) openPanel(); return Promise.resolve(false); }
     if (navigator.onLine === false) { setStatus('Offline — business changes are safely queued on this device.', 'pending'); return Promise.resolve(false); }
+    diagnosticLog('sync-start', Object.assign({manual:!!manual}, diagnosticSnapshot()));
     syncing = true; setStatus('Synchronizing shared workspace…', 'busy'); updateUI();
     // Pull first so a device that was offline learns remote tombstones before a
     // stale local snapshot can recreate deleted records. Genuine offline edits
@@ -532,12 +572,14 @@ function syncNow(manual) {
         lastSuccessfulSyncAt = new Date().toISOString();
         lastSyncError = '';
         lastResult = lastSuccessfulSyncAt;
+        diagnosticLog('sync-success', diagnosticSnapshot());
         setStatus('Cloud synchronized at ' + new Date(lastSuccessfulSyncAt).toLocaleTimeString(), 'ok');
         return true;
       })
       .catch(function (error) {
         console.warn('LabelOnZeWay cloud sync', error);
         lastSyncError = String(error && error.message || error || 'Unknown cloud error');
+        diagnosticLog('sync-error', Object.assign({error:lastSyncError}, diagnosticSnapshot()));
         setStatus('Cloud sync paused: ' + lastSyncError, 'error');
         return false;
       })
@@ -608,18 +650,28 @@ function readConfig() {
   function connectClient() {
     return loadSupabaseLibrary().then(function (library) {
       client = library.createClient(config.supabaseUrl, config.supabaseAnonKey, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        auth: { persistSession: false, autoRefreshToken: true, detectSessionInUrl: true }
       });
       client.auth.onAuthStateChange(function (event, nextSession) {
-        session = nextSession;
+        if (!manualLoginArmed && !recoveryIntent && event !== 'PASSWORD_RECOVERY') {
+          session = null; stopRealtime(); diagnosticLog('auth-event-ignored', {event:event}); setTimeout(updateUI,0); return;
+        }
+        session = nextSession; diagnosticLog('auth-state', {event:event, signedIn:!!nextSession});
         if (event === 'USER_UPDATED' && suppressPasswordUserUpdatedEvent) { setTimeout(updateUI, 0); return; }
         if (passwordUpdateInProgress) { setTimeout(updateUI, 0); return; }
         if (event === 'PASSWORD_RECOVERY' || (recoveryIntent && nextSession)) { enterPasswordRecovery(nextSession); return; }
         if (passwordFormMode && nextSession) { setTimeout(updateUI, 0); return; }
         setTimeout(function () { if (session) loadWorkspaces(); else { stopRealtime(); updateUI(); } }, 0);
       });
+      if (!recoveryIntent) {
+        session = null; manualLoginArmed = false; stopRealtime();
+        diagnosticLog('cloud-ready-manual-login', diagnosticSnapshot());
+        setStatus('Cloud ready — sign in manually when you want synchronization.', ''); updateUI();
+        return { lzManual: true, data: { session: null } };
+      }
       return client.auth.getSession();
     }).then(function (result) {
+      if (result && result.lzManual) return;
       session = result.data && result.data.session;
       if (session && recoveryIntent) { enterPasswordRecovery(session); return; }
       if (session) return loadWorkspaces();
@@ -643,6 +695,7 @@ function readConfig() {
       if (!workspaces.some(function (item) { return item.id === workspaceId; })) workspaceId = workspaces[0].id;
       workspaceName = (workspaces.find(function (item) { return item.id === workspaceId; }) || workspaces[0]).name;
       localStorage.setItem(WORKSPACE_KEY, workspaceId);
+      diagnosticLog('workspace-ready', diagnosticSnapshot());
       updateUI(); subscribeRealtime();
       /* LZ_STARTUP_PULL_FIRST_V1 */
       return syncNow(false);
@@ -679,6 +732,9 @@ function readConfig() {
       '<div id="cloud-session" style="display:none"><label>WORKSPACE</label><select id="cloud-workspace"></select><div class="cloud-actions"><button class="btn blue" id="cloud-sync-now">↻ SYNC NOW</button><button class="btn" id="cloud-sign-out">SIGN OUT</button></div><button class="btn wide" id="cloud-change-password" style="margin-top:8px">🔐 CHANGE PASSWORD</button></div>' +
       '<button class="btn wide" id="cloud-close" style="margin-top:10px">CLOSE</button><p class="cloud-note">Only the Supabase project URL and public anon/publishable key are stored in the app. Never use a service-role secret here.</p></div>';
     document.body.appendChild(panel);
+    var diag=document.createElement('div'); diag.id='cloud-diagnostics'; diag.innerHTML='<hr style="margin:14px 0;border:0;border-top:1px solid #d7dee4"><h3 style="margin:0 0 6px">SYNC DIAGNOSTICS</h3><pre id="cloud-diagnostics-text" style="white-space:pre-wrap;font:600 10px/1.45 var(--mono);background:#f5f7f9;border:1px solid #d7dee4;border-radius:8px;padding:9px;max-height:220px;overflow:auto"></pre><div class="cloud-actions"><button class="btn blue" id="cloud-sync-test">RUN SYNC TEST</button><button class="btn" id="cloud-export-log">EXPORT LOG</button></div><button class="btn wide" id="cloud-clear-log" style="margin-top:7px">CLEAR SYNC LOG</button>';
+    var closeAnchor=document.getElementById('cloud-close'); closeAnchor.parentNode.insertBefore(diag, closeAnchor);
+    renderDiagnostics();
     document.getElementById('cloud-close').addEventListener('click', closePanel);
     panel.addEventListener('click', function (event) { if (event.target === panel) closePanel(); });
     document.getElementById('cloud-sign-in').addEventListener('click', signIn);
@@ -688,6 +744,13 @@ function readConfig() {
     document.getElementById('cloud-cancel-password').addEventListener('click', cancelPasswordForm);
     document.getElementById('cloud-sign-out').addEventListener('click', signOut);
     document.getElementById('cloud-sync-now').addEventListener('click', function () { syncNow(true); });
+    document.getElementById('cloud-sync-test').addEventListener('click', function(){
+      diagnosticLog('sync-test-start', diagnosticSnapshot());
+      if(!session || !workspaceId){ setStatus('SYNC TEST: sign in manually first.', 'error'); return; }
+      syncNow(true).then(function(ok){ diagnosticLog('sync-test-result', Object.assign({ok:!!ok}, diagnosticSnapshot())); renderDiagnostics(); setStatus(ok ? 'SYNC TEST PASS — push/pull completed on this device.' : 'SYNC TEST FAILED — export the log for review.', ok?'ok':'error'); });
+    });
+    document.getElementById('cloud-export-log').addEventListener('click', exportDiagnosticLog);
+    document.getElementById('cloud-clear-log').addEventListener('click', clearDiagnosticLog);
     document.getElementById('cloud-password').addEventListener('keydown', function (event) { if (event.key === 'Enter') signIn(); });
     document.getElementById('cloud-confirm-password').addEventListener('keydown', function (event) { if (event.key === 'Enter') saveNewPassword(); });
     document.getElementById('cloud-workspace').addEventListener('change', function (event) {
@@ -724,6 +787,7 @@ function readConfig() {
     var select = document.getElementById('cloud-workspace');
     if (select) select.innerHTML = workspaces.map(function (item) { return '<option value="' + item.id + '"' + (item.id === workspaceId ? ' selected' : '') + '>' + escapeHtml(item.name) + ' · ' + escapeHtml(item.role) + '</option>'; }).join('');
     if (lastResult) { var status = document.getElementById('cloud-status'); if (status && status.textContent === 'Checking cloud configuration…') status.textContent = lastResult; }
+    renderDiagnostics();
     if (typeof window.LabelOnZeWayRefreshOperationsDeck === 'function') setTimeout(window.LabelOnZeWayRefreshOperationsDeck, 0);
   }
   function escapeHtml(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -811,15 +875,17 @@ function readConfig() {
     });
   }
   function signIn() {
+    manualLoginArmed = true; diagnosticLog('sign-in-attempt', {email:String((document.getElementById('cloud-email')||{}).value||'').trim()});
     if (!configured() || !client) { setStatus('Cloud is not configured yet. Follow SUPABASE_SETUP.md, then add the project URL and public key.', 'pending'); return; }
     var email = (document.getElementById('cloud-email').value || '').trim(), password = document.getElementById('cloud-password').value || '';
     if (!email || !password) { setStatus('Enter the staff email and password.', 'error'); return; }
     setStatus('Signing in securely…', 'busy');
     client.auth.signInWithPassword({ email: email, password: password }).then(function (result) {
-      if (result.error) throw result.error; session = result.data.session; document.getElementById('cloud-password').value = ''; return loadWorkspaces();
+      if (result.error) throw result.error; session = result.data.session; diagnosticLog('sign-in-success', diagnosticSnapshot()); document.getElementById('cloud-password').value = ''; return loadWorkspaces();
     }).catch(function (error) { setStatus('Sign-in failed: ' + (error.message || error), 'error'); });
   }
   function signOut() {
+    manualLoginArmed = false; diagnosticLog('sign-out-requested', diagnosticSnapshot());
     if (!client) return;
     passwordFormMode = ''; recoveryIntent = false; clearPasswordFields(); clearRecoveryUrl();
     client.auth.signOut().then(function () { session = null; workspaces = []; stopRealtime(); setStatus('Signed out. Local records remain available on this device.', ''); updateUI(); });
@@ -842,7 +908,7 @@ function readConfig() {
   }
 
   function init() {
-    if (initialized) return; initialized = true; injectUI();
+    if (initialized) return; initialized = true; injectUI(); diagnosticLog('app-start', {manualLoginRequired:true, deviceId:deviceId});
     readConfig().then(function (loaded) {
       config = loaded || {};
       if (!configured()) { setStatus('Cloud setup pending. Local/offline mode is active; add Supabase details after running SUPABASE_SETUP.sql.', 'pending'); return; }
@@ -870,6 +936,7 @@ function readConfig() {
   api.isConfigured = configured;
   /* LZ_CLOUD_IDENTITY_STATUS_V1 */
   api.getStatus = function () { return { configured: configured(), signedIn: !!session, userEmail: session && session.user ? String(session.user.email || '') : '', workspaceId: workspaceId, workspaceName: workspaceName, profileId: currentProfileId(), profileSyncId: profileSyncId(currentProfileId()), deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing, lastSuccessfulSyncAt: lastSuccessfulSyncAt, lastSyncError: lastSyncError, verified: !!(session && workspaceId && lastSuccessfulSyncAt && !lastSyncError && pendingForWorkspace().length === 0 && !syncing) }; };
+  api.getDiagnosticLog = readDiagnosticLog; api.exportDiagnosticLog = exportDiagnosticLog; api.clearDiagnosticLog = clearDiagnosticLog;
   window.LabelOnZeWayCloud = api;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
 }());

@@ -1,4 +1,4 @@
-const CACHE = 'labelonzeway-v2.0.1-production-single-store-20260907-1';
+const CACHE = 'labelonzeway-v2.0.1-final-command-sync-20260907-1';
 const APP_SHELL = [
   './',
   './index.html',
