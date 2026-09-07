@@ -1,0 +1,129 @@
+name: Repair V6 Parser Blocker
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/repair-v6-parser-blocker.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Remove malformed obsolete navigation injection
+        run: |
+          cat > /tmp/repair_v6_parser.py <<'PY'
+          from pathlib import Path
+          import re
+          import subprocess
+          import tempfile
+
+          paths = [
+              Path('labelonzeway/index.html'),
+              Path('labelonzeway-android/app/src/main/assets/labelonzeway/index.html'),
+          ]
+
+          # This legacy block predates the V4/V5/V6 navigation. It was injected as
+          # literal backslash+n text. Inside <script> that produces an immediate
+          # browser SyntaxError: Invalid or unexpected token.
+          legacy_style = re.compile(
+              r'\\n<style id="lz-logistics-command-ui-v1">\\n.*?</style>\\n\s*',
+              re.S,
+          )
+          legacy_script = re.compile(
+              r'\\n<script>\\n\(function\(\)\{\\n\s*function byId\(id\)\{return document\.getElementById\(id\)\}.*?</script>\\n\s*',
+              re.S,
+          )
+
+          repaired = []
+          for path in paths:
+              source = path.read_text(encoding='utf-8')
+              source, style_count = legacy_style.subn('', source)
+              source, script_count = legacy_script.subn('', source)
+              if script_count != 1:
+                  raise SystemExit(f'{path}: expected exactly one malformed legacy script, found {script_count}')
+              if style_count > 1:
+                  raise SystemExit(f'{path}: unexpected duplicate malformed legacy styles: {style_count}')
+              path.write_text(source, encoding='utf-8')
+              repaired.append((str(path), style_count, script_count))
+
+          # Validate every inline JavaScript block, not just cloud-sync.js. This is
+          # deliberately stricter than the old V6 gate and catches parser faults
+          # before Playwright or Android compilation.
+          script_re = re.compile(r'<script(?P<attrs>[^>]*)>(?P<body>.*?)</script>', re.S | re.I)
+          for path in paths:
+              source = path.read_text(encoding='utf-8')
+              inline_no = 0
+              for match in script_re.finditer(source):
+                  attrs = match.group('attrs') or ''
+                  if re.search(r'\bsrc\s*=', attrs, re.I):
+                      continue
+                  body = match.group('body')
+                  if not body.strip():
+                      continue
+                  inline_no += 1
+                  with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False, encoding='utf-8') as tmp:
+                      tmp.write(body)
+                      tmp_path = tmp.name
+                  try:
+                      result = subprocess.run(['node', '--check', tmp_path], text=True, capture_output=True)
+                      if result.returncode:
+                          raise SystemExit(
+                              f'{path}: inline script #{inline_no} still fails syntax check\n'
+                              + result.stderr
+                          )
+                  finally:
+                      Path(tmp_path).unlink(missing_ok=True)
+              print(f'{path}: {inline_no} inline scripts parse cleanly')
+
+          print('Repaired:', repaired)
+          PY
+          python3 /tmp/repair_v6_parser.py
+
+      - name: Verify production logic and web Android parity
+        run: |
+          grep -q LZ_REMOTE_AUTHORITATIVE_NO_RECAPTURE_V1 labelonzeway/cloud-sync.js
+          grep -q LZ_SINGLE_MANIFEST_STORE_V1 labelonzeway/cloud-sync.js
+          grep -q LZ_CANONICAL_PROFILE_SYNC_V1 labelonzeway/cloud-sync.js
+          grep -q LZ_FINAL_MANUAL_LOGIN_LOG_V1 labelonzeway/cloud-sync.js
+          cmp labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+          node --check labelonzeway/cloud-sync.js
+
+      - name: Android compile after parser repair
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon assembleDebug
+
+      - name: Commit parser repair
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          if git diff --cached --quiet; then
+            echo 'No parser repair changes to commit.'
+          else
+            git commit -m 'Fix V6 browser parser blocker'
+            git push origin main
+          fi
+
+      - name: Resume V6 production workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-command-dispatch-v6.yml --ref main
