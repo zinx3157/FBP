@@ -1,0 +1,46 @@
+name: Authoritative Remote Sync Production Repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/authoritative-remote-sync-production.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply authoritative remote sync repair
+        run: python .github/scripts/apply_authoritative_remote_sync.py
+      - name: Verify JavaScript syntax
+        run: |
+          node --check labelonzeway/cloud-sync.js
+          node --check labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+      - name: Verify production invariants
+        run: |
+          grep -q 'LZ_REMOTE_AUTHORITATIVE_NO_RECAPTURE_V1' labelonzeway/cloud-sync.js
+          ! grep -A8 'LZ_REMOTE_AUTHORITATIVE_NO_RECAPTURE_V1' labelonzeway/cloud-sync.js | grep -q 'captureProfile(currentProfileId(), false)'
+          cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+          cmp labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+      - name: Commit repaired production runtime
+        run: |
+          if git diff --quiet; then
+            echo 'No runtime changes required'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add labelonzeway/cloud-sync.js labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+          git commit -m 'Stop remote sync from becoming a local mutation'
+          git push origin HEAD:main
