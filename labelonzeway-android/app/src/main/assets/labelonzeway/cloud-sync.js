@@ -563,8 +563,11 @@ function syncNow(manual) {
      * This prevents a stale Mac/Android startup snapshot from being queued with a new
      * timestamp and overwriting the other device before the first pull completes.
      */
+    /* LZ_REMOTE_AUTHORITATIVE_NO_RECAPTURE_V1
+     * A pull is authoritative unless a genuine user-originated mutation is already
+     * queued. Never recapture the just-applied remote state as a fresh local edit.
+     */
     return pullRemote()
-      .then(function () { return captureProfile(currentProfileId(), false); })
       .then(flushPending)
       .then(pullRemote)
       .then(function () { return ensureCounterAndBlock(); })
