@@ -1,0 +1,51 @@
+name: LabelOnZeWay permanent manifest sync UI
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/permanent_manifest_sync_ui.py'
+      - '.github/workflows/permanent-manifest-sync-ui.yml'
+permissions:
+  contents: write
+jobs:
+  repair-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Apply permanent repair
+        run: python .github/scripts/permanent_manifest_sync_ui.py
+      - name: Verify JavaScript and markers
+        run: |
+          node --check labelonzeway/cloud-sync.js
+          grep -q 'LZ_SINGLE_MANIFEST_STORE_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_MANIFEST_RECONCILE_LISTENER_V1' labelonzeway/index.html
+          grep -q 'LZ_DESKTOP_MODAL_SHELL_V1' labelonzeway/index.html
+          grep -q 'LZ_TRACKING_BACK_NAV_V2' labelonzeway/index.html
+          cmp labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+      - name: Compile Android proof
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon clean assembleDebug
+      - name: Commit repaired production runtime
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add labelonzeway labelonzeway-android/app/src/main/assets/labelonzeway
+          if ! git diff --cached --quiet; then
+            git commit -m 'Use one manifest store and repair desktop modal navigation'
+            git push origin HEAD:main
+          fi
