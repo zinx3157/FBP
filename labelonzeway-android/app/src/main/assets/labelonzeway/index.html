@@ -2812,6 +2812,14 @@ var ACTIONS={
   toBatch:toBatch, toggleDone:toggleDone, removeRow:removeRow,
   useAddr:useAddr, delAddr:delAddr, deleteSelectedAddresses:deleteSelectedAddresses, exportArchCSV:exportArchCSV, delArch:delArch
 };
+/* LZ_TRACKING_CLOSE_DIRECT_V1 */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('#m-tracking-view [data-close="m-tracking-view"]');
+  if(b){e.preventDefault();e.stopPropagation();closeModal('m-tracking-view');}
+},true);
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){var m=getEl('m-tracking-view');if(m&&m.classList.contains('open'))closeModal('m-tracking-view');}
+});
 document.addEventListener('click',function(e){
   var closeBtn=e.target.closest('[data-close]');
   if(closeBtn){var closeId=closeBtn.getAttribute('data-close');if(closeId==='m-settings')cancelPrinterDiscovery();closeModal(closeId);return}
@@ -2865,11 +2873,11 @@ init();
 <div class="modal" id="m-tracking-view"><div class="modal-box" style="max-width:980px">
       <!-- LZ_TRACKING_BACK_NAV_V2 -->
       <div class="lz-tracking-sticky-nav" style="position:sticky;top:0;z-index:40;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 0;background:var(--bg,#071923)">
-        <button type="button" data-close="m-tracking-view" class="btn">← BACK TO OPERATIONS</button>
+        <button type="button" data-close="m-tracking-view" class="btn" onclick="closeModal('m-tracking-view')">← BACK TO OPERATIONS</button>
         <strong style="text-align:center">TRACKING VIEW</strong>
-        <button type="button" data-close="m-tracking-view" class="btn">✕ CLOSE</button>
+        <button type="button" data-close="m-tracking-view" class="btn" onclick="closeModal('m-tracking-view')">✕ CLOSE</button>
       </div>
-<div class="modal-head"><div><b>TRACKING VIEW</b><small id="tracking-view-summary">Current profile</small></div><button class="x" data-act="closeModal" data-arg="m-tracking-view">×</button></div><div class="row2" style="margin-bottom:12px"><div><label class="f" for="tracking-view-search">Search</label><input id="tracking-view-search" type="search" placeholder="Order, customer, phone or area"></div><div><label class="f" for="tracking-view-filter">Status</label><select id="tracking-view-filter"><option value="all">All statuses</option><option value="ready">Ready for Dispatch</option><option value="in_transit">In Transit</option><option value="delivered">Delivered</option><option value="exception">Exception</option></select></div></div><div id="tracking-view-rows" class="tracking-view-list"></div></div></div>
+<div class="modal-head"><div><b>TRACKING VIEW</b><small id="tracking-view-summary">Current profile</small></div><button class="x" data-close="m-tracking-view" onclick="closeModal('m-tracking-view')" aria-label="Close tracking view">×</button></div><div class="row2" style="margin-bottom:12px"><div><label class="f" for="tracking-view-search">Search</label><input id="tracking-view-search" type="search" placeholder="Order, customer, phone or area"></div><div><label class="f" for="tracking-view-filter">Status</label><select id="tracking-view-filter"><option value="all">All statuses</option><option value="ready">Ready for Dispatch</option><option value="in_transit">In Transit</option><option value="delivered">Delivered</option><option value="exception">Exception</option></select></div></div><div id="tracking-view-rows" class="tracking-view-list"></div></div></div>
 <style>#m-tracking-view .modal-box{width:min(980px,96vw);max-height:90vh;overflow:auto}.tracking-view-list{display:grid;gap:8px}.tracking-view-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(150px,.7fr) auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:9px;padding:10px;background:#0d1a24}.tracking-view-row small{display:block;margin-top:3px;color:#8da5a1}.tracking-view-actions{display:flex;gap:7px;flex-wrap:wrap}.delivery-badge{display:inline-block;border:1px solid currentColor;border-radius:999px;padding:4px 8px;font-weight:800}.delivery-badge.ready{color:#63d9ef}.delivery-badge.in_transit{color:#f3bd68}.delivery-badge.delivered{color:#54dfa8}.delivery-badge.exception{color:#ff8278}@media(max-width:700px){.tracking-view-row{grid-template-columns:1fr}.tracking-view-actions .btn{flex:1}.row2{grid-template-columns:1fr!important}}</style>
 
 <style id="label-vault-nav-v1">
