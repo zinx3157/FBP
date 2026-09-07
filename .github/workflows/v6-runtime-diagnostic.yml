@@ -1,0 +1,19 @@
+name: Diagnose V6 runtime syntax
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/v6-runtime-diagnostic.yml']
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm -g install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install chromium >/dev/null 2>&1
+          python3 -m http.server 8099 >/tmp/http.log 2>&1 &
+          cat >/tmp/diag.js <<'JS'
+          const {chromium}=require('playwright');
+          (async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage({viewport:{width:1440,height:900}});p.on('pageerror',e=>console.log('PAGEERROR',e.name,e.message,e.stack));p.on('console',m=>{if(m.type()==='error')console.log('CONSOLE',m.text())});await p.goto('http://127.0.0.1:8099/labelonzeway/',{waitUntil:'load'});await p.waitForTimeout(1500);console.log('URL',p.url());await b.close()})()
+          JS
+          NODE_PATH=$(npm root -g) node /tmp/diag.js
