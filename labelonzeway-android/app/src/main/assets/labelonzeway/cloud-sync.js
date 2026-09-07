@@ -89,7 +89,7 @@
     var idempotencyKey = String(job.idempotency_key || (deviceId + '-' + Date.now() + '-' + Math.random().toString(36).slice(2))).slice(0, 160);
     var row = {
       workspace_id: workspaceId,
-      profile_id: currentProfileId(),
+      profile_id: profileSyncId(currentProfileId()),
       created_by: session.user.id,
       source_device: deviceId,
       printer_ip: String(job.printer_ip || '192.168.100.73'),
@@ -115,6 +115,23 @@
   }
   function currentProfileId() {
     return typeof window.PID === 'string' && window.PID ? window.PID : (localStorage.getItem(PROFILE_KEY) || 'P1');
+  }
+  /* LZ_CANONICAL_PROFILE_SYNC_V1 */
+  function normalizedProfileName(profileId) {
+    var profile = currentProfiles().find(function (item) { return item && String(item.id) === String(profileId); });
+    var name = String(profile && profile.name || profileId || 'P1').trim().toLowerCase().replace(/\s+/g, ' ');
+    return name || 'p1';
+  }
+  function profileSyncId(profileId) {
+    var name = normalizedProfileName(profileId), hash = 2166136261;
+    for (var i = 0; i < name.length; i++) { hash ^= name.charCodeAt(i); hash = Math.imul(hash, 16777619); }
+    return 'ps_' + (hash >>> 0).toString(16).padStart(8, '0');
+  }
+  function localProfileIdForSync(syncId) {
+    var current = currentProfileId();
+    if (String(syncId) === profileSyncId(current)) return current;
+    var match = currentProfiles().find(function (item) { return item && profileSyncId(item.id) === String(syncId); });
+    return match ? match.id : syncId;
   }
   function profileKey(profileId, suffix) { return profileId + '.' + suffix; }
   function storageValue(profileId, suffix, fallback) {
@@ -152,6 +169,7 @@
       (shop && shop.name && shop.name !== 'YOUR PAGE NAME' && shop.name !== 'Company 1');
   }
   function profileSnapshot(profileId) {
+    var syncProfileId = profileSyncId(profileId);
     var active = profileId === currentProfileId() && window.state;
     var shop = active ? window.state.shop : storageValue(profileId, 'shop', {});
     var customers = active ? window.state.addr : storageValue(profileId, 'addr', []);
@@ -162,22 +180,22 @@
     var counterDate = active ? (window.state.counterDate || '') : storageValue(profileId, 'ctrDate', '');
     var entities = [];
     currentProfiles().forEach(function (profile) {
-      entities.push({ profile_id: profile.id, entity_type: 'profile', entity_id: profile.id, payload: { id: profile.id, name: profile.name || profile.id } });
+      var cloudId = profileSyncId(profile.id); entities.push({ profile_id: cloudId, entity_type: 'profile', entity_id: cloudId, payload: { id: cloudId, name: profile.name || profile.id } });
     });
-    entities.push({ profile_id: profileId, entity_type: 'profile_settings', entity_id: profileId, payload: safeShop(shop) });
+    entities.push({ profile_id: syncProfileId, entity_type: 'profile_settings', entity_id: profileId, payload: safeShop(shop) });
     (Array.isArray(customers) ? customers : []).forEach(function (record) {
-      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'customer', entity_id: String(record.id), payload: record });
+      if (record && record.id) entities.push({ profile_id: syncProfileId, entity_type: 'customer', entity_id: String(record.id), payload: record });
     });
     (Array.isArray(parcels) ? parcels : []).forEach(function (record) {
-      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'parcel_active', entity_id: String(record.id), payload: withoutPhotos(record) });
+      if (record && record.id) entities.push({ profile_id: syncProfileId, entity_type: 'parcel_active', entity_id: String(record.id), payload: withoutPhotos(record) });
     });
     (Array.isArray(archives) ? archives : []).forEach(function (record) {
-      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'archive_day', entity_id: String(record.id), payload: withoutPhotos(record) });
+      if (record && record.id) entities.push({ profile_id: syncProfileId, entity_type: 'archive_day', entity_id: String(record.id), payload: withoutPhotos(record) });
     });
     (Array.isArray(labels) ? labels : []).forEach(function (record) {
-      if (record && record.id) entities.push({ profile_id: profileId, entity_type: 'label_copy', entity_id: String(record.id), payload: withoutPhotos(record) });
+      if (record && record.id) entities.push({ profile_id: syncProfileId, entity_type: 'label_copy', entity_id: String(record.id), payload: withoutPhotos(record) });
     });
-    entities.push({ profile_id: profileId, entity_type: 'counter_state', entity_id: profileId, payload: { date: String(counterDate || ''), value: Math.max(0, Number(counter) || 0) } });
+    entities.push({ profile_id: syncProfileId, entity_type: 'counter_state', entity_id: profileId, payload: { date: String(counterDate || ''), value: Math.max(0, Number(counter) || 0) } });
     return entities;
   }
   function metaKey() { return 'lz.cloud.meta.v1.' + workspaceId; }
@@ -198,7 +216,7 @@
     },0);
   }
   function localEntityPresent(record) {
-    var pid=record.profile_id, id=String(record.entity_id||'');
+    var pid=localProfileIdForSync(record.profile_id), id=String(record.entity_id||'');
     if(record.entity_type==='profile') return currentProfiles().some(function(p){return String(p.id)===id});
     if(record.entity_type==='profile_settings') return profileSettingsScore(storageValue(pid,'shop',{}))>0;
     if(record.entity_type==='counter_state') return localStorage.getItem(profileKey(pid,'ctr'))!==null;
@@ -230,12 +248,13 @@
   function captureProfile(profileId, force) {
     if (suppressCapture || !workspaceId) return Promise.resolve(false);
     profileId = profileId || currentProfileId();
+    var syncProfile = profileSyncId(profileId);
     var meta = loadMeta(), pending = loadPending(), seen = {}, changed = false;
     var snapshot = profileSnapshot(profileId);
     var localCustomerCount = snapshot.filter(function (entity) { return entity.profile_id === profileId && entity.entity_type === 'customer'; }).length;
     var knownActiveCustomerCount = Object.keys(meta.items).filter(function (key) {
       var parts = key.split('|'), info = meta.items[key];
-      return parts[0] === profileId && parts[1] === 'customer' && info && !info.deleted;
+      return parts[0] === syncProfile && parts[1] === 'customer' && info && !info.deleted;
     }).length;
     // A missing/cleared localStorage value must never become a mass cloud delete
     // merely because stale sync metadata survived. Explicit customer deletion uses
@@ -258,7 +277,7 @@
       var info = meta.items[key], parts = key.split('|');
       if (parts.length < 3 || seen[key] || info.deleted) return;
       var itemProfile = parts[0], type = parts[1], id = parts.slice(2).join('|');
-      var inScope = (type === 'profile') || (itemProfile === profileId && SYNC_TYPES.indexOf(type) >= 0);
+      var inScope = (type === 'profile') || (itemProfile === syncProfile && SYNC_TYPES.indexOf(type) >= 0);
       // Claim copies are append-only during normal capture. Missing local storage,
       // an older backup, archive deletion, or a second app must never tombstone them.
       // Only the explicit full-profile reset may delete synchronized claim copies.
@@ -276,9 +295,10 @@
   function markEntityDeleted(entityType, entityId, profileId) {
     profileId = profileId || currentProfileId();
     if (!workspaceId || SYNC_TYPES.indexOf(entityType) < 0 || !entityId) return Promise.resolve(false);
-    var meta = loadMeta(), pending = loadPending(), key = profileId + '|' + entityType + '|' + String(entityId);
+    var syncProfile = profileSyncId(profileId);
+    var meta = loadMeta(), pending = loadPending(), key = syncProfile + '|' + entityType + '|' + String(entityId);
     var previous = meta.items[key], modified = timestampAfter(previous && previous.modified_at);
-    var mutation = { workspace_id: workspaceId, profile_id: profileId, entity_type: entityType, entity_id: String(entityId), payload: {}, modified_at: modified, deleted_at: modified, device_id: deviceId };
+    var mutation = { workspace_id: workspaceId, profile_id: syncProfile, entity_type: entityType, entity_id: String(entityId), payload: {}, modified_at: modified, deleted_at: modified, device_id: deviceId };
     pending[entityKey(mutation)] = mutation;
     meta.items[key] = { fingerprint: fingerprint({}, true), modified_at: modified, deleted: true, device_id: deviceId };
     saveMeta(meta); savePending(pending); setStatus('Deletion saved offline; cloud sync pending.', 'pending');
@@ -305,11 +325,11 @@
   }
   function applyRemote(records) {
     if (!Array.isArray(records) || !workspaceId) return false;
-    var profileId = currentProfileId(), meta = loadMeta(), pending = loadPending(), changed = false;
+    var profileId = currentProfileId(), syncProfile = profileSyncId(profileId), meta = loadMeta(), pending = loadPending(), changed = false;
     suppressCapture = true;
     try {
       records.sort(function (a, b) { return String(a.modified_at).localeCompare(String(b.modified_at)); }).forEach(function (record) {
-        if (record.entity_type !== 'profile' && record.profile_id !== profileId) return;
+        if (record.entity_type !== 'profile' && record.profile_id !== syncProfile) return;
         var key = localEntityKey(record), remoteTime = String(record.modified_at || ''), remoteDevice = String(record.device_id || ''), localInfo = meta.items[key];
         var queued = pending[entityKey(record)];
         if (queued) {
@@ -317,21 +337,24 @@
           if (queuedTime > remoteTime || (queuedTime === remoteTime && queuedDevice >= remoteDevice)) return;
         }
         var localPresent = localEntityPresent(record);
-        var remoteProfileMoreComplete = record.entity_type === 'profile_settings' && profileSettingsScore(record.payload || {}) > profileSettingsScore(storageValue(record.profile_id, 'shop', {}));
+        var remoteProfileMoreComplete = record.entity_type === 'profile_settings' && profileSettingsScore(record.payload || {}) > profileSettingsScore(storageValue(localProfileIdForSync(record.profile_id), 'shop', {}));
         if (localInfo && localPresent && !remoteProfileMoreComplete) {
           var localTime = String(localInfo.modified_at || ''), localDevice = String(localInfo.device_id || '');
           if (localTime > remoteTime || (localTime === remoteTime && localDevice >= remoteDevice)) return;
         }
         var deleted = !!record.deleted_at;
         if (record.entity_type === 'profile') {
-          var profiles = currentProfiles().slice(), at = profiles.findIndex(function (item) { return item.id === record.entity_id; });
-          if (deleted) { if (at >= 0 && record.entity_id !== profileId) profiles.splice(at, 1); }
-          else if (at >= 0) profiles[at] = record.payload; else profiles.push(record.payload);
+          var profiles = currentProfiles().slice(), remoteName = String(record.payload && record.payload.name || '').trim();
+          var normalizedRemoteName = remoteName.toLowerCase().replace(/\s+/g, ' ');
+          var at = profiles.findIndex(function (item) { return item.id === record.entity_id || (normalizedRemoteName && String(item && item.name || '').trim().toLowerCase().replace(/\s+/g, ' ') === normalizedRemoteName); });
+          if (deleted) { if (at >= 0 && profiles[at].id !== profileId) profiles.splice(at, 1); }
+          else if (at >= 0) profiles[at] = Object.assign({}, record.payload || {}, { id: profiles[at].id, name: remoteName || profiles[at].name });
+          else profiles.push(record.payload);
           window.PROFILES = profiles;
           localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
           if (typeof window.renderProfileSel === 'function') window.renderProfileSel();
           changed = true;
-        } else if (record.profile_id === profileId && window.state) {
+        } else if (record.profile_id === syncProfile && window.state) {
           if (record.entity_type === 'profile_settings') {
             var localOnly = {};
             LOCAL_SHOP_KEYS.forEach(function (localKey) {
@@ -449,7 +472,7 @@ function ensureCounterAndBlock() {
   var profileId = currentProfileId(), dateKey = dailyDateKey(new Date());
   if (window.state && String(window.state.counterDate || '') !== dateKey) { window.state.counter = 0; window.state.counterDate = dateKey; localStorage.setItem(profileKey(profileId, 'ctr'), '0'); localStorage.setItem(profileKey(profileId, 'ctrDate'), JSON.stringify(dateKey)); }
   var counter = window.state ? Math.max(0, Number(window.state.counter) || 0) : 0;
-  return client.rpc('ensure_daily_order_counter_at_least', { p_workspace_id: workspaceId, p_profile_id: profileId, p_counter_date: dateKey, p_minimum: counter })
+  return client.rpc('ensure_daily_order_counter_at_least', { p_workspace_id: workspaceId, p_profile_id: profileSyncId(profileId), p_counter_date: dateKey, p_minimum: counter })
     .then(function (result) { if (result.error) throw result.error; return reserveOrderBlock(profileId, false, dateKey); });
 }
 function reserveOrderBlock(profileId, force, dateKey) {
@@ -457,7 +480,7 @@ function reserveOrderBlock(profileId, force, dateKey) {
   dateKey = dateKey || dailyDateKey(new Date());
   var key = BLOCK_PREFIX + workspaceId + '.' + profileId + '.' + dateKey, block = safeParse(localStorage.getItem(key), null);
   if (!force && block && Number(block.next) <= Number(block.end) && Number(block.end) - Number(block.next) >= 4) return Promise.resolve(block);
-  return client.rpc('reserve_daily_order_numbers', { p_workspace_id: workspaceId, p_profile_id: profileId, p_counter_date: dateKey, p_block_size: 25 }).then(function (result) {
+  return client.rpc('reserve_daily_order_numbers', { p_workspace_id: workspaceId, p_profile_id: profileSyncId(profileId), p_counter_date: dateKey, p_block_size: 25 }).then(function (result) {
     if (result.error) throw result.error;
     var row = Array.isArray(result.data) ? result.data[0] : result.data;
     if (!row) throw new Error('No daily order-number block returned');
@@ -841,7 +864,7 @@ function readConfig() {
   api.publicTrackingBase = publicTrackingBase;
   api.isConfigured = configured;
   /* LZ_CLOUD_IDENTITY_STATUS_V1 */
-  api.getStatus = function () { return { configured: configured(), signedIn: !!session, userEmail: session && session.user ? String(session.user.email || '') : '', workspaceId: workspaceId, workspaceName: workspaceName, profileId: currentProfileId(), deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing, lastSuccessfulSyncAt: lastSuccessfulSyncAt, lastSyncError: lastSyncError, verified: !!(session && workspaceId && lastSuccessfulSyncAt && !lastSyncError && pendingForWorkspace().length === 0 && !syncing) }; };
+  api.getStatus = function () { return { configured: configured(), signedIn: !!session, userEmail: session && session.user ? String(session.user.email || '') : '', workspaceId: workspaceId, workspaceName: workspaceName, profileId: currentProfileId(), profileSyncId: profileSyncId(currentProfileId()), deviceId: deviceId, pending: pendingForWorkspace().length, syncing: syncing, lastSuccessfulSyncAt: lastSuccessfulSyncAt, lastSyncError: lastSyncError, verified: !!(session && workspaceId && lastSuccessfulSyncAt && !lastSyncError && pendingForWorkspace().length === 0 && !syncing) }; };
   window.LabelOnZeWayCloud = api;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
 }());
