@@ -55,13 +55,12 @@ jobs:
           /* LZ_OPERATIONS_BOARD_DISPATCH_V4_NAV */
           (function(){
             function cards(){return Array.prototype.slice.call(document.querySelectorAll('#app > .card'))}
-            function match(words){var cs=cards();return cs.filter(function(c){var t=((c.id||'')+' '+(c.querySelector('.card-head h2')||{}).textContent).toLowerCase();return words.some(function(w){return t.indexOf(w)>=0})})}
+            function match(words){var cs=cards();return cs.filter(function(c){var h=c.querySelector('.card-head h2');var t=((c.id||'')+' '+(h?h.textContent:'')).toLowerCase();return words.some(function(w){return t.indexOf(w)>=0})})}
             var groups={home:['manifest','operations','stats'],label:['parcel','label','customer'],manifest:['manifest','batch'],tracking:['tracking'],more:['address','archive','recon','setting','profile','cloud','diagnostic']};
             function targets(name){var a=match(groups[name]||[]);if(name==='home'&&!a.length)a=cards().slice(0,2);if(name==='label'&&!a.length)a=cards().slice(0,3);if(name==='more'&&!a.length)a=cards().slice(-3);return a}
-            function activate(name,scroll){var mobile=window.matchMedia('(max-width:900px)').matches;document.querySelectorAll('[data-lz-nav]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-lz-nav')===name)});if(mobile){document.body.classList.add('lz-mobile-focus');cards().forEach(function(c){c.classList.remove('lz-mobile-visible')});var ts=targets(name);ts.forEach(function(c){c.classList.add('lz-mobile-visible')});if(scroll)window.scrollTo({top:0,behavior:'smooth'})}else{document.body.classList.remove('lz-mobile-focus');cards().forEach(function(c){c.classList.remove('lz-mobile-visible')});var t=targets(name)[0];if(t&&scroll)t.scrollIntoView({behavior:'smooth',block:'start'})}}
+            function activate(name,scroll){var mobile=window.matchMedia('(max-width:900px)').matches;document.querySelectorAll('[data-lz-nav]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-lz-nav')===name)});if(mobile){document.body.classList.add('lz-mobile-focus');cards().forEach(function(c){c.classList.remove('lz-mobile-visible')});targets(name).forEach(function(c){c.classList.add('lz-mobile-visible')});if(scroll)window.scrollTo({top:0,behavior:'smooth'})}else{document.body.classList.remove('lz-mobile-focus');cards().forEach(function(c){c.classList.remove('lz-mobile-visible')});var t=targets(name)[0];if(t&&scroll)t.scrollIntoView({behavior:'smooth',block:'start'})}}
             function btn(name,icon,label){var b=document.createElement('button');b.type='button';b.setAttribute('data-lz-nav',name);b.innerHTML='<span>'+icon+'</span>'+label;b.onclick=function(){activate(name,true)};return b}
-            function build(){if(document.querySelector('.lz-mobile-nav'))return;var rail=document.createElement('nav');rail.className='lz-command-rail';rail.setAttribute('aria-label','Operations navigation');rail.innerHTML='<div class="lz-rail-brand">LabelOn<b>ZeWay</b></div>';[['home','⌂','OPERATIONS'],['label','＋','NEW LABEL'],['manifest','▤','MANIFEST'],['tracking','⌖','TRACKING'],['more','•••','TOOLS']].forEach(function(x){rail.appendChild(btn(x[0],x[1],x[2]))});var sp=document.createElement('div');sp.className='lz-rail-spacer';rail.appendChild(sp);var st=document.createElement('div');st.className='lz-rail-state';st.textContent='PRODUCTION · V2.0.1';rail.appendChild(st);document.body.appendChild(rail);
-              var mob=document.createElement('nav');mob.className='lz-mobile-nav';mob.setAttribute('aria-label','Dispatch navigation');[['home','⌂','Home'],['label','＋','Label'],['manifest','▤','Manifest'],['tracking','⌖','Tracking'],['more','•••','More']].forEach(function(x){mob.appendChild(btn(x[0],x[1],x[2]))});document.body.appendChild(mob);activate(window.matchMedia('(max-width:900px)').matches?'home':'manifest',false)}
+            function build(){if(document.querySelector('.lz-mobile-nav'))return;var rail=document.createElement('nav');rail.className='lz-command-rail';rail.setAttribute('aria-label','Operations navigation');rail.innerHTML='<div class="lz-rail-brand">LabelOn<b>ZeWay</b></div>';[['home','⌂','OPERATIONS'],['label','＋','NEW LABEL'],['manifest','▤','MANIFEST'],['tracking','⌖','TRACKING'],['more','•••','TOOLS']].forEach(function(x){rail.appendChild(btn(x[0],x[1],x[2]))});var sp=document.createElement('div');sp.className='lz-rail-spacer';rail.appendChild(sp);var st=document.createElement('div');st.className='lz-rail-state';st.textContent='PRODUCTION · V2.0.1';rail.appendChild(st);document.body.appendChild(rail);var mob=document.createElement('nav');mob.className='lz-mobile-nav';mob.setAttribute('aria-label','Dispatch navigation');[['home','⌂','Home'],['label','＋','Label'],['manifest','▤','Manifest'],['tracking','⌖','Tracking'],['more','•••','More']].forEach(function(x){mob.appendChild(btn(x[0],x[1],x[2]))});document.body.appendChild(mob);activate(window.matchMedia('(max-width:900px)').matches?'home':'manifest',false)}
             if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
             window.addEventListener('resize',function(){activate(window.matchMedia('(max-width:900px)').matches?'home':'manifest',false)});
           })();
@@ -69,11 +68,9 @@ jobs:
           for p in files:
             s=p.read_text()
             if marker in s: continue
-            # preserve all application/data/sync JS; inject presentation shell only
             s=s.replace('</head>',css+'\n</head>',1)
             s=s.replace('</body>',js+'\n</body>',1)
             p.write_text(s)
-          # bump cache without touching cloud-sync
           for p in [Path('labelonzeway/service-worker.js'),Path('labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js')]:
             s=p.read_text();s=s.replace('labelonzeway-v2.0.1-design-v3-20260907','labelonzeway-v2.0.1-operations-v4-20260907');p.write_text(s)
           PY
@@ -82,7 +79,10 @@ jobs:
         run: |
           grep -q 'LZ_OPERATIONS_BOARD_DISPATCH_V4' labelonzeway/index.html
           grep -q 'LZ_REMOTE_AUTHORITATIVE_NO_RECAPTURE_V1' labelonzeway/cloud-sync.js
-          grep -q 'LZ_SINGLE_MANIFEST_STORE_V1' labelonzeway/index.html
+          grep -q 'LZ_SINGLE_MANIFEST_STORE_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_MANIFEST_RECONCILE_LISTENER_V1' labelonzeway/index.html
+          grep -q 'LZ_CANONICAL_PROFILE_SYNC_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_FINAL_MANUAL_LOGIN_LOG_V1' labelonzeway/cloud-sync.js
           grep -q "else setTimeout(function(){openCustomerConfirmation(row.id)},350)" labelonzeway/index.html
           cmp labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
           cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
@@ -95,7 +95,7 @@ jobs:
           python3 -m http.server 8099 >/tmp/lz-http.log 2>&1 &
           cat > /tmp/test.js <<'JS'
           const {chromium}=require('playwright');
-          (async()=>{const b=await chromium.launch({headless:true});for(const [name,w,h] of [['mac',1440,900],['iphone',390,844],['android',412,915]]){const p=await b.newPage({viewport:{width:w,height:h}});let errors=[];p.on('pageerror',e=>errors.push(String(e)));await p.goto('http://127.0.0.1:8099/labelonzeway/',{waitUntil:'domcontentloaded'});await p.waitForTimeout(1000);const r=await p.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth+2,nav:document.querySelectorAll('[data-lz-nav]').length,clipped:[...document.querySelectorAll('button:visible')].filter(x=>{let r=x.getBoundingClientRect();return r.right>innerWidth+2||r.left<-2}).length}));if(r.overflow||r.nav<5||r.clipped)throw Error(name+JSON.stringify(r));console.log(name,r,'pageErrors',errors.length);await p.close()}await b.close()})().catch(e=>{console.error(e);process.exit(1)});
+          (async()=>{const b=await chromium.launch({headless:true});for(const [name,w,h] of [['mac',1440,900],['iphone',390,844],['android',412,915]]){const p=await b.newPage({viewport:{width:w,height:h}});let errors=[];p.on('pageerror',e=>errors.push(String(e)));await p.goto('http://127.0.0.1:8099/labelonzeway/',{waitUntil:'domcontentloaded'});await p.waitForTimeout(1000);const r=await p.evaluate(()=>{const controls=[...document.querySelectorAll('button,input,select,textarea,a')].filter(x=>{const s=getComputedStyle(x),r=x.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>0&&r.height>0});return {overflow:document.documentElement.scrollWidth>innerWidth+2,nav:document.querySelectorAll('[data-lz-nav]').length,clipped:controls.filter(x=>{let r=x.getBoundingClientRect();return r.right>innerWidth+2||r.left<-2}).length}});if(r.overflow||r.nav<5||r.clipped)throw Error(name+JSON.stringify(r));console.log(name,r,'pageErrors',errors.length);await p.close()}await b.close()})().catch(e=>{console.error(e);process.exit(1)});
           JS
           NODE_PATH=$(npm root -g) node /tmp/test.js
       - name: Compile Android debug proof
