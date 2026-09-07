@@ -1,0 +1,137 @@
+name: LabelOnZeWay Design V3 Production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/design-v3-production.yml
+
+permissions:
+  contents: write
+
+jobs:
+  design-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Apply Mac dark + mobile light design
+        run: |
+          cat > /tmp/design.css <<'CSS'
+          /* LZ_OPERATIONS_BOARD_NEON_DISPATCH_V3 */
+          :root{--lz-teal:#08b9b2;--lz-cyan:#39d8d1;--lz-navy:#07131d;--lz-surface:#0d1d29;--lz-soft:#f4f7f8;--lz-mobile-ink:#102337}
+          @media screen and (min-width:901px){
+            body{background:linear-gradient(145deg,#06111a,#0b1c28 55%,#07131d)!important;color:#dcebf2!important}
+            #top{background:rgba(5,15,23,.97)!important;border-bottom:1px solid rgba(57,216,209,.22)!important;box-shadow:0 10px 30px rgba(0,0,0,.25)!important}
+            .brand .logo{background:linear-gradient(135deg,var(--lz-cyan),var(--lz-teal))!important;color:#052029!important;box-shadow:0 0 24px rgba(57,216,209,.28)!important}
+            .brand h1 em,.chip b{color:var(--lz-cyan)!important}
+            .hzd{height:3px!important;background:linear-gradient(90deg,transparent,var(--lz-teal),transparent)!important}
+            #app{max-width:1540px!important;gap:16px!important;padding:18px!important;grid-template-columns:minmax(330px,1.05fr) minmax(360px,1.25fr) minmax(280px,.8fr)!important}
+            .card{background:linear-gradient(180deg,rgba(17,36,49,.98),rgba(10,27,39,.98))!important;color:#e5f1f5!important;border:1px solid rgba(92,147,166,.28)!important;border-radius:16px!important;box-shadow:0 16px 40px rgba(0,0,0,.22)!important}
+            .card-head h2{color:#f1fbfd!important}.card-head h2::before{background:var(--lz-teal)!important;border-color:var(--lz-cyan)!important;border-radius:4px!important}.card-head .hint,label.f{color:#8fa9b7!important}
+            input[type=text],input[type=search],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{background:#102635!important;color:#eef9fb!important;border-color:#294858!important}
+            input:focus,select:focus,textarea:focus{border-color:var(--lz-cyan)!important;box-shadow:0 0 0 3px rgba(57,216,209,.12)!important}
+            .btn{border:1px solid #315362!important;box-shadow:none!important;border-radius:10px!important}.btn.orange,.btn.green,.btn.blue{background:linear-gradient(135deg,#08a9a3,#087f8d)!important;color:white!important}.btn.dark{background:#07131d!important}.btn:not(.orange):not(.green):not(.blue):not(.dark){background:#142b39!important;color:#eaf6f8!important}
+            .batch-toolbar,.photo-tools,.customer-link,.brow,.ab-item{background:#102532!important;border-color:#294958!important;color:#e9f5f7!important}
+            .batch-bar{background:#071821!important;border-color:#24505b!important}.status-pill,.pill{box-shadow:none!important}
+          }
+          @media screen and (max-width:900px){
+            :root{--ink:#102337!important;--paper:#f1f5f6!important;--card:#ffffff!important;--orange:#08a9a3!important;--blue:#176d91!important;--green:#168a67!important;--line:#dce5e8!important}
+            html,body{overflow-x:hidden!important;max-width:100vw!important}
+            body{background:linear-gradient(180deg,#f8fbfb,#eef4f5)!important;color:var(--lz-mobile-ink)!important;padding-bottom:calc(76px + env(safe-area-inset-bottom))!important}
+            #top{position:sticky!important;top:0!important;z-index:80!important;background:rgba(255,255,255,.96)!important;color:#102337!important;padding:calc(9px + env(safe-area-inset-top)) 12px 9px!important;border-bottom:1px solid #dce8ea!important;box-shadow:0 5px 18px rgba(16,35,55,.06)!important}
+            .brand .logo{width:32px!important;height:32px!important;font-size:18px!important;background:linear-gradient(135deg,#4fe1d8,#0ab7b0)!important;color:#06313a!important}.brand h1{font-size:15px!important}.brand h1 em{color:#087f8d!important}.brand small{display:none!important}.chips{gap:5px!important}.chip{background:#f1f7f7!important;color:#284858!important;border-color:#d7e5e7!important;padding:5px 7px!important;font-size:9px!important}.chip b{color:#087f8d!important}.btn-ghost{color:#17384a!important;border-color:#c9dadd!important;padding:7px 9px!important}
+            .hzd{display:none!important}#app{display:block!important;width:100%!important;max-width:100%!important;padding:10px!important}.card{width:100%!important;max-width:100%!important;margin:0 0 10px!important;padding:14px!important;border:1px solid #e0e8ea!important;border-radius:16px!important;background:rgba(255,255,255,.96)!important;box-shadow:0 5px 18px rgba(25,55,70,.07)!important;overflow:hidden!important}.card-head{margin-bottom:10px!important}.card-head h2{font-size:13px!important}.card-head h2::before{background:#0ab7b0!important;border-color:#0ab7b0!important;border-radius:4px!important}.card-head .hint{font-size:9px!important;color:#738995!important}
+            input[type=text],input[type=search],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{min-height:44px!important;background:#fbfdfd!important;border:1px solid #d7e2e5!important;border-radius:11px!important;font-size:16px!important}.row2{grid-template-columns:1fr!important;gap:4px!important}.btn,.btn-ghost,.mini-btn{min-height:44px!important;box-shadow:none!important;border-radius:11px!important}.btn.orange,.btn.green,.btn.blue{background:linear-gradient(135deg,#0ab7b0,#078b99)!important;border-color:#078b99!important}.btn.dark{background:#102337!important}.batch-primary-actions{grid-template-columns:1fr 1fr!important;gap:7px!important}.batch-toolbar{padding:9px!important}.batch-customer-all{grid-template-columns:1fr!important}.batch-customer-all label{grid-column:auto!important}.batch-options{gap:10px!important}.brow{display:block!important;padding:10px!important}.b-thumb{width:48px!important;height:48px!important;float:left!important;margin:0 9px 6px 0!important}.b-grid{clear:both!important;grid-template-columns:1fr 1fr!important;gap:7px!important}.b-actions{grid-column:1/-1!important;display:grid!important;grid-template-columns:1fr 1fr!important}.b-actions .btn{font-size:11px!important;white-space:normal!important}.ab-item{padding:10px!important}.modal .box,.modal-box{width:calc(100vw - 20px)!important;max-width:calc(100vw - 20px)!important;max-height:calc(100vh - 30px)!important;overflow:auto!important;border-radius:16px!important}
+            table{font-size:11px!important}#manifest-wrap,.table-wrap{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}.mobile-only{display:flex!important}
+          }
+          @media screen and (max-width:430px){.chips .chip.clock{display:none!important}.brand{gap:7px!important}.batch-primary-actions{grid-template-columns:1fr!important}.b-grid{grid-template-columns:1fr!important}.b-actions{grid-column:auto!important}.card{padding:12px!important}#app{padding:8px!important}}
+          CSS
+          python3 - <<'PY'
+          from pathlib import Path
+          marker='LZ_OPERATIONS_BOARD_NEON_DISPATCH_V3'
+          css=Path('/tmp/design.css').read_text()
+          for p in [Path('labelonzeway/index.html'),Path('labelonzeway-android/app/src/main/assets/labelonzeway/index.html')]:
+              s=p.read_text()
+              if marker not in s:
+                  s=s.replace('</head>', '<style id="lz-design-v3">\n'+css+'\n</style>\n</head>')
+              p.write_text(s)
+          # cache bust while preserving sync logic
+          for p in [Path('labelonzeway/service-worker.js'),Path('labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js')]:
+              s=p.read_text()
+              import re
+              s=re.sub(r"const CACHE = '[^']+';", "const CACHE = 'labelonzeway-v2.0.1-design-v3-20260907';", s, count=1)
+              p.write_text(s)
+          PY
+
+      - name: Static functional integrity tests
+        run: |
+          node --check labelonzeway/cloud-sync.js
+          grep -q 'LZ_OPERATIONS_BOARD_NEON_DISPATCH_V3' labelonzeway/index.html
+          grep -q 'LZ_REMOTE_AUTHORITATIVE_NO_RECAPTURE_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_SINGLE_MANIFEST_STORE_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_CANONICAL_PROFILE_SYNC_V1' labelonzeway/cloud-sync.js
+          grep -q 'LZ_TRACKING_BACK_NAV_V2' labelonzeway/index.html
+          grep -q 'LZ_FINAL_MANUAL_LOGIN_LOG_V1' labelonzeway/cloud-sync.js
+          cmp labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+          cmp labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('labelonzeway/index.html').read_text()
+          buttons=re.findall(r'<button\b[^>]*>',s,re.I)
+          bad=[b for b in buttons if not re.search(r'(onclick=|id=|type=)',b,re.I)]
+          print('Buttons found:',len(buttons),'unwired candidates:',len(bad))
+          if bad: print('\n'.join(bad[:20]))
+          assert len(buttons)>20
+          assert 'max-width:100vw' in s and 'overflow-x:hidden' in s
+          PY
+
+      - name: Browser overlap and control visibility tests
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install chromium --with-deps >/dev/null 2>&1
+          python3 -m http.server 8080 --directory . >/tmp/lz-http.log 2>&1 &
+          cat > /tmp/ui-test.js <<'JS'
+          const { chromium } = require(process.cwd()+'/node_modules/playwright');
+          (async()=>{const browser=await chromium.launch({headless:true});
+          for(const vp of [{name:'mac',width:1440,height:900},{name:'iphone',width:390,height:844},{name:'android',width:412,height:915}]){
+            const page=await browser.newPage({viewport:{width:vp.width,height:vp.height}});
+            const errors=[]; page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto('http://127.0.0.1:8080/labelonzeway/',{waitUntil:'domcontentloaded'}); await page.waitForTimeout(1200);
+            const report=await page.evaluate(()=>{const els=[...document.querySelectorAll('button,input,select,textarea,a')].filter(e=>{const s=getComputedStyle(e),r=e.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>0&&r.height>0}); const overflow=document.documentElement.scrollWidth>document.documentElement.clientWidth+2; const clipped=els.filter(e=>{const r=e.getBoundingClientRect();return r.right>innerWidth+3||r.left<-3}).map(e=>e.id||e.textContent.trim().slice(0,40)); return {controls:els.length,overflow,clipped};});
+            console.log(vp.name,report,'pageErrors',errors.length); if(report.overflow||report.clipped.length) throw new Error(vp.name+' overlap/overflow '+JSON.stringify(report)); if(report.controls<10) throw new Error(vp.name+' controls missing'); await page.close();}
+          await browser.close();})();
+          JS
+          node /tmp/ui-test.js
+
+      - name: Compile Android proof
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon assembleDebug
+
+      - name: Commit tested design runtime
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add labelonzeway/index.html labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+          if ! git diff --cached --quiet; then
+            git commit -m 'Deploy Operations Board and light Neon Dispatch responsive design'
+            git push origin HEAD:main
+          fi
