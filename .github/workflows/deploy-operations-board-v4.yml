@@ -98,11 +98,19 @@ jobs:
           (async()=>{const b=await chromium.launch({headless:true});for(const [name,w,h] of [['mac',1440,900],['iphone',390,844],['android',412,915]]){const p=await b.newPage({viewport:{width:w,height:h}});let errors=[];p.on('pageerror',e=>errors.push(String(e)));await p.goto('http://127.0.0.1:8099/labelonzeway/',{waitUntil:'domcontentloaded'});await p.waitForTimeout(1000);const r=await p.evaluate(()=>{const controls=[...document.querySelectorAll('button,input,select,textarea,a')].filter(x=>{const s=getComputedStyle(x),r=x.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>0&&r.height>0});return {overflow:document.documentElement.scrollWidth>innerWidth+2,nav:document.querySelectorAll('[data-lz-nav]').length,clipped:controls.filter(x=>{let r=x.getBoundingClientRect();return r.right>innerWidth+2||r.left<-2}).length}});if(r.overflow||r.nav<5||r.clipped)throw Error(name+JSON.stringify(r));console.log(name,r,'pageErrors',errors.length);await p.close()}await b.close()})().catch(e=>{console.error(e);process.exit(1)});
           JS
           NODE_PATH=$(npm root -g) node /tmp/test.js
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
       - name: Compile Android debug proof
         run: |
-          chmod +x labelonzeway-android/gradlew || true
           cd labelonzeway-android
-          ./gradlew --no-daemon assembleDebug
+          gradle --no-daemon assembleDebug
       - name: Commit production V4
         run: |
           git config user.name github-actions[bot]
