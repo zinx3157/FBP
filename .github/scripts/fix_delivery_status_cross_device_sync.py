@@ -67,3 +67,4 @@ for rel in ["index.html", "cloud-sync.js", "sync-config.json", "service-worker.j
 print("PASS: delivery-status changes now force immediate capture + pull-first cloud sync")
 print("PASS: automatic notification modal removed from status change; notify remains explicit")
 print("PASS: web/android production runtime parity")
+# workflow trigger: 2026-09-07 production repair
