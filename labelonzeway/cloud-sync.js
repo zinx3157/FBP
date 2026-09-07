@@ -391,10 +391,11 @@
         meta.items[key] = { fingerprint: fingerprint(record.payload, deleted), modified_at: remoteTime, deleted: deleted, device_id: record.device_id || '' };
       });
       saveMeta(meta);
-      if (changed) refreshApp();
+      if (changed) { refreshApp(); try { window.dispatchEvent(new CustomEvent('lz:manifest-updated',{detail:{source:'cloud'}})); } catch(e) {} }
     } finally { suppressCapture = false; }
     return changed;
   }
+  /* LZ_SINGLE_MANIFEST_STORE_V1 */
   function refreshApp() {
     ['applyCurrency', 'applyLabelLen', 'rebuildRecSelect', 'renderManifest', 'renderStats', 'renderPreview', 'renderBatch', 'renderLabelVault', 'updateLabelVaultCount', 'renderProfileSel'].forEach(function (name) {
       try { if (typeof window[name] === 'function') window[name](); } catch (e) { console.warn('Cloud refresh ' + name, e); }

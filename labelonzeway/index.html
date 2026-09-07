@@ -346,6 +346,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 
   #m-settings .settings-sticky-nav .btn:last-child{grid-column:2;grid-row:2;justify-self:end}
 }
 
+
+/* LZ_DESKTOP_MODAL_SHELL_V1 */
+@media (min-width: 760px){
+  .modal.open{overflow:hidden!important;padding:24px!important;align-items:center!important;justify-content:center!important}
+  .modal.open>.modal-box{width:min(1180px,calc(100vw - 48px))!important;max-width:1180px!important;height:min(820px,calc(100vh - 48px))!important;max-height:calc(100vh - 48px)!important;overflow:auto!important;position:relative!important}
+  .lz-tracking-sticky-nav,.settings-sticky-nav,.label-vault-sticky-nav{position:sticky!important;top:0!important;z-index:80!important}
+}
+
 </style>
 <style id="pgLabel" disabled>@page{size:72mm auto;margin:0}</style>
 <style id="pgMan" disabled>@page{size:80mm auto;margin:0}</style>
@@ -1127,6 +1135,13 @@ function recordConfirmationOpened(row,channel){row.confirmations=Array.isArray(r
 function sendConfirmationWhatsApp(){var row=confirmationRow(),m=getEl('confirmation-message');if(!row||!m)return;var digits=confirmationPhoneDigits(row);recordConfirmationOpened(row,'whatsapp');window.open('https://wa.me/'+encodeURIComponent(digits)+'?text='+encodeURIComponent(m.value),'_blank','noopener');var s=getEl('confirmation-status');if(s){s.textContent='WhatsApp opened · confirmation marked as prepared';s.className='printer-status ok'}}
 function sendConfirmationSMS(){var row=confirmationRow(),m=getEl('confirmation-message');if(!row||!m)return;var digits=confirmationPhoneDigits(row),ios=/iPad|iPhone|iPod/.test(navigator.userAgent),sep=ios?'&':'?';recordConfirmationOpened(row,'sms');window.location.href='sms:+'+digits+sep+'body='+encodeURIComponent(m.value);var s=getEl('confirmation-status');if(s){s.textContent='Messages opened · confirmation marked as prepared';s.className='printer-status ok'}}
 function copyConfirmationMessage(){var m=getEl('confirmation-message');if(!m)return;var copied=function(){toast('Confirmation message copied','ok')};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(m.value).then(copied).catch(function(){m.select();document.execCommand('copy');copied()});else{m.select();document.execCommand('copy');copied()}}
+/* LZ_MANIFEST_RECONCILE_LISTENER_V1 */
+window.addEventListener('lz:manifest-updated',function(){
+  try{renderManifest()}catch(e){}
+  try{renderStats()}catch(e){}
+  try{renderOperationsDeck()}catch(e){}
+  try{renderTrackingView()}catch(e){}
+});
 function renderTrackingView(){
   ensureTrackingRecords();var host=getEl('tracking-view-rows'),summary=getEl('tracking-view-summary');if(!host)return;
   var q=String(val('tracking-view-search','')||'').trim().toLowerCase(),filter=String(val('tracking-view-filter','all')||'all');
