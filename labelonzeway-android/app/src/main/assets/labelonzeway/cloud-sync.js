@@ -22,6 +22,10 @@
   var PUSH_BATCH_BYTES = 4 * 1024 * 1024;
   var MAX_MUTATION_BYTES = 8 * 1024 * 1024;
   var api = {};
+  /* LZ_SYNC_WATCHDOG_V2 */
+  var syncWatchdog = null;
+  function armSyncWatchdog(){ clearTimeout(syncWatchdog); syncWatchdog=setTimeout(function(){ if(syncing){ syncing=false; lastSyncError=lastSyncError||'Synchronization timed out'; updateUI(); } },30000); }
+  function disarmSyncWatchdog(){ clearTimeout(syncWatchdog); syncWatchdog=null; }
   var config = null;
   var client = null;
   var session = null;
@@ -251,7 +255,7 @@
     var syncProfile = profileSyncId(profileId);
     var meta = loadMeta(), pending = loadPending(), seen = {}, changed = false;
     var snapshot = profileSnapshot(profileId);
-    var localCustomerCount = snapshot.filter(function (entity) { return entity.profile_id === profileId && entity.entity_type === 'customer'; }).length;
+    var localCustomerCount = snapshot.filter(function (entity) { return entity.profile_id === syncProfile && entity.entity_type === 'customer'; }).length;
     var knownActiveCustomerCount = Object.keys(meta.items).filter(function (key) {
       var parts = key.split('|'), info = meta.items[key];
       return parts[0] === syncProfile && parts[1] === 'customer' && info && !info.deleted;
@@ -536,7 +540,7 @@ function syncNow(manual) {
         setStatus('Cloud sync paused: ' + lastSyncError, 'error');
         return false;
       })
-      .finally(function () { syncing = false; updateUI(); });
+      .finally(function () { syncing = false; disarmSyncWatchdog(); updateUI(); });
   }
 
   function loadSupabaseLibrary() {
