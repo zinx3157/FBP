@@ -1,0 +1,56 @@
+name: Fix LabelOnZeWay canonical profile sync
+
+on:
+  push:
+    paths:
+      - '.github/scripts/fix_profile_sync_identity.py'
+      - '.github/workflows/fix-labelonzeway-profile-sync-identity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Apply canonical profile sync repair
+        run: python .github/scripts/fix_profile_sync_identity.py
+      - name: Verify JavaScript syntax and markers
+        run: |
+          node --check labelonzeway/cloud-sync.js
+          grep -q 'LZ_CANONICAL_PROFILE_SYNC_V1' labelonzeway/cloud-sync.js
+          cmp labelonzeway/cloud-sync.js labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
+          cmp labelonzeway/service-worker.js labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+      - name: Compile Android proof build
+        working-directory: labelonzeway-android
+        run: gradle --no-daemon clean assembleDebug
+      - name: Commit repaired production runtime
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add labelonzeway/cloud-sync.js labelonzeway/service-worker.js \
+              labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js \
+              labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+            git commit -m 'Fix cross-device sync for device-specific company profile IDs'
+            git push
+          fi
+      - name: Upload Android proof APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-Canonical-Profile-Sync-Debug-Proof
+          path: labelonzeway-android/app/build/outputs/apk/debug/*.apk
