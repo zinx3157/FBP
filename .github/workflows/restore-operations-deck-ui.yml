@@ -11,57 +11,46 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
-      - name: Restore approved Operations Deck and repair customer names
+      - name: Restore approved Operations Deck UI
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
-
           targets=[
             Path('labelonzeway/index.html'),
             Path('labelonzeway-android/app/src/main/assets/labelonzeway/index.html')
           ]
           for p in targets:
               s=p.read_text()
-              # The synthetic V6 dashboard/rail hid the richer production Operations Deck.
+              # Remove the rejected synthetic V6 command/dashboard shell when present.
               s,n1=re.subn(r'\n?<style id="lz-command-v6">.*?</style>\n?', '\n', s, count=1, flags=re.S)
               s,n2=re.subn(r'\n?<script id="lz-command-v6-js">.*?</script>\n?', '\n', s, count=1, flags=re.S)
-              # This offset existed only for the removed V6 fixed rail.
               s,_=re.subn(r'\n?<style id="lz-v6-modal-overlap-fix">.*?</style>\n?', '\n', s, count=1, flags=re.S)
-              if n1 != 1 or n2 != 1:
-                  raise SystemExit(f'{p}: expected one V6 style/script, got style={n1}, script={n2}')
-              # Required markers from the approved richer Operations Deck must remain.
+              # Idempotent: after a successful prior restore, zero removals are valid.
+              if (n1,n2) not in ((1,1),(0,0)):
+                  raise SystemExit(f'{p}: inconsistent V6 shell state style={n1}, script={n2}')
               for marker in ('ops-home-title','ops-recent-list','Ready to dispatch.'):
                   if marker not in s:
                       raise SystemExit(f'{p}: missing approved Operations Deck marker {marker}')
               p.write_text(s)
-
-          # Repair the V6 generator's customer lookup as a safeguard if that workflow is ever run again.
-          wf=Path('.github/workflows/deploy-command-dispatch-v6.yml')
-          w=wf.read_text()
-          old="name=String(r.name||r.customer||r.recipient||'Customer')"
-          new="name=String((r.rec&&r.rec.name)||r.name||r.customer||r.recipient||'—')"
-          if old in w:
-              w=w.replace(old,new,1)
-          elif new not in w:
-              raise SystemExit('V6 generator customer-name anchor not found')
-          # Also harden the dashboard metric source against an undeclared global fallback.
-          w=w.replace("window.state?.manifest||state?.manifest||[]","window.state?.manifest||[]")
-          wf.write_text(w)
-
-          # Force installed/PWA clients to fetch the restored UI instead of keeping the V6 shell cached.
+          # Force web/PWA and Android embedded web assets to refresh the approved UI.
           for p in [Path('labelonzeway/service-worker.js'),Path('labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js')]:
               s=p.read_text()
-              s=re.sub(r"const CACHE = '[^']+';", "const CACHE = 'labelonzeway-v2.0.1-opsdeck-restored-20260908';", s, count=1)
+              s=re.sub(r"const CACHE = '[^']+';", "const CACHE = 'labelonzeway-v2.0.1-opsdeck-restored-20260908b';", s, count=1)
               p.write_text(s)
           PY
-      - name: Validate every inline JavaScript block
+      - name: Validate customer-name source and inline JavaScript
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re, subprocess, tempfile
           for p in [Path('labelonzeway/index.html'),Path('labelonzeway-android/app/src/main/assets/labelonzeway/index.html')]:
               text=p.read_text()
+              if 'ops-recent-list' not in text:
+                  raise SystemExit(f'{p}: Operations Deck missing')
+              # Real manifest customer records are read from r.rec.name in the production views.
+              if 'rec.name' not in text:
+                  raise SystemExit(f'{p}: rec.name customer source missing')
               scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', text, re.S|re.I)
               if not scripts: raise SystemExit(f'{p}: no inline scripts found')
               for i,src in enumerate(scripts,1):
@@ -85,8 +74,10 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add labelonzeway/index.html labelonzeway/service-worker.js \
                   labelonzeway-android/app/src/main/assets/labelonzeway/index.html \
-                  labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js \
-                  .github/workflows/deploy-command-dispatch-v6.yml
-          git diff --cached --quiet && exit 0
-          git commit -m 'Restore approved Operations Deck UI and repair customer names'
+                  labelonzeway-android/app/src/main/assets/labelonzeway/service-worker.js
+          if git diff --cached --quiet; then
+            echo 'Approved Operations Deck already restored; nothing to commit.'
+            exit 0
+          fi
+          git commit -m 'Restore approved Operations Deck UI in production'
           git push
