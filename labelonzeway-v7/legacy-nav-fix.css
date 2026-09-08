@@ -1,0 +1,14 @@
+/* V7 owns navigation. Legacy Operations Board navigation must never capture pointer/touch input. */
+.lz-command-rail,
+.lz-mobile-nav,
+[data-lz-shell="rail"],
+[data-lz-shell="mobile-nav"]{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* Keep the V7 shell/navigation above the production engine without invisible hit layers. */
+#v7-shell,#v7-rail,.v7-nav,.v7-nav button{
+  pointer-events:auto!important;
+}
