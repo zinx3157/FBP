@@ -1,0 +1,69 @@
+name: Fix V6 Desktop Modal Overlap
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fix-v6-desktop-modal-overlap.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix desktop modal/sidebar overlap and preserve mobile fullscreen
+        shell: python
+        run: |
+          from pathlib import Path
+          targets=[
+            Path('labelonzeway/index.html'),
+            Path('labelonzeway-android/app/src/main/assets/labelonzeway/index.html')
+          ]
+          patch='''\n<style id="lz-v6-modal-overlap-fix">/* LZ_V6_MODAL_OVERLAP_FIX */
+          @media screen and (min-width:901px){
+            .modal{left:222px!important;width:calc(100vw - 222px)!important;padding:16px 20px!important;z-index:210!important}
+            .modal-box{max-width:calc(100vw - 262px)!important;margin:0 auto!important}
+            #m-settings .modal-box{width:min(1060px,100%)!important;max-height:calc(100dvh - 32px)!important}
+            #m-settings .row2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+            #m-settings input,#m-settings select,#m-settings textarea{min-width:0!important}
+          }
+          @media screen and (max-width:900px){
+            .modal{left:0!important;width:100vw!important;padding:10px!important}
+            .modal-box{max-width:100%!important}
+          }
+          </style>\n'''
+          for p in targets:
+            s=p.read_text()
+            if 'LZ_V6_MODAL_OVERLAP_FIX' not in s:
+              if '</head>' not in s: raise SystemExit(f'missing </head> in {p}')
+              s=s.replace('</head>',patch+'</head>',1)
+              p.write_text(s)
+          # parity
+          a=targets[0].read_bytes(); b=targets[1].read_bytes()
+          if a!=b: raise SystemExit('web/android index parity failed')
+      - name: Validate inline JavaScript
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile, os
+          for p in [Path('labelonzeway/index.html'),Path('labelonzeway-android/app/src/main/assets/labelonzeway/index.html')]:
+            s=p.read_text()
+            scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I)
+            for i,js in enumerate(scripts):
+              if not js.strip(): continue
+              f=tempfile.NamedTemporaryFile('w',suffix='.js',delete=False); f.write(js); f.close()
+              r=subprocess.run(['node','--check',f.name],capture_output=True,text=True)
+              os.unlink(f.name)
+              if r.returncode: raise SystemExit(f'{p} inline script {i}: {r.stderr}')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add labelonzeway/index.html labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
+          git commit -m 'Fix V6 desktop modal overlap with command rail'
+          git push
