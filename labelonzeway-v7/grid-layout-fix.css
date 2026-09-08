@@ -1,0 +1,47 @@
+/* V7 desktop workbench grid correction — 2026-09-08 */
+@media (min-width:1181px){
+  #app{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  .v7-label-grid{
+    width:100%!important;
+    max-width:none!important;
+    grid-template-columns:minmax(0,27fr) minmax(0,43fr) minmax(0,30fr)!important;
+    column-gap:18px!important;
+    row-gap:18px!important;
+    align-items:start!important;
+  }
+
+  .v7-label-grid>.v7-customer-panel,
+  .v7-label-grid>#card-parcel,
+  .v7-label-grid>#card-preview{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+  }
+
+  /* Keep the shorter side panels present while the taller details form scrolls. */
+  .v7-label-grid>.v7-customer-panel,
+  .v7-label-grid>#card-preview{
+    position:sticky!important;
+    top:104px!important;
+    align-self:start!important;
+  }
+
+  /* Prevent legacy widths from constraining the centre workbench. */
+  #card-parcel,
+  #card-preview,
+  #card-parcel .card-body,
+  #card-preview .card-body{
+    max-width:none!important;
+  }
+}
+
+@media (min-width:1600px){
+  .v7-label-grid{
+    grid-template-columns:minmax(300px,27fr) minmax(500px,43fr) minmax(340px,30fr)!important;
+    column-gap:20px!important;
+  }
+}
