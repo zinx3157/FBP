@@ -1,0 +1,35 @@
+/* V7 thermal preview spacing correction — desktop only */
+@media (min-width:901px){
+  #card-preview{
+    height:auto!important;
+    min-height:0!important;
+    align-self:start!important;
+  }
+  #card-preview .card-body{
+    height:auto!important;
+    min-height:0!important;
+    padding-bottom:14px!important;
+  }
+  #card-preview .pv-frame{
+    display:flex!important;
+    justify-content:center!important;
+    align-items:flex-start!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:10px!important;
+    overflow:visible!important;
+  }
+  #card-preview .pv-scale{
+    margin:0 auto!important;
+    transform-origin:top center!important;
+  }
+  #card-preview .pv-badge{
+    margin-bottom:8px!important;
+  }
+  #card-preview .pv-frame + *,
+  #card-preview .print-note,
+  #card-preview .hint{
+    margin-top:10px!important;
+  }
+}
