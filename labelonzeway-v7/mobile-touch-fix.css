@@ -1,0 +1,11 @@
+@media (max-width:900px){
+  #v7-shell{z-index:1900!important;pointer-events:auto!important}
+  #v7-rail{z-index:2000!important;pointer-events:auto!important;isolation:isolate!important}
+  #v7-rail *,.v7-step,.v7-new,#v7-manifest-toggle{pointer-events:auto!important}
+  #v7-rail button,.v7-step,.v7-new,#v7-manifest-toggle,.btn,.btn-ghost,.mini-btn,button,select,input{touch-action:manipulation!important;-webkit-tap-highlight-color:transparent}
+  #v7-rail button{position:relative!important;z-index:2!important;cursor:pointer!important}
+  #v7-rail::before,#v7-rail::after{pointer-events:none!important}
+  #app{position:relative!important;z-index:1!important}
+  .modal{z-index:3000!important}
+  .modal-box{pointer-events:auto!important}
+}
