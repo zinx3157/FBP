@@ -1,0 +1,124 @@
+name: Build LabelOnZeWay V7 Full Redesign
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/build-labelonzeway-v7.yml']
+permissions:
+  contents: write
+jobs:
+  build-v7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create isolated V7 preview from production engine
+        run: |
+          rm -rf labelonzeway-v7
+          cp -R labelonzeway labelonzeway-v7
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('labelonzeway-v7/index.html')
+          s=p.read_text()
+          css=r'''
+<style id="lz-v7-complete-redesign">
+:root{--v7-bg:#eef2f0;--v7-paper:#ffffff;--v7-ink:#15201d;--v7-muted:#6e7975;--v7-line:#d8dfdc;--v7-accent:#ff5c35;--v7-accent-2:#0d5d51;--v7-dark:#12221f;--v7-soft:#f6f8f7;--v7-good:#197861;--v7-warn:#b56a16;--v7-danger:#a93c32;--v7-r:18px}
+html,body{background:var(--v7-bg)!important;color:var(--v7-ink)!important;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+body{margin:0!important;min-height:100vh!important;padding:0 0 42px!important}
+#top,#mobile-nav,#mobile-context,.v5-shell,.v5-mobile-nav,.stitch-nav,.ops-side{display:none!important}
+#app{max-width:1540px!important;margin:0 auto!important;padding:118px 30px 36px 260px!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:20px!important;box-sizing:border-box!important}
+#app>.card{background:var(--v7-paper)!important;border:1px solid var(--v7-line)!important;border-radius:var(--v7-r)!important;box-shadow:0 18px 50px rgba(25,45,39,.08)!important;padding:24px!important;color:var(--v7-ink)!important;min-width:0!important}
+.card-head{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:16px!important;border:0!important;padding:0 0 18px!important;margin:0 0 20px!important;border-bottom:1px solid var(--v7-line)!important}
+.card-head h2{font-size:21px!important;line-height:1.15!important;letter-spacing:-.03em!important;color:var(--v7-ink)!important;margin:0!important;font-weight:780!important}
+.card-head .hint,.hint{font-size:11px!important;color:var(--v7-muted)!important;letter-spacing:.02em!important}
+input,select,textarea{background:var(--v7-soft)!important;color:var(--v7-ink)!important;border:1px solid #cdd7d3!important;border-radius:12px!important;min-height:46px!important;padding:0 13px!important;box-shadow:none!important;outline:none!important}
+textarea{padding:12px 13px!important}
+input:focus,select:focus,textarea:focus{border-color:var(--v7-accent-2)!important;box-shadow:0 0 0 3px rgba(13,93,81,.09)!important}
+button,.btn,.btn-ghost,.mini-btn{border-radius:12px!important;min-height:42px!important;font-weight:750!important;letter-spacing:0!important;box-shadow:none!important}
+.btn.primary,.btn-main,.primary,[data-act="startNewLabel"]{background:var(--v7-accent)!important;border-color:var(--v7-accent)!important;color:white!important}
+.btn:not(.primary),.btn-ghost,.mini-btn{background:#fff!important;color:var(--v7-ink)!important;border:1px solid var(--v7-line)!important}
+.table-wrap,.manifest-table-wrap{border:1px solid var(--v7-line)!important;border-radius:14px!important;overflow:auto!important;background:white!important}
+table{border-collapse:separate!important;border-spacing:0!important;width:100%!important}th{background:#f2f5f3!important;color:#64706c!important;font-size:10px!important;text-transform:uppercase!important;letter-spacing:.06em!important;padding:13px!important;border-bottom:1px solid var(--v7-line)!important}td{padding:14px 13px!important;border-bottom:1px solid #edf1ef!important;color:var(--v7-ink)!important}
+.modal{background:rgba(16,29,26,.45)!important;backdrop-filter:blur(10px)!important;padding:24px!important;z-index:1000!important}.modal-box{background:#fff!important;border:1px solid rgba(255,255,255,.8)!important;border-radius:22px!important;box-shadow:0 34px 100px rgba(7,23,19,.26)!important;color:var(--v7-ink)!important;max-width:min(1080px,calc(100vw - 48px))!important}
+#drop,.dropzone,.photo-drop{background:#f7f8f7!important;border:1px dashed #b8c5c0!important;border-radius:16px!important}
+.customer-link{border-radius:15px!important;background:#f8faf9!important;border:1px solid var(--v7-line)!important;padding:15px!important}.customer-link-k{color:var(--v7-muted)!important}.step-dot{background:var(--v7-accent-2)!important;color:#fff!important}
+.badge,.status-badge,.delivery-badge{border-radius:999px!important;font-size:10px!important;font-weight:800!important;padding:5px 9px!important}.delivery-badge.delivered{background:#e3f4ed!important;color:var(--v7-good)!important}.delivery-badge.in_transit{background:#e7eff7!important;color:#315f8e!important}.delivery-badge.exception{background:#fae8e5!important;color:var(--v7-danger)!important}
+#card-home{padding:0!important;overflow:hidden!important;background:transparent!important;border:0!important;box-shadow:none!important}.ops-shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:18px!important}.ops-side{display:none!important}.ops-hero{background:var(--v7-dark)!important;border-radius:26px!important;padding:34px!important;min-height:245px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important;color:white!important;box-shadow:none!important}.ops-overline{color:#a9bbb5!important;font-size:11px!important;text-transform:uppercase!important;letter-spacing:.12em!important}.ops-title{font-size:46px!important;line-height:.98!important;letter-spacing:-.055em!important;color:#fff!important;max-width:780px!important;margin:10px 0 12px!important}.ops-sub{color:#b8c6c1!important;max-width:700px!important;font-size:14px!important;line-height:1.55!important}.ops-primary-actions{display:flex!important;gap:10px!important;flex-wrap:wrap!important}.ops-primary-actions .ops-action{background:white!important;color:var(--v7-ink)!important;border:0!important;border-radius:14px!important;padding:14px 16px!important;box-shadow:none!important}.ops-primary-actions .ops-action.primary{background:var(--v7-accent)!important;color:#fff!important}.ops-primary-actions .ops-action-icon{display:none!important}
+.ops-kpis{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:12px!important;margin:0!important}.ops-kpi{background:#fff!important;border:1px solid var(--v7-line)!important;border-radius:17px!important;padding:18px!important}.ops-kpi small{color:var(--v7-muted)!important;font-size:10px!important;text-transform:uppercase!important;letter-spacing:.07em!important}.ops-kpi b{display:block!important;font-size:28px!important;color:var(--v7-ink)!important;margin-top:6px!important}
+.ops-panel{background:#fff!important;border:1px solid var(--v7-line)!important;border-radius:18px!important;padding:20px!important}.ops-panel-head{border-bottom:1px solid var(--v7-line)!important;padding-bottom:14px!important;margin-bottom:6px!important}.ops-recent-row{border-color:#edf1ef!important;padding:14px 3px!important}.ops-order,.oid{color:var(--v7-accent-2)!important}.ops-money{color:var(--v7-ink)!important}.local-notice,.customer-status{background:#fff6ef!important;border:1px solid #f0d9cc!important;color:#84513b!important;border-radius:13px!important}
+#v7-shell{position:fixed;inset:0 0 auto 0;height:88px;background:rgba(238,242,240,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(188,201,196,.7);z-index:700;display:flex;align-items:center;padding:0 30px 0 26px;box-sizing:border-box}.v7-brand{display:flex;align-items:center;gap:12px;width:232px}.v7-mark{width:38px;height:38px;border-radius:12px;background:var(--v7-dark);color:#fff;display:grid;place-items:center;font-weight:900;font-size:12px;letter-spacing:-.03em}.v7-word{font-size:16px;font-weight:850;letter-spacing:-.04em}.v7-word span{color:var(--v7-accent)}.v7-context{flex:1}.v7-context small{display:block;color:var(--v7-muted);font-size:10px;text-transform:uppercase;letter-spacing:.11em}.v7-context b{font-size:15px}.v7-tools{display:flex;align-items:center;gap:9px}.v7-sync{font-size:11px;color:var(--v7-good);font-weight:750;background:#e7f3ef;border:1px solid #cfE5de;padding:8px 11px;border-radius:999px}.v7-new{border:0!important;background:var(--v7-accent)!important;color:#fff!important;padding:0 16px!important}
+#v7-rail{position:fixed;left:0;top:88px;bottom:0;width:228px;padding:20px 14px 28px;background:var(--v7-bg);z-index:650;box-sizing:border-box}.v7-nav{display:grid;gap:5px}.v7-nav button{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;justify-content:flex-start!important;border:0!important;background:transparent!important;color:#53605c!important;padding:0 12px!important;min-height:46px!important;border-radius:13px!important;font-size:12px!important}.v7-nav button:hover,.v7-nav button.active{background:#fff!important;color:var(--v7-ink)!important;box-shadow:0 4px 16px rgba(28,49,43,.06)!important}.v7-nav .ico{width:24px;height:24px;border-radius:8px;background:#dde5e2;display:grid;place-items:center;font-size:11px}.v7-nav button.active .ico{background:var(--v7-dark);color:#fff}.v7-foot{position:absolute;bottom:24px;left:20px;right:20px;border-top:1px solid #d7dfdc;padding-top:15px;font-size:10px;color:var(--v7-muted);line-height:1.5}
+.v7-page-title{display:none}
+body.v7-focus #app>.card{display:none!important}body.v7-focus #app>.card.v7-active{display:block!important}body.v7-focus #card-home.v7-active{display:block!important}
+@media(max-width:900px){body{padding-bottom:82px!important}#v7-shell{height:68px;padding:0 14px}.v7-brand{width:auto}.v7-word{display:none}.v7-context{padding-left:10px}.v7-context small{font-size:8px}.v7-context b{font-size:12px}.v7-sync{display:none}.v7-new{min-height:40px!important;font-size:10px!important;padding:0 12px!important}#v7-rail{left:8px;right:8px;top:auto;bottom:8px;width:auto;height:62px;padding:5px;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid var(--v7-line);border-radius:17px;box-shadow:0 15px 45px rgba(18,34,31,.16)}.v7-nav{grid-template-columns:repeat(5,1fr);gap:2px}.v7-nav button{display:grid!important;place-items:center!important;min-height:50px!important;padding:3px!important;font-size:8px!important;gap:2px!important}.v7-nav .ico{width:24px;height:22px}.v7-nav button:nth-child(n+6){display:none!important}.v7-foot{display:none}#app{padding:84px 10px 16px!important;display:block!important}#app>.card{border-radius:16px!important;padding:16px!important;margin:0 0 10px!important}.ops-hero{border-radius:20px!important;padding:24px 20px!important;min-height:220px!important}.ops-title{font-size:34px!important}.ops-kpis{grid-template-columns:repeat(2,1fr)!important}.ops-primary-actions{display:grid!important;grid-template-columns:1fr 1fr!important}.row2,.b-grid,.batch-primary-actions{grid-template-columns:1fr!important}.modal{padding:10px!important}.modal-box{max-width:100%!important;border-radius:18px!important}input,select,textarea{font-size:16px!important}.v7-page-title{display:block;margin:0 0 12px;padding:0 4px;font-size:22px;font-weight:850;letter-spacing:-.04em}}
+</style>
+'''
+          js=r'''
+<script id="lz-v7-complete-redesign-js">
+(function(){
+  const views=[
+    ['home','Home','⌂','card-home'],['label','New label','＋','card-parcel'],['manifest','Manifest','▤','card-manifest'],['batch','Batch','▦','card-batch'],['more','More','•••','card-more'],['tracking','Tracking','⌖','action:openTrackingDashboard'],['customers','Customers','◎','action:openAddressBook'],['archive','Archive','▣','action:openArch'],['settings','Settings','⚙','action:openSettings']
+  ];
+  function clickAction(name){const b=document.querySelector(`[data-act="${name}"]`); if(b){b.click();return true} return false}
+  function focus(view){
+    const item=views.find(v=>v[0]===view); if(!item)return;
+    document.querySelectorAll('.v7-nav button').forEach(b=>b.classList.toggle('active',b.dataset.v7===view));
+    document.getElementById('v7-current').textContent=item[1];
+    if(String(item[3]).startsWith('action:')){clickAction(item[3].slice(7));return}
+    document.body.classList.add('v7-focus');
+    document.querySelectorAll('#app>.card').forEach(c=>c.classList.remove('v7-active'));
+    const card=document.getElementById(item[3]); if(card)card.classList.add('v7-active');
+    scrollTo({top:0,behavior:'smooth'});
+  }
+  function createShell(){
+    if(document.getElementById('v7-shell'))return;
+    const top=document.createElement('header'); top.id='v7-shell';
+    top.innerHTML='<div class="v7-brand"><div class="v7-mark">LZ</div><div class="v7-word">LabelOn<span>ZeWay</span></div></div><div class="v7-context"><small>Operations workspace</small><b id="v7-current">Home</b></div><div class="v7-tools"><div class="v7-sync">● cloud connected</div><button class="v7-new" type="button">Create label</button></div>';
+    document.body.appendChild(top); top.querySelector('.v7-new').onclick=()=>{if(!clickAction('startNewLabel'))focus('label')};
+    const rail=document.createElement('aside'); rail.id='v7-rail'; rail.innerHTML='<nav class="v7-nav"></nav><div class="v7-foot">V7 PREVIEW<br>Independent frontend · production engine preserved</div>'; document.body.appendChild(rail);
+    const nav=rail.querySelector('.v7-nav');
+    views.forEach(v=>{const b=document.createElement('button');b.type='button';b.dataset.v7=v[0];b.innerHTML=`<span class="ico">${v[2]}</span><span>${v[1]}</span>`;b.onclick=()=>focus(v[0]);nav.appendChild(b)});
+    nav.querySelector('[data-v7="home"]').classList.add('active');
+  }
+  function enhance(){
+    document.body.classList.add('v7-ready');createShell();
+    const p=document.querySelector('#card-parcel .card-head h2'); if(p)p.textContent='Create shipment';
+    const m=document.querySelector('#card-manifest .card-head h2'); if(m)m.textContent='Dispatch manifest';
+    const b=document.querySelector('#card-batch .card-head h2'); if(b)b.textContent='Batch processing';
+    const more=document.querySelector('#card-more .card-head h2'); if(more)more.textContent='Operations tools';
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enhance);else enhance();
+})();
+</script>
+'''
+          s=s.replace('</head>',css+'</head>',1)
+          s=s.replace('</body>',js+'</body>',1)
+          s=s.replace('<title>','<title>V7 Preview · ',1)
+          p.write_text(s)
+          sw=Path('labelonzeway-v7/service-worker.js')
+          if sw.exists():
+              t=sw.read_text();t=re.sub(r"const CACHE = '[^']+';","const CACHE = 'labelonzeway-v7-preview-20260908';",t,count=1);sw.write_text(t)
+          PY
+      - name: Validate V7 HTML scripts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+          p=Path('labelonzeway-v7/index.html'); text=p.read_text()
+          assert 'lz-v7-complete-redesign' in text
+          assert 'lz-v7-complete-redesign-js' in text
+          for i,src in enumerate(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',text,re.S|re.I),1):
+              with tempfile.NamedTemporaryFile('w',suffix='.js',delete=False) as f:
+                  f.write(src); name=f.name
+              r=subprocess.run(['node','--check',name],capture_output=True,text=True)
+              if r.returncode: raise SystemExit(f'inline script {i} failed:\n{r.stderr}')
+          PY
+      - name: Commit isolated V7 preview
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add labelonzeway-v7
+          git diff --cached --quiet && exit 0
+          git commit -m 'Issue complete LabelOnZeWay V7 frontend preview'
+          git push
