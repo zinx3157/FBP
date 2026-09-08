@@ -1,4 +1,4 @@
-const CACHE = 'labelonzeway-v2.0.1-command-v6-20260907';
+const CACHE = 'labelonzeway-v2.0.1-opsdeck-restored-20260908b';
 const APP_SHELL = [
   './',
   './index.html',
