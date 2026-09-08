@@ -34,13 +34,25 @@ for(const p of profiles){
         const cs=getComputedStyle(el),r=el.getBoundingClientRect();
         return cs.display!=='none'&&cs.visibility!=='hidden'&&Number(cs.opacity)!==0&&r.width>0&&r.height>0;
       });
-      const clipped=visible.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>vw+1}).map(el=>({tag:el.tagName,text:(el.innerText||el.getAttribute('aria-label')||'').trim().slice(0,45),left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));
-      const small=visible.filter(el=>{const r=el.getBoundingClientRect();return matchMedia('(max-width:900px)').matches&&(r.width<40||r.height<40)}).map(el=>({tag:el.tagName,text:(el.innerText||el.getAttribute('aria-label')||'').trim().slice(0,45),w:Math.round(el.getBoundingClientRect().width),h:Math.round(el.getBoundingClientRect().height)}));
-      return {vw,sw,clipped:clipped.slice(0,12),small:small.slice(0,12)};
+      const label=el=>(el.innerText||el.getAttribute('aria-label')||el.getAttribute('name')||el.id||el.tagName).trim().slice(0,55);
+      const clipped=visible.filter(el=>{const r=el.getBoundingClientRect();return r.left<-1||r.right>vw+1}).map(el=>({tag:el.tagName,text:label(el),left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));
+      const small=visible.filter(el=>{const r=el.getBoundingClientRect();return matchMedia('(max-width:900px)').matches&&!el.disabled&&(r.width<40||r.height<40)}).map(el=>({tag:el.tagName,text:label(el),w:Math.round(el.getBoundingClientRect().width),h:Math.round(el.getBoundingClientRect().height)}));
+      const blocked=visible.filter(el=>{
+        if(el.disabled)return false;
+        const r=el.getBoundingClientRect();
+        const x=Math.max(0,Math.min(vw-1,r.left+r.width/2));
+        const y=Math.max(0,Math.min(innerHeight-1,r.top+r.height/2));
+        if(r.bottom<0||r.top>innerHeight||r.right<0||r.left>vw)return false;
+        const hit=document.elementFromPoint(x,y);
+        return !(hit&&(hit===el||el.contains(hit)));
+      }).map(el=>({tag:el.tagName,text:label(el)}));
+      return {vw,sw,clipped:clipped.slice(0,20),small:small.slice(0,20),blocked:blocked.slice(0,20),controlCount:visible.length};
     });
     if(geometry.sw>geometry.vw+2) fail(p.name,loop,`page horizontal overflow ${geometry.sw}>${geometry.vw}`);
     if(geometry.clipped.length) fail(p.name,loop,`clipped controls ${JSON.stringify(geometry.clipped)}`);
     if(p.mobile&&geometry.small.length) fail(p.name,loop,`touch targets below 40px ${JSON.stringify(geometry.small)}`);
+    if(geometry.blocked.length) fail(p.name,loop,`visible controls blocked by overlay ${JSON.stringify(geometry.blocked)}`);
+    if(geometry.controlCount<5) fail(p.name,loop,`unexpectedly low visible control count ${geometry.controlCount}`);
 
     for(const item of nav){
       const sel=`.v7-nav button[data-v7="${item}"]`;
@@ -49,15 +61,12 @@ for(const p of profiles){
         await page.waitForTimeout(160);
         const ok=await page.locator(sel).evaluate(el=>el.classList.contains('active'));
         if(!ok) fail(p.name,loop,`${item} nav did not activate`);
-        const centerHit=await page.locator(sel).evaluate(el=>{const r=el.getBoundingClientRect();const hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return !!(hit&&(hit===el||el.contains(hit)))});
-        if(!centerHit) fail(p.name,loop,`${item} nav center is blocked by another layer`);
       }catch(e){fail(p.name,loop,`${item} nav interaction failed: ${e.message.split('\n')[0]}`)}
     }
 
     if(p.mobile){
       try{
-        const newLabel='.v7-nav button[data-v7="label"]';
-        await page.locator(newLabel).tap();
+        await page.locator('.v7-nav button[data-v7="label"]').tap();
         for(const step of ['customer','details','preview']){
           const s=`.v7-step[data-step="${step}"]`;
           await page.locator(s).tap({timeout:5000});
@@ -96,4 +105,4 @@ if(failures.length){
   failures.forEach(x=>console.error(`- ${x}`));
   process.exit(1);
 }
-console.log(`V7 UI AUDIT PASS: ${profiles.length} viewports × ${loops} loops; navigation, mobile steps, manifest layout, clipping, overflow and touch targets verified.`);
+console.log(`V7 UI AUDIT PASS: ${profiles.length} viewports × ${loops} loops; all visible enabled controls are reachable, primary navigation works, mobile label steps work, and manifest/clipping/overflow/touch-target checks pass.`);
