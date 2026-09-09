@@ -18,10 +18,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install Playwright
+      - name: Install Playwright Chromium and WebKit
         run: |
           npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
       - name: Start local web server
         run: |
           python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/v7-http.log 2>&1 &
@@ -32,7 +32,7 @@ jobs:
           done
           cat /tmp/v7-http.log
           exit 1
-      - name: Run three-loop desktop/mobile audit
+      - name: Run Chrome Safari desktop iPhone stress audit
         run: node tests/v7-ui-audit.mjs
       - name: Stop local web server
         if: always()
