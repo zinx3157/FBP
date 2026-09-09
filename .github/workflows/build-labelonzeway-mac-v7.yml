@@ -1,0 +1,49 @@
+name: Build LabelOnZeWay V7 Mac App
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build-labelonzeway-mac-v7.yml'
+      - 'labelonzeway-mac/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build app bundle
+        run: |
+          set -euo pipefail
+          APP="LabelOnZeWay V7.app"
+          mkdir -p "$APP/Contents/MacOS"
+          cat > "$APP/Contents/Info.plist" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>CFBundleName</key><string>LabelOnZeWay V7</string>
+            <key>CFBundleDisplayName</key><string>LabelOnZeWay V7</string>
+            <key>CFBundleIdentifier</key><string>com.labelonzeway.v7</string>
+            <key>CFBundleVersion</key><string>700</string>
+            <key>CFBundleShortVersionString</key><string>7.0</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>CFBundleExecutable</key><string>LabelOnZeWayV7</string>
+            <key>LSMinimumSystemVersion</key><string>12.0</string>
+            <key>NSHighResolutionCapable</key><true/>
+          </dict></plist>
+          PLIST
+          xcrun swiftc labelonzeway-mac/LabelOnZeWay.swift -o "$APP/Contents/MacOS/LabelOnZeWayV7" -framework Cocoa -framework WebKit
+          chmod +x "$APP/Contents/MacOS/LabelOnZeWayV7"
+          codesign --force --deep --sign - "$APP"
+          ditto -c -k --keepParent "$APP" LabelOnZeWay-V7-Mac.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LabelOnZeWay-V7-Mac
+          path: LabelOnZeWay-V7-Mac.zip
+          retention-days: 30
