@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/build-labelonzeway-platformsync-unique.yml'
       - 'labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java'
+      - 'labelonzeway-v7/**'
   workflow_dispatch:
 
 permissions:
