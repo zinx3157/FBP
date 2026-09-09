@@ -21,7 +21,9 @@ jobs:
       - name: Install Playwright Chromium and WebKit
         run: |
           npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium webkit
+          # Avoid --with-deps here: hosted runners already include browser runtime
+          # libraries, and apt repository mirror churn must not block the UI audit.
+          npx playwright install chromium webkit
       - name: Start local web server
         run: |
           python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/v7-http.log 2>&1 &
