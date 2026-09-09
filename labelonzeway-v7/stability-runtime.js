@@ -29,11 +29,11 @@
 
     if(view==='customers'){
       try{window.openAddrModal?.();}catch(_e){}
-      return;
+      return true;
     }
-    if(view==='tracking'){try{window.openTrackingDashboard?.();}catch(_e){};return;}
-    if(view==='archive'){try{window.openArch?.();}catch(_e){};return;}
-    if(view==='settings'){try{window.openSettings?.();}catch(_e){};return;}
+    if(view==='tracking'){try{window.openTrackingDashboard?.();}catch(_e){};return true;}
+    if(view==='archive'){try{window.openArch?.();}catch(_e){};return true;}
+    if(view==='settings'){try{window.openSettings?.();}catch(_e){};return true;}
 
     document.body.classList.add('v7-focus');
     const all=$$('#app>.card,#app>.v7-label-grid,#app>.v7-hero,#app>.v7-stepbar');
@@ -48,25 +48,29 @@
       if(card){
         card.classList.add('v7-active');
         card.style.setProperty('display','block','important');
+      } else if(id){
+        return false;
       }
       if(view==='manifest'){try{window.renderManifest?.();}catch(_e){}}
       if(view==='batch'){try{window.renderBatch?.();}catch(_e){}}
     }
     window.scrollTo(0,0);
+    return true;
   }
 
+  // Public, single navigation API for V7 extensions. Recent Labels, POD and
+  // future overlays must use this rather than the legacy mobile-only router.
+  window.LabelOnZeWayV7ShowView=showView;
+  window.LabelOnZeWayV7UnlockScroll=unlockScroll;
+
   function install(){
-    // Single authoritative navigation path. This replaces the older overlapping
-    // touch/click runtime which could freeze Chrome/iOS.
     document.addEventListener('click',e=>{
-      const nav=e.target.closest?.('.v7-nav button[data-v7]');
+      const nav=e.target.closest?.('.v7-nav button[data-v7],.v7-mobile-nav button[data-v7]');
       const create=e.target.closest?.('.v7-new');
       const step=e.target.closest?.('.v7-step[data-step]');
       if(nav){e.preventDefault();e.stopImmediatePropagation();showView(nav.dataset.v7);return;}
       if(create){e.preventDefault();e.stopImmediatePropagation();showView('label');return;}
       if(step&&matchMedia('(max-width:900px)').matches){e.preventDefault();e.stopImmediatePropagation();setStep(step.dataset.step);return;}
-
-      // After save/close operations, release any stale legacy scroll lock.
       if(e.target.closest?.('button,input[type="submit"],.btn'))setTimeout(unlockScroll,180);
     },true);
 
