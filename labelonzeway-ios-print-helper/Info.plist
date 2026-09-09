@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleDisplayName</key><string>LabelOnZeWay Print</string>
+<key>CFBundleIdentifier</key><string>com.labelonzeway.printhelper</string>
+<key>CFBundleShortVersionString</key><string>1.0</string>
+<key>CFBundleVersion</key><string>1</string>
+<key>CFBundleURLTypes</key><array><dict><key>CFBundleURLName</key><string>com.labelonzeway.printhelper</string><key>CFBundleURLSchemes</key><array><string>labelonzewayprint</string></array></dict></array>
+<key>NSLocalNetworkUsageDescription</key><string>LabelOnZeWay connects directly to your POS80C printer on the local Wi-Fi network.</string>
+<key>UILaunchScreen</key><dict/>
+</dict></plist>
