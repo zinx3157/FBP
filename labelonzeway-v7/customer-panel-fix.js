@@ -3,6 +3,7 @@
   const $$=(q,r=document)=>[...r.querySelectorAll(q)];
   let installedPanel=null;
   let opening=false;
+  let openingTimer=null;
 
   function toast(m,t='ok'){try{window.toast?.(m,t)}catch(_e){console.log(m)}}
 
@@ -60,9 +61,17 @@
     window.renderAmList=wrapped;
   }
 
+  function releaseOpening(){
+    opening=false;
+    if(openingTimer){clearTimeout(openingTimer);openingTimer=null;}
+  }
+
   function openAddressBook(mode='search',term=''){
-    if(opening)return;
+    // A prior modal close or WebKit focus transition must never make these
+    // controls inert. If a stale opening guard exists, clear it and reopen.
+    if(opening)releaseOpening();
     opening=true;
+    openingTimer=setTimeout(releaseOpening,450);
     try{
       wrapAddressRenderer();
       if(typeof window.openAddrModal==='function') window.openAddrModal();
@@ -74,19 +83,19 @@
       requestAnimationFrame(()=>{
         decorateAddressRows();
         const modal=$('#m-addr');
-        if(!modal){opening=false;return;}
+        if(!modal){releaseOpening();return;}
         modal.classList.add('open');
         modal.classList.toggle('v7-customer-picker',mode!=='manage');
         const search=$('#am-search',modal);
         if(mode==='search' && search){
           if(term && search.value!==term){search.value=term;search.dispatchEvent(new Event('input',{bubbles:true}));}
-          setTimeout(()=>{try{search.focus()}catch(_e){} opening=false;},40);
+          setTimeout(()=>{try{search.focus()}catch(_e){} releaseOpening();},40);
         } else if(mode==='add') {
           const name=$('#am-name',modal);
-          setTimeout(()=>{try{name?.focus()}catch(_e){} opening=false;},40);
-        } else opening=false;
+          setTimeout(()=>{try{name?.focus()}catch(_e){} releaseOpening();},40);
+        } else releaseOpening();
       });
-    }catch(_e){opening=false;}
+    }catch(_e){releaseOpening();}
   }
 
   function install(){
@@ -101,8 +110,8 @@
     const tabs=$('.v7-customer-tabs',panel);
     if(tabs){
       tabs.innerHTML='<button type="button" class="active" data-customer-tab="search">Search Existing</button><button type="button" data-customer-tab="add">Add New</button>';
-      $('[data-customer-tab="search"]',tabs).onclick=e=>{e.preventDefault();openAddressBook('search');};
-      $('[data-customer-tab="add"]',tabs).onclick=e=>{e.preventDefault();openAddressBook('add');};
+      $('[data-customer-tab="search"]',tabs).onclick=e=>{e.preventDefault();e.stopPropagation();openAddressBook('search');};
+      $('[data-customer-tab="add"]',tabs).onclick=e=>{e.preventDefault();e.stopPropagation();openAddressBook('add');};
     }
 
     const fake=$('.v7-customer-search',panel);
@@ -113,16 +122,20 @@
       fake.replaceWith(wrap);
       const input=$('#v7-customer-search-input',wrap);
       input.onfocus=()=>openAddressBook('search',input.value.trim());
-      $('#v7-open-saved-customers',wrap).onclick=e=>{e.preventDefault();openAddressBook('search',input.value.trim());};
+      $('#v7-open-saved-customers',wrap).onclick=e=>{e.preventDefault();e.stopPropagation();releaseOpening();openAddressBook('search',input.value.trim());};
     }
   }
 
   document.addEventListener('click',e=>{
     const change=e.target.closest?.('#v7-change-customer,#v7-choose-customer');
-    if(change){e.preventDefault();e.stopPropagation();openAddressBook('search');return;}
+    if(change){e.preventDefault();e.stopPropagation();releaseOpening();openAddressBook('search');return;}
     const start=e.target.closest?.('[data-act="startNewLabel"],.v7-new');
-    if(start) setTimeout(()=>{install();openAddressBook('search');},80);
+    if(start) setTimeout(()=>{install();releaseOpening();openAddressBook('search');},80);
   },true);
+
+  document.addEventListener('click',e=>{
+    if(e.target.closest?.('#m-addr [data-close],#m-addr .modal-x'))setTimeout(releaseOpening,0);
+  });
 
   const boot=()=>{install();decorateAddressRows();document.addEventListener('v7:viewchange',()=>setTimeout(install,0));};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
