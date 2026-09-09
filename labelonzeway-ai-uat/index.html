@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07131d"><title>LabelOnZeWay AI UAT</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div><div class="brand">LabelOnZeWay <span>AI UAT</span></div><div class="sub">Omnichannel order intake · reviewed automation</div></div>
+  <div class="health"><span id="syncHealth">Local ready</span><span id="printHealth">Print ready</span><span id="draftHealth">0 drafts</span></div>
+</header>
+<div class="app">
+<nav class="nav" aria-label="Primary">
+<button data-view="home" class="active">Command</button><button data-view="intake">AI Intake</button><button data-view="customers">Customers</button><button data-view="manifest">Manifest</button><button data-view="print">Print Center</button><button data-view="exceptions">Exceptions</button><button data-view="claims">Claims</button><button data-view="tracking">Tracking</button><button data-view="settings">Settings</button>
+</nav>
+<main>
+<section id="home" class="view active">
+ <div class="hero"><div><p class="eyebrow">OPERATIONS DECK</p><h1>Orders become reviewed delivery records.</h1><p>WhatsApp, Messenger, voice/media and manual messages land as evidence-linked drafts. Nothing becomes a shipment until it is confirmed.</p></div><button class="primary big" data-go="intake">Create / review order</button></div>
+ <div class="metrics"><article><b id="mDrafts">0</b><span>Needs review</span></article><article><b id="mReady">0</b><span>Ready</span></article><article><b id="mTransit">0</b><span>In transit</span></article><article><b id="mExceptions">0</b><span>Exceptions</span></article><article><b id="mCod">Ar 0</b><span>COD outstanding</span></article></div>
+ <div class="grid2"><article class="card"><h2>Next actions</h2><div id="nextActions" class="stack"></div></article><article class="card"><h2>System guardrails</h2><ul><li>AI drafts require human confirmation.</li><li>Status history is append-only.</li><li>Archive Selected stays separate from Close Day.</li><li>Print jobs are queued and explicit.</li><li>Customer evidence remains linked to each draft.</li></ul></article></div>
+</section>
+<section id="intake" class="view">
+ <div class="sectionHead"><div><p class="eyebrow">OMNICHANNEL</p><h1>AI Order Intake</h1></div><div class="seg"><button data-source="whatsapp" class="active">WhatsApp</button><button data-source="messenger">Messenger</button><button data-source="email">Email</button><button data-source="manual">Manual</button></div></div>
+ <div class="intakeGrid">
+  <article class="card"><h2>Incoming evidence</h2><label>Customer message<textarea id="messageInput" rows="9" placeholder="Example: Salama, alefaso 2 robe noire, 80000 Ar total. Livraison Analakely près de Shoprite demain. Tel 0341234567"></textarea></label><div class="row"><button class="primary" id="analyzeBtn">Analyze message</button><button id="sampleBtn">Load sample</button></div><div class="drop">Voice / image / screenshot intake is provider-ready; UAT uses message text as evidence.</div></article>
+  <article class="card"><div class="cardHead"><h2>AI draft</h2><span class="badge" id="confidence">Not analyzed</span></div><form id="draftForm" class="form2"><label>Name<input id="fName"></label><label>Phone<input id="fPhone" inputmode="tel"></label><label class="wide">Address<input id="fAddress"></label><label class="wide">Landmark<input id="fLandmark"></label><label>Qty<input id="fQty" type="number" min="1" value="1"></label><label>COD (Ar)<input id="fCod" inputmode="numeric"></label><label>Delivery date<input id="fDate" type="date"></label><label>Language<input id="fLang"></label><label class="wide">Items<input id="fItems"></label><label class="wide">Notes<input id="fNotes"></label></form><div id="missing" class="warning hidden"></div><div class="row"><button class="primary" id="saveDraftBtn">Save needs-review draft</button><button class="success" id="confirmBtn">Confirm → Manifest</button></div></article>
+ </div>
+ <article class="card"><div class="cardHead"><h2>Needs review</h2><button id="clearDrafts">Clear resolved</button></div><div id="draftList" class="list"></div></article>
+</section>
+<section id="customers" class="view"><div class="sectionHead"><div><p class="eyebrow">ADDRESS BOOK</p><h1>Customers</h1></div><button class="primary" id="newCustomerBtn">New customer</button></div><article class="card"><input id="customerSearch" class="search" placeholder="Search name, phone or address"><div id="customerList" class="list"></div></article></section>
+<section id="manifest" class="view"><div class="sectionHead"><div><p class="eyebrow">OPERATIONS</p><h1>Manifest</h1></div><div class="row"><select id="bulkStatus"><option value="">Bulk status…</option><option value="ready">Ready</option><option value="transit">In Transit</option><option value="delivered">Delivered</option><option value="exception">Exception</option></select><button id="bulkApply">Apply</button><button id="archiveSelected">Archive Selected</button></div></div><article class="card flush"><div id="manifestList" class="manifest"></div></article></section>
+<section id="print" class="view"><div class="sectionHead"><div><p class="eyebrow">OUTPUT</p><h1>Print Center</h1></div><button id="testPrint">Queue test label</button></div><article class="card"><div id="printList" class="list"></div></article></section>
+<section id="exceptions" class="view"><div class="sectionHead"><div><p class="eyebrow">RECOVERY</p><h1>Exception Inbox</h1></div></div><article class="card"><div id="exceptionList" class="list"></div></article></section>
+<section id="claims" class="view"><div class="sectionHead"><div><p class="eyebrow">IMMUTABLE HISTORY</p><h1>Claims Vault</h1></div></div><article class="card"><div id="claimsList" class="list"></div></article></section>
+<section id="tracking" class="view"><div class="sectionHead"><div><p class="eyebrow">CUSTOMER VIEW</p><h1>Tracking</h1></div></div><article class="card"><input id="trackingSearch" class="search" placeholder="Pick ID"><div id="trackingResult"></div></article></section>
+<section id="settings" class="view"><div class="sectionHead"><div><p class="eyebrow">SYSTEM</p><h1>Settings & Data Health</h1></div></div><div class="grid2"><article class="card"><h2>Channels</h2><div class="setting"><span>WhatsApp Business</span><b>Provider credentials required</b></div><div class="setting"><span>Messenger</span><b>Provider credentials required</b></div><div class="setting"><span>AI extraction</span><b>Safe UAT parser active</b></div></article><article class="card"><h2>Data health</h2><div class="setting"><span>Storage</span><b id="storageStat">OK</b></div><div class="setting"><span>Last local write</span><b id="lastWrite">—</b></div><div class="setting"><span>Conflicts</span><b>0</b></div><button id="exportBtn">Export UAT JSON</button></article></div></section>
+</main>
+</div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modalCard"><div class="cardHead"><h2 id="modalTitle">Customer</h2><button id="modalClose" aria-label="Close">×</button></div><form id="customerForm" class="form2"><label>Name<input id="cName" required></label><label>Phone<input id="cPhone" required></label><label class="wide">Address<input id="cAddress"></label><label class="wide">Landmark<input id="cLandmark"></label><div class="wide row"><button type="submit" class="primary">Save customer</button></div></form></div></div>
+<div id="toast" class="toast" aria-live="polite"></div>
+<script src="app.js" defer></script>
+</body></html>
