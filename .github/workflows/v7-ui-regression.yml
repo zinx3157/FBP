@@ -21,9 +21,13 @@ jobs:
       - name: Install Playwright Chromium and WebKit
         run: |
           npm install --no-save playwright@1.55.0
-          # Avoid --with-deps here: hosted runners already include browser runtime
-          # libraries, and apt repository mirror churn must not block the UI audit.
-          npx playwright install chromium webkit
+          # GitHub's hosted image can temporarily expose a changing Google Chrome
+          # apt index. Playwright does not need that repository; disable it before
+          # dependency installation so mirror churn cannot invalidate apt hashes.
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources || true
+          sudo rm -rf /var/lib/apt/lists/*
+          sudo apt-get update
+          npx playwright install --with-deps chromium webkit
       - name: Start local web server
         run: |
           python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/v7-http.log 2>&1 &
