@@ -1,9 +1,10 @@
-name: Build LabelOnZeWay PlatformSync Unique APK
+name: Build LabelOnZeWay V7 APK
 
 on:
   push:
     paths:
       - '.github/workflows/build-labelonzeway-platformsync-unique.yml'
+      - 'labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java'
   workflow_dispatch:
 
 permissions:
@@ -25,39 +26,32 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Force unique Android package identity
+      - name: Set V7 Android identity
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
           p=Path('labelonzeway-android/app/build.gradle')
           s=p.read_text(encoding='utf-8')
-          s,n=re.subn(r"applicationId\s+['\"][^'\"]+['\"]", "applicationId 'com.labelonzeway.platformsync'", s, count=1)
+          s,n=re.subn(r"applicationId\s+['\"][^'\"]+['\"]", "applicationId 'com.labelonzeway.v7'", s, count=1)
           if n != 1:
               raise SystemExit('Could not replace applicationId exactly once')
-          s=re.sub(r'versionCode\s+\d+', 'versionCode 204', s, count=1)
-          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.0.1-platform-sync-unique'", s, count=1)
+          s=re.sub(r'versionCode\s+\d+', 'versionCode 700', s, count=1)
+          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '7.0-uat'", s, count=1)
           p.write_text(s,encoding='utf-8')
-          print(p.read_text(encoding='utf-8'))
           PY
-          grep -q "applicationId 'com.labelonzeway.platformsync'" labelonzeway-android/app/build.gradle
-
-      - name: Verify synchronized runtime markers
-        run: |
-          grep -q 'LZ_CROSS_DEVICE_REHYDRATION_V2' labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
-          grep -q 'lastPullByProfile' labelonzeway-android/app/src/main/assets/labelonzeway/cloud-sync.js
-          grep -q 'LZ_PROFILE_UI_REFRESH_V2' labelonzeway-android/app/src/main/assets/labelonzeway/index.html
-          grep -q 'LZ_IOS_NOTIFICATION_DEFAULT_CLOSED_V1' labelonzeway-android/app/src/main/assets/labelonzeway/index.html
+          grep -q "applicationId 'com.labelonzeway.v7'" labelonzeway-android/app/build.gradle
+          grep -q 'labelonzeway-v7' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
 
       - name: Build APK
         working-directory: labelonzeway-android
         run: gradle --no-daemon clean assembleDebug
 
       - name: Package APK
-        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V2.0.1-PlatformSync-Unique.apk
+        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V7-UAT.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: LabelOnZeWay-V2.0.1-PlatformSync-Unique
-          path: LabelOnZeWay-V2.0.1-PlatformSync-Unique.apk
+          name: LabelOnZeWay-V7-UAT
+          path: LabelOnZeWay-V7-UAT.apk
           retention-days: 30
