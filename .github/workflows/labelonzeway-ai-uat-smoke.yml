@@ -1,0 +1,48 @@
+name: LabelOnZeWay AI UAT smoke
+on:
+  push:
+    paths:
+      - 'labelonzeway-ai-uat/**'
+      - '.github/workflows/labelonzeway-ai-uat-smoke.yml'
+  workflow_dispatch:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: node --check labelonzeway-ai-uat/app.js && node --check labelonzeway-ai-uat/service-worker.js
+      - name: Required files
+        run: test -s labelonzeway-ai-uat/index.html && test -s labelonzeway-ai-uat/styles.css && test -s labelonzeway-ai-uat/manifest.webmanifest
+      - name: Operational regression gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          HTML=labelonzeway-ai-uat/index.html
+          JS=labelonzeway-ai-uat/app.js
+          CSS=labelonzeway-ai-uat/styles.css
+          grep -q 'AI Order Intake' "$HTML"
+          grep -q 'New customer' "$HTML"
+          grep -q 'Archive Selected' "$HTML"
+          grep -q 'Print Center' "$HTML"
+          grep -q 'Exception Inbox' "$HTML"
+          grep -q 'Claims Vault' "$HTML"
+          grep -q 'data-view="tracking"' "$HTML"
+          grep -q "AI drafts require human confirmation" "$HTML"
+          grep -q "normalizePhone" "$JS"
+          grep -q "archiveSelected" "$JS"
+          grep -q "bulkApply" "$JS"
+          grep -q "data-status-one" "$JS"
+          grep -q "data-edit-customer" "$JS"
+          grep -q "data-use-customer" "$JS"
+          grep -q "Public view intentionally excludes phone" "$JS"
+          grep -q "serviceWorker.register" "$JS"
+          grep -q '@media(max-width:720px)' "$CSS"
+          grep -q 'min-height:44px' "$CSS"
+          ! grep -Eq '#fff|white;background|background:[[:space:]]*white' "$CSS"
+      - name: Manifest JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('labelonzeway-ai-uat/manifest.webmanifest','utf8')); console.log('manifest PASS')"
+      - name: Route asset references
+        run: |
+          for f in styles.css app.js manifest.webmanifest service-worker.js; do test -f "labelonzeway-ai-uat/$f"; done
+          echo 'AI UAT smoke PASS'
