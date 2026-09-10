@@ -15,6 +15,13 @@
     $$('.lz-mobile-visible').forEach(el=>el.classList.remove('lz-mobile-visible'));
   }
 
+  function syncNativeMobileView(view){
+    const nativeView=view==='label'?'new':(['home','manifest','batch','more'].includes(view)?view:'home');
+    document.body.setAttribute('data-mobile-view',nativeView);
+    try{if(typeof window.mobileView!=='undefined')window.mobileView=nativeView}catch(_e){}
+    return nativeView;
+  }
+
   function updateMobileBack(){
     const b=$('#v7-mobile-back');
     if(!b)return;
@@ -48,25 +55,30 @@
   function showView(view){
     unlockScroll();
     currentView=view||'home';
-    $$('.v7-nav button').forEach(b=>b.classList.toggle('active',b.dataset.v7===view));
-    if(view==='customers'){try{window.openAddrModal?.();}catch(_e){};updateMobileBack();return true;}
-    if(view==='tracking'){try{window.openTrackingDashboard?.();}catch(_e){};updateMobileBack();return true;}
-    if(view==='archive'){try{window.openArch?.();}catch(_e){};updateMobileBack();return true;}
-    if(view==='settings'){try{window.openSettings?.();}catch(_e){};updateMobileBack();return true;}
+    syncNativeMobileView(currentView);
+    $$('.v7-nav button').forEach(b=>b.classList.toggle('active',b.dataset.v7===currentView));
+    if(currentView==='customers'){try{window.openAddrModal?.();}catch(_e){};updateMobileBack();return true;}
+    if(currentView==='tracking'){try{window.openTrackingDashboard?.();}catch(_e){};updateMobileBack();return true;}
+    if(currentView==='archive'){try{window.openArch?.();}catch(_e){};updateMobileBack();return true;}
+    if(currentView==='settings'){try{window.openSettings?.();}catch(_e){};updateMobileBack();return true;}
     document.body.classList.add('v7-focus');
     const all=$$('#app>.card,#app>.v7-label-grid,#app>.v7-hero,#app>.v7-stepbar');
     all.forEach(el=>{el.classList.remove('v7-active');el.style.removeProperty('display');});
-    if(view==='label'){
+    if(currentView==='label'){
       ['v7-label-grid','v7-label-hero','v7-label-stepbar'].forEach(id=>$('#'+id)?.classList.add('v7-active'));
       setStep('customer');
     }else{
-      const id={home:'card-home',manifest:'card-manifest',batch:'card-batch',more:'card-more'}[view];
+      const id={home:'card-home',manifest:'card-manifest',batch:'card-batch',more:'card-more'}[currentView];
       const card=id&&$('#'+id);
       if(card){card.classList.add('v7-active');card.style.setProperty('display','block','important');}else if(id){return false;}
-      if(view==='manifest'){try{window.renderManifest?.();}catch(_e){}}
-      if(view==='batch'){try{window.renderBatch?.();}catch(_e){}}
+      if(currentView==='manifest'){try{window.renderManifest?.();}catch(_e){}}
+      if(currentView==='batch'){try{window.renderBatch?.();}catch(_e){}}
     }
-    if(view==='home')document.body.classList.remove('v7-mobile-step-customer','v7-mobile-step-details','v7-mobile-step-preview');
+    if(currentView==='home'){
+      document.body.classList.remove('v7-mobile-step-customer','v7-mobile-step-details','v7-mobile-step-preview','v7-manifest-mode','v7-manifest-expanded');
+      const home=$('#card-home');
+      if(home){home.classList.add('v7-active');home.style.setProperty('display','block','important');home.removeAttribute('hidden');home.setAttribute('aria-hidden','false');}
+    }
     updateMobileBack();
     window.scrollTo(0,0);return true;
   }
@@ -92,6 +104,7 @@
 
   function install(){
     installMobileBack();
+    syncNativeMobileView('home');
     document.addEventListener('click',e=>{
       const viewAll=e.target.closest?.('.ops-panel-head [data-act="showMobileView"][data-arg="manifest"]');
       if(viewAll){e.preventDefault();e.stopImmediatePropagation();showView('manifest');return;}
@@ -103,7 +116,7 @@
       if(step&&matchMedia('(max-width:900px)').matches){e.preventDefault();e.stopImmediatePropagation();setStep(step.dataset.step);return;}
       if(e.target.closest?.('button,input[type="submit"],.btn'))setTimeout(unlockScroll,180);
     },true);
-    installTheme();unlockScroll();updateMobileBack();
+    installTheme();unlockScroll();showView('home');
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
