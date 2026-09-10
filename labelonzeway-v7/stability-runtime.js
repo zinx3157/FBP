@@ -18,17 +18,20 @@
   function updateMobileBack(){
     const b=$('#v7-mobile-back');
     if(!b)return;
-    const show=currentView!=='home'&&matchMedia('(max-width:900px)').matches;
+    const mobile=matchMedia('(max-width:900px)').matches;
+    const show=mobile&&currentView!=='home';
+    document.body.classList.toggle('v7-subview',show);
     b.hidden=!show;
-    b.textContent=currentView==='label'?'← CANCEL':'← BACK';
+    b.textContent=currentView==='label'?'✕ Cancel':'‹ Back';
+    b.setAttribute('aria-label',currentView==='label'?'Cancel and return Home':'Back to Home');
   }
 
   function installMobileBack(){
     if($('#v7-mobile-back'))return;
     const b=document.createElement('button');
-    b.id='v7-mobile-back';b.type='button';b.className='v7-mobile-back';b.hidden=true;b.textContent='← BACK';
-    b.setAttribute('aria-label','Back to Home');
-    document.body.appendChild(b);
+    b.id='v7-mobile-back';b.type='button';b.className='v7-mobile-back';b.hidden=true;b.textContent='‹ Back';
+    const brand=$('.v7-brand')||$('#v7-shell')||document.body;
+    brand.prepend(b);
     b.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();showView('home');});
     window.addEventListener('resize',updateMobileBack,{passive:true});
   }
