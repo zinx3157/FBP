@@ -8,4 +8,8 @@
   #app{position:relative!important;z-index:1!important}
   .modal{z-index:3000!important}
   .modal-box{pointer-events:auto!important}
+  .v7-mobile-back{position:fixed!important;top:calc(72px + env(safe-area-inset-top));left:10px;z-index:2200!important;min-height:40px!important;padding:0 14px!important;border-radius:999px!important;border:1px solid var(--line2)!important;background:rgba(7,26,36,.96)!important;color:var(--text)!important;font-size:11px!important;font-weight:900!important;box-shadow:0 8px 24px rgba(0,0,0,.28)!important;backdrop-filter:blur(12px)!important}
+  html.v7-light .v7-mobile-back{background:rgba(255,255,255,.96)!important;color:#14262c!important;border-color:#bfd1d5!important}
+  .v7-mobile-back[hidden]{display:none!important}
 }
+@media (min-width:901px){.v7-mobile-back{display:none!important}}
