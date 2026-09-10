@@ -1,6 +1,7 @@
 (()=>{
   const $=(q,r=document)=>r.querySelector(q);
   const $$=(q,r=document)=>[...r.querySelectorAll(q)];
+  let currentView='home';
 
   function unlockScroll(){
     const openModal=$('.modal.open,.modal.show,[role="dialog"].open');
@@ -14,6 +15,24 @@
     $$('.lz-mobile-visible').forEach(el=>el.classList.remove('lz-mobile-visible'));
   }
 
+  function updateMobileBack(){
+    const b=$('#v7-mobile-back');
+    if(!b)return;
+    const show=currentView!=='home'&&matchMedia('(max-width:900px)').matches;
+    b.hidden=!show;
+    b.textContent=currentView==='label'?'← CANCEL':'← BACK';
+  }
+
+  function installMobileBack(){
+    if($('#v7-mobile-back'))return;
+    const b=document.createElement('button');
+    b.id='v7-mobile-back';b.type='button';b.className='v7-mobile-back';b.hidden=true;b.textContent='← BACK';
+    b.setAttribute('aria-label','Back to Home');
+    document.body.appendChild(b);
+    b.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();showView('home');});
+    window.addEventListener('resize',updateMobileBack,{passive:true});
+  }
+
   function setStep(step){
     document.body.classList.remove('v7-mobile-step-customer','v7-mobile-step-details','v7-mobile-step-preview');
     document.body.classList.add('v7-mobile-step-'+step);
@@ -25,11 +44,12 @@
 
   function showView(view){
     unlockScroll();
+    currentView=view||'home';
     $$('.v7-nav button').forEach(b=>b.classList.toggle('active',b.dataset.v7===view));
-    if(view==='customers'){try{window.openAddrModal?.();}catch(_e){};return true;}
-    if(view==='tracking'){try{window.openTrackingDashboard?.();}catch(_e){};return true;}
-    if(view==='archive'){try{window.openArch?.();}catch(_e){};return true;}
-    if(view==='settings'){try{window.openSettings?.();}catch(_e){};return true;}
+    if(view==='customers'){try{window.openAddrModal?.();}catch(_e){};updateMobileBack();return true;}
+    if(view==='tracking'){try{window.openTrackingDashboard?.();}catch(_e){};updateMobileBack();return true;}
+    if(view==='archive'){try{window.openArch?.();}catch(_e){};updateMobileBack();return true;}
+    if(view==='settings'){try{window.openSettings?.();}catch(_e){};updateMobileBack();return true;}
     document.body.classList.add('v7-focus');
     const all=$$('#app>.card,#app>.v7-label-grid,#app>.v7-hero,#app>.v7-stepbar');
     all.forEach(el=>{el.classList.remove('v7-active');el.style.removeProperty('display');});
@@ -43,6 +63,8 @@
       if(view==='manifest'){try{window.renderManifest?.();}catch(_e){}}
       if(view==='batch'){try{window.renderBatch?.();}catch(_e){}}
     }
+    if(view==='home')document.body.classList.remove('v7-mobile-step-customer','v7-mobile-step-details','v7-mobile-step-preview');
+    updateMobileBack();
     window.scrollTo(0,0);return true;
   }
 
@@ -66,6 +88,7 @@
   window.LabelOnZeWayV7UnlockScroll=unlockScroll;
 
   function install(){
+    installMobileBack();
     document.addEventListener('click',e=>{
       const viewAll=e.target.closest?.('.ops-panel-head [data-act="showMobileView"][data-arg="manifest"]');
       if(viewAll){e.preventDefault();e.stopImmediatePropagation();showView('manifest');return;}
@@ -77,7 +100,7 @@
       if(step&&matchMedia('(max-width:900px)').matches){e.preventDefault();e.stopImmediatePropagation();setStep(step.dataset.step);return;}
       if(e.target.closest?.('button,input[type="submit"],.btn'))setTimeout(unlockScroll,180);
     },true);
-    installTheme();unlockScroll();
+    installTheme();unlockScroll();updateMobileBack();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
