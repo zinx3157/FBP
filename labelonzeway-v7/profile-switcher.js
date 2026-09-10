@@ -10,9 +10,37 @@
     }catch(_e){return Array.isArray(window.PROFILES)?window.PROFILES:[]}
   }
   function activeId(){return String(window.PID||localStorage.getItem(ACTIVE_KEY)||'')}
+  function activeProfile(){
+    const id=activeId(), list=profiles();
+    return list.find(p=>String(p.id)===id)||null;
+  }
   function esc(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
   function settingsHost(){
     return $$('.modal-box,[role="dialog"],.modal-content,.settings-modal').find(el=>/\bSETTINGS\b/i.test((el.textContent||'').slice(0,5000)));
+  }
+  function renderActiveProfileBadge(){
+    const p=activeProfile(), id=activeId(), name=String(p?.name||id||'No profile');
+    let badge=$('#v7-active-profile-badge');
+    const tools=$('.v7-tools')||$('#v7-shell');
+    if(!tools)return;
+    if(!badge){
+      badge=document.createElement('button');
+      badge.id='v7-active-profile-badge';
+      badge.type='button';
+      badge.className='v7-active-profile-badge';
+      badge.setAttribute('aria-label','Open company profile settings');
+      const anchor=$('.v7-workspace',tools)||$('.v7-new',tools);
+      if(anchor)tools.insertBefore(badge,anchor); else tools.prepend(badge);
+      badge.addEventListener('click',()=>{try{window.openSettings?.()}catch(_e){const b=$('[data-act="openSettings"],#top-settings-btn,[data-v7="settings"]');b?.click()}});
+    }
+    badge.innerHTML=`<small>ACTIVE PROFILE</small><b>${esc(name)}</b>`;
+    badge.title='Current company profile: '+name;
+    const ws=$('.v7-workspace');
+    if(ws){
+      const small=ws.querySelector('small');
+      if(small)small.textContent='Profile: '+name;
+    }
+    document.body.dataset.activeProfile=name;
   }
   function switchProfile(id){
     const list=profiles(); if(!list.some(p=>String(p.id)===String(id)))return;
@@ -29,6 +57,7 @@
     localStorage.setItem(PROFILE_KEY,JSON.stringify(next));
     try{window.PROFILES=next}catch(_e){}
     render();
+    renderActiveProfileBadge();
   }
   function render(){
     const host=settingsHost(); if(!host)return;
@@ -47,8 +76,12 @@
     $$('[data-v7-profile-delete]',box).forEach(b=>b.onclick=()=>deleteProfile(b.dataset.v7ProfileDelete));
   }
   function watch(){
+    renderActiveProfileBadge();
     render();
-    new MutationObserver(()=>{if(settingsHost()&&!$('#v7-existing-profiles',settingsHost()))render()}).observe(document.body,{childList:true,subtree:true});
+    new MutationObserver(()=>{
+      if(settingsHost()&&!$('#v7-existing-profiles',settingsHost()))render();
+      if(!$('#v7-active-profile-badge'))renderActiveProfileBadge();
+    }).observe(document.body,{childList:true,subtree:true});
     document.addEventListener('click',e=>{if(e.target.closest?.('[data-act="openSettings"],#top-settings-btn,[data-v7="settings"]'))setTimeout(render,80)},true);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch,{once:true});else watch();
