@@ -1,0 +1,21 @@
+@media(max-width:900px){
+  html,body{overscroll-behavior-y:contain;scroll-behavior:auto!important}
+  body.v7-focus #app>.card,body.v7-focus #app>.v7-label-grid,body.v7-focus #app>.v7-hero,body.v7-focus #app>.v7-stepbar{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+  body.v7-focus #app>.v7-active{visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  body.v7-focus #card-home.v7-active,body.v7-focus #card-manifest.v7-active,body.v7-focus #card-batch.v7-active,body.v7-focus #card-more.v7-active{display:block!important}
+  body.v7-focus #v7-label-grid.v7-active{display:grid!important}
+  body.v7-focus #v7-label-hero.v7-active,body.v7-focus #v7-label-stepbar.v7-active{display:block!important}
+  #app>.card,#app>.v7-label-grid,#app>.v7-hero,#app>.v7-stepbar{transition:none!important;animation:none!important}
+  body[data-mobile-view="home"] #card-home.v7-active{display:block!important}
+  body[data-mobile-view="manifest"] #card-manifest.v7-active{display:block!important}
+  body[data-mobile-view="batch"] #card-batch.v7-active{display:block!important}
+  body[data-mobile-view="more"] #card-more.v7-active{display:block!important}
+  body[data-mobile-view="new"] #v7-label-grid.v7-active{display:grid!important}
+  .v7-mobile-nav{transform:translateZ(0);backface-visibility:hidden}
+  .v7-mobile-nav button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .v7-mobile-nav button.active{will-change:auto}
+}
+@media(max-width:430px){
+  body.v7-focus #app{overflow-x:hidden!important}
+  #app>.card,#app>.v7-label-grid,#app>.v7-hero,#app>.v7-stepbar{width:100%!important;max-width:100%!important}
+}
