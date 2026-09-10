@@ -6,7 +6,11 @@ const engines=[['chromium',chromium],['webkit',webkit]];
 const profiles=[
   {name:'desktop-1440',width:1440,height:900,mobile:false},
   {name:'desktop-1280',width:1280,height:800,mobile:false},
+  {name:'iphone15pro-393',width:393,height:852,mobile:true},
   {name:'iphone-390',width:390,height:844,mobile:true},
+  {name:'galaxy-s20plus-384',width:384,height:854,mobile:true},
+  {name:'android-412',width:412,height:915,mobile:true},
+  {name:'phone-430',width:430,height:932,mobile:true},
   {name:'iphone-375',width:375,height:812,mobile:true},
 ];
 function fail(engine,profile,msg){failures.push(`${engine}/${profile}: ${msg}`)}
@@ -63,7 +67,6 @@ for(const [engineName,browserType] of engines){
 
       for(let i=0;i<12;i++)for(const item of ['manifest','batch','home']){const sel=`.v7-nav button[data-v7="${item}"]`;await page.locator(sel).evaluate(el=>el.click());await page.waitForTimeout(25);const active=await page.locator(sel).evaluate(el=>el.classList.contains('active'));if(!active)fail(engineName,p.name,`${item} did not activate on stress cycle ${i+1}`);const cardId={manifest:'#card-manifest',batch:'#card-batch',home:'#card-home'}[item];const visible=await page.locator(cardId).evaluate(el=>getComputedStyle(el).display!=='none'&&el.classList.contains('v7-active'));if(!visible)fail(engineName,p.name,`${item} card not visibly active on cycle ${i+1}`);await assertResponsive(page,engineName,p.name,`${item} cycle ${i+1}`)}
 
-      // Exact regression: Recent Labels click must reveal the V7 Manifest card.
       await page.evaluate(()=>{
         window.LabelOnZeWayV7ShowView?.('home');
         const recent=document.querySelector('#ops-recent-list');
@@ -83,7 +86,6 @@ for(const [engineName,browserType] of engines){
         if(!manifestShown)fail(engineName,p.name,'Recent Labels click did not open Manifest');
       }
 
-      // Customer panel controls are direct-property onclick handlers; exercise them.
       await page.evaluate(()=>window.LabelOnZeWayV7ShowView?.('label'));await page.waitForTimeout(100);
       for(const sel of ['[data-customer-tab="search"]','[data-customer-tab="add"]','#v7-open-saved-customers']){
         const ctl=page.locator(sel);if(await ctl.count()){await ctl.evaluate(el=>el.click());await page.waitForTimeout(80);const modalOpen=await page.locator('#m-addr').evaluate(el=>el.classList.contains('open'));if(!modalOpen)fail(engineName,p.name,`${sel} did not open customer modal`);await page.evaluate(()=>document.querySelector('#m-addr')?.classList.remove('open'));}
@@ -103,4 +105,4 @@ for(const [engineName,browserType] of engines){
   await browser.close();
 }
 if(failures.length){console.error(`V7 CROSS-BROWSER CONTROL AUDIT FAILED (${failures.length})`);failures.forEach(x=>console.error(`- ${x}`));process.exit(1)}
-console.log('V7 CROSS-BROWSER CONTROL AUDIT PASS: Chromium + WebKit; desktop + iPhone; all buttons wired by direct listener/property or declared delegated action; data-act handlers mapped; links validated; Recent Labels opens Manifest; customer controls exercised; 12-cycle navigation stress; modal, scroll, overflow and touch checks.');
+console.log('V7 CROSS-BROWSER CONTROL AUDIT PASS: Chromium + WebKit; desktop + iPhone 15 Pro + Galaxy S20+ class widths; buttons wired; links validated; Recent Labels opens Manifest; customer controls exercised; 12-cycle navigation stress; modal, scroll, overflow and touch checks.');
