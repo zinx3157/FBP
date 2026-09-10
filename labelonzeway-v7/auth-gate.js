@@ -1,6 +1,7 @@
 (()=>{
 'use strict';
 const $=(q,r=document)=>r.querySelector(q);
+const LOCAL_AUDIT=/^(127\.0\.0\.1|localhost)$/.test(location.hostname)&&new URLSearchParams(location.search).get('audit')==='1';
 let gate=null,bootChecks=0,bootTimer=null,installed=false;
 function cloudStatus(){try{return window.LabelOnZeWayCloud?.getStatus?.()||null}catch(_e){return null}}
 function signedIn(){return cloudStatus()?.signedIn===true}
@@ -13,6 +14,6 @@ function awaitResult(){let n=0;const timer=setInterval(()=>{n++;if(signedIn()){c
 function submit(e){e.preventDefault();const email=$('#v7-auth-email')?.value.trim()||'',password=$('#v7-auth-password')?.value||'';if(!email||!password){setMessage('Enter your staff email and password.','error');return}setMessage('Signing in securely…','busy');if(!copyIntoProduction()){setMessage('Secure cloud login is still starting. Please retry in a moment.','error');return}awaitResult()}
 function forgot(){const email=$('#v7-auth-email')?.value.trim()||'',pe=$('#cloud-email'),btn=$('#cloud-forgot');if(!email){setMessage('Enter the staff email address first.','error');return}if(!pe||!btn){setMessage('Secure cloud login is still starting. Please retry in a moment.','error');return}pe.value=email;pe.dispatchEvent(new Event('input',{bubbles:true}));btn.click();setMessage('Password recovery request opened.','ok')}
 function boot(){show();bootTimer=setInterval(()=>{bootChecks++;if(signedIn()){clearInterval(bootTimer);bootTimer=null;hide();return}if(window.LabelOnZeWayCloud?.getStatus||bootChecks>=30){clearInterval(bootTimer);bootTimer=null;show()}},500)}
-function install(){if(installed)return;installed=true;ensureGate();boot();document.addEventListener('click',e=>{if(e.target.closest?.('#cloud-sign-out'))setTimeout(show,500)},true);window.addEventListener('pageshow',()=>signedIn()?hide():show());window.addEventListener('online',()=>signedIn()?hide():show())}
+function install(){if(installed||LOCAL_AUDIT)return;installed=true;ensureGate();boot();document.addEventListener('click',e=>{if(e.target.closest?.('#cloud-sign-out'))setTimeout(show,500)},true);window.addEventListener('pageshow',()=>signedIn()?hide():show());window.addEventListener('online',()=>signedIn()?hide():show())}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
