@@ -1,0 +1,52 @@
+/* Mac Manifest Final2: Compact MUST fit viewport; Edit All is the only horizontal-scroll mode. */
+@media (min-width:901px){
+  body.mf-manifest-active #card-manifest{overflow:hidden!important}
+  body.mf-manifest-active #card-manifest .tbl-wrap,
+  body.mf-manifest-active #card-manifest .table-wrap,
+  body.mf-manifest-active #card-manifest .manifest-table-wrap{width:100%!important;max-width:100%!important}
+
+  /* COMPACT: no horizontal scroll, no hidden left side, operational fields only. */
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest .tbl-wrap,
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest .table-wrap,
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest .manifest-table-wrap{overflow-x:hidden!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed!important}
+
+  /* Hide non-operational columns in Compact: Address, Copies, MM Ref. */
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(4),
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(4),
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(9),
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(9),
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(10),
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(10){display:none!important}
+
+  /* 10 visible columns = 100%. */
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(1),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(1){width:3%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(2),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(2){width:8%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(3),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(3){width:17%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(5),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(5){width:9%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(6),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(6){width:13%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(7),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(7){width:8%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(8),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(8){width:7%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(11),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(11){width:9%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(12),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(12){width:14%!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest th:nth-child(13),body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest td:nth-child(13){width:12%!important}
+
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest .mani-actions{justify-content:flex-end!important;gap:3px!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest .mani-actions button{width:29px!important;min-width:29px!important;height:32px!important;min-height:32px!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest thead th,
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest tbody td{padding-left:5px!important;padding-right:5px!important}
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest input:not([type=checkbox]),
+  body.mf-manifest-active:not(.v7-manifest-expanded) #card-manifest select{padding-left:6px!important;padding-right:6px!important;font-size:10px!important}
+
+  /* EDIT ALL: horizontal scroll allowed. Keep identity columns sticky. */
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest .tbl-wrap,
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest .table-wrap,
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest .manifest-table-wrap{overflow-x:auto!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest table{min-width:1500px!important;width:1500px!important;table-layout:fixed!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest th:nth-child(1),body.mf-manifest-active.v7-manifest-expanded #card-manifest td:nth-child(1){position:sticky!important;left:0!important;z-index:8!important;background:#061a23!important;width:48px!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest thead th:nth-child(1){background:#0b2a35!important;z-index:10!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest th:nth-child(2),body.mf-manifest-active.v7-manifest-expanded #card-manifest td:nth-child(2){position:sticky!important;left:48px!important;z-index:8!important;background:#061a23!important;width:92px!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest thead th:nth-child(2){background:#0b2a35!important;z-index:10!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest th:nth-child(3),body.mf-manifest-active.v7-manifest-expanded #card-manifest td:nth-child(3){position:sticky!important;left:140px!important;z-index:8!important;background:#061a23!important;width:210px!important;box-shadow:6px 0 10px rgba(0,0,0,.22)!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest thead th:nth-child(3){background:#0b2a35!important;z-index:10!important}
+}
