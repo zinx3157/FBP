@@ -11,10 +11,12 @@ async function bootstrap(){
   done=true;
   updateShell('● Cloud connected','Supabase session active');
   try{
+    // syncNow performs the authenticated workspace pull first, which rehydrates
+    // company profiles and operational records before the user starts work.
     if(typeof api.syncNow==='function')await api.syncNow();
     const now=status()||s;
     const printReady=typeof api.enqueueCloudPrintJob==='function'&&!!now.workspaceId&&now.signedIn===true;
-    updateShell(printReady?'● Cloud + Print ready':'● Cloud connected',printReady?'Supabase sync + Cloud Print':'Supabase sync active');
+    updateShell(printReady?'● Cloud + Print ready':'● Cloud connected',printReady?'Profiles synced · Cloud Print ready':'Profiles synced · Supabase active');
     document.dispatchEvent(new CustomEvent('v7:cloudready',{detail:{workspaceId:now.workspaceId||'',printReady}}));
   }catch(e){
     done=false;
@@ -24,13 +26,16 @@ async function bootstrap(){
   return done;
 }
 function start(){
+  if(timer){clearInterval(timer);timer=null}
+  tries=0;
   bootstrap();
   timer=setInterval(async()=>{
     tries++;
     if(await bootstrap()||tries>=30){clearInterval(timer);timer=null}
   },500);
 }
-document.addEventListener('v7:authsuccess',()=>{done=false;tries=0;start()});
-window.addEventListener('pageshow',()=>{done=false;tries=0;start()});
+document.addEventListener('click',e=>{if(e.target.closest?.('#v7-auth-submit,#cloud-sign-in')){done=false;setTimeout(start,150)}},true);
+document.addEventListener('v7:authsuccess',()=>{done=false;start()});
+window.addEventListener('pageshow',()=>{done=false;start()});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
