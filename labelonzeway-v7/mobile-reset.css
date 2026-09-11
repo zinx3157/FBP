@@ -1,0 +1,51 @@
+/* LabelOnZeWay V7 — MOBILE RESET. Loaded last on Android/iPhone UAT only. */
+@media (max-width:900px){
+  html[data-clean-mobile] body{overflow-x:hidden!important;padding-bottom:86px!important}
+  html[data-clean-mobile] #app{width:100%!important;max-width:100%!important;margin:0!important;padding:10px 10px 92px!important;overflow-x:hidden!important}
+
+  /* Top shell: brand only. Never squeeze desktop account controls into phone width. */
+  html[data-clean-mobile] #v7-shell{height:60px!important;display:flex!important;align-items:center!important;padding:0 12px!important;overflow:hidden!important}
+  html[data-clean-mobile] #v7-shell .v7-brand{display:flex!important;align-items:center!important;gap:9px!important;min-width:0!important}
+  html[data-clean-mobile] #v7-shell .v7-mark{width:36px!important;height:36px!important;min-width:36px!important}
+  html[data-clean-mobile] #v7-shell .v7-word{display:block!important;font-size:19px!important;white-space:nowrap!important}
+  html[data-clean-mobile] #v7-shell .v7-search,
+  html[data-clean-mobile] #v7-shell .v7-tools,
+  html[data-clean-mobile] #v7-shell .v7-subbrand{display:none!important}
+
+  /* One deterministic bottom nav. JS physically rebuilds the buttons in this order. */
+  html[data-clean-mobile] #v7-rail{position:fixed!important;left:8px!important;right:8px!important;bottom:8px!important;top:auto!important;width:auto!important;height:66px!important;padding:5px!important;z-index:1500!important;overflow:hidden!important;border:1px solid #285866!important;border-radius:17px!important;background:#071b25f5!important;backdrop-filter:blur(14px)!important}
+  html[data-clean-mobile] #v7-rail .v7-section-label,html[data-clean-mobile] #v7-rail .v7-foot{display:none!important}
+  html[data-clean-mobile] #v7-rail .v7-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;height:100%!important}
+  html[data-clean-mobile] #v7-rail .v7-nav>button{display:grid!important;place-items:center!important;min-width:0!important;min-height:54px!important;height:54px!important;padding:3px!important;margin:0!important;font-size:8px!important;text-align:center!important;border-radius:11px!important;overflow:hidden!important}
+  html[data-clean-mobile] #v7-rail .v7-nav>button .ico{width:23px!important;height:22px!important;font-size:10px!important;margin:0!important}
+  html[data-clean-mobile] body.v7-auth-locked #v7-rail{display:none!important}
+
+  /* Exactly one main app view at a time. */
+  html[data-clean-mobile] body.mobile-reset-ready #app>.card,
+  html[data-clean-mobile] body.mobile-reset-ready #app>.v7-label-grid,
+  html[data-clean-mobile] body.mobile-reset-ready #app>.v7-hero,
+  html[data-clean-mobile] body.mobile-reset-ready #app>.v7-stepbar{display:none!important}
+  html[data-clean-mobile] body.mobile-reset-ready #app>.mobile-view-active{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  html[data-clean-mobile] body.mobile-reset-ready #v7-label-grid.mobile-view-active{display:block!important}
+  html[data-clean-mobile] body.mobile-reset-ready #v7-label-hero.mobile-view-active,
+  html[data-clean-mobile] body.mobile-reset-ready #v7-label-stepbar.mobile-view-active{display:block!important}
+
+  /* Home must always be real content, never an empty placeholder. */
+  html[data-clean-mobile] #card-home.mobile-view-active{display:block!important;width:100%!important;min-height:200px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important}
+  html[data-clean-mobile] #card-home .ops-home-grid,html[data-clean-mobile] #card-home .ops-grid{grid-template-columns:1fr!important}
+
+  /* Address Book / Customers: full phone width, vertical list of full-width rows. */
+  html[data-clean-mobile] #m-addr.open{padding:8px!important;align-items:flex-start!important;overflow-y:auto!important}
+  html[data-clean-mobile] #m-addr .modal-box{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px)!important;max-height:calc(100vh - 28px)!important;margin:6px auto!important;padding:14px!important;border-radius:16px!important;overflow:auto!important}
+  html[data-clean-mobile] #m-addr #am-list{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;width:100%!important;max-width:100%!important}
+  html[data-clean-mobile] #m-addr .ab-item{width:100%!important;max-width:100%!important;min-width:0!important;display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;gap:8px 10px!important;align-items:start!important;padding:12px!important;margin:0!important;border-radius:12px!important;overflow:hidden!important}
+  html[data-clean-mobile] #m-addr .ab-item>*{min-width:0!important;max-width:100%!important}
+  html[data-clean-mobile] #m-addr .ab-item .v7-use-customer{grid-column:1/-1!important;width:100%!important;min-height:40px!important;margin-top:4px!important}
+  html[data-clean-mobile] #m-addr input,html[data-clean-mobile] #m-addr select,html[data-clean-mobile] #m-addr textarea{width:100%!important;max-width:100%!important;min-width:0!important}
+
+  /* Manifest: card UI only on phone. Desktop table is never allowed to leak in. */
+  html[data-clean-mobile] #card-manifest.mobile-view-active{display:block!important;width:100%!important;max-width:100%!important;padding:0!important;margin:0!important;overflow:visible!important;background:transparent!important;border:0!important}
+  html[data-clean-mobile] #card-manifest .tbl-wrap,html[data-clean-mobile] #card-manifest .table-wrap,html[data-clean-mobile] #card-manifest .manifest-table-wrap,html[data-clean-mobile] #card-manifest table{display:none!important}
+  html[data-clean-mobile] #card-manifest .mobile-manifest-list{display:grid!important;grid-template-columns:1fr!important;gap:9px!important;width:100%!important}
+  html[data-clean-mobile] #card-manifest .mobile-manifest-item{width:100%!important;max-width:100%!important;min-width:0!important}
+}
