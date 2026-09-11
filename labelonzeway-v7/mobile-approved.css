@@ -1,0 +1,34 @@
+@media(max-width:900px){
+html[data-mobile-uat] body{background:#031018!important;padding-bottom:78px!important}
+html[data-mobile-uat] #v7-shell{height:64px!important;padding:0 12px!important;background:#04141d!important;border-bottom:1px solid #173b48!important}
+html[data-mobile-uat] .v7-brand{gap:8px!important}html[data-mobile-uat] .v7-mark{width:34px!important;height:34px!important;border-radius:9px!important;font-size:13px!important}
+html[data-mobile-uat] .v7-word{display:block!important;font-size:17px!important}html[data-mobile-uat] .v7-subbrand,html[data-mobile-uat] .v7-search,html[data-mobile-uat] .v7-workspace,html[data-mobile-uat] .v7-avatar{display:none!important}
+html[data-mobile-uat] #app{padding:10px 10px 92px!important}
+html[data-mobile-uat] #card-manifest{padding:10px!important;border:0!important;background:transparent!important;box-shadow:none!important}
+html[data-mobile-uat] #card-manifest .card-head{padding:4px 2px 10px!important;margin:0!important;border:0!important}
+html[data-mobile-uat] #card-manifest .card-head h2{font-size:18px!important}
+html[data-mobile-uat] #card-manifest .manifest-tools,html[data-mobile-uat] #v7-manifest-toggle,html[data-mobile-uat] #v7-pod-open{display:none!important}
+html[data-mobile-uat] #mani-select-bar{display:none!important}
+html[data-mobile-uat] #card-manifest .tbl-wrap,html[data-mobile-uat] #card-manifest .table-wrap,html[data-mobile-uat] #card-manifest .manifest-table-wrap{border:0!important;background:transparent!important;overflow:visible!important}
+html[data-mobile-uat] #card-manifest table{display:none!important}
+html[data-mobile-uat] .mobile-manifest-list{display:grid!important;gap:10px!important;margin:8px 0 12px!important}
+html[data-mobile-uat] .mobile-manifest-item{display:block!important;border:1px solid #205061!important;border-left:4px solid #20d6c4!important;border-radius:13px!important;background:linear-gradient(180deg,#08212c,#061922)!important;overflow:hidden!important;box-shadow:0 6px 18px #0003!important}
+html[data-mobile-uat] .mobile-manifest-item>summary{list-style:none!important;display:grid!important;grid-template-columns:minmax(82px,.7fr) minmax(0,1.5fr) auto!important;align-items:center!important;gap:9px!important;min-height:88px!important;padding:12px!important;cursor:pointer!important}
+html[data-mobile-uat] .mobile-manifest-item>summary::-webkit-details-marker{display:none!important}
+html[data-mobile-uat] .mobile-order{font:900 13px/1.25 ui-monospace,SFMono-Regular,Menlo,monospace!important;color:#26e6dc!important}
+html[data-mobile-uat] .mobile-rec{min-width:0!important}.mobile-rec b{display:block!important;font-size:13px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.mobile-rec small{display:block!important;color:#91aeb6!important;margin-top:4px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:10px!important}
+html[data-mobile-uat] .mobile-amount{text-align:right!important;font:900 15px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace!important;color:#fff!important;white-space:nowrap!important}.mobile-amount small{display:block!important;margin-top:7px!important;padding:6px 8px!important;border-radius:7px!important;background:#0c6eb5!important;color:#fff!important;font:800 9px/1 sans-serif!important;text-transform:none!important;max-width:126px!important;white-space:normal!important}
+html[data-mobile-uat] .mobile-manifest-item.done .mobile-amount small{background:#078b4b!important}
+html[data-mobile-uat] .mobile-manifest-edit{border-top:1px solid #173d49!important;padding:10px!important;background:#061720!important}.mobile-edit-grid{grid-template-columns:1fr!important;gap:8px!important}.mobile-field{min-width:0!important}.mobile-field input,.mobile-field select{min-height:44px!important;font-size:16px!important}
+html[data-mobile-uat] #totals{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;margin:10px 0!important}html[data-mobile-uat] #totals .tot{min-width:0!important;padding:9px!important;border-radius:10px!important}html[data-mobile-uat] #totals .tot small{font-size:8px!important}html[data-mobile-uat] #totals .tot b{font-size:14px!important}
+html[data-mobile-uat] #v7-rail{left:8px!important;right:8px!important;bottom:8px!important;top:auto!important;width:auto!important;height:64px!important;padding:5px!important;border:1px solid #23505f!important;border-radius:17px!important;background:#061a24f5!important;backdrop-filter:blur(16px)!important;z-index:1100!important}
+html[data-mobile-uat] .v7-nav{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:2px!important}html[data-mobile-uat] .v7-nav button{display:none!important}html[data-mobile-uat] .v7-nav button[data-v7="home"],html[data-mobile-uat] .v7-nav button[data-v7="label"],html[data-mobile-uat] .v7-nav button[data-v7="manifest"],html[data-mobile-uat] .v7-nav button[data-v7="customers"],html[data-mobile-uat] .v7-nav button[data-v7="more"]{display:grid!important;place-items:center!important;min-height:52px!important;padding:3px!important;font-size:8px!important}html[data-mobile-uat] .v7-nav .ico{width:24px!important;height:22px!important;font-size:10px!important}
+}
+@media(max-width:390px){html[data-mobile-uat] .mobile-manifest-item>summary{grid-template-columns:76px minmax(0,1fr) auto!important;padding:10px!important}.mobile-amount{font-size:14px!important}.mobile-amount small{max-width:108px!important}html[data-mobile-uat] #totals{grid-template-columns:1fr 1fr!important}}
+html[data-mobile-uat="ios"] body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif!important}
+html[data-mobile-uat="ios"] .mobile-manifest-item{border-radius:16px!important}
+html[data-mobile-uat="ios"] .mobile-manifest-item>summary{min-height:96px!important}
+html[data-mobile-uat="ios"] #v7-rail{padding-bottom:max(5px,env(safe-area-inset-bottom))!important;height:calc(64px + env(safe-area-inset-bottom))!important}
+html[data-mobile-uat="ios"] #app{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
+html[data-mobile-uat="android"] .mobile-manifest-item>summary{min-height:86px!important}
+html[data-mobile-uat="android"] #v7-rail{border-radius:14px!important}
