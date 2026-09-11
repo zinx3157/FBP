@@ -29,6 +29,8 @@ for(const [engineName,browserType] of engines){
 
       await page.evaluate(()=>window.LabelOnZeWayV7ShowView?.('label'));
       await page.waitForTimeout(120);
+      await page.evaluate(()=>window.LabelOnZeWayV7SetStep?.('details'));
+      await page.waitForTimeout(80);
       const price=await page.evaluate(()=>{
         const wrap=document.querySelector('#f-price')?.closest('.money-wrap');
         const prefix=wrap?.querySelector('span'); const input=document.querySelector('#f-price');
@@ -36,11 +38,11 @@ for(const [engineName,browserType] of engines){
         input.value='0'; input.dispatchEvent(new Event('input',{bubbles:true}));
         const ir=input.getBoundingClientRect(),pr=prefix?.getBoundingClientRect(),pcs=prefix?getComputedStyle(prefix):null;
         const overlap=prefix&&pcs.display!=='none'&&Math.max(0,Math.min(ir.right,pr.right)-Math.max(ir.left,pr.left))>1;
-        return {missing:false,overlap,inputWidth:ir.width,prefixDisplay:pcs?.display||'none'};
+        return {missing:false,overlap,inputWidth:ir.width,prefixDisplay:pcs?.display||'none',visible:getComputedStyle(input).display!=='none'};
       });
       if(price.missing)fail(engineName,p.name,'price input or money wrapper missing');
       if(price.overlap)fail(engineName,p.name,'Ar prefix overlaps price value');
-      if(price.inputWidth<120)fail(engineName,p.name,`price input too narrow ${price.inputWidth}`);
+      if(!price.visible||price.inputWidth<120)fail(engineName,p.name,`visible price input too narrow ${price.inputWidth}`);
 
       for(const step of ['customer','details','preview']){
         const loc=page.locator(`.v7-step[data-step="${step}"]`);
