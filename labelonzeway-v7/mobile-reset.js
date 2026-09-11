@@ -10,16 +10,24 @@ function clearViews(){
 }
 function setActiveNav(view){$$('#v7-rail .v7-nav button[data-v7]').forEach(b=>b.classList.toggle('active',b.dataset.v7===view));}
 function restoreScroll(view){requestAnimationFrame(()=>window.scrollTo({top:scrollPos[view]||0,left:0,behavior:'auto'}));}
+function closeAddressBook(){
+  const modal=$('#m-addr');
+  if(!modal)return;
+  try{window.closeModal?.('m-addr')}catch(_e){}
+  modal.classList.remove('open','v7-customer-picker');
+  modal.setAttribute('aria-hidden','true');
+}
 function show(view){
   if(!isMobile())return;
   document.body.classList.add('mobile-reset-ready','v7-focus');
   if(view==='customers'){
-    scrollPos[currentView]=window.scrollY||0;
+    if(VIEW_IDS[currentView])scrollPos[currentView]=window.scrollY||0;
     setActiveNav('customers');
     try{window.openAddrModal?.()}catch(_e){}
     setTimeout(()=>{$('#m-addr')?.classList.add('open');repairAddressBook()},30);
     return;
   }
+  closeAddressBook();
   if(VIEW_IDS[currentView])scrollPos[currentView]=window.scrollY||0;
   clearViews();
   (VIEW_IDS[view]||VIEW_IDS.home).forEach(id=>$('#'+id)?.classList.add('mobile-view-active'));
@@ -49,6 +57,7 @@ function bind(){
     const create=e.target.closest?.('.v7-new,[data-act="startNewLabel"]');
     if(create){e.preventDefault();e.stopImmediatePropagation();show('label');return;}
     if(e.target.closest?.('#m-addr [data-close],#m-addr .modal-x')){
+      closeAddressBook();
       setTimeout(()=>setActiveNav(currentView),20);
     }
   },true);
