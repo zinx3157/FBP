@@ -6,6 +6,7 @@ on:
       - 'labelonzeway-v7/**'
       - 'labelonzeway/**'
       - 'tests/v7-ui-audit.mjs'
+      - 'tests/v7-final-uat-audit.mjs'
       - '.github/workflows/v7-ui-regression.yml'
   workflow_dispatch:
 
@@ -21,9 +22,6 @@ jobs:
       - name: Install Playwright Chromium and WebKit
         run: |
           npm install --no-save playwright@1.55.0
-          # GitHub's hosted image can temporarily expose a changing Google Chrome
-          # apt index. Playwright does not need that repository; disable it before
-          # dependency installation so mirror churn cannot invalidate apt hashes.
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources || true
           sudo rm -rf /var/lib/apt/lists/*
           sudo apt-get update
@@ -38,8 +36,10 @@ jobs:
           done
           cat /tmp/v7-http.log
           exit 1
-      - name: Run Chrome Safari desktop iPhone stress audit
+      - name: Run cross-browser control audit
         run: node tests/v7-ui-audit.mjs
+      - name: Run targeted final UAT audit
+        run: node tests/v7-final-uat-audit.mjs
       - name: Stop local web server
         if: always()
         run: kill $(cat /tmp/v7-http.pid) 2>/dev/null || true
