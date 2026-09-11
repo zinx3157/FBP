@@ -2,6 +2,7 @@
 'use strict';
 let done=false,tries=0,timer=null;
 const $=(q,r=document)=>r.querySelector(q);
+const isLocalAudit=(()=>{try{return /^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&new URLSearchParams(location.search).get('audit')==='1'}catch(_e){return false}})();
 function status(){try{return window.LabelOnZeWayCloud?.getStatus?.()||null}catch(_e){return null}}
 function updateShell(text,sub){const el=$('.v7-sync');if(!el)return;el.innerHTML=`${text}<small>${sub}</small>`}
 async function bootstrap(){
@@ -28,6 +29,7 @@ async function bootstrap(){
 function start(){
   if(timer){clearInterval(timer);timer=null}
   tries=0;
+  if(isLocalAudit)return;
   bootstrap();
   timer=setInterval(async()=>{
     tries++;
