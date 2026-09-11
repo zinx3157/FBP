@@ -1,0 +1,9 @@
+/* Remove address from Manifest UI only; customer/address data remains stored. */
+@media(min-width:901px){
+  body.mf-manifest-active #card-manifest th:nth-child(4),
+  body.mf-manifest-active #card-manifest td:nth-child(4){display:none!important}
+  body.mf-manifest-active.v7-manifest-expanded #card-manifest table{min-width:1360px!important}
+}
+@media(max-width:900px){
+  html[data-mobile-uat] .mobile-manifest-edit .mobile-field.mf-address-field{display:none!important}
+}
