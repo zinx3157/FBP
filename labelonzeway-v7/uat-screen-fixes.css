@@ -1,0 +1,45 @@
+/* UAT screen fixes: desktop manifest fit + stable mobile bottom navigation */
+@media (min-width:901px){
+  /* Expanded/Edit-all manifest must fit the Mac viewport without forcing a 1420px board. */
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest .tbl-wrap,
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest .table-wrap,
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest .manifest-table-wrap{overflow-x:hidden!important;max-width:100%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest table{width:100%!important;min-width:0!important;table-layout:fixed!important;font-size:9px!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th,
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest td{padding:5px 4px!important;font-size:9px!important;line-height:1.15!important;overflow-wrap:anywhere!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest input:not([type=checkbox]),
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest select,
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest textarea{min-height:32px!important;height:auto!important;padding:3px 5px!important;font-size:10px!important;line-height:1.15!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(1),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(1){width:3.5%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(2),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(2){width:5%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(3),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(3){width:14%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(4),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(4){width:7%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(5),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(5){width:7%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(6),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(6){width:13%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(7),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(7){width:7%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(8),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(8){width:7%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(9),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(9){width:7%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(10),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(10){width:7%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(11),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(11){width:8%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(12),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(12){width:11%!important}
+  body.v7-manifest-mode.v7-manifest-expanded #card-manifest th:nth-child(13),body.v7-manifest-mode.v7-manifest-expanded #card-manifest td:nth-child(13){width:4.5%!important}
+
+  /* Clear print/export zone on Manifest and archive/reconciliation modals. */
+  .v7-print-helper{display:flex!important;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 12px;padding:10px 12px;border:1px solid var(--line2,#265363);border-left:4px solid var(--orange,#ff642f);border-radius:10px;background:#071b25}
+  .v7-print-helper strong{font-size:10px;letter-spacing:.08em;color:#f2fbfc;margin-right:4px}
+  .v7-print-helper button{min-height:38px!important;padding:0 12px!important;border-radius:9px!important;font-size:10px!important;font-weight:850!important}
+}
+
+@media (max-width:900px){
+  /* Bottom navigation stays fixed, visible and above normal page content. */
+  #v7-rail{display:block!important;visibility:visible!important;opacity:1!important;position:fixed!important;left:8px!important;right:8px!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;top:auto!important;width:auto!important;height:62px!important;z-index:1150!important;transform:translateZ(0)!important;backface-visibility:hidden!important;pointer-events:auto!important;overflow:hidden!important}
+  #v7-rail .v7-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;height:100%!important}
+  #v7-rail .v7-nav button:nth-child(-n+5){display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  #v7-rail .v7-nav button{touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}
+  #app{padding-bottom:calc(96px + env(safe-area-inset-bottom))!important}
+  body.v7-auth-locked #v7-rail{display:none!important}
+
+  .v7-print-helper{display:grid!important;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0 12px;padding:9px;border:1px solid var(--line2,#265363);border-radius:10px;background:#071b25}
+  .v7-print-helper strong{grid-column:1/-1;font-size:10px;letter-spacing:.08em}
+  .v7-print-helper button{min-height:44px!important;font-size:10px!important}
+}
