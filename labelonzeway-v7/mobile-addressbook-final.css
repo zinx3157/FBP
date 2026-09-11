@@ -1,0 +1,29 @@
+/* LabelOnZeWay V7 — compact mobile Address Book, loaded last */
+@media(max-width:900px){
+  html[data-clean-mobile] #m-addr.open{padding:6px!important;align-items:flex-start!important;overflow-y:auto!important;overflow-x:hidden!important}
+  html[data-clean-mobile] #m-addr .modal-box{width:calc(100vw - 12px)!important;max-width:calc(100vw - 12px)!important;max-height:none!important;min-height:calc(100vh - 20px)!important;margin:4px auto 90px!important;padding:14px 12px 26px!important;border-radius:16px!important;overflow:visible!important}
+  html[data-clean-mobile] #m-addr h3{margin:2px 0 12px!important;font-size:20px!important;line-height:1.2!important}
+  html[data-clean-mobile] #m-addr #am-search{height:44px!important;min-height:44px!important;margin:0 0 10px!important;padding:0 12px!important;font-size:15px!important;border-radius:11px!important}
+
+  /* Customer list comes directly after search. */
+  html[data-clean-mobile] #m-addr #am-list{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:0 0 10px!important;padding:0!important}
+  html[data-clean-mobile] #m-addr .ab-item{display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;grid-template-areas:'check info' 'actions actions'!important;column-gap:10px!important;row-gap:8px!important;width:100%!important;max-width:100%!important;min-width:0!important;padding:11px!important;margin:0!important;border-radius:12px!important;overflow:hidden!important}
+  html[data-clean-mobile] #m-addr .ab-item>.am-check{grid-area:check!important;width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;margin:3px 0 0!important;padding:0!important}
+  html[data-clean-mobile] #m-addr .ab-item>.ab-info{grid-area:info!important;width:100%!important;min-width:0!important;max-width:100%!important;overflow:hidden!important}
+  html[data-clean-mobile] #m-addr .ab-name{font-size:14px!important;line-height:1.25!important;white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important}
+  html[data-clean-mobile] #m-addr .ab-meta{font-size:11px!important;line-height:1.35!important;white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important}
+  html[data-clean-mobile] #m-addr .mobile-ab-actions{grid-area:actions!important;display:grid!important;grid-template-columns:42px 42px minmax(118px,1fr)!important;gap:7px!important;width:100%!important;align-items:center!important}
+  html[data-clean-mobile] #m-addr .mobile-ab-actions>button{width:100%!important;min-width:0!important;height:36px!important;min-height:36px!important;margin:0!important;padding:0 8px!important;border-radius:8px!important;font-size:10px!important;line-height:1!important}
+  html[data-clean-mobile] #m-addr .mobile-ab-actions>.v7-use-customer{width:100%!important;min-width:0!important;height:36px!important;min-height:36px!important;margin:0!important;padding:0 10px!important;font-size:10px!important;white-space:nowrap!important}
+
+  /* Move management utilities to a compact menu at the end. */
+  html[data-clean-mobile] #mobile-ab-tools,html[data-clean-mobile] #mobile-ab-add{width:100%!important;margin:8px 0 0!important;border:1px solid #285563!important;border-radius:11px!important;background:#071b24!important;overflow:hidden!important}
+  html[data-clean-mobile] #mobile-ab-tools>summary,html[data-clean-mobile] #mobile-ab-add>summary{list-style:none!important;display:flex!important;align-items:center!important;justify-content:space-between!important;height:42px!important;padding:0 12px!important;cursor:pointer!important;font-size:11px!important;font-weight:900!important;color:#dcecef!important}
+  html[data-clean-mobile] #mobile-ab-tools>summary::-webkit-details-marker,html[data-clean-mobile] #mobile-ab-add>summary::-webkit-details-marker{display:none!important}
+  html[data-clean-mobile] #mobile-ab-tools .mobile-ab-tools-body,html[data-clean-mobile] #mobile-ab-add .mobile-ab-add-body{padding:9px!important;border-top:1px solid #234957!important}
+  html[data-clean-mobile] #mobile-ab-tools .rec-toolbar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin:0!important}
+  html[data-clean-mobile] #mobile-ab-tools .rec-toolbar .btn{width:100%!important;height:36px!important;min-height:36px!important;margin:0!important;padding:0 7px!important;font-size:9px!important;border-radius:8px!important;white-space:normal!important}
+  html[data-clean-mobile] #mobile-ab-tools #am-select-tools{display:grid!important;grid-template-columns:auto 1fr!important;gap:8px!important;align-items:center!important;margin:8px 0 0!important;padding:8px!important;border-radius:8px!important}
+  html[data-clean-mobile] #mobile-ab-tools #am-select-tools input[type=checkbox]{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important}
+  html[data-clean-mobile] #mobile-ab-add input,html[data-clean-mobile] #mobile-ab-add select,html[data-clean-mobile] #mobile-ab-add textarea{width:100%!important;max-width:100%!important;min-width:0!important}
+}
