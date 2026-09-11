@@ -7,12 +7,9 @@
   .v7-mobile-back{min-height:40px!important;height:40px!important;padding:0 11px!important;margin:0!important}
   #app{padding-top:4px!important;padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
   body.v7-subview #app{padding-top:2px!important}
-
-  /* Keep fixed bottom nav, but never cover the last page controls. */
   .v7-mobile-nav,#v7-rail{bottom:calc(6px + env(safe-area-inset-bottom))!important}
   #card-manifest,#card-more,.v7-label-grid{padding-bottom:calc(78px + env(safe-area-inset-bottom))!important}
 
-  /* New Label: compact hero and one-line horizontal stepper. */
   body[data-mobile-view="new"] #v7-label-hero{min-height:auto!important;padding:14px 16px!important;margin:4px 0 8px!important}
   body[data-mobile-view="new"] #v7-label-hero h1{font-size:25px!important;line-height:1.04!important;margin:4px 0!important}
   body[data-mobile-view="new"] #v7-label-hero p{font-size:11px!important;line-height:1.3!important}
@@ -27,7 +24,6 @@
   body.v7-mobile-step-details #v7-label-stepbar .v7-step-actions .print{opacity:.55!important;pointer-events:none!important}
   body.v7-mobile-step-preview #v7-label-stepbar .v7-step-actions .print{display:inline-flex!important;opacity:1!important;pointer-events:auto!important;align-items:center!important;justify-content:center!important}
 
-  /* Customer panel density. */
   .v7-customer-panel{padding:12px!important;margin-bottom:8px!important}
   .v7-panel-title{margin-bottom:8px!important}
   .v7-customer-tabs{margin-bottom:8px!important}
@@ -35,18 +31,19 @@
   .v7-customer-search-wrap{gap:6px!important;margin-bottom:8px!important}
   .v7-customer-current{min-height:0!important;padding:10px!important}
 
-  /* Address picker must use the page/modal scroll, not its own trapped scroller. */
-  #m-addr.v7-customer-picker .modal-box{overflow-y:auto!important;overflow-x:hidden!important}
-  #m-addr.v7-customer-picker #am-list{max-height:none!important;overflow:visible!important;margin-bottom:8px!important}
-  #m-addr.v7-customer-picker .ab-item{padding:9px 10px!important;margin:6px 0!important;border-radius:12px!important}
+  /* Saved Customers: one scroll owner. Keep every USE CUSTOMER action reachable. */
+  #m-addr.v7-customer-picker{overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain!important;padding-bottom:calc(20px + env(safe-area-inset-bottom))!important}
+  #m-addr.v7-customer-picker .modal-box{height:auto!important;max-height:none!important;overflow:visible!important;padding-bottom:calc(110px + env(safe-area-inset-bottom))!important}
+  #m-addr.v7-customer-picker #am-list{height:auto!important;max-height:none!important;overflow:visible!important;margin-bottom:18px!important;padding-bottom:12px!important}
+  #m-addr.v7-customer-picker .ab-item{padding:9px 10px!important;margin:6px 0!important;border-radius:12px!important;overflow:visible!important}
   #m-addr.v7-customer-picker .ab-info{font-size:11px!important;line-height:1.3!important}
-  #m-addr.v7-customer-picker .v7-use-customer{min-height:40px!important;height:40px!important;margin-top:6px!important;font-size:10px!important}
+  #m-addr.v7-customer-picker .v7-use-customer{display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;z-index:2!important;min-height:44px!important;height:44px!important;margin:8px 0 2px!important;font-size:10px!important}
+  #m-addr.v7-customer-picker .ab-item:last-child{margin-bottom:24px!important}
   #m-addr.v7-customer-picker #am-form-title,
   #m-addr.v7-customer-picker #am-form-title~.row2,
   #m-addr.v7-customer-picker #am-form-title~textarea,
   #m-addr.v7-customer-picker #am-form-title~button{display:none!important}
 
-  /* Manifest: content starts immediately; tools become a compact sheet/grid. */
   body[data-mobile-view="manifest"] #card-manifest{margin-top:2px!important;padding-top:0!important}
   body[data-mobile-view="manifest"] #card-manifest .card-head{display:grid!important;grid-template-columns:1fr auto!important;gap:6px 8px!important;align-items:center!important;margin-bottom:8px!important;padding-bottom:8px!important}
   body[data-mobile-view="manifest"] #card-manifest .card-head h2{font-size:19px!important}
@@ -58,7 +55,6 @@
   body[data-mobile-view="manifest"] #manifest-action-menu .action-menu-grid .btn{min-height:42px!important;height:42px!important;padding:0 7px!important;font-size:9px!important;margin:0!important;white-space:normal!important;line-height:1.1!important}
   body[data-mobile-view="manifest"] #mani-select-bar{margin:6px 0!important;padding:8px!important}
 
-  /* More/settings: flatter hierarchy and tighter cards. */
   body[data-mobile-view="more"] #card-more{margin-top:2px!important;padding:10px!important;border-radius:14px!important}
   body[data-mobile-view="more"] #card-more .card-head{margin-bottom:8px!important;padding-bottom:8px!important}
   body[data-mobile-view="more"] #card-more .ops-panel,
@@ -68,7 +64,6 @@
 }
 
 @media(max-width:430px){
-  /* Match Samsung/iPhone screenshots: eliminate desktop-like top gaps. */
   #app{padding-left:8px!important;padding-right:8px!important;padding-top:2px!important}
   body.v7-subview #app{padding-top:0!important}
   body[data-mobile-view="manifest"] #card-manifest,
