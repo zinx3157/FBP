@@ -1,0 +1,41 @@
+/* Mac Manifest full-width workspace: replace permanent rail with compact menu */
+@media (min-width:901px){
+  body.v7-manifest-mode #v7-rail{display:none!important}
+  body.v7-manifest-mode #app{padding-left:12px!important;padding-right:12px!important;padding-top:14px!important}
+  body.v7-manifest-mode #card-manifest{width:100%!important;max-width:none!important;margin:0!important}
+
+  #v7-manifest-menu-button{position:fixed;left:12px;top:100px;z-index:1100;width:42px;height:42px;min-height:42px!important;padding:0!important;border:1px solid #2a5260!important;border-radius:10px!important;background:#09232e!important;color:#e8f7f8!important;font-size:19px!important;font-weight:900!important;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+  #v7-manifest-menu-button:hover{border-color:#62ead7!important}
+  #v7-manifest-menu{position:fixed;left:12px;top:148px;z-index:1101;width:220px;padding:8px;border:1px solid #2a5260;border-radius:12px;background:#071a24;box-shadow:0 18px 50px rgba(0,0,0,.48);display:none}
+  #v7-manifest-menu.open{display:grid;gap:5px}
+  #v7-manifest-menu button{width:100%!important;min-height:38px!important;padding:0 11px!important;display:flex!important;align-items:center!important;gap:10px!important;border:0!important;border-radius:8px!important;background:transparent!important;color:#d9e9ec!important;text-align:left!important;font-size:12px!important;font-weight:700!important}
+  #v7-manifest-menu button:hover,#v7-manifest-menu button.active{background:#102b35!important;color:#fff!important}
+  #v7-manifest-menu .ico{width:24px;height:24px;display:grid;place-items:center;border-radius:7px;background:#12303b;color:#aeeae2}
+  body:not(.v7-manifest-mode) #v7-manifest-menu-button,body:not(.v7-manifest-mode) #v7-manifest-menu{display:none!important}
+
+  /* Reserve a little room for the floating menu button only at the top, not for the table. */
+  body.v7-manifest-mode #card-manifest .card-head{padding-left:50px!important}
+
+  /* Compact view: use the reclaimed width instead of forcing unnecessary horizontal scroll. */
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table{width:100%!important;min-width:920px!important;table-layout:fixed!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(1),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(1){width:4%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(2),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(2){width:7%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(3),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(3){width:24%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(6),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(6){width:17%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(7),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(7){width:9%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(8),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(8){width:9%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(11),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(11){width:10%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(12),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(12){width:13%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(13),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(13){width:7%!important}
+
+  /* Edit all stays horizontally scrollable, but is deliberately balanced and denser. */
+  body.v7-manifest-expanded #card-manifest table{width:100%!important;min-width:1280px!important;table-layout:fixed!important}
+  body.v7-manifest-mode #card-manifest thead th{padding-left:6px!important;padding-right:6px!important}
+  body.v7-manifest-mode #card-manifest td{padding-left:6px!important;padding-right:6px!important}
+  body.v7-manifest-mode #card-manifest input:not([type=checkbox]),body.v7-manifest-mode #card-manifest select{padding-left:7px!important;padding-right:7px!important;font-size:11px!important}
+}
+
+@media (min-width:901px) and (max-width:1100px){
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table{min-width:860px!important}
+  body.v7-manifest-expanded #card-manifest table{min-width:1180px!important}
+}
