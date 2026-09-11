@@ -1,84 +1,74 @@
-/* Approved Design 1 — Mac Manifest */
+/* Approved Design 1 — Mac Manifest — forced desktop application */
 @media (min-width:901px){
-  body.v7-manifest-mode #v7-rail{display:block!important;width:138px!important;padding:18px 8px!important;overflow-y:auto!important;overflow-x:hidden!important}
-  body.v7-manifest-mode #v7-rail .v7-section-label{display:block!important;padding:0 8px 10px!important;font-size:9px!important}
-  body.v7-manifest-mode #v7-rail .v7-foot{display:none!important}
-  body.v7-manifest-mode #v7-rail .v7-nav button{display:flex!important;justify-content:flex-start!important;gap:8px!important;padding:0 9px!important;min-height:44px!important;font-size:10px!important}
-  body.v7-manifest-mode #v7-rail .v7-nav button>span:last-child{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  body.v7-manifest-mode #v7-rail .v7-nav .ico{width:26px!important;height:26px!important;min-width:26px!important}
-  body.v7-manifest-mode #app{padding-left:150px!important;padding-right:12px!important;padding-top:14px!important}
-  body.v7-manifest-mode #v7-manifest-menu-button,body.v7-manifest-mode #v7-manifest-menu{display:none!important}
+  body.v7-design1-mac #v7-rail{display:block!important;width:142px!important;padding:18px 8px!important;overflow-y:auto!important;overflow-x:hidden!important;background:#041821!important;border-right:1px solid #183d49!important}
+  body.v7-design1-mac #v7-rail .v7-section-label{display:block!important;padding:0 8px 10px!important;font-size:9px!important}
+  body.v7-design1-mac #v7-rail .v7-foot{display:none!important}
+  body.v7-design1-mac #v7-rail .v7-nav button{display:flex!important;justify-content:flex-start!important;gap:8px!important;padding:0 9px!important;min-height:44px!important;font-size:10px!important}
+  body.v7-design1-mac #v7-rail .v7-nav button>span:last-child{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  body.v7-design1-mac #v7-rail .v7-nav .ico{width:26px!important;height:26px!important;min-width:26px!important}
+  body.v7-design1-mac #app{padding-left:154px!important;padding-right:12px!important;padding-top:14px!important}
+  body.v7-design1-mac #v7-manifest-menu-button,body.v7-design1-mac #v7-manifest-menu{display:none!important}
 
-  body.v7-manifest-mode #card-manifest{display:flex!important;flex-direction:column!important;width:100%!important;max-width:none!important;margin:0!important;padding:10px!important;border-radius:14px!important;background:#061922!important;border:1px solid #153d4a!important;overflow:hidden!important}
-  body.v7-manifest-mode #card-manifest .card-head{order:1!important;position:sticky!important;top:88px!important;z-index:20!important;display:grid!important;grid-template-columns:minmax(170px,1fr) auto auto auto!important;gap:9px!important;min-height:64px!important;margin:0!important;padding:8px 10px!important;background:#071e29!important;border-bottom:1px solid #1b4654!important}
-  body.v7-manifest-mode #card-manifest .card-head h2{font-size:18px!important;font-weight:900!important;letter-spacing:-.02em!important}
-  body.v7-manifest-mode #card-manifest .card-head h2:before{width:5px!important;height:20px!important;background:#29e1d2!important}
-  body.v7-manifest-mode #card-manifest #mani-date{font-size:9px!important;color:#8faab1!important}
-  body.v7-manifest-mode #card-manifest .manifest-tools{grid-column:auto!important;margin:0!important;display:flex!important;align-items:center!important;gap:6px!important}
-  body.v7-manifest-mode #card-manifest .compact-action-menu{display:flex!important;align-items:center!important;gap:6px!important}
-  body.v7-manifest-mode #card-manifest .compact-action-menu>summary{display:none!important}
-  body.v7-manifest-mode #card-manifest .compact-action-menu[open]>*:not(summary){display:flex!important;align-items:center!important;gap:6px!important}
-  body.v7-manifest-mode #v7-manifest-toggle{grid-column:auto!important;min-height:38px!important;padding:0 13px!important;border-color:#1d6f78!important;background:#0a2833!important;color:#eaf9fa!important}
-  body.v7-manifest-mode #v7-pod-open{grid-column:auto!important;min-height:38px!important;padding:0 13px!important}
+  body.v7-design1-mac #card-manifest{display:flex!important;flex-direction:column!important;width:100%!important;max-width:none!important;margin:0!important;padding:12px!important;border-radius:14px!important;background:#061922!important;border:1px solid #174653!important;overflow:hidden!important;box-shadow:0 14px 34px rgba(0,0,0,.18)!important}
+  body.v7-design1-mac #card-manifest .card-head{order:1!important;position:sticky!important;top:88px!important;z-index:20!important;display:grid!important;grid-template-columns:minmax(160px,1fr) auto auto auto!important;align-items:center!important;gap:8px!important;min-height:62px!important;margin:0!important;padding:8px 10px!important;background:#071e29!important;border-bottom:1px solid #1b4654!important}
+  body.v7-design1-mac #card-manifest .card-head h2{font-size:18px!important;font-weight:900!important;letter-spacing:-.02em!important;color:#fff!important}
+  body.v7-design1-mac #card-manifest #mani-date{font-size:9px!important;color:#8faab1!important}
+  body.v7-design1-mac #card-manifest .manifest-tools{margin:0!important;display:flex!important;align-items:center!important;gap:6px!important}
+  body.v7-design1-mac #card-manifest .compact-action-menu{display:flex!important;align-items:center!important;gap:6px!important}
+  body.v7-design1-mac #card-manifest .compact-action-menu>summary{display:none!important}
+  body.v7-design1-mac #card-manifest .compact-action-menu>*:not(summary){display:flex!important;align-items:center!important;gap:6px!important}
+  body.v7-design1-mac #v7-manifest-toggle{min-height:38px!important;padding:0 14px!important;border:1px solid #1b8b8d!important;background:#0a2833!important;color:#efffff!important;border-radius:8px!important}
+  body.v7-design1-mac #v7-pod-open{min-height:38px!important;padding:0 14px!important;border-radius:8px!important}
 
-  body.v7-manifest-mode #v7-manifest-print-helper{order:2!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:7px!important;margin:0!important;padding:8px 10px 10px!important;border:0!important;background:#071e29!important}
-  body.v7-manifest-mode #v7-manifest-print-helper strong{display:none!important}
-  body.v7-manifest-mode #v7-manifest-print-helper .btn{min-height:36px!important;padding:0 12px!important;font-size:10px!important;border-radius:8px!important;background:#0a2631!important;border:1px solid #245261!important}
+  body.v7-design1-mac #v7-manifest-print-helper{order:2!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:7px!important;margin:0!important;padding:8px 10px 10px!important;border:0!important;background:#071e29!important}
+  body.v7-design1-mac #v7-manifest-print-helper strong{display:none!important}
+  body.v7-design1-mac #v7-manifest-print-helper .btn{min-height:36px!important;padding:0 12px!important;font-size:10px!important;border-radius:8px!important;background:#0a2631!important;border:1px solid #245261!important}
 
-  body.v7-manifest-mode #mani-select-bar{order:5!important;display:flex!important;align-items:center!important;gap:10px!important;min-height:50px!important;margin:10px 0 0!important;padding:0 10px!important;border:1px solid #1e4552!important;border-radius:10px!important;background:#071c26!important}
+  body.v7-design1-mac #mani-select-bar{order:5!important;display:flex!important;align-items:center!important;gap:10px!important;min-height:48px!important;margin:10px 0 0!important;padding:0 10px!important;border:1px solid #1e4552!important;border-radius:10px!important;background:#071c26!important}
 
-  body.v7-manifest-mode #card-manifest .tbl-wrap,body.v7-manifest-mode #card-manifest .table-wrap,body.v7-manifest-mode #card-manifest .manifest-table-wrap{order:3!important;overflow:auto!important;border:1px solid #1d4654!important;border-radius:10px!important;background:#051720!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important}
-  body.v7-manifest-mode #card-manifest table{width:100%!important;table-layout:fixed!important;border-collapse:separate!important;border-spacing:0!important}
-  body.v7-manifest-mode #card-manifest thead th{position:sticky!important;top:0!important;z-index:6!important;height:38px!important;padding:0 8px!important;background:#0b2a35!important;border-bottom:1px solid #235463!important;color:#91b4bc!important;font:800 9px/1 var(--mono)!important;letter-spacing:.06em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  body.v7-manifest-mode #card-manifest tbody tr{background:#061a23!important}
-  body.v7-manifest-mode #card-manifest tbody tr:hover{background:#08232e!important}
-  body.v7-manifest-mode #card-manifest tbody td{height:70px!important;padding:8px!important;border-top:1px solid #153744!important;vertical-align:middle!important;overflow:hidden!important}
-  body.v7-manifest-mode #card-manifest input:not([type=checkbox]),body.v7-manifest-mode #card-manifest select{width:100%!important;min-width:0!important;min-height:38px!important;padding:0 9px!important;border-radius:8px!important;background:#071b24!important;border:1px solid #234d5a!important;color:#edf7f8!important;font-size:11px!important;font-weight:750!important}
-  body.v7-manifest-mode #card-manifest td:last-child{white-space:nowrap!important}
-  body.v7-manifest-mode #card-manifest td:last-child .btn,body.v7-manifest-mode #card-manifest td:last-child button{width:32px!important;min-width:32px!important;height:36px!important;min-height:36px!important;margin:2px!important;padding:0!important;border-radius:8px!important}
+  body.v7-design1-mac #card-manifest .tbl-wrap,body.v7-design1-mac #card-manifest .table-wrap,body.v7-design1-mac #card-manifest .manifest-table-wrap{order:3!important;width:100%!important;max-width:100%!important;overflow:auto!important;border:1px solid #1d4654!important;border-radius:10px!important;background:#051720!important}
+  body.v7-design1-mac #card-manifest table{width:100%!important;min-width:1080px!important;table-layout:fixed!important;border-collapse:separate!important;border-spacing:0!important}
+  body.v7-design1-mac #card-manifest thead th{position:sticky!important;top:0!important;z-index:6!important;height:38px!important;padding:0 7px!important;background:#0b2a35!important;border-bottom:1px solid #235463!important;color:#91b4bc!important;font-size:9px!important;font-weight:800!important;letter-spacing:.05em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  body.v7-design1-mac #card-manifest tbody tr{background:#061a23!important}
+  body.v7-design1-mac #card-manifest tbody tr:hover{background:#08232e!important}
+  body.v7-design1-mac #card-manifest tbody td{height:68px!important;padding:7px!important;border-top:1px solid #153744!important;vertical-align:middle!important;overflow:hidden!important}
+  body.v7-design1-mac #card-manifest input:not([type=checkbox]),body.v7-design1-mac #card-manifest select{width:100%!important;min-width:0!important;min-height:38px!important;padding:0 9px!important;border-radius:8px!important;background:#071b24!important;border:1px solid #234d5a!important;color:#edf7f8!important;font-size:11px!important;font-weight:750!important}
+  body.v7-design1-mac #card-manifest td:last-child{white-space:nowrap!important}
+  body.v7-design1-mac #card-manifest td:last-child button{width:32px!important;min-width:32px!important;height:36px!important;min-height:36px!important;margin:2px!important;padding:0!important;border-radius:8px!important}
 
-  /* Compact Design 1: operational columns only. */
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table{min-width:1120px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(4),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(4),
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(9),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(9){display:none!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(1),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(1){width:3%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(2),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(2){width:7%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(3),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(3){width:16%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(5),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(5){width:10%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(6),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(6){width:12%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(7),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(7){width:8%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(8),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(8){width:7%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(10),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(10){width:8%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(11),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(11){width:10%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(12),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(12){width:13%!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(13),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(13){width:6%!important}
+  /* Compact operational grid: force exact approved proportions. */
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(4),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(4),
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(9),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(9){display:none!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(1),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(1){width:3%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(2),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(2){width:7%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(3),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(3){width:18%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(5),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(5){width:10%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(6),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(6){width:12%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(7),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(7){width:8%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(8),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(8){width:8%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(10),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(10){width:8%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(11),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(11){width:9%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(12),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(12){width:12%!important}
+  body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table th:nth-child(13),body.v7-design1-mac:not(.v7-manifest-expanded) #card-manifest table td:nth-child(13){width:5%!important}
 
-  /* Edit All: explicit 13-column grid with horizontal scroll; no browser auto-stretch. */
-  body.v7-manifest-expanded #card-manifest table{min-width:1480px!important;table-layout:fixed!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(1),body.v7-manifest-expanded #card-manifest table td:nth-child(1){width:3%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(2),body.v7-manifest-expanded #card-manifest table td:nth-child(2){width:6%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(3),body.v7-manifest-expanded #card-manifest table td:nth-child(3){width:12%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(4),body.v7-manifest-expanded #card-manifest table td:nth-child(4){width:12%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(5),body.v7-manifest-expanded #card-manifest table td:nth-child(5){width:8%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(6),body.v7-manifest-expanded #card-manifest table td:nth-child(6){width:10%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(7),body.v7-manifest-expanded #card-manifest table td:nth-child(7){width:7%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(8),body.v7-manifest-expanded #card-manifest table td:nth-child(8){width:6%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(9),body.v7-manifest-expanded #card-manifest table td:nth-child(9){width:5%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(10),body.v7-manifest-expanded #card-manifest table td:nth-child(10){width:7%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(11),body.v7-manifest-expanded #card-manifest table td:nth-child(11){width:8%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(12),body.v7-manifest-expanded #card-manifest table td:nth-child(12){width:9%!important}
-  body.v7-manifest-expanded #card-manifest table th:nth-child(13),body.v7-manifest-expanded #card-manifest table td:nth-child(13){width:7%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table{min-width:1480px!important;table-layout:fixed!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(1),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(1){width:3%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(2),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(2){width:6%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(3),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(3){width:12%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(4),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(4){width:12%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(5),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(5){width:8%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(6),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(6){width:10%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(7),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(7){width:7%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(8),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(8){width:6%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(9),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(9){width:5%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(10),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(10){width:7%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(11),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(11){width:8%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(12),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(12){width:9%!important}
+  body.v7-design1-mac.v7-manifest-expanded #card-manifest table th:nth-child(13),body.v7-design1-mac.v7-manifest-expanded #card-manifest table td:nth-child(13){width:7%!important}
 
-  body.v7-manifest-mode #totals{order:4!important;display:grid!important;grid-template-columns:repeat(6,minmax(120px,1fr))!important;gap:9px!important;margin:10px 0 0!important}
-  body.v7-manifest-mode #totals .tot{min-width:0!important;min-height:62px!important;padding:10px 12px!important;border:1px solid #1f4856!important;border-radius:10px!important;background:#081e28!important}
-  body.v7-manifest-mode #totals .tot small{font-size:8px!important;color:#89a7ae!important}
-  body.v7-manifest-mode #totals .tot b{font-size:18px!important}
+  body.v7-design1-mac #totals{order:4!important;display:grid!important;grid-template-columns:repeat(6,minmax(110px,1fr))!important;gap:8px!important;margin:10px 0 0!important}
+  body.v7-design1-mac #totals .tot{min-width:0!important;min-height:62px!important;padding:10px 12px!important;border:1px solid #1f4856!important;border-radius:10px!important;background:#081e28!important}
+  body.v7-design1-mac #totals .tot small{font-size:8px!important;color:#89a7ae!important}
+  body.v7-design1-mac #totals .tot b{font-size:18px!important}
 }
-
-@media (min-width:901px) and (max-width:1180px){
-  body.v7-manifest-mode #v7-rail{width:112px!important}
-  body.v7-manifest-mode #app{padding-left:124px!important}
-  body.v7-manifest-mode #v7-rail .v7-nav button{font-size:9px!important;padding:0 6px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table{min-width:1060px!important}
-  body.v7-manifest-mode #totals{grid-template-columns:repeat(3,minmax(120px,1fr))!important}
-}
+@media (min-width:901px) and (max-width:1180px){body.v7-design1-mac #v7-rail{width:112px!important}body.v7-design1-mac #app{padding-left:124px!important}body.v7-design1-mac #totals{grid-template-columns:repeat(3,minmax(120px,1fr))!important}}
