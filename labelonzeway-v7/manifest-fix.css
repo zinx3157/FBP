@@ -1,4 +1,4 @@
-/* LabelOnZeWay V7 manifest workspace — compact operations-board layout */
+/* LabelOnZeWay V7 manifest workspace — proportionate Mac operations-board layout */
 @media (min-width:901px){
   body.v7-manifest-mode #v7-rail{width:82px;padding:20px 8px;overflow:hidden}
   body.v7-manifest-mode #v7-rail .v7-section-label,body.v7-manifest-mode #v7-rail .v7-foot,body.v7-manifest-mode #v7-rail .v7-nav button>span:last-child{display:none!important}
@@ -7,7 +7,7 @@
   body.v7-manifest-mode #app{padding-left:104px!important;padding-right:14px!important}
 
   body.v7-manifest-mode #card-manifest{width:100%!important;max-width:none!important;overflow:hidden!important;padding:0 10px 12px!important;border-radius:14px!important}
-  body.v7-manifest-mode #card-manifest .card-head{position:sticky;top:0;z-index:8;display:grid!important;grid-template-columns:auto auto 1fr auto auto;align-items:center;gap:12px;min-height:68px;padding:0 2px!important;border-bottom:1px solid rgba(91,207,199,.16);background:#08202b!important}
+  body.v7-manifest-mode #card-manifest .card-head{position:sticky;top:0;z-index:8;display:grid!important;grid-template-columns:auto auto 1fr auto auto auto;align-items:center;gap:10px;min-height:68px;padding:0 2px!important;border-bottom:1px solid rgba(91,207,199,.16);background:#08202b!important}
   body.v7-manifest-mode #card-manifest .card-head h2{margin:0!important;font-size:16px!important;letter-spacing:.01em!important;text-transform:none!important}
   body.v7-manifest-mode #card-manifest .card-head h2:before{content:'';display:inline-block;width:5px;height:18px;margin-right:10px;border-radius:4px;background:#62ead7;vertical-align:-4px}
   body.v7-manifest-mode #card-manifest #mani-date{font-size:9px!important;letter-spacing:.12em!important;color:#8aa8b0!important;white-space:nowrap}
@@ -23,18 +23,19 @@
   body.v7-manifest-mode #mani-select-bar .btn:disabled{display:none!important}
 
   body.v7-manifest-mode #card-manifest .tbl-wrap,body.v7-manifest-mode #card-manifest .table-wrap,body.v7-manifest-mode #card-manifest .manifest-table-wrap{overflow-x:auto!important;overscroll-behavior-inline:contain;border:1px solid rgba(105,170,178,.22)!important;border-radius:9px!important;background:#061922!important}
-  body.v7-manifest-mode #card-manifest table{table-layout:fixed!important;width:100%!important;min-width:1110px!important;border-collapse:collapse!important}
-  body.v7-manifest-mode #card-manifest thead th{height:30px!important;padding:0 8px!important;border-bottom:1px solid rgba(98,234,215,.17)!important;background:#0a2730!important;color:#8faab1!important;font:800 9px/1 var(--mono)!important;letter-spacing:.08em!important;text-align:left!important}
+  body.v7-manifest-mode #card-manifest table{table-layout:fixed!important;width:100%!important;min-width:1040px!important;border-collapse:collapse!important}
+  body.v7-manifest-mode #card-manifest thead th{height:30px!important;padding:0 7px!important;border-bottom:1px solid rgba(98,234,215,.17)!important;background:#0a2730!important;color:#8faab1!important;font:800 9px/1 var(--mono)!important;letter-spacing:.05em!important;text-align:left!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
   body.v7-manifest-mode #card-manifest tbody tr{background:#071b24!important}
   body.v7-manifest-mode #card-manifest tbody tr+tr{border-top:1px solid rgba(115,173,180,.18)!important}
-  body.v7-manifest-mode #card-manifest td{height:74px!important;padding:8px!important;vertical-align:middle!important;white-space:normal!important;overflow:hidden!important;color:#dce9eb!important}
+  body.v7-manifest-mode #card-manifest td{height:72px!important;padding:7px!important;vertical-align:middle!important;white-space:normal!important;overflow:hidden!important;color:#dce9eb!important}
   body.v7-manifest-mode #card-manifest td:first-child{text-align:center!important}
   body.v7-manifest-mode #card-manifest td:nth-child(2){font:850 11px/1.25 var(--mono)!important;color:#66ddd2!important;text-align:center!important}
-  body.v7-manifest-mode #card-manifest input:not([type=checkbox]),body.v7-manifest-mode #card-manifest select{width:100%!important;min-width:0!important;min-height:38px!important;box-sizing:border-box!important;padding:0 10px!important;border:1px solid #294954!important;border-radius:8px!important;background:#081a23!important;color:#eef7f8!important;font-size:12px!important;font-weight:700!important}
+  body.v7-manifest-mode #card-manifest input:not([type=checkbox]),body.v7-manifest-mode #card-manifest select{width:100%!important;min-width:0!important;min-height:36px!important;box-sizing:border-box!important;padding:0 8px!important;border:1px solid #294954!important;border-radius:8px!important;background:#081a23!important;color:#eef7f8!important;font-size:11px!important;font-weight:700!important}
   body.v7-manifest-mode #card-manifest input:focus,body.v7-manifest-mode #card-manifest select:focus{outline:none!important;border-color:#61ded5!important;box-shadow:0 0 0 2px rgba(97,222,213,.14)!important}
   body.v7-manifest-mode #card-manifest .dt-in{min-width:0!important;width:100%!important}
   body.v7-manifest-mode #card-manifest td:nth-child(6) input+input,body.v7-manifest-mode #card-manifest td:nth-child(6) .dt-in+*{margin-top:5px!important}
 
+  /* Compact: keep operational columns visible and make their total exactly match the table grid. */
   body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(4),
   body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(4),
   body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(5),
@@ -44,22 +45,44 @@
   body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(10),
   body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(10){display:none!important}
 
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(1),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(1){width:42px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(2),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(2){width:58px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(3),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(3){width:230px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(6),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(6){width:205px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(7),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(7){width:105px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(8),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(8){width:105px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(11),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(11){width:115px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(12),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(12){width:175px!important}
-  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(13),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(13){width:92px!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(1),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(1){width:4%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(2),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(2){width:6%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(3),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(3){width:22%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(6),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(6){width:18%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(7),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(7){width:9%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(8),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(8){width:9%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(11),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(11){width:10%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(12),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(12){width:14%!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table th:nth-child(13),body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table td:nth-child(13){width:8%!important}
+
+  /* Edit all: fixed proportional grid instead of content-driven auto sizing. */
+  body.v7-manifest-expanded #card-manifest table{width:100%!important;min-width:1260px!important;table-layout:fixed!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(1),body.v7-manifest-expanded #card-manifest table td:nth-child(1){width:3.5%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(2),body.v7-manifest-expanded #card-manifest table td:nth-child(2){width:5.5%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(3),body.v7-manifest-expanded #card-manifest table td:nth-child(3){width:14%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(4),body.v7-manifest-expanded #card-manifest table td:nth-child(4){width:15%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(5),body.v7-manifest-expanded #card-manifest table td:nth-child(5){width:9%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(6),body.v7-manifest-expanded #card-manifest table td:nth-child(6){width:13%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(7),body.v7-manifest-expanded #card-manifest table td:nth-child(7){width:6.5%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(8),body.v7-manifest-expanded #card-manifest table td:nth-child(8){width:7.5%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(9),body.v7-manifest-expanded #card-manifest table td:nth-child(9){width:6.5%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(10),body.v7-manifest-expanded #card-manifest table td:nth-child(10){width:6.5%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(11),body.v7-manifest-expanded #card-manifest table td:nth-child(11){width:8%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(12),body.v7-manifest-expanded #card-manifest table td:nth-child(12){width:12%!important}
+  body.v7-manifest-expanded #card-manifest table th:nth-child(13),body.v7-manifest-expanded #card-manifest table td:nth-child(13){width:7%!important}
 
   .v7-customer-summary{display:block;margin-top:5px;color:#7f9ea6;font-size:9px;line-height:1.35;white-space:normal;overflow-wrap:anywhere;text-transform:uppercase}
   .v7-manifest-toggle{min-height:38px!important;padding:0 12px!important;border:1px solid #294954!important;border-radius:8px!important;background:#0a2530!important;color:#dff7f5!important;font-size:9px!important;font-weight:800!important;white-space:nowrap}
   #v7-pod-open{min-height:38px!important;padding:0 14px!important;border:1px solid #c7632c!important;border-radius:8px!important;background:#4b2415!important;color:#ffd7c0!important;font-size:10px!important;font-weight:850!important;white-space:nowrap}
   body.v7-manifest-mode #card-manifest .milestone-history{margin-top:5px!important;padding:5px 7px!important;border-left:3px solid #62ead7!important;border-radius:5px!important;background:#06161e!important;color:#c5d9dc!important;font-size:8px!important;line-height:1.2!important}
   body.v7-manifest-mode #card-manifest td:last-child .btn,body.v7-manifest-mode #card-manifest td:last-child button{width:30px!important;min-width:30px!important;height:36px!important;min-height:36px!important;padding:0!important;margin:2px!important;border-radius:8px!important}
-  body.v7-manifest-expanded #card-manifest table{min-width:1420px!important;table-layout:auto!important}
+}
+
+@media (min-width:901px) and (max-width:1180px){
+  body.v7-manifest-mode #app{padding-left:96px!important;padding-right:8px!important}
+  body.v7-manifest-mode:not(.v7-manifest-expanded) #card-manifest table{min-width:960px!important}
+  body.v7-manifest-mode #card-manifest thead th{font-size:8px!important;padding-left:5px!important;padding-right:5px!important}
+  body.v7-manifest-mode #card-manifest td{padding:5px!important}
 }
 
 @media (max-width:900px){
