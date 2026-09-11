@@ -1,0 +1,25 @@
+/* Mobile final-scroll hardening: keep the document as the single vertical scroll owner and leave content clear of the fixed nav/browser chrome. */
+@media (max-width:900px){
+  html{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important}
+  body:not(.v7-auth-locked){position:static!important;height:auto!important;min-height:100dvh!important;max-height:none!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;touch-action:pan-y!important}
+  body:not(.v7-auth-locked) #app{position:relative!important;height:auto!important;min-height:calc(100dvh - 58px)!important;max-height:none!important;overflow:visible!important;padding-bottom:calc(170px + env(safe-area-inset-bottom))!important}
+  body:not(.v7-auth-locked) #card-home,
+  body:not(.v7-auth-locked) #card-manifest,
+  body:not(.v7-auth-locked) #card-batch,
+  body:not(.v7-auth-locked) #card-more,
+  body:not(.v7-auth-locked) #v7-label-grid,
+  body:not(.v7-auth-locked) .v7-customer-panel,
+  body:not(.v7-auth-locked) #card-parcel,
+  body:not(.v7-auth-locked) #card-preview{max-height:none!important;overflow:visible!important}
+  body[data-mobile-view="new"] #v7-label-grid.v7-active{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
+  body[data-mobile-view="manifest"] #card-manifest.v7-active,
+  body[data-mobile-view="batch"] #card-batch.v7-active,
+  body[data-mobile-view="more"] #card-more.v7-active,
+  body[data-mobile-view="home"] #card-home.v7-active{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important;margin-bottom:32px!important}
+  #v7-rail{pointer-events:auto!important}
+  #v7-rail:after{content:"";position:absolute;left:0;right:0;bottom:calc(-18px - env(safe-area-inset-bottom));height:calc(18px + env(safe-area-inset-bottom));background:#071a24;pointer-events:none}
+}
+@media (max-width:600px){
+  body:not(.v7-auth-locked) #app{padding-bottom:calc(190px + env(safe-area-inset-bottom))!important}
+  body[data-mobile-view="new"] .v7-customer-panel{margin-bottom:24px!important}
+}
