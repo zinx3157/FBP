@@ -8,6 +8,34 @@
   pointer-events:none!important;
 }
 
+/* Some older production builds emit the legacy rail without the lz-* wrapper classes.
+   On phone/tablet V7, the only permitted fixed navigation is #v7-rail. */
+@media (max-width:900px){
+  html[data-clean-mobile] body > nav:not(#v7-rail),
+  html[data-clean-mobile] body > aside:not(#v7-rail),
+  html[data-clean-mobile] #app > nav,
+  html[data-clean-mobile] #app > aside,
+  html[data-clean-mobile] .command-rail,
+  html[data-clean-mobile] .mobile-nav,
+  html[data-clean-mobile] .mobile-menu,
+  html[data-clean-mobile] .bottom-nav:not(.v7-nav),
+  html[data-clean-mobile] [class*="legacy"][class*="nav"],
+  html[data-clean-mobile] [class*="legacy"][class*="menu"]{
+    display:none!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+  html[data-clean-mobile] #v7-rail,
+  html[data-clean-mobile] #v7-rail .v7-nav{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+  html[data-clean-mobile] #v7-rail .v7-nav{display:grid!important}
+}
+
 /* Keep the V7 shell/navigation above the production engine without invisible hit layers. */
 #v7-shell,#v7-rail,.v7-nav,.v7-nav button{
   pointer-events:auto!important;
