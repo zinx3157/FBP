@@ -75,8 +75,8 @@ for(const [engineName,browserType] of engines){
         const active=await ctl.evaluate(el=>el.classList.contains('active'));
         if(!active)fail(engineName,p.name,`${item} did not activate on stress cycle ${i+1}`);
         const cardId={manifest:'#card-manifest',batch:'#card-batch',home:'#card-home',label:'#v7-label-grid',more:'#card-more'}[item];
-        const visible=await page.locator(cardId).evaluate(el=>getComputedStyle(el).display!=='none'&&(el.classList.contains('v7-active')||el.classList.contains('mobile-view-active')));
-        if(!visible)fail(engineName,p.name,`${item} card not visibly active on cycle ${i+1}`);
+        const state=await page.locator(cardId).evaluate(el=>{const cs=getComputedStyle(el),r=el.getBoundingClientRect();return {visible:cs.display!=='none'&&(el.classList.contains('v7-active')||el.classList.contains('mobile-view-active')),display:cs.display,visibility:cs.visibility,classes:el.className,style:el.getAttribute('style')||'',w:Math.round(r.width),h:Math.round(r.height),bodyView:document.body.dataset.mobileView||'',bodyClass:document.body.className,mobileShow:typeof window.LabelOnZeWayMobileShow,mobileEnforce:typeof window.LabelOnZeWayEnforceMobileView}});
+        if(!state.visible)fail(engineName,p.name,`${item} card not visibly active on cycle ${i+1}${item==='label'&&i===0?' '+JSON.stringify(state):''}`);
         await assertResponsive(page,engineName,p.name,`${item} cycle ${i+1}`)
       }
 
