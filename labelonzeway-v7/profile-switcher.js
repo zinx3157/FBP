@@ -6,18 +6,7 @@
   const BUILTIN_PROFILES=[{
     id:'LUZDM',
     name:'LUZDM',
-    company:'LUZDM S.L.',
-    description:'Consultoría fabricación aditiva e impresión 3D.',
-    address:'Calle CARGA, 101, 41008 Sevilla, España',
-    email:'hola@luzdm.com',
-    phone:'+34 622 37 39 17',
-    website:'https://luzdm.com/',
-    linkedin:'https://www.linkedin.com/company/luzdm/',
-    instagram:'https://www.instagram.com/luzdm/',
-    facebook:'https://www.facebook.com/luzdmes',
-    twitter:'https://x.com/luzdm',
-    logoUrl:'https://labelontheway.com/wp-content/uploads/2025/01/cropped-LOGO-LUZDM-2-2.png',
-    coverUrl:'https://labelontheway.com/wp-content/uploads/2025/01/3-1024x300.png'
+    company:'LUZDM'
   }];
   function nativeSelector(){return $('#profile-sel')}
   function readProfilesFromStore(){
@@ -41,8 +30,8 @@
     const wasPlaceholderOnly=source.length===1&&String(source[0]?.id||'')==='P1'&&String(source[0]?.name||'').trim().toLowerCase()==='company 1';
     const merged=source.slice();
     for(const builtin of BUILTIN_PROFILES){
-      const exists=merged.some(p=>p&&(String(p.id)===builtin.id||String(p.name||'').trim().toLowerCase()===builtin.name.toLowerCase()));
-      if(!exists)merged.push({...builtin});
+      const idx=merged.findIndex(p=>p&&(String(p.id)===builtin.id||String(p.name||'').trim().toLowerCase()===builtin.name.toLowerCase()));
+      if(idx>=0)merged[idx]={...merged[idx],...builtin}; else merged.push({...builtin});
     }
     if(!merged.length)BUILTIN_PROFILES.forEach(p=>merged.push({...p}));
     window.PROFILES=merged;
@@ -147,7 +136,7 @@
   }
   function deleteProfile(id){
     const idStr=String(id), current=activeId();
-    if(BUILTIN_PROFILES.some(p=>p.id===idStr)){alert('The built-in LUZDM company profile cannot be deleted.');return}
+    if(BUILTIN_PROFILES.some(p=>p.id===idStr)){alert('The built-in LUZDM profile cannot be deleted.');return}
     if(idStr===current){alert('The active profile cannot be deleted. Switch to another profile first.');return}
     const list=profiles(); const p=list.find(x=>String(x.id)===idStr); if(!p)return;
     if(!confirm('Delete company profile “'+String(p.name||p.id)+'” from the profile list?'))return;
@@ -167,8 +156,8 @@
     const list=profiles(), current=activeId();
     const currentProfile=list.find(p=>String(p.id)===current);
     box.innerHTML=`<div class="v7-prof-head"><div><small>COMPANY WORKSPACE</small><h3>Existing Company Profiles</h3></div><span class="v7-prof-current">Active: ${esc(currentProfile?.name||activeName()||current||'None')}</span></div>
-      <div class="v7-prof-grid">${list.length?list.map(p=>{const on=String(p.id)===current;const builtin=BUILTIN_PROFILES.some(x=>x.id===String(p.id));return `<article class="v7-prof-card ${on?'active':''}" data-profile-id="${esc(p.id)}"><div><b>${esc(p.name||p.id)}</b><small>${on?'Current workspace':builtin?'Built-in company profile':'Saved company profile'}</small></div><div class="v7-prof-actions">${on?'<span class="v7-prof-active">ACTIVE</span>':`<button type="button" data-v7-profile-open="${esc(p.id)}">OPEN / SWITCH</button>${builtin?'':'<button type="button" class="danger" data-v7-profile-delete="'+esc(p.id)+'">DELETE</button>'}`}</div></article>`}).join(''):'<div class="v7-prof-empty">No saved company profiles found on this device.</div>'}</div>
-      <p class="v7-prof-note">Opening a profile switches the whole operational workspace to that company and reloads its saved data.</p>`;
+      <div class="v7-prof-grid">${list.length?list.map(p=>{const on=String(p.id)===current;const builtin=BUILTIN_PROFILES.some(x=>x.id===String(p.id));return `<article class="v7-prof-card ${on?'active':''}" data-profile-id="${esc(p.id)}"><div><b>${esc(p.name||p.id)}</b><small>${on?'Current workspace':builtin?'Built-in profile':'Saved company profile'}</small></div><div class="v7-prof-actions">${on?'<span class="v7-prof-active">ACTIVE</span>':`<button type="button" data-v7-profile-open="${esc(p.id)}">OPEN / SWITCH</button>${builtin?'':'<button type="button" class="danger" data-v7-profile-delete="'+esc(p.id)+'">DELETE</button>'}`}</div></article>`}).join(''):'<div class="v7-prof-empty">No saved company profiles found on this device.</div>'}</div>
+      <p class="v7-prof-note">Opening a profile switches the whole operational workspace to that profile and reloads its saved data.</p>`;
     $$('[data-v7-profile-open]',box).forEach(b=>b.onclick=()=>switchProfile(b.dataset.v7ProfileOpen,b));
     $$('[data-v7-profile-delete]',box).forEach(b=>b.onclick=()=>deleteProfile(b.dataset.v7ProfileDelete));
   }
