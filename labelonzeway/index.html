@@ -2492,7 +2492,7 @@ function printerConfig(useForm){var s=state.shop;
 function setPrinterStatus(msg,type){var el=getEl('s-printer-status');
   if(el){el.textContent=msg;el.className='printer-status'+(type?' '+type:'')}renderOperationsDeck();}
 function updatePrinterSettingsUI(){var mode=val('s-print-mode',state.shop.printMode||'browser'),platform=nativePlatform();
-  if(mode==='cloud')setPrinterStatus('Cloud Print selected — sign in to Cloud and keep the Mac print agent open.','ok');
+  if(mode==='cloud')setPrinterStatus('Cloud POS80C selected — jobs go through Supabase + Render; no Mac bridge is required.','ok');
   else if(mode==='direct')setPrinterStatus(platform?'Direct '+(platform==='ios'?'iPhone/iPad':'Android')+' printing selected — use Auto-Detect or the saved IP.':'Gateway mode selected — open LabelOnZeWay from the gateway local URL, then use Auto-Detect.','');
   else setPrinterStatus(platform==='android'?'Android system print selected — availability depends on installed print services.':'iPhone / iPad system print selected — uses the iOS print sheet and AirPrint.','ok');}
 function localRequestAddressSpace(url){try{var h=new URL(url,location.href).hostname.toLowerCase();
@@ -2638,7 +2638,7 @@ function cloudEscposPrint(rows){var c=printerConfig(false),cloud=window.LabelOnZ
   directPrintBusy=true;setPrinterStatus('Preparing secure Cloud Print job…','');
   Promise.resolve().then(function(){return buildDirectLabelBytes(rows,c)}).then(function(bytes){
     return cloud.enqueueCloudPrintJob({printer_ip:c.ip||'192.168.100.73',printer_port:c.port,labels:rows.length,data:bytesBase64(bytes)});
-  }).then(function(job){setPrinterStatus('✓ Cloud job queued · '+String(job.id).slice(0,8),'ok');toast('✓ Sent to Mac Cloud Print queue','ok');pollCloudPrintJob(job.id,0);continuePrintChainAfterDirect();
+  }).then(function(job){setPrinterStatus('✓ Cloud job queued · '+String(job.id).slice(0,8),'ok');toast('✓ Sent to Cloud POS80C queue','ok');pollCloudPrintJob(job.id,0);continuePrintChainAfterDirect();
   }).catch(function(e){var msg=e&&e.message?e.message:String(e);setPrinterStatus('Cloud Print failed: '+msg,'err');toast('Cloud Print failed — '+msg,'err');
   }).finally(function(){directPrintBusy=false});}
 function pollCloudPrintJob(jobId,attempt){var cloud=window.LabelOnZeWayCloud;if(!cloud)return;if(attempt>150){setPrinterStatus('Cloud Print is still pending · job '+String(jobId).slice(0,8)+' · check the Mac agent','err');return}
@@ -2650,7 +2650,9 @@ function pollCloudPrintJob(jobId,attempt){var cloud=window.LabelOnZeWayCloud;if(
     pollCloudPrintJob(jobId,attempt+1);
   }).catch(function(){pollCloudPrintJob(jobId,attempt+1)})},2000);}
 function directEscposPrint(rows){var c=printerConfig(false);
-  if(c.mode==='cloud'){cloudEscposPrint(rows);return}
+  /* LZ_HOSTED_CLOUD_PRINT_PRIMARY_V1: GitHub Pages can never reach the LAN gateway directly; route POS80C jobs through Supabase + Render. */
+  var hostedCloud=location.protocol==='https:'&&/(^|\.)zinx3157\.github\.io$/i.test(String(location.hostname||''));
+  if(c.mode==='cloud'||hostedCloud){cloudEscposPrint(rows);return}
   if(directPrintBusy){toast('A direct print job is already being sent','err');return}
   if(!c.ip){var noIp='No printer IP is set';toast(noIp,'err');openPrintFallback(rows,noIp);return}
   if(!nativePOS80Printer()&&!c.bridge){var noGateway='Safari requires the local LabelOnZeWay gateway URL for direct ESC/POS printing';toast(noGateway,'err');openPrintFallback(rows,noGateway);return}
@@ -2734,7 +2736,7 @@ function printCalibration(){var len=Math.min(300,Math.max(100,Number(state.shop.
       'END OF TEST · '+len+' MM</div></div>';
   doPrint('label',html);toast('Printing calibration','ok');}
 
-function enableCloudPrint(){var mode=getEl('s-print-mode');if(mode)mode.value='cloud';updatePrinterSettingsUI();saveSettings();openCloud();toast('Cloud Print enabled · sign in to Cloud & Staff','ok');}
+function enableCloudPrint(){var mode=getEl('s-print-mode');if(mode)mode.value='cloud';updatePrinterSettingsUI();saveSettings();openCloud();toast('Cloud POS80C enabled · Supabase + Render route','ok');}
 function openSettings(){var s=state.shop;
   var newProfile=getEl('s-new-profile'),profileFeedback=getEl('s-profile-feedback');if(newProfile)newProfile.value='';if(profileFeedback){profileFeedback.textContent='Profiles are stored on this phone.';profileFeedback.className='printer-status'}
   getEl('s-name').value=s.name;getEl('s-tag').value=s.tagline;getEl('s-phone').value=s.phone;
@@ -2825,7 +2827,7 @@ function scrollSection(id){
   var el=getEl(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 function openCloud(){if(window.LabelOnZeWayCloud&&typeof window.LabelOnZeWayCloud.open==='function'){window.LabelOnZeWayCloud.open();return}toast('Cloud controls are still loading','err')}
 function setQuickPrintMode(mode){state.shop.printMode=mode==='direct'?'direct':mode==='cloud'?'cloud':'browser';persist();renderOperationsDeck();
-  toast(state.shop.printMode==='direct'?'Direct POS80C selected on this device':state.shop.printMode==='cloud'?'Cloud Print · Mac POS80C selected':'System Print selected on this device','ok');}
+  toast(state.shop.printMode==='direct'?'Direct POS80C selected on this device':state.shop.printMode==='cloud'?'Cloud POS80C · Supabase + Render selected':'System Print selected on this device','ok');}
 function quickSystemPrint(){setQuickPrintMode('browser')}
 function quickCloudPrint(){setQuickPrintMode('cloud')}
 function quickDirectPrint(){setQuickPrintMode('direct')}

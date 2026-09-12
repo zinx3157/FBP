@@ -653,12 +653,10 @@ function readConfig() {
   function connectClient() {
     return loadSupabaseLibrary().then(function (library) {
       client = library.createClient(config.supabaseUrl, config.supabaseAnonKey, {
-        auth: { persistSession: false, autoRefreshToken: true, detectSessionInUrl: true }
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
       });
       client.auth.onAuthStateChange(function (event, nextSession) {
-        if (!manualLoginArmed && !recoveryIntent && event !== 'PASSWORD_RECOVERY') {
-          session = null; stopRealtime(); diagnosticLog('auth-event-ignored', {event:event}); setTimeout(updateUI,0); return;
-        }
+        /* LZ_CLOUD_PRINT_PRIMARY_V1: persisted authenticated sessions are restored so hosted Cloud Print can work without a Mac bridge. */
         session = nextSession; diagnosticLog('auth-state', {event:event, signedIn:!!nextSession});
         if (event === 'USER_UPDATED' && suppressPasswordUserUpdatedEvent) { setTimeout(updateUI, 0); return; }
         if (passwordUpdateInProgress) { setTimeout(updateUI, 0); return; }
@@ -666,15 +664,8 @@ function readConfig() {
         if (passwordFormMode && nextSession) { setTimeout(updateUI, 0); return; }
         setTimeout(function () { if (session) loadWorkspaces(); else { stopRealtime(); updateUI(); } }, 0);
       });
-      if (!recoveryIntent) {
-        session = null; manualLoginArmed = false; stopRealtime();
-        diagnosticLog('cloud-ready-manual-login', diagnosticSnapshot());
-        setStatus('Cloud ready — sign in manually when you want synchronization.', ''); updateUI();
-        return { lzManual: true, data: { session: null } };
-      }
       return client.auth.getSession();
     }).then(function (result) {
-      if (result && result.lzManual) return;
       session = result.data && result.data.session;
       if (session && recoveryIntent) { enterPasswordRecovery(session); return; }
       if (session) return loadWorkspaces();
@@ -911,7 +902,7 @@ function readConfig() {
   }
 
   function init() {
-    if (initialized) return; initialized = true; injectUI(); diagnosticLog('app-start', {manualLoginRequired:true, deviceId:deviceId});
+    if (initialized) return; initialized = true; injectUI(); diagnosticLog('app-start', {manualLoginRequired:false, cloudPrintPrimary:true, deviceId:deviceId});
     readConfig().then(function (loaded) {
       config = loaded || {};
       if (!configured()) { setStatus('Cloud setup pending. Local/offline mode is active; add Supabase details after running SUPABASE_SETUP.sql.', 'pending'); return; }
