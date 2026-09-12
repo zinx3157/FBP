@@ -27,7 +27,7 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Set V7 Android identity
+      - name: Set V7 Android final identity
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -37,22 +37,22 @@ jobs:
           s,n=re.subn(r"applicationId\s+['\"][^'\"]+['\"]", "applicationId 'com.labelonzeway.v7'", s, count=1)
           if n != 1:
               raise SystemExit('Could not replace applicationId exactly once')
-          s=re.sub(r'versionCode\s+\d+', 'versionCode 700', s, count=1)
-          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '7.0-uat'", s, count=1)
+          s=re.sub(r'versionCode\s+\d+', 'versionCode 701', s, count=1)
+          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '7.0-final'", s, count=1)
           p.write_text(s,encoding='utf-8')
           PY
           grep -q "applicationId 'com.labelonzeway.v7'" labelonzeway-android/app/build.gradle
-          grep -q 'labelonzeway-v7' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
+          grep -q 'final-20260912-17' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
 
       - name: Build APK
         working-directory: labelonzeway-android
         run: gradle --no-daemon clean assembleDebug
 
       - name: Package APK
-        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V7-UAT.apk
+        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V7-Final.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: LabelOnZeWay-V7-UAT
-          path: LabelOnZeWay-V7-UAT.apk
+          name: LabelOnZeWay-V7-Final
+          path: LabelOnZeWay-V7-Final.apk
           retention-days: 30
