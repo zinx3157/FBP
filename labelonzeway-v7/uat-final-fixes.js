@@ -2,6 +2,7 @@
 'use strict';
 const $=(q,r=document)=>r.querySelector(q);
 const $$=(q,r=document)=>[...r.querySelectorAll(q)];
+const mobile=()=>matchMedia('(max-width:900px), (orientation:landscape) and (max-height:650px) and (max-width:1200px)').matches;
 
 function openArchive(){
   const trigger=$('[data-act="openArch"]');
@@ -40,11 +41,16 @@ function setStep(step){
     el.classList.toggle('done',(step==='details'&&s==='customer')||(step==='preview'&&(s==='customer'||s==='details')));
   });
   document.dispatchEvent(new CustomEvent('v7:stepchange',{detail:{step}}));
+  if(mobile())setTimeout(()=>window.LabelOnZeWayEnforceMobileLabel?.(),0);
 }
 function showView(view){
-  const action={archive:openArchive,customers:()=>window.openAddrModal?.(),tracking:()=>window.openTrackingDashboard?.(),settings:()=>window.openSettings?.()}[view];
-  if(action){unlockScrollAndNav();action();return}
   unlockScrollAndNav();
+  if(mobile()&&typeof window.LabelOnZeWayMobileShow==='function'){
+    window.LabelOnZeWayMobileShow(view);
+    return true;
+  }
+  const action={archive:openArchive,customers:()=>window.openAddrModal?.(),tracking:()=>window.openTrackingDashboard?.(),settings:()=>window.openSettings?.()}[view];
+  if(action){action();return true}
   document.body.classList.add('v7-focus');
   $$('.v7-nav button[data-v7]').forEach(b=>b.classList.toggle('active',b.dataset.v7===view));
   $$('#app>.card,#app>.v7-label-grid,#app>.v7-hero,#app>.v7-stepbar').forEach(el=>el.classList.remove('v7-active'));
@@ -57,13 +63,14 @@ function showView(view){
   }
   window.scrollTo(0,0);
   document.dispatchEvent(new CustomEvent('v7:viewchange',{detail:{view}}));
+  return true;
 }
 function bindNavigation(){
   if(document.documentElement.dataset.v7FinalNavBound==='1')return;
   document.documentElement.dataset.v7FinalNavBound='1';
   document.addEventListener('click',e=>{
     const step=e.target.closest?.('.v7-step[data-step]');
-    if(step&&matchMedia('(max-width:900px)').matches){e.preventDefault();e.stopImmediatePropagation();setStep(step.dataset.step);return}
+    if(step&&mobile()){e.preventDefault();e.stopImmediatePropagation();setStep(step.dataset.step);return}
     const nav=e.target.closest?.('.v7-nav button[data-v7]');
     if(nav){e.preventDefault();e.stopImmediatePropagation();showView(nav.dataset.v7);return}
     const create=e.target.closest?.('.v7-new');
