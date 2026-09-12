@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/build-labelonzeway-platformsync-unique.yml'
-      - 'labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java'
+      - 'labelonzeway-android/**'
       - 'labelonzeway-v7/**'
   workflow_dispatch:
 
@@ -37,22 +37,33 @@ jobs:
           s,n=re.subn(r"applicationId\s+['\"][^'\"]+['\"]", "applicationId 'com.labelonzeway.v7'", s, count=1)
           if n != 1:
               raise SystemExit('Could not replace applicationId exactly once')
-          s=re.sub(r'versionCode\s+\d+', 'versionCode 701', s, count=1)
-          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '7.0-final'", s, count=1)
+          s=re.sub(r'versionCode\s+\d+', 'versionCode 702', s, count=1)
+          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '7.0.1-final'", s, count=1)
           p.write_text(s,encoding='utf-8')
           PY
           grep -q "applicationId 'com.labelonzeway.v7'" labelonzeway-android/app/build.gradle
           grep -q 'final-20260912-17' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
+          grep -q 'android:name="com.labelonzeway.app.MainActivity"' labelonzeway-android/app/src/main/AndroidManifest.xml
 
       - name: Build APK
         working-directory: labelonzeway-android
         run: gradle --no-daemon clean assembleDebug
 
+      - name: Verify launcher manifest
+        run: |
+          APK=labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$APK"
+          AAPT=$(find "$ANDROID_HOME/build-tools" -type f -name aapt -print | sort -V | tail -1)
+          test -x "$AAPT"
+          "$AAPT" dump badging "$APK" | tee /tmp/badging.txt
+          grep -q "package: name='com.labelonzeway.v7'" /tmp/badging.txt
+          grep -q "launchable-activity: name='com.labelonzeway.app.MainActivity'" /tmp/badging.txt
+
       - name: Package APK
-        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V7-Final.apk
+        run: cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-V7-7.0.1-Final.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: LabelOnZeWay-V7-Final
-          path: LabelOnZeWay-V7-Final.apk
+          name: LabelOnZeWay-V7-7.0.1-Final
+          path: LabelOnZeWay-V7-7.0.1-Final.apk
           retention-days: 30
