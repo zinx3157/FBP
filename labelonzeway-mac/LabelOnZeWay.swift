@@ -24,11 +24,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         window.contentView = webView
         window.makeKeyAndOrderFront(nil)
 
-        if let url = URL(string: "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=final-20260912-17&app=mac-final") {
+        if let url = URL(string: "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=final-20260912-18&app=mac-final") {
             webView.load(URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30))
         }
     }
 
+    functionPlaceholder()
+}
+
+extension AppDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         true
     }
