@@ -5,6 +5,7 @@ on:
     paths:
       - 'labelonzeway-v7/**'
       - 'labelonzeway/**'
+      - 'cloud-print-relay/**'
       - 'tests/v7-ui-audit.mjs'
       - 'tests/v7-final-uat-audit.mjs'
       - '.github/workflows/v7-ui-regression.yml'
