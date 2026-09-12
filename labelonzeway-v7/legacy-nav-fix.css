@@ -2,9 +2,15 @@
 .lz-command-rail,
 .lz-mobile-nav,
 [data-lz-shell="rail"],
-[data-lz-shell="mobile-nav"]{
+[data-lz-shell="mobile-nav"],
+.v6-desktop,
+.v6-mobile,
+.v6-bottomnav,
+#v6-dashboard,
+#v6-mobile-home{
   display:none!important;
   visibility:hidden!important;
+  opacity:0!important;
   pointer-events:none!important;
 }
 
@@ -19,6 +25,11 @@
   html[data-clean-mobile] .mobile-nav,
   html[data-clean-mobile] .mobile-menu,
   html[data-clean-mobile] .bottom-nav:not(.v7-nav),
+  html[data-clean-mobile] .v6-desktop,
+  html[data-clean-mobile] .v6-mobile,
+  html[data-clean-mobile] .v6-bottomnav,
+  html[data-clean-mobile] #v6-dashboard,
+  html[data-clean-mobile] #v6-mobile-home,
   html[data-clean-mobile] [class*="legacy"][class*="nav"],
   html[data-clean-mobile] [class*="legacy"][class*="menu"]{
     display:none!important;
