@@ -2,7 +2,8 @@
 """LabelOnZeWay Render cloud print relay.
 
 Consumes authenticated Supabase cloud_print_jobs and forwards ESC/POS bytes to
-one configured public TCP endpoint. Also exposes /health on Render's PORT.
+one configured public TCP endpoint. Exposes /health and a non-printing
+/diagnostics TCP reachability check on Render's PORT.
 """
 from __future__ import annotations
 
@@ -16,9 +17,10 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 MAX_PAYLOAD = 16 * 1024 * 1024
 
 
@@ -53,6 +55,14 @@ def validate_destination(host, port, allowed_host, allowed_port):
     if not resolved:
         raise ValueError("Destination did not resolve")
     return str(host), int(port)
+
+
+def test_tcp(host, port, allowed_host, allowed_port, timeout=7):
+    host, port = validate_destination(host, port, allowed_host, allowed_port)
+    started = time.time()
+    with socket.create_connection((host, port), timeout=timeout):
+        pass
+    return int((time.time() - started) * 1000)
 
 
 def send_tcp(host, port, payload, allowed_host, allowed_port, connect_timeout=7, send_timeout=30):
@@ -156,23 +166,58 @@ relay = None
 
 
 class HealthHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path not in ("/", "/health"):
-            self.send_response(404); self.end_headers(); return
-        body = json.dumps({
-            "service": "labelonzeway-cloud-print",
-            "version": VERSION,
-            "status": "ok" if relay and not relay.last_error else "degraded",
-            "supabase_authenticated": bool(relay and relay.access_token),
-            "last_job": relay.last_job if relay else "",
-            "last_error": relay.last_error if relay else "starting",
-            "uptime_seconds": int(time.time() - relay.started_at) if relay else 0,
-        }).encode("utf-8")
-        self.send_response(200)
+    def _write_json(self, status_code, payload):
+        body = json.dumps(payload).encode("utf-8")
+        self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def do_GET(self):
+        path = urlparse(self.path).path
+        if path in ("/", "/health"):
+            self._write_json(200, {
+                "service": "labelonzeway-cloud-print",
+                "version": VERSION,
+                "status": "ok" if relay and not relay.last_error else "degraded",
+                "supabase_authenticated": bool(relay and relay.access_token),
+                "last_job": relay.last_job if relay else "",
+                "last_error": relay.last_error if relay else "starting",
+                "uptime_seconds": int(time.time() - relay.started_at) if relay else 0,
+            })
+            return
+        if path == "/diagnostics":
+            if not relay:
+                self._write_json(503, {"status": "starting", "tcp_reachable": False})
+                return
+            try:
+                latency_ms = test_tcp(relay.target_host, relay.target_port,
+                                      relay.target_host, relay.target_port)
+                self._write_json(200, {
+                    "service": "labelonzeway-cloud-print",
+                    "version": VERSION,
+                    "status": "ok",
+                    "supabase_authenticated": bool(relay.access_token),
+                    "printer_target": f"{relay.target_host}:{relay.target_port}",
+                    "tcp_reachable": True,
+                    "connect_ms": latency_ms,
+                    "note": "TCP connect only; no print bytes sent",
+                })
+            except Exception as exc:
+                self._write_json(503, {
+                    "service": "labelonzeway-cloud-print",
+                    "version": VERSION,
+                    "status": "degraded",
+                    "supabase_authenticated": bool(relay.access_token),
+                    "printer_target": f"{relay.target_host}:{relay.target_port}",
+                    "tcp_reachable": False,
+                    "error": str(exc)[:500],
+                    "note": "TCP connect only; no print bytes sent",
+                })
+            return
+        self._write_json(404, {"status": "not_found"})
 
     def log_message(self, fmt, *args):
         return
