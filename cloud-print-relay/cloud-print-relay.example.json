@@ -1,0 +1,10 @@
+{
+  "supabase_url": "https://cqgdzfgjacsgpfdtbhdo.supabase.co",
+  "supabase_anon_key": "sb_publishable_pZ8QNQuPvPX_5kkMzpo7BA_7PsVWwWu",
+  "workspace_id": "PASTE-WORKSPACE-UUID-HERE",
+  "email": "CLOUD-PRINT-USER-EMAIL",
+  "target_host": "102.18.55.216",
+  "target_port": 49173,
+  "poll_seconds": 2,
+  "password_env": "LABELONZEWAY_CLOUD_PASSWORD"
+}
