@@ -20,7 +20,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 MAX_PAYLOAD = 16 * 1024 * 1024
 
 
@@ -176,14 +176,35 @@ relay = None
 
 
 class HealthHandler(BaseHTTPRequestHandler):
+    def _cors(self):
+        origin = self.headers.get("Origin", "")
+        allowed = origin if origin in {
+            "https://zinx3157.github.io",
+            "http://127.0.0.1:4173",
+            "http://localhost:4173",
+            "http://127.0.0.1:8765",
+            "http://localhost:8765",
+        } else "https://zinx3157.github.io"
+        self.send_header("Access-Control-Allow-Origin", allowed)
+        self.send_header("Vary", "Origin")
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Accept")
+
     def _write_json(self, status_code, payload):
         body = json.dumps(payload).encode("utf-8")
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
         self.send_header("Cache-Control", "no-store")
+        self._cors()
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self._cors()
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def do_GET(self):
         path = urlparse(self.path).path
