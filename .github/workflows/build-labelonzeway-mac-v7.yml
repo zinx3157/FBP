@@ -6,6 +6,7 @@ on:
       - '.github/workflows/build-labelonzeway-mac-v7.yml'
       - 'labelonzeway-mac/**'
       - 'labelonzeway-v7/**'
+      - 'labelonzeway/icons/**'
   workflow_dispatch:
 
 permissions:
@@ -26,7 +27,10 @@ jobs:
           APP="LabelOnZeWay V7.app"
           BIN="$APP/Contents/MacOS/LabelOnZeWayV7"
           SRC="labelonzeway-mac/LabelOnZeWay.swift"
-          mkdir -p "$APP/Contents/MacOS" build-macos12
+          ICON_SRC="labelonzeway/icons/icon-512.png"
+          ICONSET="build-macos12/LabelOnZeWay.iconset"
+          RES="$APP/Contents/Resources"
+          mkdir -p "$APP/Contents/MacOS" "$RES" "$ICONSET" build-macos12
 
           cat > "$APP/Contents/Info.plist" <<'PLIST'
           <?xml version="1.0" encoding="UTF-8"?>
@@ -35,14 +39,30 @@ jobs:
             <key>CFBundleName</key><string>LabelOnZeWay V7</string>
             <key>CFBundleDisplayName</key><string>LabelOnZeWay V7</string>
             <key>CFBundleIdentifier</key><string>com.labelonzeway.v7</string>
-            <key>CFBundleVersion</key><string>701</string>
-            <key>CFBundleShortVersionString</key><string>7.0.1</string>
+            <key>CFBundleVersion</key><string>702</string>
+            <key>CFBundleShortVersionString</key><string>7.0.2</string>
             <key>CFBundlePackageType</key><string>APPL</string>
             <key>CFBundleExecutable</key><string>LabelOnZeWayV7</string>
+            <key>CFBundleIconFile</key><string>LabelOnZeWay.icns</string>
             <key>LSMinimumSystemVersion</key><string>12.0</string>
             <key>NSHighResolutionCapable</key><true/>
           </dict></plist>
           PLIST
+
+          # Build a proper macOS .icns from the existing LabelOnZeWay artwork.
+          test -s "$ICON_SRC"
+          sips -z 16 16 "$ICON_SRC" --out "$ICONSET/icon_16x16.png" >/dev/null
+          sips -z 32 32 "$ICON_SRC" --out "$ICONSET/icon_16x16@2x.png" >/dev/null
+          sips -z 32 32 "$ICON_SRC" --out "$ICONSET/icon_32x32.png" >/dev/null
+          sips -z 64 64 "$ICON_SRC" --out "$ICONSET/icon_32x32@2x.png" >/dev/null
+          sips -z 128 128 "$ICON_SRC" --out "$ICONSET/icon_128x128.png" >/dev/null
+          sips -z 256 256 "$ICON_SRC" --out "$ICONSET/icon_128x128@2x.png" >/dev/null
+          sips -z 256 256 "$ICON_SRC" --out "$ICONSET/icon_256x256.png" >/dev/null
+          sips -z 512 512 "$ICON_SRC" --out "$ICONSET/icon_256x256@2x.png" >/dev/null
+          sips -z 512 512 "$ICON_SRC" --out "$ICONSET/icon_512x512.png" >/dev/null
+          cp "$ICON_SRC" "$ICONSET/icon_512x512@2x.png"
+          iconutil -c icns "$ICONSET" -o "$RES/LabelOnZeWay.icns"
+          test -s "$RES/LabelOnZeWay.icns"
 
           xcrun swiftc "$SRC" \
             -target x86_64-apple-macos12.0 \
@@ -66,11 +86,11 @@ jobs:
           echo 'Deployment targets:'
           xcrun vtool -show-build "$BIN"
 
-          # Fail the build if either architecture is missing or the minimum target is not macOS 12.0.
           lipo -info "$BIN" | grep -q 'x86_64'
           lipo -info "$BIN" | grep -q 'arm64'
           xcrun vtool -show-build "$BIN" | grep -q 'minos 12.0'
           /usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$APP/Contents/Info.plist" | grep -qx '12.0'
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$APP/Contents/Info.plist" | grep -qx 'LabelOnZeWay.icns'
 
           codesign --force --deep --sign - "$APP"
           codesign --verify --deep --strict "$APP"
