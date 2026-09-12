@@ -12,24 +12,34 @@ function clearViews(){ALL_VIEW_IDS.forEach(id=>hardHide($('#'+id)))}
 function setActiveNav(view){$$('#v7-rail .v7-nav button[data-v7]').forEach(b=>b.classList.toggle('active',b.dataset.v7===view))}
 function restoreScroll(view){requestAnimationFrame(()=>window.scrollTo({top:scrollPos[view]||0,left:0,behavior:'auto'}))}
 function closeAddressBook(){const modal=$('#m-addr');if(!modal)return;try{window.closeModal?.('m-addr')}catch(_e){}modal.classList.remove('open','v7-customer-picker');modal.setAttribute('aria-hidden','true')}
+function enforceView(view){
+  if(!isMobile()||view==='customers')return;
+  const wanted=VIEW_IDS[view]?view:'home';
+  clearViews();
+  VIEW_IDS[wanted].forEach(id=>hardShow($('#'+id),id==='v7-label-grid'?'grid':'block'));
+  currentView=wanted;document.body.dataset.mobileView=wanted;setActiveNav(wanted);
+  if(wanted==='label')window.LabelOnZeWayEnforceMobileLabel?.();
+}
 function show(view){
-  if(!isMobile())return;
+  if(!isMobile())return false;
   document.body.classList.add('mobile-reset-ready','v7-focus');
   document.body.dataset.mobileView=view;
   if(view==='customers'){
     if(VIEW_IDS[currentView])scrollPos[currentView]=window.scrollY||0;
     clearViews();setActiveNav('customers');
     try{window.openAddrModal?.()}catch(_e){}
-    setTimeout(()=>{$('#m-addr')?.classList.add('open');repairAddressBook()},30);return;
+    setTimeout(()=>{$('#m-addr')?.classList.add('open');repairAddressBook()},30);return true;
   }
   closeAddressBook();
   if(VIEW_IDS[currentView])scrollPos[currentView]=window.scrollY||0;
-  clearViews();
-  const target=VIEW_IDS[view]||VIEW_IDS.home;
-  target.forEach(id=>hardShow($('#'+id),id==='v7-label-grid'?'grid':'block'));
-  currentView=VIEW_IDS[view]?view:'home';document.body.dataset.mobileView=currentView;
-  setActiveNav(currentView);restoreScroll(currentView);
-  document.dispatchEvent(new CustomEvent('v7:viewchange',{detail:{view:currentView}}));
+  const wanted=VIEW_IDS[view]?view:'home';
+  enforceView(wanted);
+  restoreScroll(wanted);
+  document.dispatchEvent(new CustomEvent('v7:viewchange',{detail:{view:wanted}}));
+  requestAnimationFrame(()=>enforceView(wanted));
+  setTimeout(()=>enforceView(wanted),0);
+  setTimeout(()=>enforceView(wanted),60);
+  return true;
 }
 function rebuildNavOnce(){
   if(!isMobile()||navReady)return navReady;
@@ -70,5 +80,5 @@ function applyOrientation(){
 function install(){if(!isMobile())return;document.documentElement.setAttribute('data-clean-mobile',document.documentElement.getAttribute('data-clean-mobile')||document.documentElement.getAttribute('data-mobile-uat')||'1');rebuildNavOnce();bind();repairAddressBook();applyOrientation();if(!firstUnlockedHomeShown&&!document.body.classList.contains('v7-auth-locked'))ensureHome(true)}
 const boot=()=>{install();window.addEventListener('orientationchange',applyOrientation,{passive:true});window.addEventListener('resize',applyOrientation,{passive:true});window.visualViewport?.addEventListener('resize',applyOrientation,{passive:true});[150,450,900,1600].forEach(ms=>setTimeout(()=>{if(!navReady)rebuildNavOnce();repairAddressBook();if(!firstUnlockedHomeShown&&!document.body.classList.contains('v7-auth-locked'))ensureHome(true)},ms))};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-window.LabelOnZeWayMobileShow=show;window.LabelOnZeWayApplyOrientation=applyOrientation;
+window.LabelOnZeWayMobileShow=show;window.LabelOnZeWayApplyOrientation=applyOrientation;window.LabelOnZeWayEnforceMobileView=enforceView;
 })();
