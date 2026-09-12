@@ -3,29 +3,43 @@
 const $=(q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
 const VIEW_IDS={home:['card-home'],label:['v7-label-hero','v7-label-stepbar','v7-label-grid'],manifest:['card-manifest'],more:['card-more']};
 const ALL_VIEW_IDS=['card-home','v7-label-hero','v7-label-stepbar','v7-label-grid','card-manifest','card-more'];
-let currentView='home', navReady=false, firstUnlockedHomeShown=false, rotateTimer=0;
+let currentView='home', navReady=false, firstUnlockedHomeShown=false, rotateTimer=0, reconcileTimer=0;
 const scrollPos={home:0,label:0,manifest:0,more:0};
 function isMobile(){return matchMedia('(max-width:900px), (orientation:landscape) and (max-height:650px) and (max-width:1200px)').matches}
+function normalizeView(view){return view==='new'?'label':view}
+function legacyView(view){return view==='label'?'new':view}
 function hardHide(el){if(!el)return;el.classList.remove('mobile-view-active','v7-active');el.style.setProperty('display','none','important');el.style.setProperty('visibility','hidden','important');el.style.setProperty('pointer-events','none','important')}
 function hardShow(el,display){if(!el)return;el.classList.add('mobile-view-active','v7-active');el.style.setProperty('display',display||'block','important');el.style.setProperty('visibility','visible','important');el.style.setProperty('pointer-events','auto','important')}
 function clearViews(){ALL_VIEW_IDS.forEach(id=>hardHide($('#'+id)))}
 function setActiveNav(view){$$('#v7-rail .v7-nav button[data-v7]').forEach(b=>b.classList.toggle('active',b.dataset.v7===view))}
 function restoreScroll(view){requestAnimationFrame(()=>window.scrollTo({top:scrollPos[view]||0,left:0,behavior:'auto'}))}
 function closeAddressBook(){const modal=$('#m-addr');if(!modal)return;try{window.closeModal?.('m-addr')}catch(_e){}modal.classList.remove('open','v7-customer-picker');modal.setAttribute('aria-hidden','true')}
+function viewHealthy(view){
+  view=normalizeView(view);
+  if(view==='customers')return $('#m-addr')?.classList.contains('open')===true;
+  if(!VIEW_IDS[view])return false;
+  const ids=view==='label'?['v7-label-stepbar','v7-label-grid']:VIEW_IDS[view];
+  return ids.every(id=>{const el=$('#'+id);if(!el||!el.classList.contains('mobile-view-active')||!el.classList.contains('v7-active'))return false;const cs=getComputedStyle(el);return cs.display!=='none'&&cs.visibility!=='hidden'&&cs.pointerEvents!=='none'});
+}
 function enforceView(view){
-  if(!isMobile()||view==='customers')return;
+  if(!isMobile())return;
+  view=normalizeView(view);
+  if(view==='customers')return;
   const wanted=VIEW_IDS[view]?view:'home';
   clearViews();
   VIEW_IDS[wanted].forEach(id=>hardShow($('#'+id),id==='v7-label-grid'?'grid':'block'));
-  currentView=wanted;document.body.dataset.mobileView=wanted;setActiveNav(wanted);
+  currentView=wanted;
+  const dataView=legacyView(wanted);if(document.body.dataset.mobileView!==dataView)document.body.dataset.mobileView=dataView;
+  setActiveNav(wanted);
   if(wanted==='label')window.LabelOnZeWayEnforceMobileLabel?.();
 }
 function show(view){
   if(!isMobile())return false;
+  view=normalizeView(view);
   document.body.classList.add('mobile-reset-ready','v7-focus');
-  document.body.dataset.mobileView=view;
   if(view==='customers'){
     if(VIEW_IDS[currentView])scrollPos[currentView]=window.scrollY||0;
+    if(document.body.dataset.mobileView!=='customers')document.body.dataset.mobileView='customers';
     clearViews();setActiveNav('customers');
     try{window.openAddrModal?.()}catch(_e){}
     setTimeout(()=>{$('#m-addr')?.classList.add('open');repairAddressBook()},30);return true;
@@ -64,6 +78,22 @@ function bind(){
 }
 function repairAddressBook(){const modal=$('#m-addr');if(!modal)return;const list=$('#am-list',modal);if(list){list.style.width='100%';list.style.maxWidth='100%'}$$('.ab-item',modal).forEach(row=>{row.style.width='100%';row.style.maxWidth='100%';const info=$('.ab-info',row);if(info){info.style.width='100%';info.style.minWidth='0'}})}
 function ensureHome(force=false){if(!isMobile()||document.body.classList.contains('v7-auth-locked'))return;const any=$$('#app>.mobile-view-active').length;if(force||!any){show('home');firstUnlockedHomeShown=true}}
+function reconcileLegacyView(){
+  if(!isMobile())return;
+  const raw=document.body.dataset.mobileView||legacyView(currentView)||'home';
+  const wanted=normalizeView(raw);
+  if(wanted==='customers')return;
+  const target=VIEW_IDS[wanted]?wanted:currentView;
+  if(!viewHealthy(target))enforceView(target);
+}
+function queueReconcile(){clearTimeout(reconcileTimer);reconcileTimer=setTimeout(reconcileLegacyView,0)}
+function watchLegacyCollisions(){
+  if(document.documentElement.dataset.mobileLegacyWatch==='1')return;
+  document.documentElement.dataset.mobileLegacyWatch='1';
+  const bodyObserver=new MutationObserver(queueReconcile);bodyObserver.observe(document.body,{attributes:true,attributeFilter:['data-mobile-view']});
+  const rootObserver=new MutationObserver(queueReconcile);
+  ALL_VIEW_IDS.forEach(id=>{const el=$('#'+id);if(el)rootObserver.observe(el,{attributes:true,attributeFilter:['class','style']})});
+}
 function applyOrientation(){
   clearTimeout(rotateTimer);rotateTimer=setTimeout(()=>{
     const landscape=matchMedia('(orientation:landscape)').matches;
@@ -71,14 +101,14 @@ function applyOrientation(){
     document.documentElement.classList.toggle('mobile-portrait',!landscape&&isMobile());
     if(!isMobile())return;
     rebuildNavOnce();repairAddressBook();
-    const wanted=document.body.dataset.mobileView||currentView||'home';
+    const wanted=normalizeView(document.body.dataset.mobileView||currentView||'home');
     if(wanted==='customers'){setActiveNav('customers');try{window.openAddrModal?.()}catch(_e){}setTimeout(()=>$('#m-addr')?.classList.add('open'),20)}
     else show(VIEW_IDS[wanted]?wanted:currentView);
     window.LabelOnZeWayEnforceMobileLabel?.();
   },120);
 }
-function install(){if(!isMobile())return;document.documentElement.setAttribute('data-clean-mobile',document.documentElement.getAttribute('data-clean-mobile')||document.documentElement.getAttribute('data-mobile-uat')||'1');rebuildNavOnce();bind();repairAddressBook();applyOrientation();if(!firstUnlockedHomeShown&&!document.body.classList.contains('v7-auth-locked'))ensureHome(true)}
-const boot=()=>{install();window.addEventListener('orientationchange',applyOrientation,{passive:true});window.addEventListener('resize',applyOrientation,{passive:true});window.visualViewport?.addEventListener('resize',applyOrientation,{passive:true});[150,450,900,1600].forEach(ms=>setTimeout(()=>{if(!navReady)rebuildNavOnce();repairAddressBook();if(!firstUnlockedHomeShown&&!document.body.classList.contains('v7-auth-locked'))ensureHome(true)},ms))};
+function install(){if(!isMobile())return;document.documentElement.setAttribute('data-clean-mobile',document.documentElement.getAttribute('data-clean-mobile')||document.documentElement.getAttribute('data-mobile-uat')||'1');rebuildNavOnce();bind();repairAddressBook();watchLegacyCollisions();applyOrientation();if(!firstUnlockedHomeShown&&!document.body.classList.contains('v7-auth-locked'))ensureHome(true)}
+const boot=()=>{install();window.addEventListener('orientationchange',applyOrientation,{passive:true});window.addEventListener('resize',applyOrientation,{passive:true});window.visualViewport?.addEventListener('resize',applyOrientation,{passive:true});[150,450,900,1600].forEach(ms=>setTimeout(()=>{if(!navReady)rebuildNavOnce();repairAddressBook();if(!firstUnlockedHomeShown&&!document.body.classList.contains('v7-auth-locked'))ensureHome(true);queueReconcile()},ms))};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 window.LabelOnZeWayMobileShow=show;window.LabelOnZeWayApplyOrientation=applyOrientation;window.LabelOnZeWayEnforceMobileView=enforceView;
 })();
