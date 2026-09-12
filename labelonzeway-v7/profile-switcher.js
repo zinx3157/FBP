@@ -3,6 +3,22 @@
   const $$=(q,r=document)=>[...r.querySelectorAll(q)];
   const PROFILE_KEYS=['lzb2.profiles','lz.profiles','sd.profiles'];
   const ACTIVE_KEYS=['lzb2.profile','lz.profile','sd.profile'];
+  const BUILTIN_PROFILES=[{
+    id:'LUZDM',
+    name:'LUZDM',
+    company:'LUZDM S.L.',
+    description:'Consultoría fabricación aditiva e impresión 3D.',
+    address:'Calle CARGA, 101, 41008 Sevilla, España',
+    email:'hola@luzdm.com',
+    phone:'+34 622 37 39 17',
+    website:'https://luzdm.com/',
+    linkedin:'https://www.linkedin.com/company/luzdm/',
+    instagram:'https://www.instagram.com/luzdm/',
+    facebook:'https://www.facebook.com/luzdmes',
+    twitter:'https://x.com/luzdm',
+    logoUrl:'https://labelontheway.com/wp-content/uploads/2025/01/cropped-LOGO-LUZDM-2-2.png',
+    coverUrl:'https://labelontheway.com/wp-content/uploads/2025/01/3-1024x300.png'
+  }];
   function nativeSelector(){return $('#profile-sel')}
   function readProfilesFromStore(){
     for(const key of PROFILE_KEYS){
@@ -13,6 +29,36 @@
     }
     return [];
   }
+  function writeActive(id){ACTIVE_KEYS.forEach(key=>localStorage.setItem(key,String(id)))}
+  function writeProfiles(list){const json=JSON.stringify(list);PROFILE_KEYS.forEach(key=>localStorage.setItem(key,json))}
+  function isMacWrapper(){
+    try{return new URLSearchParams(location.search).get('app')==='mac-final'}catch(_e){return false}
+  }
+  function ensureBuiltinProfiles(){
+    const fromWindow=Array.isArray(window.PROFILES)?window.PROFILES.filter(Boolean):[];
+    const fromStore=readProfilesFromStore();
+    const source=fromWindow.length?fromWindow:fromStore;
+    const wasPlaceholderOnly=source.length===1&&String(source[0]?.id||'')==='P1'&&String(source[0]?.name||'').trim().toLowerCase()==='company 1';
+    const merged=source.slice();
+    for(const builtin of BUILTIN_PROFILES){
+      const exists=merged.some(p=>p&&(String(p.id)===builtin.id||String(p.name||'').trim().toLowerCase()===builtin.name.toLowerCase()));
+      if(!exists)merged.push({...builtin});
+    }
+    if(!merged.length)BUILTIN_PROFILES.forEach(p=>merged.push({...p}));
+    window.PROFILES=merged;
+    writeProfiles(merged);
+
+    const stored=ACTIVE_KEYS.map(k=>localStorage.getItem(k)).find(Boolean)||'';
+    if(isMacWrapper()&&(wasPlaceholderOnly||!stored)){
+      window.PID='LUZDM';
+      writeActive('LUZDM');
+      if(sessionStorage.getItem('v7.mac.luzdm.seeded')!=='1'){
+        sessionStorage.setItem('v7.mac.luzdm.seeded','1');
+        setTimeout(()=>location.reload(),40);
+      }
+    }
+    return merged;
+  }
   function profiles(){
     const fromWindow=Array.isArray(window.PROFILES)&&window.PROFILES.length?window.PROFILES:null;
     return (fromWindow||readProfilesFromStore()).filter(p=>p&&p.id);
@@ -21,8 +67,6 @@
     for(const key of ACTIVE_KEYS){const value=localStorage.getItem(key);if(value)return String(value)}
     return '';
   }
-  function writeActive(id){ACTIVE_KEYS.forEach(key=>localStorage.setItem(key,String(id)))}
-  function writeProfiles(list){const json=JSON.stringify(list);PROFILE_KEYS.forEach(key=>localStorage.setItem(key,json))}
   function activeId(){
     const sel=nativeSelector();
     if(sel&&sel.value)return String(sel.value);
@@ -46,7 +90,19 @@
   function settingsHost(){
     return $$('.modal-box,[role="dialog"],.modal-content,.settings-modal').find(el=>/\bSETTINGS\b/i.test((el.textContent||'').slice(0,5000)));
   }
+  function syncNativeSelector(){
+    const sel=nativeSelector(); if(!sel)return;
+    const current=readStoredActive()||String(window.PID||'');
+    for(const p of profiles()){
+      if(![...sel.options].some(o=>String(o.value)===String(p.id))){
+        const opt=document.createElement('option');
+        opt.value=String(p.id); opt.textContent=String(p.name||p.id); sel.appendChild(opt);
+      }
+    }
+    if(current&&[...sel.options].some(o=>String(o.value)===current))sel.value=current;
+  }
   function syncShell(){
+    syncNativeSelector();
     const name=activeName();
     let badge=$('#v7-active-profile-badge');
     const tools=$('.v7-tools')||$('#v7-shell');
@@ -91,6 +147,7 @@
   }
   function deleteProfile(id){
     const idStr=String(id), current=activeId();
+    if(BUILTIN_PROFILES.some(p=>p.id===idStr)){alert('The built-in LUZDM company profile cannot be deleted.');return}
     if(idStr===current){alert('The active profile cannot be deleted. Switch to another profile first.');return}
     const list=profiles(); const p=list.find(x=>String(x.id)===idStr); if(!p)return;
     if(!confirm('Delete company profile “'+String(p.name||p.id)+'” from the profile list?'))return;
@@ -110,17 +167,19 @@
     const list=profiles(), current=activeId();
     const currentProfile=list.find(p=>String(p.id)===current);
     box.innerHTML=`<div class="v7-prof-head"><div><small>COMPANY WORKSPACE</small><h3>Existing Company Profiles</h3></div><span class="v7-prof-current">Active: ${esc(currentProfile?.name||activeName()||current||'None')}</span></div>
-      <div class="v7-prof-grid">${list.length?list.map(p=>{const on=String(p.id)===current;return `<article class="v7-prof-card ${on?'active':''}" data-profile-id="${esc(p.id)}"><div><b>${esc(p.name||p.id)}</b><small>${on?'Current workspace':'Saved company profile'}</small></div><div class="v7-prof-actions">${on?'<span class="v7-prof-active">ACTIVE</span>':`<button type="button" data-v7-profile-open="${esc(p.id)}">OPEN / SWITCH</button><button type="button" class="danger" data-v7-profile-delete="${esc(p.id)}">DELETE</button>`}</div></article>`}).join(''):'<div class="v7-prof-empty">No saved company profiles found on this device.</div>'}</div>
+      <div class="v7-prof-grid">${list.length?list.map(p=>{const on=String(p.id)===current;const builtin=BUILTIN_PROFILES.some(x=>x.id===String(p.id));return `<article class="v7-prof-card ${on?'active':''}" data-profile-id="${esc(p.id)}"><div><b>${esc(p.name||p.id)}</b><small>${on?'Current workspace':builtin?'Built-in company profile':'Saved company profile'}</small></div><div class="v7-prof-actions">${on?'<span class="v7-prof-active">ACTIVE</span>':`<button type="button" data-v7-profile-open="${esc(p.id)}">OPEN / SWITCH</button>${builtin?'':'<button type="button" class="danger" data-v7-profile-delete="'+esc(p.id)+'">DELETE</button>'}`}</div></article>`}).join(''):'<div class="v7-prof-empty">No saved company profiles found on this device.</div>'}</div>
       <p class="v7-prof-note">Opening a profile switches the whole operational workspace to that company and reloads its saved data.</p>`;
     $$('[data-v7-profile-open]',box).forEach(b=>b.onclick=()=>switchProfile(b.dataset.v7ProfileOpen,b));
     $$('[data-v7-profile-delete]',box).forEach(b=>b.onclick=()=>deleteProfile(b.dataset.v7ProfileDelete));
   }
   function bindNativeSelector(){
+    syncNativeSelector();
     const sel=nativeSelector(); if(!sel||sel.dataset.v7ProfileBound)return;
     sel.dataset.v7ProfileBound='1';
     sel.addEventListener('change',()=>{const value=String(sel.value||'');if(value)writeActive(value);setTimeout(()=>{syncShell();render()},0)});
   }
   function watch(){
+    ensureBuiltinProfiles();
     bindNativeSelector(); syncShell(); render();
     new MutationObserver(()=>{
       bindNativeSelector();
@@ -128,7 +187,7 @@
       if(!$('#v7-active-profile-badge'))syncShell();
     }).observe(document.body,{childList:true,subtree:true});
     document.addEventListener('click',e=>{if(e.target.closest?.('[data-act="openSettings"],#top-settings-btn,[data-v7="settings"]'))setTimeout(render,80)},true);
-    window.addEventListener('storage',e=>{if(ACTIVE_KEYS.includes(e.key)||PROFILE_KEYS.includes(e.key)){syncShell();render()}});
+    window.addEventListener('storage',e=>{if(ACTIVE_KEYS.includes(e.key)||PROFILE_KEYS.includes(e.key)){ensureBuiltinProfiles();syncShell();render()}});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch,{once:true});else watch();
 })();
