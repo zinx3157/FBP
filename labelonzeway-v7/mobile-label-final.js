@@ -1,30 +1,58 @@
 (()=>{
 'use strict';
 const $=(q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
-function normalizeStep(){
-  if(!matchMedia('(max-width:900px)').matches)return;
-  if(document.body.dataset.mobileView!=='label')return;
+const mobile=()=>matchMedia('(max-width:900px)').matches;
+let scheduled=false;
+function force(el,prop,val){if(el)el.style.setProperty(prop,val,'important')}
+function enforceLayout(){
+  scheduled=false;
+  if(!mobile()||document.body.dataset.mobileView!=='label')return;
   const steps=['customer','details','preview'];
-  let active=steps.find(s=>document.body.classList.contains('v7-mobile-step-'+s));
-  if(!active)active='customer';
+  let active=steps.find(s=>document.body.classList.contains('v7-mobile-step-'+s))||'customer';
   steps.forEach(s=>document.body.classList.toggle('v7-mobile-step-'+s,s===active));
+
+  const hero=$('#v7-label-hero');
+  force(hero,'display','none');force(hero,'visibility','hidden');force(hero,'pointer-events','none');
+
+  const bar=$('#v7-label-stepbar');
+  force(bar,'display','grid');force(bar,'grid-template-columns','repeat(3,minmax(0,1fr))');force(bar,'gap','6px');force(bar,'margin','0 0 8px');
+  force(bar,'position','sticky');force(bar,'top','66px');force(bar,'z-index','40');
+
+  const grid=$('#v7-label-grid');
+  force(grid,'display','block');force(grid,'grid-template-columns','1fr');force(grid,'width','100%');force(grid,'margin','0');
+
+  const customer=$('.v7-customer-panel',grid||document);
+  const parcel=$('#card-parcel');
+  const preview=$('#card-preview');
+  [customer,parcel,preview].forEach(el=>{force(el,'width','100%');force(el,'max-width','none');force(el,'margin','0');});
+  const show=(el,on)=>{force(el,'display',on?'block':'none');force(el,'visibility',on?'visible':'hidden');force(el,'pointer-events',on?'auto':'none')};
+  show(customer,active==='customer');show(parcel,active==='details');show(preview,active==='preview');
+
   const labels={customer:'Customer',details:'Label',preview:'Review'};
   $$('#v7-label-stepbar .v7-step[data-step]').forEach((el,i)=>{
-    const s=el.dataset.step; const b=$('b',el); const sm=$('small',el);
+    const s=el.dataset.step,b=$('b',el),sm=$('small',el);
     if(b&&labels[s])b.textContent=(i+1)+' · '+labels[s];
     if(sm)sm.textContent='';
+    el.classList.toggle('active',s===active);
+    el.classList.toggle('done',steps.indexOf(s)<steps.indexOf(active));
   });
-  const p=$('#card-parcel .card-head h2'); if(p)p.textContent='LABEL DETAILS';
-  const r=$('#card-preview .card-head h2'); if(r)r.textContent='REVIEW & PRINT';
+  const p=$('#card-parcel .card-head h2');if(p)p.textContent='LABEL DETAILS';
+  const r=$('#card-preview .card-head h2');if(r)r.textContent='REVIEW & PRINT';
 }
+function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(enforceLayout)}
 function install(){
-  normalizeStep();
-  document.addEventListener('v7:viewchange',e=>{if(e.detail?.view==='label')setTimeout(normalizeStep,0)});
+  schedule();
+  document.addEventListener('v7:viewchange',e=>{if(e.detail?.view==='label')setTimeout(schedule,0)});
   document.addEventListener('click',e=>{
-    const step=e.target.closest?.('#v7-label-stepbar .v7-step[data-step]');
-    if(step)setTimeout(normalizeStep,0);
+    if(e.target.closest?.('#v7-label-stepbar .v7-step[data-step],#v7-rail button[data-v7="label"],.v7-new,[data-act="startNewLabel"]'))setTimeout(schedule,0);
   },true);
-  [100,300,700,1400].forEach(ms=>setTimeout(normalizeStep,ms));
+  const mo=new MutationObserver(m=>{
+    if(!mobile()||document.body.dataset.mobileView!=='label')return;
+    if(m.some(x=>x.target===document.body||x.target.closest?.('#v7-label-grid,#v7-label-stepbar')))schedule();
+  });
+  mo.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class','style','data-mobile-view']});
+  [100,300,700,1400,2500].forEach(ms=>setTimeout(schedule,ms));
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.LabelOnZeWayEnforceMobileLabel=enforceLayout;
 })();
