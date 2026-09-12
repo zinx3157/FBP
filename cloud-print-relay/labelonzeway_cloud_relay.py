@@ -20,7 +20,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 MAX_PAYLOAD = 16 * 1024 * 1024
 
 
@@ -38,6 +38,16 @@ def _json_request(url, method="GET", headers=None, payload=None, timeout=20):
         raise RuntimeError(f"HTTP {exc.code}: {detail[:500]}") from exc
     except URLError as exc:
         raise RuntimeError(f"Cloud connection failed: {exc.reason}") from exc
+
+
+def get_egress_ip(timeout=5):
+    req = Request("https://api.ipify.org?format=json", headers={"User-Agent": "LabelOnZeWay-Relay"})
+    try:
+        with urlopen(req, timeout=timeout) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            return str(data.get("ip", ""))
+    except Exception as exc:
+        return f"unavailable: {exc}"
 
 
 def validate_destination(host, port, allowed_host, allowed_port):
@@ -192,6 +202,7 @@ class HealthHandler(BaseHTTPRequestHandler):
             if not relay:
                 self._write_json(503, {"status": "starting", "tcp_reachable": False})
                 return
+            egress_ip = get_egress_ip()
             try:
                 latency_ms = test_tcp(relay.target_host, relay.target_port,
                                       relay.target_host, relay.target_port)
@@ -200,6 +211,7 @@ class HealthHandler(BaseHTTPRequestHandler):
                     "version": VERSION,
                     "status": "ok",
                     "supabase_authenticated": bool(relay.access_token),
+                    "render_egress_ip": egress_ip,
                     "printer_target": f"{relay.target_host}:{relay.target_port}",
                     "tcp_reachable": True,
                     "connect_ms": latency_ms,
@@ -211,6 +223,7 @@ class HealthHandler(BaseHTTPRequestHandler):
                     "version": VERSION,
                     "status": "degraded",
                     "supabase_authenticated": bool(relay.access_token),
+                    "render_egress_ip": egress_ip,
                     "printer_target": f"{relay.target_host}:{relay.target_port}",
                     "tcp_reachable": False,
                     "error": str(exc)[:500],
