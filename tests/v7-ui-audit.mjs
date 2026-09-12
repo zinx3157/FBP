@@ -65,7 +65,20 @@ for(const [engineName,browserType] of engines){
       if(p.mobile&&geometry.small.length)fail(engineName,p.name,`touch targets below 40px ${JSON.stringify(geometry.small)}`);
       if(geometry.controlCount<5)fail(engineName,p.name,`low visible control count ${geometry.controlCount}`);
 
-      for(let i=0;i<12;i++)for(const item of ['manifest','batch','home']){const sel=`.v7-nav button[data-v7="${item}"]`;await page.locator(sel).evaluate(el=>el.click());await page.waitForTimeout(25);const active=await page.locator(sel).evaluate(el=>el.classList.contains('active'));if(!active)fail(engineName,p.name,`${item} did not activate on stress cycle ${i+1}`);const cardId={manifest:'#card-manifest',batch:'#card-batch',home:'#card-home'}[item];const visible=await page.locator(cardId).evaluate(el=>getComputedStyle(el).display!=='none'&&el.classList.contains('v7-active'));if(!visible)fail(engineName,p.name,`${item} card not visibly active on cycle ${i+1}`);await assertResponsive(page,engineName,p.name,`${item} cycle ${i+1}`)}
+      const stressItems=p.mobile?['manifest','label','home','more']:['manifest','batch','home'];
+      for(let i=0;i<12;i++)for(const item of stressItems){
+        const sel=`.v7-nav button[data-v7="${item}"]`;
+        const ctl=page.locator(sel);
+        if(!(await ctl.count())){fail(engineName,p.name,`${item} navigation control missing on stress cycle ${i+1}`);continue}
+        await ctl.evaluate(el=>el.click());
+        await page.waitForTimeout(25);
+        const active=await ctl.evaluate(el=>el.classList.contains('active'));
+        if(!active)fail(engineName,p.name,`${item} did not activate on stress cycle ${i+1}`);
+        const cardId={manifest:'#card-manifest',batch:'#card-batch',home:'#card-home',label:'#v7-label-grid',more:'#card-more'}[item];
+        const visible=await page.locator(cardId).evaluate(el=>getComputedStyle(el).display!=='none'&&(el.classList.contains('v7-active')||el.classList.contains('mobile-view-active')));
+        if(!visible)fail(engineName,p.name,`${item} card not visibly active on cycle ${i+1}`);
+        await assertResponsive(page,engineName,p.name,`${item} cycle ${i+1}`)
+      }
 
       await page.evaluate(()=>{
         window.LabelOnZeWayV7ShowView?.('home');
@@ -82,7 +95,7 @@ for(const [engineName,browserType] of engines){
         if(!wired)fail(engineName,p.name,'Recent Labels row was not wired');
         await page.locator('#ops-recent-list .ops-recent-row').first().evaluate(el=>el.click());
         await page.waitForTimeout(180);
-        const manifestShown=await page.locator('#card-manifest').evaluate(el=>getComputedStyle(el).display!=='none'&&el.classList.contains('v7-active'));
+        const manifestShown=await page.locator('#card-manifest').evaluate(el=>getComputedStyle(el).display!=='none'&&(el.classList.contains('v7-active')||el.classList.contains('mobile-view-active')));
         if(!manifestShown)fail(engineName,p.name,'Recent Labels click did not open Manifest');
       }
 
@@ -105,4 +118,4 @@ for(const [engineName,browserType] of engines){
   await browser.close();
 }
 if(failures.length){console.error(`V7 CROSS-BROWSER CONTROL AUDIT FAILED (${failures.length})`);failures.forEach(x=>console.error(`- ${x}`));process.exit(1)}
-console.log('V7 CROSS-BROWSER CONTROL AUDIT PASS: Chromium + WebKit; desktop + iPhone 15 Pro + Galaxy S20+ class widths; buttons wired; links validated; Recent Labels opens Manifest; customer controls exercised; 12-cycle navigation stress; modal, scroll, overflow and touch checks.');
+console.log('V7 CROSS-BROWSER CONTROL AUDIT PASS: Chromium + WebKit; desktop + current five-button mobile navigation; buttons wired; links validated; Recent Labels opens Manifest; customer controls exercised; 12-cycle navigation stress; modal, scroll, overflow and touch checks.');
