@@ -15,14 +15,19 @@ jobs:
   build:
     runs-on: macos-latest
     timeout-minutes: 15
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '12.0'
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build app bundle
+      - name: Build macOS 12 universal app bundle
         run: |
           set -euo pipefail
           APP="LabelOnZeWay V7.app"
-          mkdir -p "$APP/Contents/MacOS"
+          BIN="$APP/Contents/MacOS/LabelOnZeWayV7"
+          SRC="labelonzeway-mac/LabelOnZeWay.swift"
+          mkdir -p "$APP/Contents/MacOS" build-macos12
+
           cat > "$APP/Contents/Info.plist" <<'PLIST'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -30,21 +35,50 @@ jobs:
             <key>CFBundleName</key><string>LabelOnZeWay V7</string>
             <key>CFBundleDisplayName</key><string>LabelOnZeWay V7</string>
             <key>CFBundleIdentifier</key><string>com.labelonzeway.v7</string>
-            <key>CFBundleVersion</key><string>700</string>
-            <key>CFBundleShortVersionString</key><string>7.0</string>
+            <key>CFBundleVersion</key><string>701</string>
+            <key>CFBundleShortVersionString</key><string>7.0.1</string>
             <key>CFBundlePackageType</key><string>APPL</string>
             <key>CFBundleExecutable</key><string>LabelOnZeWayV7</string>
             <key>LSMinimumSystemVersion</key><string>12.0</string>
             <key>NSHighResolutionCapable</key><true/>
           </dict></plist>
           PLIST
-          xcrun swiftc labelonzeway-mac/LabelOnZeWay.swift -o "$APP/Contents/MacOS/LabelOnZeWayV7" -framework Cocoa -framework WebKit
-          chmod +x "$APP/Contents/MacOS/LabelOnZeWayV7"
+
+          xcrun swiftc "$SRC" \
+            -target x86_64-apple-macos12.0 \
+            -o build-macos12/LabelOnZeWayV7-x86_64 \
+            -framework Cocoa -framework WebKit
+
+          xcrun swiftc "$SRC" \
+            -target arm64-apple-macos12.0 \
+            -o build-macos12/LabelOnZeWayV7-arm64 \
+            -framework Cocoa -framework WebKit
+
+          lipo -create \
+            build-macos12/LabelOnZeWayV7-x86_64 \
+            build-macos12/LabelOnZeWayV7-arm64 \
+            -output "$BIN"
+
+          chmod +x "$BIN"
+
+          echo 'Architectures:'
+          lipo -info "$BIN"
+          echo 'Deployment targets:'
+          xcrun vtool -show-build "$BIN"
+
+          # Fail the build if either architecture is missing or the minimum target is not macOS 12.0.
+          lipo -info "$BIN" | grep -q 'x86_64'
+          lipo -info "$BIN" | grep -q 'arm64'
+          xcrun vtool -show-build "$BIN" | grep -q 'minos 12.0'
+          /usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$APP/Contents/Info.plist" | grep -qx '12.0'
+
           codesign --force --deep --sign - "$APP"
-          ditto -c -k --keepParent "$APP" LabelOnZeWay-V7-Mac.zip
+          codesign --verify --deep --strict "$APP"
+
+          ditto -c -k --keepParent "$APP" LabelOnZeWay-V7-Mac-macOS12.zip
 
       - uses: actions/upload-artifact@v4
         with:
-          name: LabelOnZeWay-V7-Mac
-          path: LabelOnZeWay-V7-Mac.zip
+          name: LabelOnZeWay-V7-Mac-macOS12
+          path: LabelOnZeWay-V7-Mac-macOS12.zip
           retention-days: 30
