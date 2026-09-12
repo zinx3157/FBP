@@ -4,9 +4,10 @@ const $=(q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelect
 const mobile=()=>matchMedia('(max-width:900px)').matches;
 let scheduled=false;
 function force(el,prop,val){if(el)el.style.setProperty(prop,val,'important')}
+function labelIsActive(){return $('#v7-label-grid')?.classList.contains('mobile-view-active')||$('#v7-label-stepbar')?.classList.contains('mobile-view-active')}
 function enforceLayout(){
   scheduled=false;
-  if(!mobile()||document.body.dataset.mobileView!=='label')return;
+  if(!mobile()||!labelIsActive())return;
   const steps=['customer','details','preview'];
   let active=steps.find(s=>document.body.classList.contains('v7-mobile-step-'+s))||'customer';
   steps.forEach(s=>document.body.classList.toggle('v7-mobile-step-'+s,s===active));
@@ -19,12 +20,12 @@ function enforceLayout(){
   force(bar,'position','sticky');force(bar,'top','66px');force(bar,'z-index','40');
 
   const grid=$('#v7-label-grid');
-  force(grid,'display','block');force(grid,'grid-template-columns','1fr');force(grid,'width','100%');force(grid,'margin','0');
+  force(grid,'display','block');force(grid,'grid-template-columns','1fr');force(grid,'width','100%');force(grid,'max-width','none');force(grid,'margin','0');
 
   const customer=$('.v7-customer-panel',grid||document);
   const parcel=$('#card-parcel');
   const preview=$('#card-preview');
-  [customer,parcel,preview].forEach(el=>{force(el,'width','100%');force(el,'max-width','none');force(el,'margin','0');});
+  [customer,parcel,preview].forEach(el=>{force(el,'width','100%');force(el,'max-width','none');force(el,'margin','0')});
   const show=(el,on)=>{force(el,'display',on?'block':'none');force(el,'visibility',on?'visible':'hidden');force(el,'pointer-events',on?'auto':'none')};
   show(customer,active==='customer');show(parcel,active==='details');show(preview,active==='preview');
 
@@ -47,11 +48,11 @@ function install(){
     if(e.target.closest?.('#v7-label-stepbar .v7-step[data-step],#v7-rail button[data-v7="label"],.v7-new,[data-act="startNewLabel"]'))setTimeout(schedule,0);
   },true);
   const mo=new MutationObserver(m=>{
-    if(!mobile()||document.body.dataset.mobileView!=='label')return;
-    if(m.some(x=>x.target===document.body||x.target.closest?.('#v7-label-grid,#v7-label-stepbar')))schedule();
+    if(!mobile())return;
+    if(m.some(x=>x.target===document.body||x.target===document.getElementById('v7-label-grid')||x.target===document.getElementById('v7-label-stepbar')||x.target.closest?.('#v7-label-grid,#v7-label-stepbar')))schedule();
   });
   mo.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class','style','data-mobile-view']});
-  [100,300,700,1400,2500].forEach(ms=>setTimeout(schedule,ms));
+  [50,150,350,700,1200,2200,4000].forEach(ms=>setTimeout(schedule,ms));
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 window.LabelOnZeWayEnforceMobileLabel=enforceLayout;
