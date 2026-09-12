@@ -3,7 +3,7 @@
 const $=(q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
 const VIEW_IDS={home:['card-home'],label:['v7-label-hero','v7-label-stepbar','v7-label-grid'],manifest:['card-manifest'],more:['card-more']};
 const ALL_VIEW_IDS=['card-home','v7-label-hero','v7-label-stepbar','v7-label-grid','card-manifest','card-more'];
-let currentView='home', navReady=false, firstUnlockedHomeShown=false, rotateTimer=0, reconcileTimer=0;
+let currentView='home', navReady=false, firstUnlockedHomeShown=false, rotateTimer=0, reconcileTimer=0, orientationView='home';
 const scrollPos={home:0,label:0,manifest:0,more:0};
 function isMobile(){return matchMedia('(max-width:900px), (orientation:landscape) and (max-height:650px) and (max-width:1200px)').matches}
 function normalizeView(view){return view==='new'?'label':view}
@@ -94,17 +94,38 @@ function watchLegacyCollisions(){
   const rootObserver=new MutationObserver(queueReconcile);
   ALL_VIEW_IDS.forEach(id=>{const el=$('#'+id);if(el)rootObserver.observe(el,{attributes:true,attributeFilter:['class','style']})});
 }
+function snapshotOrientationView(){
+  let wanted=normalizeView(document.body.dataset.mobileView||currentView||'home');
+  const labelSignal=currentView==='label'||wanted==='label'||viewHealthy('label')||
+    $('#v7-rail button[data-v7="label"]')?.classList.contains('active');
+  if(labelSignal)wanted='label';
+  return VIEW_IDS[wanted]?wanted:(VIEW_IDS[currentView]?currentView:'home');
+}
+function reinforceOrientationView(view){
+  if(!isMobile()||view==='customers')return;
+  if(view==='label'){
+    document.body.dataset.mobileView='new';
+    enforceView('label');
+    window.LabelOnZeWayEnforceMobileLabel?.();
+  }else enforceView(view);
+}
 function applyOrientation(){
+  orientationView=snapshotOrientationView();
   clearTimeout(rotateTimer);rotateTimer=setTimeout(()=>{
     const landscape=matchMedia('(orientation:landscape)').matches;
     document.documentElement.classList.toggle('mobile-landscape',landscape&&isMobile());
     document.documentElement.classList.toggle('mobile-portrait',!landscape&&isMobile());
     if(!isMobile())return;
     rebuildNavOnce();repairAddressBook();
-    const wanted=normalizeView(document.body.dataset.mobileView||currentView||'home');
-    if(wanted==='customers'){setActiveNav('customers');try{window.openAddrModal?.()}catch(_e){}setTimeout(()=>$('#m-addr')?.classList.add('open'),20)}
-    else show(VIEW_IDS[wanted]?wanted:currentView);
-    window.LabelOnZeWayEnforceMobileLabel?.();
+    const wanted=orientationView;
+    if(wanted==='customers'){
+      setActiveNav('customers');try{window.openAddrModal?.()}catch(_e){}setTimeout(()=>$('#m-addr')?.classList.add('open'),20);
+    }else{
+      reinforceOrientationView(VIEW_IDS[wanted]?wanted:currentView);
+      if(wanted==='label'){
+        [40,100,180,260,420].forEach(ms=>setTimeout(()=>reinforceOrientationView('label'),ms));
+      }
+    }
   },120);
 }
 function install(){if(!isMobile())return;document.documentElement.setAttribute('data-clean-mobile',document.documentElement.getAttribute('data-clean-mobile')||document.documentElement.getAttribute('data-mobile-uat')||'1');rebuildNavOnce();bind();repairAddressBook();watchLegacyCollisions();applyOrientation();if(!firstUnlockedHomeShown&&!document.body.classList.contains('v7-auth-locked'))ensureHome(true)}
