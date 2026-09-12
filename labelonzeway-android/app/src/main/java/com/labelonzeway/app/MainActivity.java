@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String APP_URL =
-            "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=android-v7-runtime-20260909";
+            "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=final-20260912-17&app=android-final";
 
     private WebView webView;
     private ValueCallback<Uri[]> pendingFiles;
