@@ -1,49 +1,49 @@
 @media (max-width:900px){
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-hero{display:none!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;padding:7px!important;margin:0 0 8px!important;border:1px solid #193b48!important;border-radius:12px!important;background:#071a24!important;position:sticky!important;top:66px!important;z-index:40!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar .v7-step{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;min-width:0!important;padding:7px 5px!important;border:1px solid #193b48!important;border-radius:9px!important;background:#061721!important;text-align:center!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar .v7-step i{width:24px!important;height:24px!important;min-width:24px!important;font-size:10px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar .v7-step b{font-size:9px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar .v7-step small{display:none!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar .v7-step-actions{grid-column:1/-1!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;margin-top:0!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar .v7-step-actions button{min-height:36px!important;height:36px!important;padding:0 8px!important;font-size:10px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-grid{display:block!important;width:100%!important;padding:0 0 calc(88px + env(safe-area-inset-bottom))!important;margin:0!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-grid>.v7-customer-panel,
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-grid>#card-parcel,
-html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-grid>#card-preview{width:100%!important;max-width:none!important;margin:0!important;padding:12px!important;border-radius:12px!important}
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-customer #card-parcel,
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-customer #card-preview{display:none!important}
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-details .v7-customer-panel,
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-details #card-preview{display:none!important}
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-preview .v7-customer-panel,
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-preview #card-parcel{display:none!important}
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-customer .v7-customer-panel,
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-details #card-parcel,
-html[data-clean-mobile] body[data-mobile-view="label"].v7-mobile-step-preview #card-preview{display:block!important;visibility:visible!important;pointer-events:auto!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .v7-panel-title,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .card-head,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-preview .card-head{margin:0 0 8px!important;padding:0 0 8px!important;min-height:32px!important;align-items:center!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .v7-panel-title b,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .card-head h2,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-preview .card-head h2{font-size:13px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .v7-customer-tabs{margin:0 0 7px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .v7-customer-tabs span{padding:6px 4px!important;font-size:10px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .v7-customer-search{height:38px!important;margin:0 0 7px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .v7-customer-current{min-height:0!important;padding:10px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .customer-link,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .customer-status{padding:8px 9px!important;margin:0 0 7px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel label.f,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel label{margin:6px 0 3px!important;font-size:9px!important;letter-spacing:.06em!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel input,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel select{min-height:40px!important;height:40px!important;padding:0 9px!important;font-size:14px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel textarea{min-height:62px!important;padding:8px 9px!important;font-size:14px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .row2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #drop{min-height:88px!important;padding:9px!important;margin:5px 0!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .photo-tools{margin-bottom:7px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] .photo-tools>summary{padding:8px 9px!important;font-size:11px!important}
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .btn,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .btn-ghost,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-preview .btn,
-html[data-clean-mobile] body[data-mobile-view="label"] #card-preview .btn-ghost{min-height:36px!important;padding:0 9px!important;font-size:10px!important}
+html[data-clean-mobile] #v7-label-hero.mobile-view-active{display:none!important;visibility:hidden!important;pointer-events:none!important}
+html[data-clean-mobile] #v7-label-stepbar.mobile-view-active{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;padding:7px!important;margin:0 0 8px!important;border:1px solid #193b48!important;border-radius:12px!important;background:#071a24!important;position:sticky!important;top:66px!important;z-index:40!important}
+html[data-clean-mobile] #v7-label-stepbar.mobile-view-active .v7-step{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;min-width:0!important;padding:7px 5px!important;border:1px solid #193b48!important;border-radius:9px!important;background:#061721!important;text-align:center!important}
+html[data-clean-mobile] #v7-label-stepbar.mobile-view-active .v7-step i{width:24px!important;height:24px!important;min-width:24px!important;font-size:10px!important}
+html[data-clean-mobile] #v7-label-stepbar.mobile-view-active .v7-step b{font-size:9px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+html[data-clean-mobile] #v7-label-stepbar.mobile-view-active .v7-step small{display:none!important}
+html[data-clean-mobile] #v7-label-stepbar.mobile-view-active .v7-step-actions{grid-column:1/-1!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;margin-top:0!important}
+html[data-clean-mobile] #v7-label-stepbar.mobile-view-active .v7-step-actions button{min-height:36px!important;height:36px!important;padding:0 8px!important;font-size:10px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active{display:block!important;width:100%!important;max-width:none!important;padding:0 0 calc(88px + env(safe-area-inset-bottom))!important;margin:0!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active>.v7-customer-panel,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active>#card-parcel,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active>#card-preview{width:100%!important;max-width:none!important;margin:0!important;padding:12px!important;border-radius:12px!important}
+html[data-clean-mobile] body.v7-mobile-step-customer #v7-label-grid.mobile-view-active #card-parcel,
+html[data-clean-mobile] body.v7-mobile-step-customer #v7-label-grid.mobile-view-active #card-preview{display:none!important;visibility:hidden!important;pointer-events:none!important}
+html[data-clean-mobile] body.v7-mobile-step-details #v7-label-grid.mobile-view-active>.v7-customer-panel,
+html[data-clean-mobile] body.v7-mobile-step-details #v7-label-grid.mobile-view-active #card-preview{display:none!important;visibility:hidden!important;pointer-events:none!important}
+html[data-clean-mobile] body.v7-mobile-step-preview #v7-label-grid.mobile-view-active>.v7-customer-panel,
+html[data-clean-mobile] body.v7-mobile-step-preview #v7-label-grid.mobile-view-active #card-parcel{display:none!important;visibility:hidden!important;pointer-events:none!important}
+html[data-clean-mobile] body.v7-mobile-step-customer #v7-label-grid.mobile-view-active>.v7-customer-panel,
+html[data-clean-mobile] body.v7-mobile-step-details #v7-label-grid.mobile-view-active>#card-parcel,
+html[data-clean-mobile] body.v7-mobile-step-preview #v7-label-grid.mobile-view-active>#card-preview{display:block!important;visibility:visible!important;pointer-events:auto!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .v7-panel-title,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .card-head,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-preview .card-head{margin:0 0 8px!important;padding:0 0 8px!important;min-height:32px!important;align-items:center!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .v7-panel-title b,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .card-head h2,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-preview .card-head h2{font-size:13px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .v7-customer-tabs{margin:0 0 7px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .v7-customer-tabs span{padding:6px 4px!important;font-size:10px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .v7-customer-search{height:38px!important;margin:0 0 7px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .v7-customer-current{min-height:0!important;padding:10px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .customer-link,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .customer-status{padding:8px 9px!important;margin:0 0 7px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel label.f,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel label{margin:6px 0 3px!important;font-size:9px!important;letter-spacing:.06em!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel input,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel select{min-height:40px!important;height:40px!important;padding:0 9px!important;font-size:14px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel textarea{min-height:62px!important;padding:8px 9px!important;font-size:14px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .row2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #drop{min-height:88px!important;padding:9px!important;margin:5px 0!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .photo-tools{margin-bottom:7px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active .photo-tools>summary{padding:8px 9px!important;font-size:11px!important}
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .btn,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .btn-ghost,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-preview .btn,
+html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-preview .btn-ghost{min-height:36px!important;padding:0 9px!important;font-size:10px!important}
 }
-@media (max-width:390px){html[data-clean-mobile] body[data-mobile-view="label"] #card-parcel .row2{grid-template-columns:1fr!important}html[data-clean-mobile] body[data-mobile-view="label"] #v7-label-stepbar .v7-step b{font-size:8.5px!important}}
+@media (max-width:390px){html[data-clean-mobile] #v7-label-grid.mobile-view-active #card-parcel .row2{grid-template-columns:1fr!important}html[data-clean-mobile] #v7-label-stepbar.mobile-view-active .v7-step b{font-size:8.5px!important}}
