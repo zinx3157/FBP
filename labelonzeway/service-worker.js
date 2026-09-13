@@ -1,4 +1,4 @@
-const CACHE = 'labelonzeway-v2.0.1-cloud-primary-20260912';
+const CACHE = 'labelonzeway-v2.5.3-pwa-20260913';
 const APP_SHELL = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const APP_SHELL = [
   './tracking-dashboard/',
   './icon.svg'
 ];
+const V7_PWA = '/FBP/labelonzeway-v7/?v=release-2.5.3-20260913&pwa=1';
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
@@ -28,6 +29,10 @@ self.addEventListener('fetch', event => {
   if (url.pathname.includes('/api/')) return;
 
   if (req.mode === 'navigate') {
+    if ((url.pathname === '/FBP/labelonzeway/' || url.pathname === '/FBP/labelonzeway/index.html') && !url.searchParams.has('legacy')) {
+      event.respondWith(Promise.resolve(Response.redirect(V7_PWA, 302)));
+      return;
+    }
     event.respondWith(
       fetch(req).then(response => {
         const copy = response.clone();
