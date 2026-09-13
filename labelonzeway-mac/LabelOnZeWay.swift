@@ -6,8 +6,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
     var webView: WKWebView!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        let dataStore = WKWebsiteDataStore.default()
+        let dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
+        dataStore.removeData(ofTypes: dataTypes, modifiedSince: Date(timeIntervalSince1970: 0)) {}
+
         let config = WKWebViewConfiguration()
-        config.websiteDataStore = .default()
+        config.websiteDataStore = dataStore
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
         webView.setValue(false, forKey: "drawsBackground")
@@ -18,13 +22,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "LabelOnZeWay 2.5.1"
+        window.title = "LabelOnZeWay 2.5.4"
         window.minSize = NSSize(width: 1024, height: 700)
         window.center()
         window.contentView = webView
         window.makeKeyAndOrderFront(nil)
 
-        if let url = URL(string: "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=release-2.5.1-20260913&app=mac-2.5.1") {
+        if let url = URL(string: "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=release-2.5.4-20260913&app=mac-2.5.4-clean") {
             webView.load(URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30))
         }
     }
