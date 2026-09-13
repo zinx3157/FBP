@@ -8,13 +8,27 @@ function relayApi(){return window.LabelOnZeWayRenderRelay||window.LabelOnZeWayCl
 function bool(v){return v===true}
 function esc(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
 function row(label,ok,detail){return `<div class="v7-print-status-row ${ok?'ok':'bad'}"><span class="dot" aria-hidden="true"></span><div><b>${esc(label)}</b><small>${esc(detail||'')}</small></div><strong>${ok?'ONLINE':'CHECK'}</strong></div>`}
+function placePanel(panel){
+  const settings=$('#m-settings .settings-box,#m-settings .modal-box');
+  if(settings){
+    const nav=$('.settings-sticky-nav',settings);
+    if(nav){if(panel.previousElementSibling!==nav)nav.insertAdjacentElement('afterend',panel)}
+    else if(settings.firstElementChild!==panel)settings.prepend(panel);
+    panel.dataset.location='settings';
+    return;
+  }
+  const fallback=$('#card-more .card-body,#card-more')||$('#app')||document.body;
+  if(panel.parentElement!==fallback)fallback.appendChild(panel);
+  panel.dataset.location='fallback';
+}
 function ensurePanel(){
-  let panel=$('#v7-print-service-status');if(panel)return panel;
-  panel=document.createElement('section');panel.id='v7-print-service-status';panel.className='v7-print-service-status';
-  panel.innerHTML='<div class="v7-print-status-head"><div><small>PRINT SERVICES</small><h3>Cloud Print Readiness</h3></div><button type="button" id="v7-print-status-refresh">REFRESH</button></div><div id="v7-print-status-summary"></div><div id="v7-print-status-rows"></div><p class="v7-print-status-foot">Checks the services required before a cloud print job can reach the printer.</p>';
-  const host=$('#card-more .card-body,#card-more')||$('#app')||document.body;
-  host.appendChild(panel);
-  $('#v7-print-status-refresh',panel)?.addEventListener('click',()=>refresh(true));
+  let panel=$('#v7-print-service-status');
+  if(!panel){
+    panel=document.createElement('section');panel.id='v7-print-service-status';panel.className='v7-print-service-status';
+    panel.innerHTML='<div class="v7-print-status-head"><div><small>PRINT SERVICES</small><h3>Cloud Print Readiness</h3></div><button type="button" id="v7-print-status-refresh">REFRESH</button></div><div id="v7-print-status-summary"></div><div id="v7-print-status-rows"></div><p class="v7-print-status-foot">Checks the services required before a cloud print job can reach the printer.</p>';
+    $('#v7-print-status-refresh',panel)?.addEventListener('click',()=>refresh(true));
+  }
+  placePanel(panel);
   return panel;
 }
 function overall(){return state.network&&state.configured&&state.signedIn&&state.workspace&&state.queue&&state.relay&&state.printer}
