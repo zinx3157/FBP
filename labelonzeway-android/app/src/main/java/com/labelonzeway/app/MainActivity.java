@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String APP_URL =
-            "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=final-20260912-21&app=android-final";
+            "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=release-2.5-20260913&app=android-2.5";
 
     private WebView webView;
     private ValueCallback<Uri[]> pendingFiles;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         settings.setSupportMultipleWindows(false);
-        settings.setUserAgentString(settings.getUserAgentString() + " LabelOnZeWayAndroid/V7");
+        settings.setUserAgentString(settings.getUserAgentString() + " LabelOnZeWayAndroid/2.5");
 
         WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
