@@ -42,7 +42,7 @@ jobs:
           p.write_text(s,encoding='utf-8')
           PY
           grep -q "applicationId 'com.labelonzeway.v7'" labelonzeway-android/app/build.gradle
-          grep -q 'final-20260912-17' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
+          grep -q 'final-20260912-21' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
           grep -q 'android:name="com.labelonzeway.app.MainActivity"' labelonzeway-android/app/src/main/AndroidManifest.xml
 
       - name: Build APK
