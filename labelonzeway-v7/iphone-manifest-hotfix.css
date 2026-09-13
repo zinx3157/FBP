@@ -1,0 +1,66 @@
+/* LabelOnZeWay 2.5.2 — iPhone/PWA portrait hotfix: remove stale white/dead blocks and keep only the active mobile view in flow. */
+@media (max-width:900px){
+  html,body,#app{background:#031018!important;background-color:#031018!important}
+  body{min-height:100dvh!important;overflow-x:hidden!important}
+  #app{min-height:0!important;height:auto!important;overflow:visible!important}
+
+  /* No inactive legacy/base card may reserve vertical space behind the selected mobile page. */
+  body.v7-focus #app > .card:not(.v7-active),
+  body.v7-focus #app > .v7-label-grid:not(.v7-active),
+  body.v7-focus #app > .v7-hero:not(.v7-active),
+  body.v7-focus #app > .v7-stepbar:not(.v7-active),
+  body[data-mobile-view="manifest"] #app > :not(#card-manifest):not(#v7-rail),
+  body[data-mobile-view="more"] #app > :not(#card-more):not(#v7-rail){
+    display:none!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+    position:absolute!important;
+    width:0!important;
+    height:0!important;
+    min-height:0!important;
+    max-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    overflow:hidden!important;
+  }
+
+  body[data-mobile-view="manifest"] #card-manifest{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    position:relative!important;
+    width:auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    background:#06131c!important;
+  }
+
+  /* Legacy V6/mobile surfaces must never re-enter layout. */
+  #v6-mobile-home,.v6-mobile,.v6-bottomnav,#v6-dashboard,.v6-desktop,
+  #lz-command-v6,#lz-command-v6-js{
+    display:none!important;
+    visibility:hidden!important;
+    width:0!important;
+    height:0!important;
+    min-height:0!important;
+    max-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    overflow:hidden!important;
+  }
+
+  /* Keep the fixed V7 navigation above the page without creating a white spacer. */
+  #v7-rail{position:fixed!important}
+}
+
+@media (max-width:430px){
+  body[data-mobile-view="manifest"] #card-manifest{
+    padding-bottom:calc(86px + env(safe-area-inset-bottom))!important;
+  }
+}
