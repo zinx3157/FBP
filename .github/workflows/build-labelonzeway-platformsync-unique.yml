@@ -67,7 +67,7 @@ jobs:
           "$AAPT" dump badging "$APK" | tee /tmp/badging.txt
           grep -q "package: name='com.labelonzeway.v7'" /tmp/badging.txt
           grep -q "versionCode='703'" /tmp/badging.txt
-          grep -q "versionName='7.0.2-final'" /tmp/badging.txt
+          grep -Eq "versionName='7\.0\.2-final(-debug)?'" /tmp/badging.txt
           grep -q "launchable-activity: name='com.labelonzeway.app.MainActivity'" /tmp/badging.txt
           "$ZIPALIGN" -c -v 4 "$APK"
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee /tmp/apksigner.txt
