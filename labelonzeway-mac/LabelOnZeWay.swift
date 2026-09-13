@@ -18,13 +18,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "LabelOnZeWay 2.5"
+        window.title = "LabelOnZeWay 2.5.1"
         window.minSize = NSSize(width: 1024, height: 700)
         window.center()
         window.contentView = webView
         window.makeKeyAndOrderFront(nil)
 
-        if let url = URL(string: "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=release-2.5-20260913&app=mac-2.5") {
+        if let url = URL(string: "https://zinx3157.github.io/FBP/labelonzeway-v7/?v=release-2.5.1-20260913&app=mac-2.5.1") {
             webView.load(URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30))
         }
     }
