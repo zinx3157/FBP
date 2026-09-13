@@ -1,4 +1,4 @@
-name: Build LabelOnZeWay 2.5 APK
+name: Build LabelOnZeWay 2.5.1 APK
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Set Android 2.5 identity
+      - name: Set Android 2.5.1 identity
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -37,12 +37,12 @@ jobs:
           s,n=re.subn(r"applicationId\s+['\"][^'\"]+['\"]", "applicationId 'com.labelonzeway.v7'", s, count=1)
           if n != 1:
               raise SystemExit('Could not replace applicationId exactly once')
-          s=re.sub(r'versionCode\s+\d+', 'versionCode 704', s, count=1)
-          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.5.0-final'", s, count=1)
+          s=re.sub(r'versionCode\s+\d+', 'versionCode 705', s, count=1)
+          s=re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.5.1-final'", s, count=1)
           p.write_text(s,encoding='utf-8')
           PY
           grep -q "applicationId 'com.labelonzeway.v7'" labelonzeway-android/app/build.gradle
-          grep -q 'release-2.5-20260913' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
+          grep -q 'release-2.5.1-20260913' labelonzeway-android/app/src/main/java/com/labelonzeway/app/MainActivity.java
           grep -q 'android:name="com.labelonzeway.app.MainActivity"' labelonzeway-android/app/src/main/AndroidManifest.xml
 
       - name: Build fresh APK
@@ -66,8 +66,8 @@ jobs:
           unzip -t "$APK"
           "$AAPT" dump badging "$APK" | tee /tmp/badging.txt
           grep -q "package: name='com.labelonzeway.v7'" /tmp/badging.txt
-          grep -q "versionCode='704'" /tmp/badging.txt
-          grep -Eq "versionName='2\.5\.0-final(-debug)?'" /tmp/badging.txt
+          grep -q "versionCode='705'" /tmp/badging.txt
+          grep -Eq "versionName='2\.5\.1-final(-debug)?'" /tmp/badging.txt
           grep -q "launchable-activity: name='com.labelonzeway.app.MainActivity'" /tmp/badging.txt
           "$ZIPALIGN" -c -v 4 "$APK"
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee /tmp/apksigner.txt
@@ -76,12 +76,12 @@ jobs:
 
       - name: Package verified APK
         run: |
-          cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-2.5-Final-Verified.apk
-          test -s LabelOnZeWay-2.5-Final-Verified.apk
+          cp labelonzeway-android/app/build/outputs/apk/debug/app-debug.apk LabelOnZeWay-2.5.1-Final-Verified.apk
+          test -s LabelOnZeWay-2.5.1-Final-Verified.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: LabelOnZeWay-2.5-Final-Verified
-          path: LabelOnZeWay-2.5-Final-Verified.apk
+          name: LabelOnZeWay-2.5.1-Final-Verified
+          path: LabelOnZeWay-2.5.1-Final-Verified.apk
           if-no-files-found: error
           retention-days: 30
