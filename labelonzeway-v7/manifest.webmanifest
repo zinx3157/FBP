@@ -1,0 +1,20 @@
+{
+  "id": "/FBP/labelonzeway-v7/",
+  "name": "LabelOnZeWay 2.5.3",
+  "short_name": "LabelOnZeWay",
+  "description": "LabelOnZeWay 2.5.3 mobile operations app.",
+  "lang": "en",
+  "start_url": "/FBP/labelonzeway-v7/?v=release-2.5.3-20260913&pwa=1",
+  "scope": "/FBP/labelonzeway-v7/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#031018",
+  "theme_color": "#031018",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {"src":"../labelonzeway/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"../labelonzeway/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"../labelonzeway/icons/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}
