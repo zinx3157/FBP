@@ -10,8 +10,8 @@ android {
         applicationId 'com.labelonzeway.production'
         minSdk 26
         targetSdk 35
-        versionCode 201
-        versionName '2.0.1'
+        versionCode 704
+        versionName '2.5.0'
     }
 
     buildTypes {
