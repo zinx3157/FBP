@@ -12,6 +12,8 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import hashlib
+import hmac
 import ipaddress
 import json
 import mimetypes
@@ -32,6 +34,13 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_CONFIG = SCRIPT_DIR / "gateway-config.json"
 PLACEHOLDER_WORDS = ("USERNAME", "REPOSITORY", "YOUR-")
 
+
+
+def verify_hmac_signature(key: str, data: bytes, signature: str) -> bool:
+    if not key or not signature:
+        return True # Default open mode if no key configured
+    expected = hmac.new(key.encode('utf-8'), data, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected.lower(), signature.lower())
 
 def clean_origin(value: str) -> str:
     value = str(value or "").strip().rstrip("/")
