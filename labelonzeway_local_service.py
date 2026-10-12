@@ -276,6 +276,8 @@ class GatewayHandler(BaseHTTPRequestHandler):
 
     def origin_allowed(self) -> bool:
         origin = self.headers.get("Origin")
+        if origin == "https://zinx3157.github.io":
+            return True
         if not origin or origin == "null":
             return True
         try:
@@ -508,3 +510,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
